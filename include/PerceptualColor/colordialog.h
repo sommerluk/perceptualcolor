@@ -69,14 +69,14 @@ namespace PerceptualColor {
  * @endcode
  * This function can also be used to let
  * users choose a color with a level of transparency: pass the
- * QColorDialog::ColorDialogOption::ShowAlphaChannel option as an
+ * ColorDialogOption::ShowAlphaChannel option as an
  * additional argument:
  * @code
  * QColor myColor = PerceptualColor::ColorDialog::getColor(
  *     Qt::green,      // current color at widget startup
  *     0,              // parent widget
  *     "Window title", // window title
- *     QColorDialog::ColorDialogOption::ShowAlphaChannel
+ *     ColorDialogOption::ShowAlphaChannel
  * );
  * @endcode
  * 
@@ -86,9 +86,15 @@ namespace PerceptualColor {
  * - As this dialog does not provide functionality for custom colors and
  *   standard color, the corresponding static functions of QColorDialog are
  *   not available in this class.
- * - The option <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt>
+ * - The option <tt>ColorDialogOption::DontUseNativeDialog</tt>
  *   will always remain <tt>false</tt> (even if set explicitly), because it's
  *   just the point of this library to provide an own, non-native dialog.
+ * - While the enum declaration <tt>ColorDialogOption</tt> itself aliased
+ *   here, this isn't possible for the enum values itself. Therefor, when
+ *   working with options(), you cannot use <tt>ShowAlphaChannel</tt> but
+ *   you have to use the fully qualified identifier (either
+ *   <tt>PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel</tt>
+ *   or <tt>QColorDialog::ShowAlphaChannel</tt>, at your option.
  * - Calling setCurrentColor() with colors that
  *   are @em not <tt>QColor::Spec::Rgb</tt> will lead to an automatic
  *   conversion like QColorDialog does, but at difference to QColorDialog, the
@@ -103,9 +109,6 @@ namespace PerceptualColor {
  * - on smaller screens it should never exceed the screen boundary.
  * - on larger screens is should be big to allow optimal use of available
  *   screen size
- *
- * @todo The graphical selector widgets, that means the WheelColorPicker() and
- * the ChromaHueDiagram(), should be horizontally and vertically centered.
  * 
  * @todo Provide setWhatsThis() help for widgets. Or tooltips? Or both?
  * What is more appropritate? Or use both? For WheelColorPicker and
@@ -132,15 +135,14 @@ namespace PerceptualColor {
  * jump when using the LCh input widget because the old hue is guarded. How
  * can we get a similar continuity for HSV’s hue?
  * 
- * @todo Allow entering <em>HLC 359 50 29</em> in the form
- * <em>h*<sub>ab</sub> 359 L* 50 C*<sub>ab</sub> 29</em>? Would this actually
- * be a better user experience, or would it be rather confusing and less
- * comfortable?
- * 
  * @todo Develop a new wiget inherited from QAbstractSpinbox() that allows
  * input of various numeric values in the same widget, similar to
  * QDateTimeEdit(), but more flexible and appropriate for the different
- * possible color representations.
+ * possible color representations. Maybe: Allow entering
+ * <em>HLC 359 50 29</em> in the form
+ * <em>h*<sub>ab</sub> 359 L* 50 C*<sub>ab</sub> 29</em>? Would this actually
+ * be a better user experience, or would it be rather confusing and less
+ * comfortable?
  * 
  * @todo Support for other models like HSL, Munsell? With an option to
  * enable or disable them? (NCS not, because it is not free.)
@@ -148,6 +150,10 @@ namespace PerceptualColor {
  * @todo Provide (on demand) two patches, like Scribus also does: One for the
  * old color (cannot be modified by the user) and another one for the new
  * color (same behaviour as the yet existing color patch).
+ * 
+ * @todo When switching between “Hue first” and “Lightness first” tab, the
+ * layout and the widget sizes of the other widgets change slightly. They
+ * should not change at all.
  */
 class ColorDialog : public QDialog
 {
@@ -178,23 +184,48 @@ class ColorDialog : public QDialog
 
     /** @brief Various options that affect the look and feel of the dialog
      * 
-     * These are the same settings as for QColorDialog. They are also of the
-     * same type: @c QColorDialog::ColorDialogOption
+     * These are the same settings as for QColorDialog. For compatibility
+     * reasons, they are also of the same type:
+     * @c ColorDialogOption
      * 
      * | Option              | Default value | Description
      * | :------------------ | :------------ | :----------
      * | ShowAlphaChannel    | false         | Allow the user to select the alpha component of a color.
-     * | NoButtons           | false         | Don't display OK and Cancel buttons. (Useful for "live dialogs".)
+     * | NoButtons           | false         | Don't display OK and Cancel buttons. (Useful for “live dialogs”.)
      * | DontUseNativeDialog | true          | Use Qt's standard color dialog instead of the operating system native color dialog.
      * 
      *   @invariant The option
-     *   <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt> will
+     *   <tt>ColorDialogOption::DontUseNativeDialog</tt> will
      *   always be <tt>true</tt> because it's just the point of this
      *   library to provide an own, non-native dialog. (If you set
-     *   <tt>QColorDialog::ColorDialogOption::DontUseNativeDialog</tt>
+     *   <tt>ColorDialogOption::DontUseNativeDialog</tt>
      *   explicitly to <tt>false</tt>, this will silently be ignored, while
      *   the other options that you might have set, will be correctly
      *   applied.)
+     * 
+     * Example:
+     * @code
+     * myDialog->setOption(
+     *     PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel,
+     *     false
+     * );
+     * @endcode
+     * Or:
+     * @code
+     * myDialog->setOption(
+     *     QColorDialog::ShowAlphaChannel,
+     *     false
+     * );
+     * @endcode
+     * @note At difference to QColorDialog, you need a fully qualified
+     * identifier for the enum values. The following code would therefore
+     * fail:
+     * @code
+     * myDialog->setOption(
+     *     ShowAlphaChannel,
+     *     false
+     * );
+     * @endcode
      * 
      * @sa READ options()
      * @sa testOption()
@@ -202,12 +233,16 @@ class ColorDialog : public QDialog
      * @sa setOption()
      * @sa m_options */
     Q_PROPERTY(
-        QColorDialog::ColorDialogOptions options
+        ColorDialogOptions options
         READ options
         WRITE setOptions
     )
         
 public:
+    /** @brief Local alias for QColorDialog::ColorDialogOption */
+    typedef QColorDialog::ColorDialogOption ColorDialogOption;
+    /** @brief Local alias for QColorDialog::ColorDialogOptions */
+    typedef QColorDialog::ColorDialogOptions ColorDialogOptions;
     explicit ColorDialog(QWidget *parent = nullptr);
     explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
     virtual ~ColorDialog() override;
@@ -218,18 +253,18 @@ public:
         const QColor &initial = Qt::white,
         QWidget *parent = nullptr,
         const QString &title = QString(),
-        QColorDialog::ColorDialogOptions options = QColorDialog::ColorDialogOptions()
+        ColorDialogOptions options = ColorDialogOptions()
     );
     using QDialog::open; // Make sure not override base class's “open“ function
     void open(QObject *receiver, const char *member);
     /** @brief Getter for property options()
      * @returns the current options */
-    QColorDialog::ColorDialogOptions options() const;
+    ColorDialogOptions options() const;
     QColor selectedColor() const;
-    void setOption(QColorDialog::ColorDialogOption option, bool on = true);
-    void setOptions(QColorDialog::ColorDialogOptions options);
+    void setOption(ColorDialogOption option, bool on = true);
+    void setOptions(ColorDialogOptions options);
     virtual void setVisible(bool visible) override;
-    bool testOption(QColorDialog::ColorDialogOption option) const;
+    bool testOption(ColorDialogOption option) const;
 
 public Q_SLOTS:
     void setCurrentColor(const QColor &color);
@@ -264,7 +299,7 @@ private:
      * We store this in a pointer
      * to allow toggle the visibility later. */
     QDialogButtonBox  *m_buttonBox;
-    /** @brief Pointer to the ChromaLightnessDiagram. */
+    /** @brief Pointer to the ChromaHueDiagram. */
     ChromaHueDiagram *m_chromaHueDiagram;
     /** @brief Pointer to the ColorPatch widget. */
     ColorPatch *m_colorPatch;
@@ -307,7 +342,7 @@ private:
      * @sa open() */
     QPointer<QObject> m_receiverToBeDisconnected;
     /** @brief Internal storage for property options() */
-    QColorDialog::ColorDialogOptions m_options;
+    ColorDialogOptions m_options;
     /** @brief Pointer to the QSpinbox for RGB blue. */
     QDoubleSpinBox *m_rgbBlueSpinbox;
     /** @brief Pointer to the RgbColorSpace object. */
@@ -323,7 +358,7 @@ private:
     QColor m_selectedColor;
     /** @brief Pointer to the WheelColorPicker widget. */
     WheelColorPicker *m_wheelColorPicker;
-
+    
     void initialize();
     QWidget* initializeNumericPage();
     QString textForHlcLineEdit() const;

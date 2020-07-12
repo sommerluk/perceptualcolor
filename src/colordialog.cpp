@@ -280,6 +280,10 @@ void ColorDialog::initialize()
 
     // create the graphical selectors
     m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);
+    QWidget *tempHueFirstWidget = new QWidget;
+    QHBoxLayout *tempHueFirstLayout = new QHBoxLayout;
+    tempHueFirstLayout->addWidget(m_wheelColorPicker);
+    tempHueFirstWidget->setLayout(tempHueFirstLayout);
     m_lchLightnessSelector = new GradientSelector(m_rgbColorSpace);
     cmsCIELCh black;
     black.L = 0;
@@ -305,11 +309,11 @@ void ColorDialog::initialize()
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
     tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
     tempLightnesFirstLayout->addWidget(m_chromaHueDiagram);
-    QWidget *tempWidget = new QWidget();
-    tempWidget->setLayout(tempLightnesFirstLayout);
+    QWidget *tempLightnessFirstWidget = new QWidget();
+    tempLightnessFirstWidget->setLayout(tempLightnesFirstLayout);
     QTabWidget *tempGraphicalTabWidget = new QTabWidget;
-    tempGraphicalTabWidget->addTab(m_wheelColorPicker, tr("&Hue first"));
-    tempGraphicalTabWidget->addTab(tempWidget, tr("&Lightness first"));
+    tempGraphicalTabWidget->addTab(tempHueFirstWidget, tr("&Hue first"));
+    tempGraphicalTabWidget->addTab(tempLightnessFirstWidget, tr("&Lightness first"));
     
     // create the ColorPatch
     m_colorPatch = new ColorPatch();
@@ -664,7 +668,7 @@ QColor ColorDialog::getColor(
     return temp.selectedColor();
 }
 
-/** @brief the color that was actually selected by the user
+/** @brief The color that was actually selected by the user.
  * 
  * At difference to the currentColor() property, this function provides
  * the color that was actually selected by the user by clicking the OK button

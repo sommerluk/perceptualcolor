@@ -40,7 +40,6 @@ private:
     QPointer<PerceptualColor::ColorDialog> m_perceptualDialog2;
     QPointer<QColorDialog> m_qDialog;
     QPointer<QColorDialog> m_qDialog2;
-    const QColor emptyConstructor = QColor(1, 2, 3);
     QColor m_color;
 
 private Q_SLOTS:
@@ -267,52 +266,10 @@ private Q_SLOTS:
         QList<QPair<QString, QColor>> colorList;
 
         colorList.append(QPair<QString, QColor>("redOpaque", QColor(255, 0, 0)));
-        colorList.append(QPair<QString, QColor>("greenOpaque", QColor(0, 255, 0)));
-        colorList.append(QPair<QString, QColor>("redHalf", QColor(255, 0, 0, 128)));
         colorList.append(QPair<QString, QColor>("greenHalf", QColor(0, 255, 0, 128)));
-        colorList.append(QPair<QString, QColor>("redTransparent", QColor(255, 0, 0, 255)));
-        colorList.append(QPair<QString, QColor>("greenTransparent", QColor(0, 255, 0, 255)));
-        colorList.append(QPair<QString, QColor>("qtTransparent", QColor(Qt::transparent)));
+        colorList.append(QPair<QString, QColor>("greenTransparent", QColor(255, 0, 255, 0)));
         colorList.append(QPair<QString, QColor>("invalid", QColor()));
-        colorList.append(QPair<QString, QColor>("empty", emptyConstructor)); // special placeholder for empty constructor
-/* TODO This is overkill:
-        colorList.append(QPair<QString, QColor>("RGB 1 2 3", QColor(1, 2, 3)));
-        colorList.append(QPair<QString, QColor>("RGBA 1 2 3 4", QColor(1, 2, 3, 4)));
-        colorList.append(QPair<QString, QColor>("RGB 1 2 300", QColor(1, 2, 300)));
-        colorList.append(QPair<QString, QColor>("RGBA 1 2 300 4", QColor(1, 2, 300, 4)));
 
-        colorList.append(QPair<QString, QColor>("RGB 0.1 0.2 0.3", QColor::fromRgbF(0.1, 0.2, 0.3)));
-        colorList.append(QPair<QString, QColor>("RGBA 0.1 0.2 0.3 0.4", QColor::fromRgbF(0.1, 0.2, 0.3, 0.4)));
-        colorList.append(QPair<QString, QColor>("RGB 0.1 6.2 0.300", QColor::fromRgbF(0.1, 6.2, 0.300)));
-        colorList.append(QPair<QString, QColor>("RGBA 0.1 6.2 0.300 0.4", QColor::fromRgbF(0.1, 6.2, 0.300, 0.4)));
-
-        colorList.append(QPair<QString, QColor>("CMYK 1 2 3 4", QColor::fromCmyk(1, 2, 3, 4)));
-        colorList.append(QPair<QString, QColor>("CMYK 1 2 3 4 5", QColor::fromCmyk(1, 2, 3, 4, 5)));
-        colorList.append(QPair<QString, QColor>("CMYK 1 2 300 4", QColor::fromCmyk(1, 2, 300, 4)));
-        colorList.append(QPair<QString, QColor>("CMYK 1 2 300 4 5", QColor::fromCmyk(1, 2, 300, 4, 5)));
-        colorList.append(QPair<QString, QColor>("CMYK 0.1 0.2 0.300 0.4", QColor::fromCmykF(0.1, 0.2, 0.300, 0.4)));
-        colorList.append(QPair<QString, QColor>("CMYK 0.1 0.2 0.300 0.4 0.6495217645", QColor::fromCmykF(0.1, 0.2, 0.300, 0.4, 0.6495217645)));
-        colorList.append(QPair<QString, QColor>("CMYK 0.1 6.2 0.300 0.4", QColor::fromCmykF(0.1, 6.2, 0.300, 0.4)));
-        colorList.append(QPair<QString, QColor>("CMYK 0.1 6.2 0.300 0.4 0.6495217645", QColor::fromCmykF(0.1, 6.2, 0.300, 0.4, 0.6495217645)));
-        
-        colorList.append(QPair<QString, QColor>("HSL 2 3 4", QColor::fromHsl(2, 3, 4)));
-        colorList.append(QPair<QString, QColor>("HSL 2 3 4 5", QColor::fromHsl(2, 3, 4, 5)));
-        colorList.append(QPair<QString, QColor>("HSL 2 300 4", QColor::fromHsl(2, 300, 4)));
-        colorList.append(QPair<QString, QColor>("HSL 2 300 4 5", QColor::fromHsl(2, 300, 4, 5)));
-        colorList.append(QPair<QString, QColor>("HSL 0.2 0.300 0.4", QColor::fromHslF(0.2, 0.300, 0.4)));
-        colorList.append(QPair<QString, QColor>("HSL 0.2 0.300 0.4 0.6495217645", QColor::fromHslF(0.2, 0.300, 0.4, 0.6495217645)));
-        colorList.append(QPair<QString, QColor>("HSL 6.2 0.300 0.4", QColor::fromHslF(6.2, 0.300, 0.4)));
-        colorList.append(QPair<QString, QColor>("HSL 6.2 0.300 0.4 0.6495217645", QColor::fromHslF(6.2, 0.300, 0.4, 0.6495217645)));
-        
-        colorList.append(QPair<QString, QColor>("HSV 2 3 4", QColor::fromHsv(2, 3, 4)));
-        colorList.append(QPair<QString, QColor>("HSV 2 3 4 5", QColor::fromHsv(2, 3, 4, 5)));
-        colorList.append(QPair<QString, QColor>("HSV 2 300 4", QColor::fromHsv(2, 300, 4)));
-        colorList.append(QPair<QString, QColor>("HSV 2 300 4 5", QColor::fromHsv(2, 300, 4, 5)));
-        colorList.append(QPair<QString, QColor>("HSV 0.2 0.300 0.4", QColor::fromHsvF(0.2, 0.300, 0.4)));
-        colorList.append(QPair<QString, QColor>("HSV 0.2 0.300 0.4 0.6495217645", QColor::fromHsvF(0.2, 0.300, 0.4, 0.6495217645)));
-        colorList.append(QPair<QString, QColor>("HSV 6.2 0.300 0.4", QColor::fromHsvF(6.2, 0.300, 0.4)));
-        colorList.append(QPair<QString, QColor>("HSV 6.2 0.300 0.4 0.6495217645", QColor::fromHsvF(6.2, 0.300, 0.4, 0.6495217645)));
-*/
         for (int i = 0; i < colorList.size(); ++i) {
             for (int j = 0; j < colorList.size(); ++j) {
                 QTest::newRow(
@@ -364,19 +321,14 @@ private Q_SLOTS:
     }
     
     void testConformanceWithQColorDialog() {
-        return; // TODO remove this line
+        // Some conformance tests (without a particular systematic approach)
         QFETCH(QColor, initialColor);
         QFETCH(QColor, secondColor);
         QFETCH(bool, showAlphaChannel);
         QFETCH(bool, noButtons);
 
-        if (initialColor == emptyConstructor) { // special placeholder for empty constructor
-            m_perceptualDialog = new PerceptualColor::ColorDialog();
-            m_qDialog = new QColorDialog();
-        } else {
-            m_perceptualDialog = new PerceptualColor::ColorDialog(initialColor);
-            m_qDialog = new QColorDialog(initialColor);
-        }
+        m_perceptualDialog = new PerceptualColor::ColorDialog(initialColor);
+        m_qDialog = new QColorDialog(initialColor);
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
         m_perceptualDialog->setOption(
@@ -387,7 +339,6 @@ private Q_SLOTS:
             QColorDialog::ColorDialogOption::ShowAlphaChannel,
             showAlphaChannel
         );
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
 
         m_perceptualDialog->setOption(
             QColorDialog::ColorDialogOption::NoButtons,
@@ -397,66 +348,18 @@ private Q_SLOTS:
             QColorDialog::ColorDialogOption::NoButtons,
             noButtons
         );
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->show();
-        m_qDialog->show();
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
         m_perceptualDialog->setCurrentColor(secondColor);
         m_qDialog->setCurrentColor(secondColor);
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->show();
-        m_qDialog->show();
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
         QTest::keyClick(m_perceptualDialog, Qt::Key_Return);
         QTest::keyClick(m_qDialog, Qt::Key_Return);
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->show();
-        m_qDialog->show();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
         m_perceptualDialog->setCurrentColor(secondColor);
         m_qDialog->setCurrentColor(secondColor);
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->hide();
-        m_qDialog->hide();
-        helperCompareDialog(m_perceptualDialog, m_qDialog);
-
-        m_perceptualDialog->show();
-        m_qDialog->show();
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
         QTest::keyClick(m_perceptualDialog, Qt::Key_Escape);
@@ -553,7 +456,16 @@ private Q_SLOTS:
         QCOMPARE(testClassProperty.notifySignal().tag(), referenceClassProperty.notifySignal().tag());
         QCOMPARE(testClassProperty.notifySignal().typeName(), referenceClassProperty.notifySignal().typeName());
         QCOMPARE(testClassProperty.type(), referenceClassProperty.type());
+        
         QCOMPARE(testClassProperty.typeName(), referenceClassProperty.typeName());
+        /*
+        QString testClassString = QString(testClassProperty.typeName());
+        QString referenceClassString = QString(referenceClassProperty.typeName());
+        QVERIFY2(
+            (testClassString == referenceClassString)
+                || (testClassString == QString(referenceClass.className()) + QString("::") + referenceClassString),
+            "Verify if type is identical or just differs by being a fully qualified name."
+        );*/
         QCOMPARE(testClassProperty.userType(), referenceClassProperty.userType());
     }
 
@@ -1175,6 +1087,31 @@ private Q_SLOTS:
         QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
         QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
         
+    }
+    
+    void testAliases() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_qDialog = new QColorDialog;
+        
+        // Test setting QColorDialog syntax
+        m_perceptualDialog->setOption(QColorDialog::ShowAlphaChannel);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ShowAlphaChannel), true);
+        QCOMPARE(m_perceptualDialog->testOption(PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        m_qDialog->setOption(QColorDialog::ShowAlphaChannel);
+        QCOMPARE(m_qDialog->testOption(QColorDialog::ShowAlphaChannel), true);
+        QCOMPARE(m_qDialog->testOption(PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        
+        // Test setting our alias syntax
+        m_perceptualDialog->setOption(PerceptualColor::ColorDialog::ColorDialogOption::NoButtons);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::NoButtons), true);
+        QCOMPARE(m_perceptualDialog->testOption(PerceptualColor::ColorDialog::ColorDialogOption::NoButtons), true);
+        m_qDialog->setOption(PerceptualColor::ColorDialog::ColorDialogOption::NoButtons);
+        QCOMPARE(m_qDialog->testOption(QColorDialog::NoButtons), true);
+        QCOMPARE(m_qDialog->testOption(PerceptualColor::ColorDialog::ColorDialogOption::NoButtons), true);
+        
+        // Test if ColorDialogOptions is compatible (at least for == operator)
+        m_qDialog->setOption(QColorDialog::DontUseNativeDialog); // Conformance with our dialog
+        QCOMPARE(m_perceptualDialog->options(), m_qDialog->options());
     }
     
 };

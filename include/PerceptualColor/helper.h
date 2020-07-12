@@ -55,7 +55,7 @@ class RgbColorSpace; // It seems that including the header isn't possible becaus
  * The source code of the library is in UTF8. A static_assert makes sure your
  * compiler actually treats it also as UTF8.
  * 
- * @todo Translations: Color picker -> Farbwähler etc…
+ * @todo Translations: Color picker/Select Color -> Farbwähler/Farbauswahl etc…
  */
 namespace PerceptualColor {
 

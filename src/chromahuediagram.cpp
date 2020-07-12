@@ -75,6 +75,8 @@ ChromaHueDiagram::ChromaHueDiagram(RgbColorSpace *colorSpace, QWidget *parent) :
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
+// TODO The widget content should be centered horizontally and vertically. Attention: Then adopt ColorDialog so that this widget still is left-aligned (or right-aligned on RTL) to stay visually together with the lightness selector widget.
+
 /** @brief Updates the border() property.
  * 
  * This function can be called after changes to markerRadius() or markerThickness() to

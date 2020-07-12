@@ -425,6 +425,8 @@ void SimpleColorWheel::setHue(const qreal newHue)
     }
 }
 
+// TODO The widget content should be centered horizontally and vertically
+
 /** @brief Provide the size hint.
  *
  * Reimplemented from base class.
