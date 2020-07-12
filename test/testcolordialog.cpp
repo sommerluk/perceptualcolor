@@ -1113,7 +1113,7 @@ private Q_SLOTS:
         m_qDialog->setOption(QColorDialog::DontUseNativeDialog); // Conformance with our dialog
         QCOMPARE(m_perceptualDialog->options(), m_qDialog->options());
     }
-    
+
 };
 
 QTEST_MAIN(TestColorDialog);
