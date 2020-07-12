@@ -305,4 +305,24 @@ void FullColorDescription::normalizeLch()
     m_lch.h = temp.angleDegree();
 }
 
+/** @brief  A string with a hexadecimal representation of the color.
+ * 
+ * This function is similar to QColor::name(), but provides correct rounding.
+ * @returns A string of the form @em #RRGGBB with the red (R), green (G) and
+ * blue (B) values represented as two hexadecimal digits in the range 00⁠–⁠FF.
+ */
+QString FullColorDescription::toRgbHexString() const
+{
+    // Format of the numbers:
+    // - Minimal field width:                   2
+    // - The base of the number represenation:  16 (hexadecimal)
+    // - The fill character (leading zero):     QLatin1Char('0')
+    return QString(u8"#%1%2%3")
+        .arg(qRound(m_rgb.red * 255), 2, 16, QLatin1Char('0'))
+        .arg(qRound(m_rgb.green * 255), 2, 16, QLatin1Char('0'))
+        .arg(qRound(m_rgb.blue * 255), 2, 16, QLatin1Char('0'));
+}
+
+// TODO Isn't it inconsistent if toRgbHexString is gererated on-the-fly while all others are generated previously?
+
 } // namespace PerceptualColor

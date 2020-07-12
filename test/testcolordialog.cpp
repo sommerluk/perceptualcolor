@@ -258,92 +258,6 @@ private Q_SLOTS:
         delete tempWidget;
     }
 
-    void testSetOptionAndTestOption() {
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // Test if the option changes as expected
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
-        delete m_perceptualDialog;
-        
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // Test if the option changes as expected
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
-        delete m_perceptualDialog;
-        
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // Test if the option changes as expected
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
-        delete m_perceptualDialog;
-        
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // Test if the option changes as expected
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
-        delete m_perceptualDialog;
-        
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // define an option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
-        // change some other option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
-        // test if first option is still unchanged
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
-        delete m_perceptualDialog;
-        
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // define an option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
-        // change some other option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
-        // test if first option is still unchanged
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
-        delete m_perceptualDialog;
-        
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // define an option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
-        // change some other option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
-        // test if first option is still unchanged
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
-        delete m_perceptualDialog;
-        
-        m_perceptualDialog = new PerceptualColor::ColorDialog();
-        // define an option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
-        // change some other option
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
-        // test if first option is still unchanged
-        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
-        delete m_perceptualDialog;
-    }
-
     void testConformanceWithQColorDialog_data() {
         QTest::addColumn<QColor>("initialColor");
         QTest::addColumn<QColor>("secondColor");
@@ -401,22 +315,46 @@ private Q_SLOTS:
 */
         for (int i = 0; i < colorList.size(); ++i) {
             for (int j = 0; j < colorList.size(); ++j) {
-                QTest::newRow((QString(colorList.at(i).first) + QString("/") + QString(colorList.at(j).first) + QString("/ShowAlphaChannel/NoButtons")).toLatin1())
+                QTest::newRow(
+                    (QString(colorList.at(i).first)
+                        + QString("/")
+                        + QString(colorList.at(j).first)
+                        + QString("/ShowAlphaChannel/NoButtons")
+                    ).toLatin1()
+                )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << true
                     << true;
-                QTest::newRow((QString(colorList.at(i).first) + QString("/") + QString(colorList.at(j).first) + QString("/ShowAlphaChannel")).toLatin1())
+                QTest::newRow(
+                    (QString(colorList.at(i).first)
+                        + QString("/")
+                        + QString(colorList.at(j).first)
+                        + QString("/ShowAlphaChannel")
+                    ).toLatin1()
+                )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << true
                     << false;
-                QTest::newRow((QString(colorList.at(i).first) + QString("/") + QString(colorList.at(j).first) + QString("/NoButtons")).toLatin1())
+                QTest::newRow(
+                    (QString(colorList.at(i).first)
+                        + QString("/")
+                        + QString(colorList.at(j).first)
+                        + QString("/NoButtons")
+                    ).toLatin1()
+                )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << false
                     << true;
-                QTest::newRow((QString(colorList.at(i).first) + QString("/") + QString(colorList.at(j).first) + QString("")).toLatin1())
+                QTest::newRow(
+                    (QString(colorList.at(i).first)
+                        + QString("/")
+                        + QString(colorList.at(j).first)
+                        + QString("")
+                    ).toLatin1()
+                )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << false
@@ -441,12 +379,24 @@ private Q_SLOTS:
         }
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, showAlphaChannel);
-        m_qDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, showAlphaChannel);
+        m_perceptualDialog->setOption(
+            QColorDialog::ColorDialogOption::ShowAlphaChannel,
+            showAlphaChannel
+        );
+        m_qDialog->setOption(
+            QColorDialog::ColorDialogOption::ShowAlphaChannel,
+            showAlphaChannel
+        );
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
-        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, noButtons);
-        m_qDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, noButtons);
+        m_perceptualDialog->setOption(
+            QColorDialog::ColorDialogOption::NoButtons,
+            noButtons
+        );
+        m_qDialog->setOption(
+            QColorDialog::ColorDialogOption::NoButtons,
+            noButtons
+        );
         helperCompareDialog(m_perceptualDialog, m_qDialog);
 
         m_perceptualDialog->hide();
@@ -519,7 +469,10 @@ private Q_SLOTS:
         m_perceptualDialog->show();
         m_qDialog = new QColorDialog();
         m_qDialog->show();
-        QSignalSpy spyPerceptualDialog(m_perceptualDialog, &PerceptualColor::ColorDialog::colorSelected);
+        QSignalSpy spyPerceptualDialog(
+            m_perceptualDialog,
+            &PerceptualColor::ColorDialog::colorSelected
+        );
         QSignalSpy spyQDialog(m_qDialog, &QColorDialog::colorSelected);
         QTest::keyClick(m_perceptualDialog, Qt::Key_Return);
         QTest::keyClick(m_qDialog, Qt::Key_Return);
@@ -543,7 +496,8 @@ private Q_SLOTS:
         QTest::addColumn<QString>("propertyName");
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
         for (int i = 0; i < referenceClass.propertyCount(); ++i) {
-            QTest::newRow(referenceClass.property(i).name()) << referenceClass.property(i).name();
+            QTest::newRow(referenceClass.property(i).name())
+                << referenceClass.property(i).name();
         }
     }
 
@@ -656,7 +610,11 @@ private Q_SLOTS:
         QMetaObject testClass = PerceptualColor::ColorDialog::staticMetaObject;
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
         QString message;
-        message = QString("Test that \"") + testClass.className() + "\" inherits from \"" + referenceClass.className() + "\"'s superclass.";
+        message = QString("Test that \"")
+            + testClass.className()
+            + "\" inherits from \""
+            + referenceClass.className()
+            + "\"'s superclass.";
         QVERIFY2(
             testClass.inherits(referenceClass.superClass()),
             message.toLatin1()
@@ -668,7 +626,10 @@ private Q_SLOTS:
         m_qDialog = new QColorDialog();
         m_perceptualDialog->show();
         m_qDialog->show();
-        QSignalSpy spyPerceptualDialog(m_perceptualDialog, &PerceptualColor::ColorDialog::currentColorChanged);
+        QSignalSpy spyPerceptualDialog(
+            m_perceptualDialog,
+            &PerceptualColor::ColorDialog::currentColorChanged
+        );
         QSignalSpy spyQDialog(m_qDialog, &QColorDialog::currentColorChanged);
         
         // Test that a simple “return key” click by the user does not call this signal
@@ -798,7 +759,8 @@ private Q_SLOTS:
         );
         
 
-        // Test that changing QColorDialog::ColorDialogOption::ShowAlphaChannel alone does not change the currentColor property
+        // Test that changing QColorDialog::ColorDialogOption::ShowAlphaChannel
+        // alone does not change the currentColor property
         m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
         m_qDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
         // Test conformance (but only integer precision)
@@ -839,7 +801,8 @@ private Q_SLOTS:
         // The signal is really disconncted after the dialog has been closed.
         QCOMPARE(m_color, Qt::red);
         
-        // Now test if PerceptualColor::ColorDialog does the same thing as our reference
+        // Now test if PerceptualColor::ColorDialog does the same
+        // thing as our reference
         m_color = Qt::black;
         m_perceptualDialog = new PerceptualColor::ColorDialog;
         m_perceptualDialog->setCurrentColor(Qt::white);
@@ -857,6 +820,363 @@ private Q_SLOTS:
         QCOMPARE(m_color, Qt::red);
     }
 
+    void testDefaultOptions() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_qDialog = new QColorDialog;
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::NoButtons
+            ),
+            false
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::NoButtons
+            ),
+            m_qDialog->testOption(
+                QColorDialog::ColorDialogOption::NoButtons
+            )
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::ShowAlphaChannel
+            ),
+            false
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::ShowAlphaChannel
+            ),
+            m_qDialog->testOption(
+                QColorDialog::ColorDialogOption::ShowAlphaChannel
+            )
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::NoButtons
+            ),
+            false
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::NoButtons
+            ),
+            m_qDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::NoButtons
+            )
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::ShowAlphaChannel
+            ),
+            false
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::ShowAlphaChannel
+            ),
+            m_qDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::ShowAlphaChannel
+            )
+        );
+    }
+    
+    void testOptionDontUseNativeDialogAlwaysTrue() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_perceptualDialog->setOption(
+            QColorDialog::ColorDialogOption::DontUseNativeDialog
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        m_perceptualDialog->setOptions(
+            QColorDialog::ColorDialogOption::DontUseNativeDialog
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        m_perceptualDialog->setOptions(
+            QColorDialog::ColorDialogOption::DontUseNativeDialog
+                | QColorDialog::ColorDialogOption::NoButtons
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        m_perceptualDialog->setOptions(
+            QColorDialog::ColorDialogOption::DontUseNativeDialog
+                | QColorDialog::ColorDialogOption::ShowAlphaChannel
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        m_perceptualDialog->setOptions(
+            QColorDialog::ColorDialogOption::DontUseNativeDialog
+                | QColorDialog::ColorDialogOption::ShowAlphaChannel
+                | QColorDialog::ColorDialogOption::NoButtons
+        );
+        QCOMPARE(
+            m_perceptualDialog->testOption(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+        QCOMPARE(
+            m_perceptualDialog->options().testFlag(
+                QColorDialog::ColorDialogOption::DontUseNativeDialog
+            ),
+            true
+        );
+    }
+    
+    void testOptionShowAlpha() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_qDialog = new QColorDialog;
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel);
+        QVERIFY2(
+            m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel),
+            "ShowAlphaChannel succesfully set."
+        );
+        m_qDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel);
+        m_perceptualDialog->show();
+        m_qDialog->show();
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+        QColor tempColor = QColor(1, 101, 201, 155);
+        m_perceptualDialog->setCurrentColor(tempColor);
+        m_qDialog->setCurrentColor(tempColor);
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        QVERIFY2(
+            !m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel),
+            "ShowAlphaChannel succesfully set."
+        );
+        m_qDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+        tempColor = QColor(5, 105, 205, 133);
+        m_perceptualDialog->setCurrentColor(tempColor);
+        m_qDialog->setCurrentColor(tempColor);
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+    }
+    
+    void testOptionNoButtons() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_qDialog = new QColorDialog;
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons);
+        QVERIFY2(
+            m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons),
+            "NoButtons succesfully set to true."
+        );
+        m_qDialog->setOption(QColorDialog::ColorDialogOption::NoButtons);
+        m_perceptualDialog->show();
+        m_qDialog->show();
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+        QTest::keyClick(m_perceptualDialog, Qt::Key_Return);
+        QTest::keyClick(m_qDialog, Qt::Key_Return);
+        QCOMPARE(m_perceptualDialog->isVisible(), m_qDialog->isVisible());
+        QVERIFY2(m_perceptualDialog->isVisible(), "Should still visible after Return key pressed.");
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+        QTest::keyClick(m_perceptualDialog, Qt::Key_Escape);
+        QTest::keyClick(m_qDialog, Qt::Key_Escape);
+        QCOMPARE(m_perceptualDialog->isVisible(), m_qDialog->isVisible());
+        QVERIFY2(!m_perceptualDialog->isVisible(), "Should no longer be visible after Escape key pressed.");
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+        
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        QVERIFY2(
+            !m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons),
+            "NoButtons succesfully set to false."
+        );
+        m_qDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        m_perceptualDialog->show();
+        m_qDialog->show();
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+        QTest::keyClick(m_perceptualDialog, Qt::Key_Return);
+        QTest::keyClick(m_qDialog, Qt::Key_Return);
+        QCOMPARE(m_perceptualDialog->isVisible(), m_qDialog->isVisible());
+        QVERIFY2(!m_perceptualDialog->isVisible(), "Should no longer be visible after Return key pressed.");
+        helperCompareDialog(m_perceptualDialog, m_qDialog);
+    }
+
+    void testSetOptionAndTestOptionInteraction() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // Test if the option changes as expected
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
+        delete m_perceptualDialog;
+        
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // Test if the option changes as expected
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        delete m_perceptualDialog;
+        
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // Test if the option changes as expected
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
+        delete m_perceptualDialog;
+        
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // Test if the option changes as expected
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), false);
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons), true);
+        delete m_perceptualDialog;
+        
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // define an option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+        // change some other option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
+        // test if first option is still unchanged
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        delete m_perceptualDialog;
+        
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // define an option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        // change some other option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, true);
+        // test if first option is still unchanged
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
+        delete m_perceptualDialog;
+        
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // define an option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+        // change some other option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        // test if first option is still unchanged
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), true);
+        delete m_perceptualDialog;
+        
+        m_perceptualDialog = new PerceptualColor::ColorDialog();
+        // define an option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, false);
+        // change some other option
+        m_perceptualDialog->setOption(QColorDialog::ColorDialogOption::NoButtons, false);
+        // test if first option is still unchanged
+        QCOMPARE(m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel), false);
+        delete m_perceptualDialog;
+    }
+    
+    void testSelectedColorAndSetVisible() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_qDialog = new QColorDialog;
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        m_perceptualDialog->setCurrentColor(QColor(Qt::blue));
+        m_qDialog->setCurrentColor(QColor(Qt::blue));
+        QTest::keyClick(m_perceptualDialog, Qt::Key_Return);
+        QTest::keyClick(m_qDialog, Qt::Key_Return);
+        // Still no valid selectedColor() because the dialog still wasn't shown
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        m_perceptualDialog->show();
+        m_qDialog->show();
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        QTest::keyClick(m_perceptualDialog, Qt::Key_Return);
+        QTest::keyClick(m_qDialog, Qt::Key_Return);
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor(Qt::blue));
+        m_perceptualDialog->show();
+        m_qDialog->show();
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        QTest::keyClick(m_perceptualDialog, Qt::Key_Escape);
+        QTest::keyClick(m_qDialog, Qt::Key_Escape);
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        m_perceptualDialog->setVisible(true);
+        m_qDialog->setVisible(true);
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        QTest::keyClick(m_perceptualDialog, Qt::Key_Return);
+        QTest::keyClick(m_qDialog, Qt::Key_Return);
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor(Qt::blue));
+        m_perceptualDialog->show();
+        m_qDialog->show();
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        m_perceptualDialog->hide();
+        m_qDialog->hide();
+        QCOMPARE(m_perceptualDialog->selectedColor(), m_qDialog->selectedColor());
+        QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
+        
+    }
+    
 };
 
 QTEST_MAIN(TestColorDialog);

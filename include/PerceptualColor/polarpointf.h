@@ -43,12 +43,14 @@ namespace PerceptualColor {
  *   as −360°.
  * - A radial of 1 and an angle of 0° is the same as a radial of −1 and an
  *   angle of 180°.
- * - If the radial is 0, the angle is meaningless.
+ * - If the radial is 0, the angle is meaningless: A radial of 0 and an angle
+ *   of 57° is the same as a radial of 0 and an angle of 233°.
  * 
  * This class automatically normalizes the values:
  * @invariant 
  * - the radial is normalized to value ≥ 0
- * - the angle is normalized to 0° ≤ value < 360°
+ * - the angle is normalized to 0° ≤ value < 360° (see normalizedAngleDegree()
+ *   for details)
  * 
  * When the radial is 0, often by convention the (meaningless) angle is set
  * also 0. This class does \em not normalize the angle to 0 when the radial

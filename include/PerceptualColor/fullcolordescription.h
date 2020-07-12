@@ -93,6 +93,7 @@ public:
     Helper::cmsRGB toRgb() const;
     QColor toRgbQColor() const;
     QColor toHsvQColor() const;
+    QString toRgbHexString() const;
     cmsCIELab toLab() const;
     cmsCIELCh toLch() const;
     qreal alpha() const;

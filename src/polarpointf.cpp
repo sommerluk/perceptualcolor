@@ -138,13 +138,15 @@ qreal PolarPointF::angleDegree() const
 
 /** @brief Normalizes an angle.
  * 
- * \li 0° gets 0°
- * \li 359.9° gets 359.9°
- * \li 360° gets 0°
- * \li 361.2° gets 1.2°
- * \li 720° gets 0°
- * \li -1° gets 359°
- * \li -1.3° gets 358.7°
+ * |      Value      | Normalized Value |
+ * | :-------------: | :--------------: |
+ * | <tt>  0°  </tt> | <tt>  0°  </tt>  |
+ * | <tt>359.9°</tt> | <tt>359.9°</tt>  |
+ * | <tt>360°  </tt> | <tt>  0°  </tt>  |
+ * | <tt>361.2°</tt> | <tt>  1.2°</tt>  |
+ * | <tt>720°  </tt> | <tt>  0°  </tt>  |
+ * | <tt> −1°  </tt> | <tt>359°  </tt>  |
+ * | <tt> −1.3°</tt> | <tt>358.7°</tt>  |
  * 
  * @param angle an angle (mesured in degree)
  * @returns the angle, normalized to the range 0° ≤ value < 360° */

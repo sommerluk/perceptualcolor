@@ -43,7 +43,12 @@ namespace PerceptualColor {
 ColorDialog::ColorDialog(QWidget *parent) : QDialog(parent)
 {
     initialize();
-    setCurrentColor(QColor(Qt::white)); // That's what QColorDialog also does
+    // Calling setCurrentColor() guaranties to update all widgets
+    // because it always sets a valid color, even when the color
+    // parameter was invalid. As m_currentOpaqueColor is invalid
+    // be default, and therefor different, setCurrentColor()
+    // guaranties to update all widgets.
+    setCurrentColor(QColor(Qt::white));
 }
 
 /** @brief Constructor
@@ -60,6 +65,11 @@ ColorDialog::ColorDialog(QWidget *parent) : QDialog(parent)
 ColorDialog::ColorDialog(const QColor &initial, QWidget *parent) : QDialog(parent)
 {
     initialize();
+    // Calling setCurrentColor() guaranties to update all widgets
+    // because it always sets a valid color, even when the color
+    // parameter was invalid. As m_currentOpaqueColor is invalid
+    // be default, and therefor different, setCurrentColor()
+    // guaranties to update all widgets.
     setCurrentColor(initial);
 }
 
@@ -76,7 +86,6 @@ ColorDialog::~ColorDialog()
 // No documentation here (documentation of properties and its getters are in the header)
 QColor ColorDialog::currentColor() const
 {
-    // TODO Conformance QColorDialog when later the alpha option is changed. (Should alpha option change also trigger a currentColorChanged() signal?
     QColor temp;
     temp = m_currentOpaqueColor.toRgbQColor();
     temp.setAlphaF(m_alphaSelector->alpha());
@@ -96,7 +105,6 @@ QColor ColorDialog::currentColor() const
  *   of <tt>color</tt> if at the moment of the function call
  *   the <tt>QColorDialog::ColorDialogOption::ShowAlphaChannel</tt> option is
  *   set. It will be fully opaque otherwise. */
-// TODO unit test for emited signal when this property is changed. And if alpha option changes?
 void ColorDialog::setCurrentColor(const QColor& color)
 {
     QColor temp;
@@ -128,7 +136,7 @@ void ColorDialog::setCurrentColor(const QColor& color)
  * @endcode */
 void ColorDialog::open(QObject *receiver, const char *member)
 {
-    connect(this, SIGNAL(colorSelected(QColor)), receiver, member); // TODO would this work with &PerceptualColor::ColorDialog::colorSelected
+    connect(this, SIGNAL(colorSelected(QColor)), receiver, member);
     m_receiverToBeDisconnected = receiver;
     m_memberToBeDisconnected = member;
     QDialog::open();
@@ -178,13 +186,8 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     m_hsvSaturationSpinbox->setValue(color.toHsvQColor().hsvSaturationF() * 255);
     m_hsvValueSpinbox->setValue(color.toHsvQColor().valueF() * 255);
     m_colorPatch->setColor(tempRgbQColor);
-    m_hlcLineEdit->setText(
-        QString(QStringLiteral(u"%1 %2 %3"))
-            .arg(color.toLch().h, 0, 'f', 0)
-            .arg(color.toLch().L, 0, 'f', 0)
-            .arg(color.toLch().C, 0, 'f', 0)
-    );
-    m_rgbLineEdit->setText(tempRgbQColor.name());
+    m_hlcLineEdit->setText(textForHlcLineEdit());
+    m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
     m_lchLightnessSelector->setFraction(color.toLch().L / static_cast<qreal>(100));
     m_chromaHueDiagram->setColor(color);
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
@@ -199,8 +202,8 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     m_isColorChangeInProgress = false;
 }
 
-///////// ##################################
-
+/** @brief Reads the value from the lightness selector in the dialog and
+ * updates the dialog accordingly. */
 void ColorDialog::readLightnessValue()
 {
     cmsCIELCh lch = m_currentOpaqueColor.toLch();
@@ -210,6 +213,8 @@ void ColorDialog::readLightnessValue()
     );
 }
 
+/** @brief Reads the HSV numbers in the dialog and
+ * updates the dialog accordingly. */
 void ColorDialog::readHsvNumericValues()
 {
     setCurrentOpaqueQColor(
@@ -221,6 +226,8 @@ void ColorDialog::readHsvNumericValues()
     );
 }
 
+/** @brief Reads the decimal RGB numbers in the dialog and
+ * updates the dialog accordingly. */
 void ColorDialog::readRgbNumericValues()
 {
     setCurrentOpaqueQColor(
@@ -232,13 +239,8 @@ void ColorDialog::readRgbNumericValues()
     );
 }
 
-// TODO Default dialog size should depend on screen size:
-// - on smaller screens it should never exceed the screen boundary.
-// - on larger screens is should be big to allow optimal use of available screen size
-
-// TODO the graphical selector widgets (the wheel and the ChromaHueDiagram() ) should be
-// horizontally and vertically centered.
-
+/** @brief Reads the hexadecimal RGB numbers in the dialog and
+ * updates the dialog accordingly. */
 void ColorDialog::readRgbHexValues()
 {
     QString temp = m_rgbLineEdit->text();
@@ -250,28 +252,54 @@ void ColorDialog::readRgbHexValues()
     if (rgb.isValid()) {
         setCurrentOpaqueQColor(rgb);
     }
-    // Return to the finally considered value.
-    m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbQColor().name());
+    // Return to the finally considered value (the new one if valid, the old
+    // one otherwise.
+    m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
 }
 
-/** Basic initialization. Code that is shared between the various
- * overloaded constructors.
+/** @brief Basic initialization.
+ * 
+ * Code that is shared between the various overloaded constructors.
+ * 
+ * @todo The “lightnes first” tab has a GradientSelector and a
+ * ChromaHueDiagram, and the ChromaHueDiagram is smaller than
+ * WheelColorPicker on the “hue first” tab, though both diagrams
+ * have the same sizeHint(). That's because of the GradientSelector of
+ * the second tab, who takes away space compared to the first tab.
+ * Question: Is one of the widgets actuelly smaller than its sizeHint()?
+ * If so, the good solution would be to have a larger tab widget, that
+ * allows for ChromaHueDiagram to get at least the size from its sizeHint().
+ * 
+ * @todo For the tab widget, use rather icons instead of the text “hue first”
+ * and “lightness first”.
  */
 void ColorDialog::initialize()
 {
     // initialize color space
     m_rgbColorSpace = new RgbColorSpace(this);
 
-    // initialize the options
-    m_options = QColorDialog::ColorDialogOption::DontUseNativeDialog;
-
     // create the graphical selectors
     m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);
-    m_currentOpaqueColor = m_wheelColorPicker->currentColor();
     m_lchLightnessSelector = new GradientSelector(m_rgbColorSpace);
+    cmsCIELCh black;
+    black.L = 0;
+    black.C = 0;
+    black.h = 0;
+    cmsCIELCh white;
+    white.L = 100;
+    white.C = 0;
+    white.h = 0;
     m_lchLightnessSelector->setColors(
-        FullColorDescription(m_rgbColorSpace, Qt::black),
-        FullColorDescription(m_rgbColorSpace, Qt::white)
+        FullColorDescription(
+            m_rgbColorSpace,
+            black,
+            PerceptualColor::FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+        ),
+        FullColorDescription(
+            m_rgbColorSpace,
+            white,
+            PerceptualColor::FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+        )
     );
     m_chromaHueDiagram = new ChromaHueDiagram(m_rgbColorSpace);
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
@@ -280,22 +308,16 @@ void ColorDialog::initialize()
     QWidget *tempWidget = new QWidget();
     tempWidget->setLayout(tempLightnesFirstLayout);
     QTabWidget *tempGraphicalTabWidget = new QTabWidget;
-    // TODO the second tab has GradientSelector + ChromaHueDiagram, and the ChromaHueDiagram
-    // is smaller than WheelColorPicker on the first tab. That's because of the GradientSelector
-    // of the second tab, who takes away space compared to the first tab. The good solution
-    // would be to have a larger tab widget, that allows for ChromaHueDiagram to get at
-    // least the size from its sizeHint().
-    tempGraphicalTabWidget->addTab(m_wheelColorPicker, tr("&Hue first")); // TODO Use an icon instead of text
-    tempGraphicalTabWidget->addTab(tempWidget, tr("&Lightness first")); // TODO Use an icon instead of text
+    tempGraphicalTabWidget->addTab(m_wheelColorPicker, tr("&Hue first"));
+    tempGraphicalTabWidget->addTab(tempWidget, tr("&Lightness first"));
     
     // create the ColorPatch
     m_colorPatch = new ColorPatch();
-    m_colorPatch->setColor(m_currentOpaqueColor.toRgbQColor());
 
-    // Create widget for numerical value
+    // Create widget for the numerical values
     QWidget *tempNumericalWidget = initializeNumericPage();
 
-    // Create layout for graphical and numerical selectors
+    // Create layout for graphical and numerical widgets
     QHBoxLayout *tempSelectorLayout = new QHBoxLayout();
     tempSelectorLayout->addWidget(tempGraphicalTabWidget);
     tempSelectorLayout->addWidget(tempNumericalWidget);
@@ -306,13 +328,23 @@ void ColorDialog::initialize()
     m_alphaSelectorLabel = new QLabel(tr("O&pacity:"));
     m_alphaSelector->registerAsBuddy(m_alphaSelectorLabel);
     tempAlphaLayout->addRow(m_alphaSelectorLabel, m_alphaSelector);
-    m_alphaSelectorLabel->setVisible(false);
-    m_alphaSelector->setVisible(false);
 
     // Create the default buttons
-    m_buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(m_buttonBox, &QDialogButtonBox::accepted, this, &PerceptualColor::ColorDialog::accept);
-    connect(m_buttonBox, &QDialogButtonBox::rejected, this, &PerceptualColor::ColorDialog::reject);
+    m_buttonBox = new QDialogButtonBox(
+        QDialogButtonBox::Ok | QDialogButtonBox::Cancel
+    );
+    connect(
+        m_buttonBox,
+        &QDialogButtonBox::accepted,
+        this,
+        &PerceptualColor::ColorDialog::accept
+    );
+    connect(
+        m_buttonBox,
+        &QDialogButtonBox::rejected,
+        this,
+        &PerceptualColor::ColorDialog::reject
+    );
 
     // Create the main layout
     QVBoxLayout *tempMainLayout = new QVBoxLayout();
@@ -395,17 +427,51 @@ void ColorDialog::initialize()
         this,
         &ColorDialog::setCurrentOpaqueColor
     );
+
+    // initialize the options
+    setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
+    
+    // initialize the window title
+    setWindowTitle(tr("Select Color"));
 }
 
+/** @brief Get text for m_hlcLineEdit() based on m_currentOpaqueColor()
+ * @returns A QString appropriate for m_hlcLineEdit() */
+QString ColorDialog::textForHlcLineEdit() const
+{
+    return
+        QString(QStringLiteral(u"%1 %2 %3"))
+            .arg(m_currentOpaqueColor.toLch().h, 0, 'f', 0)
+            .arg(m_currentOpaqueColor.toLch().L, 0, 'f', 0)
+            .arg(m_currentOpaqueColor.toLch().C, 0, 'f', 0);
+}
+
+/** @brief React on focus changes
+ * 
+ * This function tests if the focus is leaving m_hlcLineEdit(). If so, it will
+ * update the other widgets if necessary. We have to to this because
+ * m_hlcLineEdit is a QLineEdit and its editingFinished() will not be emited
+ * if the current value is not conform to the input mask and the validator.
+ * So we might miss (invalid) value changes. It is nevertheless important to
+ * catch these cases, because the widget must be reset to a valid value. */
 void ColorDialog::handleFocusChange(QWidget *old, QWidget *now)
 {
     if (old == m_hlcLineEdit) {
-        // TODO Problem: This also reads the values even if they where not
-        // changed. That's bad because it will make rounding errors.
-        readHlcNumericValues();
+        if (m_hlcLineEdit->text() != textForHlcLineEdit()) {
+            // Only read-in the values if really changed. That's important
+            // because otherwise, passing just with the focus through the
+            // m_hlcLineEdit widget, each time the value would be read-in.
+            // This would lead to rounding errors: L might be 50.8 before,
+            // but displayed is just 51. At read-in, it would be changed from
+            // 50.8 to 51, which is undesirable except the user has really
+            // changed a value in this widget.
+            readHlcNumericValues();
+        }
     }
 }
 
+/** @brief Reads the HLC numbers in the dialog and
+ * updates the dialog accordingly. */
 void ColorDialog::readHlcNumericValues()
 {
     cmsCIELCh lch;
@@ -415,40 +481,31 @@ void ColorDialog::readHlcNumericValues()
         lch.L = qMin(temp.at(1).toInt(), 100);
         lch.C = temp.at(2).toInt();
         setCurrentOpaqueColor(
-            FullColorDescription(m_rgbColorSpace, lch, FullColorDescription::outOfGamutBehaviour::sacrifyChroma)
+            FullColorDescription(
+                m_rgbColorSpace,
+                lch,
+                FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            )
         );
     } else {
-        m_hlcLineEdit->setText(
-            QString(QStringLiteral(u"%1 %2 %3"))
-                .arg(m_currentOpaqueColor.toLch().h, 0, 'f', 0)
-                .arg(m_currentOpaqueColor.toLch().L, 0, 'f', 0)
-                .arg(m_currentOpaqueColor.toLch().C, 0, 'f', 0)
-        );
+        m_hlcLineEdit->setText(textForHlcLineEdit());
     }
 }
 
-// TODO Provide setWhatsThis help for widgets. For wheelcolorpicker and
-// chromalightnessdiagram this could describe the keyboard controls and
-// be integrated as default value in the class itself. For the other
-// widgets, a setWhatsThis could be done here within WheelColorPicker,
-// if appropriate.
-
+/** @brief Initialize the numeric input widgets of this dialog.
+ * @returns A pointer to a new widget that has the other, numeric input
+ * widgets as child widgets. */
 QWidget* ColorDialog::initializeNumericPage()
 {
     // Create HSV spin boxes
     const int hsvDecimals = 0;
     QHBoxLayout *tempHsvLayout = new QHBoxLayout;
-    // TODO The current behaviour for pageStep = 10 is:
-    // 356 -> 360 -> 0 -> 10
-    // The expected behaviour would be:
-    // 356 -> 6
-    // This will likely require a new class inherited from QDoubleSpinBox.
     m_hsvHueSpinbox = new QDoubleSpinBox();
     m_hsvHueSpinbox->setAlignment(Qt::AlignRight);
     m_hsvHueSpinbox->setMaximum(360);
     m_hsvHueSpinbox->setWrapping(true);
     m_hsvHueSpinbox->setDecimals(hsvDecimals);
-    m_hsvHueSpinbox->setWhatsThis(tr("<p>Hue</p><p>Range: 0–360</p>")); // Alternatively to – also ‥ could be used
+    m_hsvHueSpinbox->setWhatsThis(tr("<p>Hue</p><p>Range: 0–360</p>"));
     m_hsvSaturationSpinbox = new QDoubleSpinBox();
     m_hsvSaturationSpinbox->setAlignment(Qt::AlignRight);
     m_hsvSaturationSpinbox->setMaximum(255);
@@ -458,7 +515,7 @@ QWidget* ColorDialog::initializeNumericPage()
     m_hsvValueSpinbox->setAlignment(Qt::AlignRight);
     m_hsvValueSpinbox->setMaximum(255);
     m_hsvValueSpinbox->setDecimals(hsvDecimals);
-    m_hsvValueSpinbox->setWhatsThis(tr("<p>Value</p><p>Range: 0–255</p>"));
+    m_hsvValueSpinbox->setWhatsThis(tr("<p>Brightness/Value</p><p>Range: 0–255</p>"));
     tempHsvLayout->addWidget(m_hsvHueSpinbox);
     tempHsvLayout->addWidget(m_hsvSaturationSpinbox);
     tempHsvLayout->addWidget(m_hsvValueSpinbox);
@@ -485,7 +542,7 @@ QWidget* ColorDialog::initializeNumericPage()
     tempRgbLayout->addWidget(m_rgbGreenSpinbox);
     tempRgbLayout->addWidget(m_rgbBlueSpinbox);
 
-    // the hex style color representation
+    // Create widget for the hex style color representation
     m_rgbLineEdit = new QLineEdit();
     m_rgbLineEdit->setMaxLength(7);
     QRegularExpression tempRegularExpression(QStringLiteral(u"#?[0-9A-Fa-f]{0,6}"));
@@ -493,31 +550,37 @@ QWidget* ColorDialog::initializeNumericPage()
     m_rgbLineEdit->setValidator(validator);
     m_rgbLineEdit->setWhatsThis(
         tr(
-            "<p>Hexadecimal color code, as used in HTML</p><p>#RRGGBB</p>"
+            "<p>Hexadecimal color code, as used in HTML</p>"
+            "<p>#RRGGBB</p>"
             "<ul>RR: two-digit code for red</ul>"
             "<ul>GG: two-digit code for green</ul>"
             "<ul>BB: two-digit code for blue</ul>"
+            "Range of each color: 00–FF"
         )
     );
-
-    // TODO allow entering "HLC 359 50 29" in form "h*<sub>ab</sub> 359 L* 50 C*<sub>ab</sub> 29"
+    
+    // Create widget for the HLC color representation
     m_hlcLineEdit = new QLineEdit();
     QRegularExpression expression {QStringLiteral(u"\\d{1,3}\\s\\d{1,3}\\s\\d{1,3}")};
     m_hlcLineEdit->setValidator(new QRegularExpressionValidator(expression, this));
 
-    // Create global layout, global widget, and return value
-    QFormLayout *tempRgbPageFormLayout = new QFormLayout();
+    // Create global layout
+    QFormLayout *tempNumericPageFormLayout = new QFormLayout();
     QLabel *tempRgbLabel = new QLabel(tr("&RGB"));
     tempRgbLabel->setBuddy(m_rgbRedSpinbox);
-    tempRgbPageFormLayout->addRow(tempRgbLabel, tempRgbLayout);
-    tempRgbPageFormLayout->addRow(tr("He&x"), m_rgbLineEdit);
+    tempNumericPageFormLayout->addRow(tempRgbLabel, tempRgbLayout);
+    tempNumericPageFormLayout->addRow(tr("He&x"), m_rgbLineEdit);
     QLabel *tempHsvLabel = new QLabel(tr("HS&V"));
     tempHsvLabel->setBuddy(m_hsvHueSpinbox);
-    tempRgbPageFormLayout->addRow(tempHsvLabel, tempHsvLayout);
-    tempRgbPageFormLayout->addRow(tr("HL&C"), m_hlcLineEdit);
+    tempNumericPageFormLayout->addRow(tempHsvLabel, tempHsvLayout);
+    tempNumericPageFormLayout->addRow(tr("HL&C"), m_hlcLineEdit);
+    
+    // Create a global widget using the previously created global layout
     QWidget *tempWidget = new QWidget;
-    tempWidget->setLayout(tempRgbPageFormLayout);
+    tempWidget->setLayout(tempNumericPageFormLayout);
     tempWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    
+    // Return
     return tempWidget;
 }
 
@@ -527,9 +590,12 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
     return m_options;
 }
 
-/** Setter for options(). Note that
- * QColorDialog::ColorDialogOption::DontUseNativeDialog will always be set.
- * It cannot be disabled. */
+/** @brief Setter for options().
+ * 
+ * Sets a value for just one single option within options().
+ * @param option the option to set
+ * @param on the new value of the option
+ */
 void ColorDialog::setOption(QColorDialog::ColorDialogOption option, bool on)
 {
     QColorDialog::ColorDialogOptions temp = m_options;
@@ -557,21 +623,91 @@ void ColorDialog::setOptions(QColorDialog::ColorDialogOptions options)
     );
 }
 
+/** @brief Getter for options()
+ * 
+ * Gets the value of just one single option within options().
+ * 
+ * @param option the requested option
+ * @returns the value of the requested option
+ */
 bool ColorDialog::testOption(QColorDialog::ColorDialogOption option) const
 {
     return m_options.testFlag(option);
 }
 
+/** @brief Pops up a modal color dialog, lets the user choose a color, and
+ *  returns that color.
+ * 
+ * @param initial initial value for currentColor()
+ * @param parent  parent widget of the dialog (or 0 for no parent)
+ * @param title   window title (or an empty string for the default window
+ *                title)
+ * @param options the options() for custumizing the look and feel of the
+ *                dialog
+ * @returns       selectedColor(): The color the user has selected; or an
+ *                invalid color if the user has canceled the dialog. */
+QColor ColorDialog::getColor(
+    const QColor &initial,
+    QWidget *parent,
+    const QString &title,
+    QColorDialog::ColorDialogOptions options
+)
+{
+    ColorDialog temp(parent);
+    if (!title.isEmpty()) {
+        temp.setWindowTitle(title);
+    }
+    temp.setOptions(options);
+    // setCurrentColor() must be after setOptions to allow alpha channel support
+    temp.setCurrentColor(initial);
+    temp.exec();
+    return temp.selectedColor();
+}
+
+/** @brief the color that was actually selected by the user
+ * 
+ * At difference to the currentColor() property, this function provides
+ * the color that was actually selected by the user by clicking the OK button
+ * or pressing the return key or another equivalent action.
+ * 
+ * This function most useful to get the actually selected color @em after that
+ * the dialog has been closed.
+ * 
+ * When a dialog that had been closed or hidden is shown again,
+ * selectedColor() returns to an invalid QColor().
+ * 
+ * @returns Just after showing the dialog, the value is an invalid QColor. If
+ * the user selects a color by clicking the OK button or another equivalent
+ * action, the value is the selected color. If the user cancels the dialog
+ * (Cancel button, or by pressing the Escape key), the value remains an
+ * invalid QColor. */
+QColor ColorDialog::selectedColor() const
+{
+    return m_selectedColor;
+}
+
+/** @brief Setter for property @em visible
+ * 
+ * Reimplemented from base class.
+ * 
+ * When a dialog, that wasn't formerly visible, gets visible,
+ * it's m_selectedColor() is cleared.
+ * 
+ * @param visible holds wether or not the dialog should be visible */
 void ColorDialog::setVisible(bool visible)
 {
     if (visible && (!isVisible())) {
-        // Only delete the selected color if the new status is true
-        // and the old one was false.
+        // Only delete the selected color if the dialog wasn’t visible before
+        // and will be made visible now.
         m_selectedColor = QColor();
     }
     QDialog::setVisible(visible);
 }
 
+/** @brief Various updates when closing the dialog.
+ * 
+ * Reimplemented from base class.
+ * @param result The result with which the dialog has been closed */
 void ColorDialog::done(int result)
 {
     if (result == QDialog::DialogCode::Accepted) {
@@ -584,39 +720,12 @@ void ColorDialog::done(int result)
     if (m_receiverToBeDisconnected) {
         disconnect(
             this,
-            SIGNAL(colorSelected(QColor)), // TODO would this work with &PerceptualColor::ColorDialog::colorSelected
+            SIGNAL(colorSelected(QColor)),
             m_receiverToBeDisconnected,
             m_memberToBeDisconnected
         );
         m_receiverToBeDisconnected = 0;
     }
 }
-
-QColor ColorDialog::selectedColor() const
-{
-    return m_selectedColor;
-}
-
-QColor ColorDialog::getColor(
-    const QColor &initial,
-    QWidget *parent,
-    const QString &title,
-    QColorDialog::ColorDialogOptions options
-)
-{
-    ColorDialog temp(parent);
-    if (!title.isEmpty())
-        temp.setWindowTitle(title);
-    // Set options before setting current color. So we allow to
-    // take the alpha value in account if the options specify
-    // QColorDialog::ColorDialogOption::ShowAlphaChannel
-    // actually. TODO Is this conform to QColorDialog behaviour?
-    temp.setOptions(options);
-    temp.setCurrentColor(initial); // Must be _after_ setOptions to allow alpha channel support
-    temp.exec();
-    return temp.selectedColor();
-}
-
-// TODO Use (on demand) two patches: old color (stays constant over the dialog call) and new color (as yet existing). Like in Scribus.
 
 }

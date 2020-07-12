@@ -42,7 +42,6 @@ class RgbColorSpace; // It seems that including the header isn't possible becaus
 // TODO Switch to pimpl?
 // TODO QML integration?
 // TODO Qt Designer support for the widgets
-// TODO Restrict source code to ASCII-only?
 
 /** @brief The namespace of this library.
  * 
@@ -55,6 +54,8 @@ class RgbColorSpace; // It seems that including the header isn't possible becaus
  * 
  * The source code of the library is in UTF8. A static_assert makes sure your
  * compiler actually treats it also as UTF8.
+ * 
+ * @todo Translations: Color picker -> Farbwähler etc…
  */
 namespace PerceptualColor {
 

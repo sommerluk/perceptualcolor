@@ -35,9 +35,10 @@
 #include <QDebug>
 #include <QMetaMethod>
 #include <QMetaObject>
+// #include <QMainWindow>
 #include <QSlider>
 
-// TODO code analysis clazy cppcheck krazy
+// TODO code analysis clazy cppcheck clazy
 
 // TODO Anti-aliasing the gamut diagrams? Wouldn't this be bad for performance?
 
@@ -53,19 +54,25 @@ static_assert(
     "This source code has to be read-in as UTF8 by the compiler."
 );
 
-/* TODO Make sure to always use u8"x" as string literals because L"x" and "x" have compiler-dependent encoding
- * Alternative would be to make sure the compiler actually uses yet UTF8 also for normal "x" values.
- * But that is somethat this is not required by the standard, so it might be wired to require it here.
- * Anyway, this would be a possibility to test it:
+/* TODO Make sure to always use u8"x" as string literals because L"x" and "x"
+ * have compiler-dependent encoding. Alternative would be to make sure the
+ * compiler actually uses yet UTF8 also for normal "x" values. But that is
+ * something that this is not required by the standard, so it might be wired
+ * to require it here. Anyway, this might be a possible test for it (but the
+ * test itself should be reviewed/tested before trusting him):
 static_assert(
-    (static_cast<quint8>(*((u8"🖌")+0)) == 0xF0) &&
-        (static_cast<quint8>(*((u8"🖌")+1)) == 0x9F) &&
-        (static_cast<quint8>(*((u8"🖌")+2)) == 0x96) &&
-        (static_cast<quint8>(*((u8"🖌")+3)) == 0x8C) &&
-        (static_cast<quint8>(*((u8"🖌")+4)) == 0x00),
-    "Compiler must treat "string" litterals as UTF8. Example: gcc -fexec-charset=UTF-8"
+    (static_cast<quint8>(*(("🖌")+0)) == 0xF0) &&
+        (static_cast<quint8>(*(("🖌")+1)) == 0x9F) &&
+        (static_cast<quint8>(*(("🖌")+2)) == 0x96) &&
+        (static_cast<quint8>(*(("🖌")+3)) == 0x8C) &&
+        (static_cast<quint8>(*(("🖌")+4)) == 0x00),
+    "Compiler must treat string litterals as UTF8. Example: gcc -fexec-charset=UTF-8"
 );
  */
+
+// TODO Test the main function etc from KColorChooser to see if
+// PerceptualColor::ColorDialog is really a drop-in replacement
+// for QColorDialog.
 
 int main(int argc, char *argv[])
 {
@@ -74,12 +81,15 @@ int main(int argc, char *argv[])
 //     app.setLayoutDirection(Qt::RightToLeft);
     PerceptualColor::RgbColorSpace myspace;
 
-//     QColorDialog x(QColor::fromCmyk(45, 33, 34, 48));
-//     x.setOption(QColorDialog::ShowAlphaChannel);
-//     x.show();
+    QColorDialog x(QColor::fromCmyk(45, 33, 34, 48));
+    x.setOption(QColorDialog::ShowAlphaChannel);
+    x.show();
     PerceptualColor::ColorDialog w;//(QColor(107, 181, 99, 50));
-    w.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel);
+    w.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+//     QMainWindow x;
+//     x.setCentralWidget(&w);
     w.show();
+//     PerceptualColor::ColorDialog::getColor(Qt::green, &w);
 /*
     app.connect(
         &x,
