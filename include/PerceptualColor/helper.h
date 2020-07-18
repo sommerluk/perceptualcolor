@@ -27,10 +27,7 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-// TODO use forward-declarations instead of including too many headers?
-
 #include <QImage>
-#include <QVersionNumber>
 #include <QWheelEvent>
 
 class RgbColorSpace; // It seems that including the header isn't possible because the header itself depends on _this_ header.
@@ -40,17 +37,17 @@ class RgbColorSpace; // It seems that including the header isn't possible becaus
 // TODO Does the OS-side color management change the RGB value we want to display? If so, how to prevent this?
 // TODO Do only expose the headers that are absolutely necessary
 // TODO Switch to pimpl?
-// TODO QML integration?
 // TODO Qt Designer support for the widgets
 
 /** @brief The namespace of this library.
  * 
- * Everything that is provides in this library is encapsulated within this namespace.
+ * Everything that is provides in this library is encapsulated within this
+ * namespace.
  * 
- * The library uses generally @c int for integer values, because QSize() also QPoint() also do,
- * and the library relies heavily on the usage of QSize() and QPoint().
- * It uses generally @c qreal for floating point values, because QPointF() also does, for the
- * same reasons as above.
+ * The library uses generally @c int for integer values, because QSize() also
+ * QPoint() also do, and the library relies heavily on the usage of QSize()
+ * and QPoint(). It uses generally @c qreal for floating point values, because
+ * QPointF() also does, for the same reasons as above.
  * 
  * The source code of the library is in UTF8. A static_assert makes sure your
  * compiler actually treats it also as UTF8.
@@ -191,8 +188,6 @@ namespace Helper {
     cmsCIELCh toLch(const cmsCIELab &lab);
 
     QImage transparencyBackground();
-
-    QVersionNumber version();
 
     QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
 

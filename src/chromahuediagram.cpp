@@ -226,6 +226,10 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
  * Relies on that m_diagramImage and m_diagramPixmap are up to date.
  * 
  * @param event the paint event
+ * 
+ * @todo Make the wheel to be drawn horizontally and vertically aligned.
+ * 
+ * @todo Better design on small widget sizes
  */
 void ChromaHueDiagram::paintEvent(QPaintEvent* event)
 {

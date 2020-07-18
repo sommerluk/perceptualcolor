@@ -41,12 +41,7 @@ ColorPatch::ColorPatch(QWidget *parent) : QFrame(parent)
     setFrameShadow(QFrame::Sunken);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_brush = QBrush(Helper::transparencyBackground());
-    resetColor();
-}
-
-/** @brief Destructor */
-ColorPatch::~ColorPatch()
-{
+    setColor(QColor()); // an invalid color
 }
 
 // TODO Provide a special representation (blank widget with two crossed red
@@ -104,7 +99,7 @@ void ColorPatch::paintEvent(QPaintEvent *event)
  */
 QSize ColorPatch::sizeHint() const
 {
-    return QSize(50, 50);
+    return minimumSizeHint();
 }
 
 /** @brief Provide the minimum size hint.
@@ -131,14 +126,7 @@ void ColorPatch::setColor(const QColor &newColor)
     if (newColor != m_color) {
         m_color = newColor;
         update();
-        Q_EMIT colorChanged(m_color);
     }
-}
-
-/** @brief Reset the color() property. */
-void ColorPatch::resetColor()
-{
-    setColor(QColor()); // an invalid color
 }
 
 }

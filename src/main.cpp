@@ -25,18 +25,11 @@
  */
 
 #include "PerceptualColor/colordialog.h"
-#include "PerceptualColor/polarpointf.h"
-#include "PerceptualColor/rgbcolorspace.h"
-#include "PerceptualColor/fullcolordescription.h"
 
 #include <QApplication>
-#include <QColor>
+
 #include <QColorDialog>
 #include <QDebug>
-#include <QMetaMethod>
-#include <QMetaObject>
-// #include <QMainWindow>
-#include <QSlider>
 
 // TODO code analysis clazy cppcheck clazy
 
@@ -74,29 +67,25 @@ static_assert(
 // PerceptualColor::ColorDialog is really a drop-in replacement
 // for QColorDialog.
 
+// TODO Drop this executable in favor of KColorChooser?
+
 int main(int argc, char *argv[])
 {
+    // Initialize the application
     QApplication app(argc, argv);
-    app.setApplicationName(QObject::tr(u8"Perceptual color picker"));
-//     app.setLayoutDirection(Qt::RightToLeft);
-    PerceptualColor::RgbColorSpace myspace;
-
-    QColorDialog x(QColor::fromCmyk(45, 33, 34, 48));
-    x.setOption(QColorDialog::ShowAlphaChannel);
-    x.show();
-    PerceptualColor::ColorDialog w;//(QColor(107, 181, 99, 50));
-    w.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
-//     QMainWindow x;
-//     x.setCentralWidget(&w);
-    w.show();
-//     PerceptualColor::ColorDialog::getColor(Qt::green, &w);
-/*
-    app.connect(
-        &x,
-        &QColorDialog::currentColorChanged,
-        &w,
-        &PerceptualColor::ColorDialog::setCurrentColor
+    app.setApplicationName(
+        QObject::tr(u8"Perceptual color picker")
     );
-*/
+//     app.setLayoutDirection(Qt::RightToLeft);
+
+    // Initialize the color dialog
+    PerceptualColor::ColorDialog m_colorDialog;
+    m_colorDialog.setOption(
+        QColorDialog::ColorDialogOption::ShowAlphaChannel,
+        true
+    );
+    m_colorDialog.show();
+    
+    // Run
     return app.exec();
 }

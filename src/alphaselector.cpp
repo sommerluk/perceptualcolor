@@ -58,8 +58,8 @@ AlphaSelector::AlphaSelector(RgbColorSpace *colorSpace, QWidget *parent) : QWidg
     /* setRepresentation does only do something if the new value is different from the old one.
      * As we rely on it for initiailzation, we set it first to some other value, and second
      * to the really desired default value. */
-    setRepresentation(NumerFormat::one); // first set to an unwanted value
-    setRepresentation(NumerFormat::percent); // second set to the really wanted value
+    setRepresentation(NumberFormat::one); // first set to an unwanted value
+    setRepresentation(NumberFormat::percent); // second set to the really wanted value
     /** Same procedure for alpha() property */
     setAlpha(0); // first set to an unwanted value
     setAlpha(1); // second set to the really wanted value
@@ -79,34 +79,34 @@ FullColorDescription AlphaSelector::color() const
     return m_color;
 }
 
-AlphaSelector::NumerFormat AlphaSelector::representation() const
+AlphaSelector::NumberFormat AlphaSelector::representation() const
 {
     return m_representation;
 }
 
 
-void AlphaSelector::setRepresentation(AlphaSelector::NumerFormat newRepresentation)
+void AlphaSelector::setRepresentation(AlphaSelector::NumberFormat newRepresentation)
 {
     if (m_representation == newRepresentation) {
         return;
     }
     m_representation = newRepresentation;
     switch (m_representation) {
-        case AlphaSelector::NumerFormat::one:
+        case AlphaSelector::NumberFormat::one:
             m_doubleSpinBox->setMinimum(0);
             m_doubleSpinBox->setMaximum(1);
             m_doubleSpinBox->setSuffix(QLatin1String());
             m_doubleSpinBox->setDecimals(2);
             m_doubleSpinBox->setValue(m_alpha);
             break;
-        case AlphaSelector::NumerFormat::percent:
+        case AlphaSelector::NumberFormat::percent:
             m_doubleSpinBox->setMinimum(0);
             m_doubleSpinBox->setMaximum(100);
             m_doubleSpinBox->setSuffix(QStringLiteral(u"%"));
             m_doubleSpinBox->setDecimals(0);
             m_doubleSpinBox->setValue(m_alpha * 100);
             break;
-        case AlphaSelector::NumerFormat::twoHundredAndFiftyFive:
+        case AlphaSelector::NumberFormat::twoHundredAndFiftyFive:
             m_doubleSpinBox->setMinimum(0);
             m_doubleSpinBox->setMaximum(255);
             m_doubleSpinBox->setSuffix(QLatin1String());
@@ -121,13 +121,13 @@ void AlphaSelector::setRepresentation(AlphaSelector::NumerFormat newRepresentati
 void AlphaSelector::setAlphaFromRepresentationFormat(qreal newAlphaRepresentation)
 {
     switch (m_representation) {
-        case AlphaSelector::NumerFormat::one:
+        case AlphaSelector::NumberFormat::one:
             setAlpha(newAlphaRepresentation);
             break;
-        case AlphaSelector::NumerFormat::percent:
+        case AlphaSelector::NumberFormat::percent:
             setAlpha(newAlphaRepresentation / static_cast<qreal>(100));
             break;
-        case AlphaSelector::NumerFormat::twoHundredAndFiftyFive:
+        case AlphaSelector::NumberFormat::twoHundredAndFiftyFive:
             setAlpha(newAlphaRepresentation / static_cast<qreal>(255));
             break;
         default:
@@ -178,13 +178,13 @@ void AlphaSelector::setAlpha(qreal newAlpha)
     Q_EMIT alphaChanged(m_alpha);
     const QSignalBlocker blockerSpinBox(m_doubleSpinBox);
     switch (m_representation) {
-        case AlphaSelector::NumerFormat::one:
+        case AlphaSelector::NumberFormat::one:
             m_doubleSpinBox->setValue(m_alpha);
             break;
-        case AlphaSelector::NumerFormat::percent:
+        case AlphaSelector::NumberFormat::percent:
             m_doubleSpinBox->setValue(m_alpha * 100);
             break;
-        case AlphaSelector::NumerFormat::twoHundredAndFiftyFive:
+        case AlphaSelector::NumberFormat::twoHundredAndFiftyFive:
             m_doubleSpinBox->setValue(m_alpha * 255);
             break;
         default:

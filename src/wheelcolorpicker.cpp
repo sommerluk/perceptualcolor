@@ -39,6 +39,7 @@ namespace PerceptualColor {
 /** @brief Constructor */
 WheelColorPicker::WheelColorPicker(RgbColorSpace *colorSpace, QWidget *parent) : SimpleColorWheel(colorSpace, parent)
 {
+    
     m_chromaLightnessDiagram = new ChromaLightnessDiagram(colorSpace, this);
     resizeChildWidget();
     m_chromaLightnessDiagram->setHue(hue());

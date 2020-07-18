@@ -33,8 +33,14 @@ namespace PerceptualColor {
 
 /** @brief A color display widget.
  * 
- * This widget simply displays a color.
- */
+ * This widget simply displays a color. Useful for showing a selected
+ * color.
+ * 
+ * @note A similar functionality is available es KColorPatch, but this part of
+ * the KDE framework is deprecated since KF5, and it would also pull-in
+ * another dependency which has been avoided. Furthermore, KColorPatch has
+ * support for drag-and-drop, which is not always desirable. Therefore
+ * ColorPatch is a lightwise alternative. */
 class ColorPatch : public QFrame
 {
     Q_OBJECT
@@ -43,32 +49,27 @@ class ColorPatch : public QFrame
      * 
      * Default value is an invalid color.
      * 
-     * If the color is invalid, nothing is displayed.
-     */
-    Q_PROPERTY(QColor color READ color WRITE setColor RESET resetColor NOTIFY colorChanged)
+     * - If the color is invalid, nothing is displayed. Only the default
+     *   widget background is visible within the frame.
+     * - If the color is valid, the widget frame is filled with this color.
+     *   If the color is not fully opaque, the background will be a special
+     *   background pattern (and @em not the default widget background. */
+    Q_PROPERTY(QColor color READ color WRITE setColor)
 
 public:
     explicit ColorPatch(QWidget *parent = nullptr);
-    virtual ~ColorPatch() override;
     QColor color() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
     
 public Q_SLOTS:
-    void resetColor();
     void setColor(const QColor &newColor);
-
-Q_SIGNALS:
-    /** @brief Signal for color() property. */
-    void colorChanged(const QColor &newColor);
 
 protected:
     virtual void paintEvent(QPaintEvent* event) override;
 
 private:
-
     Q_DISABLE_COPY(ColorPatch)
-
     QBrush m_brush;
     QColor m_color;
 };

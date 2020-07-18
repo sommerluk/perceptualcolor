@@ -660,6 +660,14 @@ FullColorDescription ChromaLightnessDiagram::color() const
  * width is larger than the height, the @c x range goes beyond @c 100. The image paints all
  * the Lch values that are within the gamut of the RGB profile. All other values are
  * Qt::transparent. Intentionally there is no anti-aliasing.
+ * 
+ * @todo Would anti-aliasing be possible? As there is no mathematical
+ * description of the shape of the color solid, the only way to get
+ * anti-aliasing would be to render at a higher resolution (say two
+ * times higher, which would yet mean four times more data), and then
+ * downscale it to the final resolution. Would this be an absolute
+ * performance killer? Even if not: Is it really worth the performance
+ * loss?
  */
 QImage ChromaLightnessDiagram::diagramImage(
         const qreal imageHue,

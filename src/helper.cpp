@@ -42,18 +42,6 @@ namespace PerceptualColor {
 
 namespace Helper {
 
-    /** @brief version number of this library at run-time
-     * 
-     * @returns the version number of this library at run-time. This may be a
-     * different version than the version the application was compiled against.
-     * <a href="https://semver.org">Semantic versionning</a) is used.
-     */
-    QVersionNumber version()
-    {
-        // Using only ASCII in the string litteral (conversions might be surprising otherwise)
-        return QVersionNumber::fromString(QStringLiteral(u"0.0.1"));
-    }
-
     QImage transparencyBackground()
     {
         // The width and height of 12 px per square might be a good choise

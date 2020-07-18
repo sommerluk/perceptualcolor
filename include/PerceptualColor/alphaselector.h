@@ -57,7 +57,7 @@ class AlphaSelector : public QWidget
      * 
      * @sa setRepresentation()
      */
-    Q_PROPERTY(PerceptualColor::AlphaSelector::NumerFormat representation READ representation WRITE setRepresentation)
+    Q_PROPERTY(PerceptualColor::AlphaSelector::NumberFormat representation READ representation WRITE setRepresentation)
     
 public:
     /** Constructor */
@@ -65,19 +65,20 @@ public:
     qreal alpha() const;
     FullColorDescription color() const;
 
-    /** @brief Numer format for alpha value */
-    enum class NumerFormat {
+    /** @brief Number format for alpha value */
+    enum class NumberFormat {
         percent,                /**< From 0% to 100% */
         one,                    /**< From 0.00 to 1.00 */
         twoHundredAndFiftyFive  /**< From 0 to 255 */
     };
-    AlphaSelector::NumerFormat representation() const;
+    Q_ENUM(NumberFormat);
+    AlphaSelector::NumberFormat representation() const;
     void registerAsBuddy(QLabel *label);
 
 public Q_SLOTS:
     void setColor(const PerceptualColor::FullColorDescription &newColor);
     void setAlpha(const qreal newAlpha);
-    void setRepresentation(const AlphaSelector::NumerFormat newRepresentation);
+    void setRepresentation(const AlphaSelector::NumberFormat newRepresentation);
 
 Q_SIGNALS:
     void alphaChanged(qreal alpha);
@@ -89,7 +90,7 @@ private:
     RgbColorSpace *m_rgbColorSpace;
     FullColorDescription m_color;
     qreal m_alpha;
-    NumerFormat m_representation;
+    NumberFormat m_representation;
 private Q_SLOTS:
     void setAlphaFromRepresentationFormat(qreal newAlphaRepresentation);
 };

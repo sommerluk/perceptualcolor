@@ -56,6 +56,7 @@ public:
         in the gamut. In these cases first the nearest available lightness is searched, and than
         the nearest in-gamut chroma at this lightness. */
     };
+    // Q_ENUM(outOfGamutBehaviour); TODO Not possible for non-QObject classes?
 
     FullColorDescription();
     FullColorDescription(RgbColorSpace *colorSpace, const Helper::cmsRGB &rgb, qreal alpha = 1);

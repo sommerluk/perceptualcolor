@@ -74,22 +74,6 @@ private Q_SLOTS:
     };
 
     /*
-    void benchmarkAntialisedColorWheel() {        
-        QBENCHMARK {
-            QImage mImage = PerceptualColor::Helper::antialisedColorWheel(800, 30, 50, 29, littlecmsColorTransform);
-        }
-    };
-    */
-
-    /*
-    void benchmarkChromaLightnessDiagramm() {        
-        QBENCHMARK {
-            QImage mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(1280, 800), littlecmsColorTransform);
-        }
-    };
-    */
-
-    /*
     void testChromaLightnessDiagramm() {
         QImage mImage;
 
@@ -114,13 +98,6 @@ private Q_SLOTS:
     }
     */
 
-    /*
-    void testChromaLightnessDiagrammExpectedGamut() {
-        QImage mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(201, 101), littlecmsColorTransform);
-        QCOMPARE(mImage.pixelColor(0, 0).name(QColor::HexArgb), "#ffffffff"); // white
-        QCOMPARE(mImage.pixelColor(0, 100).name(QColor::HexArgb), "#ff000000"); // black
-    }
-    */
 
     void testInRangeInt() {
         QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 3, 2), false);

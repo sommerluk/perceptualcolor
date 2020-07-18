@@ -39,9 +39,11 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QDoubleSpinBox>
+#include <QHBoxLayout>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
+#include <QTabWidget>
 
 namespace PerceptualColor {
 
@@ -49,17 +51,19 @@ namespace PerceptualColor {
  * 
  * The color dialog's function is to allow users to choose colors intuitively.
  * For example, you might use this in a drawing program to allow the user to
- * set the brush color. It is a (almost) source-compatible replacement for
- * QColorDialog. At difference to QColorDialog, this dialog's graphical
- * components are perceptually uniform and therefor more intuitive. It's
- * internally based on the LCh color model, which does reflect the human
- * perceptuan much better than RGB or its transforms like HSV. At the same
- * time, this dialog does not require the user itself to know anything about
- * LCh at all, because the graphical representations tend to be intuitive
- * enough.
+ * set the brush color. It is a almost source-compatible replacement for
+ * QColorDialog (see below for details) and also adds some extra functionality
+ * that is not available in QColordialog. At difference to QColorDialog, this
+ * dialog's graphical components are perceptually uniform and therefor more
+ * intuitive. It's internally based on the LCh color model, which does reflect
+ * the human perceptuan much better than RGB or its transforms like HSV. At
+ * the same time, this dialog does not require the user itself to know
+ * anything about LCh at all, because the graphical representations tend to be
+ * intuitive enough.
  * 
  * The default window title is <em>Select Color</em>, and not the title of
- * your application. It can of course be customized.
+ * your application. It can of course be customized with
+ * <tt>QWidget::setWindowTitle()</tt>.
  * 
  * Just as with QColorDialog, the static functions provide modal color
  * dialogs. The static getColor() function shows the dialog, and allows
@@ -105,10 +109,16 @@ namespace PerceptualColor {
  *   integers, PerceptualColor::ColorDialog preserves the floating point
  *   precision.
  * 
- * @todo The default dialog size should depend on screen size:
- * - on smaller screens it should never exceed the screen boundary.
- * - on larger screens is should be big to allow optimal use of available
- *   screen size
+ * @warning The graphical display in WheelColorPicker() jumps when you choose
+ * a gray color like HSV 20 0 125 and then increment or decrement the
+ * V component in the spinbox by 1. This is because WheelColorPicker() is
+ * based on the LCh model and LCh’s hue component is different from HSV’s hue
+ * component, and the jump is a consequence of rounding errors. There is no
+ * jump when using the LCh input widget because the old hue is guarded. How
+ * can we get a similar continuity for HSV’s hue?
+ * 
+ * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
+ * letters on-the-fly (as-you-type) to upper-case letters.
  * 
  * @todo Provide setWhatsThis() help for widgets. Or tooltips? Or both?
  * What is more appropritate? Or use both? For WheelColorPicker and
@@ -117,23 +127,9 @@ namespace PerceptualColor {
  * widgets, a help text could be defined here within \em this class,
  * if appropriate.
  * 
- * @todo The child widget m_hsvHueSpinbox() is a QDoubleSpinBox. The current
- * behaviour for pageStep = 10 is 356 → 360 → 0 → 10. The expected behaviour
- * would be 356 → 6 for a continuous experience. A solution will likely
- * require a new class inherited from QDoubleSpinBox or maybe
- * QAbstractSpinbox.
- * 
  * @todo Make sure that ChromaHueDiagram always shows at least at the central
  * pixel an in-gamut color. Solution: Limit the range of the lightness
  * selector? Or a better algorithm in ChromaHueDiagram?
- * 
- * @todo The graphical display in WheelColorPicker() jumps when you choose
- * a gray color like HSV 20 0 125 and then increment or decrement the
- * V component in the spinbox by 1. This is because WheelColorPicker() is
- * based on the LCh model and LCh’s hue component is different from HSV’s hue
- * component, and the jump is a consequence of rounding errors. There is no
- * jump when using the LCh input widget because the old hue is guarded. How
- * can we get a similar continuity for HSV’s hue?
  * 
  * @todo Develop a new wiget inherited from QAbstractSpinbox() that allows
  * input of various numeric values in the same widget, similar to
@@ -144,6 +140,12 @@ namespace PerceptualColor {
  * be a better user experience, or would it be rather confusing and less
  * comfortable?
  * 
+ * @todo The child widget m_hsvHueSpinbox() is a QDoubleSpinBox. The current
+ * behaviour for pageStep = 10 is 356 → 360 → 0 → 10. The expected behaviour
+ * would be 356 → 6 for a continuous experience. A solution will likely
+ * require a new class inherited from QDoubleSpinBox or maybe
+ * QAbstractSpinbox.
+ * 
  * @todo Support for other models like HSL, Munsell? With an option to
  * enable or disable them? (NCS not, because it is not free.)
  * 
@@ -151,9 +153,15 @@ namespace PerceptualColor {
  * old color (cannot be modified by the user) and another one for the new
  * color (same behaviour as the yet existing color patch).
  * 
- * @todo When switching between “Hue first” and “Lightness first” tab, the
- * layout and the widget sizes of the other widgets change slightly. They
- * should not change at all.
+ * @todo For the tab widget, use rather icons instead of the text “hue first”
+ * and “lightness first”.
+ * 
+ * @todo As the aspect ration of the widget content for some of our widgets is
+ * fixed (and square), we could make better use of the available space: If
+ * 250 px × 350 px are available, why not resize to 250 px × 250 px, as anyway
+ * we will not see a bigger pixmap, and use the free 100 px otherwise? But
+ * following discussions on Internet about failing heighForWidth(), propably
+ * the only way is creating a custom layout manager.
  */
 class ColorDialog : public QDialog
 {
@@ -237,12 +245,43 @@ class ColorDialog : public QDialog
         READ options
         WRITE setOptions
     )
+
+    /** @brief Layout dimensions
+     * 
+     * Defines if the dialog uses a rather collapsed (small) or a rather
+     * expanded (large) layout.
+     * 
+     * Default value: @c PerceptualColor::DialogLayoutDimensions::automatic
+     * 
+     * When the layout dimension effectifly changes, also the dialog size
+     * is adapted.
+     * 
+     * @sa DialogLayoutDimensions
+     * @sa layoutDimensions
+     * @sa setLayoutDimensions */
+    Q_PROPERTY(
+        DialogLayoutDimensions layoutDimensions
+        READ layoutDimensions
+        WRITE setLayoutDimensions
+    )
         
 public:
     /** @brief Local alias for QColorDialog::ColorDialogOption */
     typedef QColorDialog::ColorDialogOption ColorDialogOption;
     /** @brief Local alias for QColorDialog::ColorDialogOptions */
     typedef QColorDialog::ColorDialogOptions ColorDialogOptions;
+    /** @brief Layout dimensions */
+    enum class DialogLayoutDimensions {
+        automatic,  /**< Decide automatically between @c collapsed and
+                         @c expanded layout based on evaluating the screen
+                         size. The decision is evaluated at the moment when
+                         setting this value, and again each time the widget is
+                         shown again. It is @em not evaluated again when a yet
+                         existing dialog is just moved to another screen. */
+        collapsed,  /**< Use the small, “collapsed“ layout of this dialog. */
+        expanded    /**< Use the large, “expanded” layout of this dialog.  */
+    };
+    Q_ENUM(DialogLayoutDimensions);
     explicit ColorDialog(QWidget *parent = nullptr);
     explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
     virtual ~ColorDialog() override;
@@ -255,12 +294,17 @@ public:
         const QString &title = QString(),
         ColorDialogOptions options = ColorDialogOptions()
     );
-    using QDialog::open; // Make sure not override base class's “open“ function
+    ColorDialog::DialogLayoutDimensions layoutDimensions() const;
+    // Make sure not to override the base class’s “open“ function
+    using QDialog::open;
     void open(QObject *receiver, const char *member);
     /** @brief Getter for property options()
      * @returns the current options */
     ColorDialogOptions options() const;
     QColor selectedColor() const;
+    void setLayoutDimensions(
+        const ColorDialog::DialogLayoutDimensions newLayoutDimensions
+    );
     void setOption(ColorDialogOption option, bool on = true);
     void setOptions(ColorDialogOptions options);
     virtual void setVisible(bool visible) override;
@@ -321,6 +365,18 @@ private:
     QDoubleSpinBox *m_hsvSaturationSpinbox;
     /** @brief Pointer to the QSpinbox for HSV value. */
     QDoubleSpinBox *m_hsvValueSpinbox;
+    /** @brief Holds wether currently a color change is ongoing, or not.
+     * 
+     * Used to avoid infinite recursions when updating the different widgets
+     * within this dialog.
+     * @sa setCurrentOpaqueFullColor() */
+    bool m_isColorChangeInProgress = false;
+    /** @brief Internal storage for property layoutDimensions() */
+    PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions =
+        ColorDialog::DialogLayoutDimensions::automatic;
+    /** @brief Pointer to the graphical selector widget with lightness and
+     *  chroma-hue selector. */
+    QWidget *m_lightnessFirstWidget;
     /** @brief Holds the receiver slot (if any) to be disconnected
      *  automatically after closing the dialog.
      * 
@@ -329,12 +385,9 @@ private:
      * @sa m_receiverToBeDisconnected
      * @sa open() */
     QByteArray m_memberToBeDisconnected;
-    /** @brief Holds wether currently a color change is ongoing, or not.
-     * 
-     * Used to avoid infinite recursions when updating the different widgets
-     * within this dialog.
-     * @sa setCurrentOpaqueFullColor() */
-    bool m_isColorChangeInProgress = false;
+    /** @brief Pointer to the widget that holds the numeric color
+     *         representation. */
+    QWidget *m_numericalWidget;
     /** @brief Holds the receiver object (if any) to be disconnected
      *  automatically after closing the dialog.
      * 
@@ -356,9 +409,14 @@ private:
     QDoubleSpinBox *m_rgbRedSpinbox;
     /** @brief Internal storage for selectedColor(). */
     QColor m_selectedColor;
+    /** @brief Layout that holds the graphical and numeric selectors. */
+    QHBoxLayout *m_selectorLayout;
+    /** @brief Pointer to the tab widget. */
+    QTabWidget *m_tabWidget;
     /** @brief Pointer to the WheelColorPicker widget. */
     WheelColorPicker *m_wheelColorPicker;
-    
+
+    void applyLayoutDimensions();
     void initialize();
     QWidget* initializeNumericPage();
     QString textForHlcLineEdit() const;

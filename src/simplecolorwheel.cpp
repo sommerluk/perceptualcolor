@@ -292,6 +292,10 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  * Relies on that m_wheelPixmap are up to date.
  * 
  * @param event the paint event
+ * 
+ * @todo Make the wheel to be drawn horizontally and vertically aligned.
+ * 
+ * @todo Better design on small widget sizes
  */
 void SimpleColorWheel::paintEvent(QPaintEvent* event)
 {
