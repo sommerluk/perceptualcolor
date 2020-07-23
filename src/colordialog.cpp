@@ -211,6 +211,7 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     // End of this function. Unblock resursive
     // function calls before returning.
     m_isColorChangeInProgress = false;
+qDebug() << m_currentOpaqueColor.toLch().C;
 }
 
 /** @brief Reads the value from the lightness selector in the dialog and
@@ -510,7 +511,7 @@ void ColorDialog::readHlcNumericValues()
 QWidget* ColorDialog::initializeNumericPage()
 {
     // Create HSV spin boxes
-    const int hsvDecimals = 0;
+    constexpr int hsvDecimals = 0;
     QHBoxLayout *tempHsvLayout = new QHBoxLayout;
     m_hsvHueSpinbox = new QDoubleSpinBox();
     m_hsvHueSpinbox->setAlignment(Qt::AlignRight);
@@ -539,7 +540,7 @@ QWidget* ColorDialog::initializeNumericPage()
     tempHsvLayout->addWidget(m_hsvValueSpinbox);
 
     // Create RGB spin boxes
-    const int rgbDecimals = 0;
+    constexpr int rgbDecimals = 0;
     QHBoxLayout *tempRgbLayout = new QHBoxLayout;
     m_rgbRedSpinbox = new QDoubleSpinBox();
     m_rgbRedSpinbox->setAlignment(Qt::AlignRight);

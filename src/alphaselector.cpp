@@ -47,9 +47,9 @@ AlphaSelector::AlphaSelector(RgbColorSpace *colorSpace, QWidget *parent) : QWidg
         &AlphaSelector::setAlphaFromRepresentationFormat
     );
     cmsCIELCh lch;
-    lch.L = Helper::LchBoundaries::defaultLightness;
-    lch.C = Helper::LchBoundaries::defaultChroma;
-    lch.h = Helper::LchBoundaries::defaultHue;
+    lch.L = Helper::LchDefaults::defaultLightness;
+    lch.C = Helper::LchDefaults::defaultChroma;
+    lch.h = Helper::LchDefaults::defaultHue;
     FullColorDescription temp = FullColorDescription(
         m_rgbColorSpace,
         lch,

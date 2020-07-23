@@ -25,10 +25,7 @@
  */
 
 #include "PerceptualColor/polarpointf.h"
-#include <QTest>
 #include <QtTest/QtTest>
-#include <QVariant>
-#include <stdio.h>
 
 class TestPolarPointF : public QObject
 {

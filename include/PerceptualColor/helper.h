@@ -30,77 +30,98 @@
 #include <QImage>
 #include <QWheelEvent>
 
-class RgbColorSpace; // It seems that including the header isn't possible because the header itself depends on _this_ header.
-
 #include <lcms2.h>
-
-// TODO Does the OS-side color management change the RGB value we want to display? If so, how to prevent this?
-// TODO Do only expose the headers that are absolutely necessary
-// TODO Switch to pimpl?
-// TODO Qt Designer support for the widgets
 
 /** @brief The namespace of this library.
  * 
  * Everything that is provides in this library is encapsulated within this
  * namespace.
  * 
- * The library uses generally @c int for integer values, because QSize() also
- * QPoint() also do, and the library relies heavily on the usage of QSize()
- * and QPoint(). It uses generally @c qreal for floating point values, because
- * QPointF() also does, for the same reasons as above.
+ * The library provides various Qt GUI components for choosing colors, with
+ * focus on an intuitive and perceptually uniform presentation. The GUI
+ * widgets are based internally on the LCh color model, which does reflect
+ * the human perceptuan much better than RGB or its transforms like HSV.
+ * However, the widgets do not require the user itself to know anything
+ * about LCh at all, because the graphical representations tend to be
+ * intuitive enough.
  * 
- * The source code of the library is in UTF8. A static_assert makes sure your
- * compiler actually treats it also as UTF8.
+ * The library depends on (and therefore you have to link against) Qt Core,
+ * Qt Gui, Qt Widgets (Qt 5) and LittleCMS 2.
  * 
- * @todo Translations: Color picker/Select Color -> Farbwähler/Farbauswahl etc…
- */
+ * The library uses in general @c int for integer values, because QSize() and
+ * QPoint() also do. As the library relies heavily on the usage of QSize()
+ * and QPoint(), this seems reasonable. For the same reason, it uses generally
+ * @c qreal for floating point values, because QPointF() also does.
+ * 
+ * The source code of the library is in UTF8. A static_assert within the
+ * header @c helper.h makes sure your compiler actually treats it as UTF8.
+ * 
+ * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
+ * @todo Does the OS-side color management change the RGB value we want to
+ * display? If so, how to prevent this?
+ * @todo Only expose in the headers and in the public API what is absolutely
+ * necessary.
+ * @todo Switch to the pimpl ideom?
+ * @todo Qt Designer support for the widgets */
 namespace PerceptualColor {
 
 // Test if the compiler treats the source code actually as UTF8.
 // A test string is converted to UTF8 code units (u8"") and each
 // code unit is checked to be correct.
 static_assert(
-    (static_cast<quint8>(*((u8"🖌")+0)) == 0xF0) &&
-        (static_cast<quint8>(*((u8"🖌")+1)) == 0x9F) &&
-        (static_cast<quint8>(*((u8"🖌")+2)) == 0x96) &&
-        (static_cast<quint8>(*((u8"🖌")+3)) == 0x8C) &&
-        (static_cast<quint8>(*((u8"🖌")+4)) == 0x00),
+    (static_cast<quint8>(*((u8"🖌")+0)) == 0xF0)
+        && (static_cast<quint8>(*((u8"🖌")+1)) == 0x9F)
+        && (static_cast<quint8>(*((u8"🖌")+2)) == 0x96)
+        && (static_cast<quint8>(*((u8"🖌")+3)) == 0x8C)
+        && (static_cast<quint8>(*((u8"🖌")+4)) == 0x00),
     "This source code has to be read-in as UTF8 by the compiler."
 );
 
-/** @brief Various smaller help elements. */
+/** @brief Various smaller help elements.
+ * 
+ * This namespace groups together various smaller elements that are used
+ * across the library but do not belong stricly to one of the classes.
+ * 
+ * @todo Decide for each member of this namespace if it can be moved into
+ * a class because it’s only used in one single class. */
 namespace Helper {
 
-    /** @brief Mesh size for gamut boundary search
+    /** @brief An RGB color.
      * 
-     * This class can make sure that the color is within the gamut. To do so,
-     * we have to search for the gamut boundary, because LittleCMS does not
-     * provide a build-in function for this. When searching the nearest
-     * in-gamut color for a given out-of-gamut color, the algorithm goes
-     * step by step. Each step has the size gamutMeshSize. Once the first
-     * in-gamut color is found, the algorithm refines more the precision between
-     * the first in-gamut color and the last out-of-gamut color up to
-     * gamutPrecision(), so gamutPrecision() has to be smaller than
-     * gamutMeshSize().
+     * Storage of floating point RGB values in a format that is practical
+     * for working with LittleCMS (can be treated as buffer). The valid
+     * range for each component is 0‥1.
      * 
-     * This approach is taken because the gamut might be discontinous, so
-     * a simple approach that just with each step takes the double or the
-     * half of the distance, might miss some smaller patches of a discontinous
-     * gamut. With gamutMeshSize() at least we can control the precision.
-     * 
-     * In short: Smaller values mean better precision and slower processing.
-     * 
-     * \sa gamutPrecision */
-    static constexpr qreal gamutMeshSize = 0.01;
-    /** @brief precision for gamut boundary search
-     * 
-     * For details, see gamutMeshSize() documentation. */
-    static constexpr qreal gamutPrecision = 0.001;
+     * Example:
+     * @code
+     * PerceptualColor::Helper::cmsRGB rgb;
+     * rgba.red = 1;
+     * rgba.green = 0;
+     * rgba.blue = 0;
+     * cmsCIELab lab;
+     * // Convert exactly 1 value:
+     * cmsDoTransform(m_transformRgbToLabHandle, &rgb, &lab, 1);
+     * @endcode */
+    struct cmsRGB {
+        /** @brief The red value. */
+        cmsFloat64Number red;
+        /** @brief The green value. */
+        cmsFloat64Number green;
+        /** @brief The blue value. */
+        cmsFloat64Number blue;
+    };
 
-    /** @brief Template function to test if a value is in a certain range
-     * @param low the low limit
+    /** @brief Precision for gamut boundary search
+     * 
+     * We have to search sometimes for the gamut boundary. This value defines
+     * the precision of the search:  Smaller values mean better precision and
+     * slower processing. */
+    constexpr qreal gamutPrecision = 0.001;
+
+    /** @brief Template function to test if a value is within a certain range
+     * @param low the lower limit
      * @param x the value that will be tested
-     * @param high the high limit
+     * @param high the higher limit
      * @returns <tt>(low <= x) && (x <= high)</tt>
      */
     template<typename T> bool inRange(const T& low, const T& x, const T& high)
@@ -108,90 +129,83 @@ namespace Helper {
         return ( (low <= x) && (x <= high) );
     }
 
-    /** @brief Informations about L*a*b* gamut boundaries
+    /** @brief LCh default values
      * 
      * According to the
      * <a href="https://de.wikipedia.org/w/index.php?title=Lab-Farbraum&oldid=197156292">
-     * German Wikipedia</a>, in L*a*b* color space, in typical software implementations 
-     * are used usually these ranges:
-     * - Lightness axis: 0..100
-     * - a axis: -128..127 (in C++ a signed 8 bit integer)
-     * - b axis: -128..127 (in C++ a signed 8 bit integer)
+     * German Wikipedia</a>, the Lab color space has the following ranges:
      * 
-     * According to the same Wikipedia article, the physical range for a and b axis
-     * goes up to:
-     * - Lightness axis: 0..100
-     * - a axis: -170..100
-     * - b axis: -100..150
+     * | Lab axis  | Usual software implementation | Actual human perception |
+     * | :-------- | ----------------------------: | ----------------------: |
+     * | lightness |                        0..100 |                   0‥100 |
+     * | a         |                      −128‥127 |                −170‥100 |
+     * | b         |                      −128‥127 |                −100‥150 |
      * 
-     * in some situations.
-     */
-    struct LabBoundaries {
-        static constexpr int physicalMinimumA = -170;
-        static constexpr int physicalMaximumA = 100;
-        static constexpr int physicalMinimumB = -100;
-        static constexpr int physicalMaximumB = 150;
-        static constexpr int usualMinimumA = -128;
-        static constexpr int usualMaximumA = 127;
-        static constexpr int usualMinimumB = -128;
-        static constexpr int usualMaximumB = 127;
-    };
-
-    /** @brief Informations about LCh gamut boundaries
+     * The range of −128‥127 is in C++ a signed 8‑bit integer. But this
+     * data type usually used in software implementations is obviously not
+     * enough to cover the hole range of actual human color perception.
      *
-     * Following @ref labBoundaries, calculating Pythagoras and using on each
-     * axis (a and b) the most extreme value, the chroma value must definitively
-     * be smaller than √((−170)² + 150²) ≈ 227 and will effectively be even
-     * smaller.
+     * Unfortunately, there is no information about the LCh color space. But
+     * we can deduce:
+     * - @b Lightness: Same range as for Lab: <b>0‥100</b>
+     * - @b Chroma: The Chroma value is the distance from the center of the
+     *   coordinate system in the a‑b‑plane. Therefore it cannot be bigger
+     *   than Pythagoras of the biggest possible absolute value on a axis and
+     *   b axis: √[(−170)² + 150²] ≈ 227. Very likely the real range is
+     *   smaller, but we do not know exactly how much. At least, we can be
+     *   sure that this range is big enough: <b>0‥227</b>
+     * - @b Hue: As the angle in a polar coordinate system, it has to
+     *   be: <b>0°‥360°</b>
      * 
-     * For chroma, a default value of @c 0 might be a good choise because it is less likely to make 
-     * out-of-gamut problems as it is really quite in the middle of the three-dimensional gamut body.
-     * And it results in an achromatic, neutral color.
-     * 
-     * Depending on your use case, a versatile alternative might be @c 29 which is the highest chroma
-     * that is just within sRGB gamut for a Lightness of @50 on all possible hues.
-     * 
-     * In sRGB, the maximum chroma value (as practically observed - I have no
-     * mathematics to proof that) is 132.
-     * 
-     * For the lightness, a default value of @c 50 seems a good choise as it is half
-     * the way in the defined lightness range <tt>0..100</tt>, and it also approximates the lightness
-     * that offers the most highest possible chroma at different hues. This is less likely to make
-     * out-of-gamut problems as it is really quite in the middle of the three-dimensional gamut body.
-     * 
-     * For hue, a default value of @c 0 can be used by convention.
-     */
-    struct LchBoundaries {
-        static constexpr int physicalMaximumChroma = 227;
+     * But what could be useful default values? This struct provides some
+     * values as proposals. All values are <tt>constexpr</tt>. */
+    struct LchDefaults {
+        /** @brief Default chroma value
+         * 
+         *  For chroma, a default value of 0 might be a good
+         *  choise because it is less likely to make  out-of-gamut problems on
+         *  any lightness (except maybe extreme white or extreme black). And
+         *  it results in an achromatic color and is therefore perceived as
+         *  neutral.
+         *  @sa versatileSrgbChroma
+         *  @sa maxSrgbChroma */
         static constexpr qreal defaultChroma = 0;
+        /** @brief Default hue value
+         *
+         *  For the hue, a default value of 0 might be used by convention. */
         static constexpr qreal defaultHue = 0;
+        /** @brief Default lightness value
+         * 
+         *  For the lightness, a default value of 50 seems a good
+         *  choise as it is half the way in the defined lightness range
+         *  <tt>0‥100</tt> (thought not all gamuts offer the hole range from 0
+         *  to 100). As it is quite in the middle of the gamut solid, it
+         *  allows for quite extreme values for Chroma and Hue without falling
+         *  out-of-gamut. Together with a chroma of @c 0, it also approximates
+         *  color with the highest possible contrast against the hole surface
+         *  of the gamut solid; this is interesting for background colors of
+         *  twodimensional gamut diagrams. */
         static constexpr qreal defaultLightness = 50;
-        static constexpr qreal versatileSrgbChroma = 29;
+        /** @brief Maximum chroma value in LittleCMS' build-in sRGB gamut
+         * 
+         *  @sa defaultChroma
+         *  @sa versatileSrgbChroma */
         static constexpr qreal maxSrgbChroma = 132;
+        /** @brief Versatile chroma value in LittleCMS' build-in sRGB gamut
+         * 
+         *  Depending on the use case, there might be an alternative to
+         *  the neutral gray defaultChroma(). For a lightness of 50, this
+         *  value is the maximum chroma available at all possible hues within
+         *  the sRGB gamut.
+         *  @sa defaultChroma
+         *  @sa maxSrgbChroma */
+        static constexpr qreal versatileSrgbChroma = 32;
     };
-
-    /** @brief An RGB color.
-     * 
-     * Storange of floating point in a practical format for working with LittleCMS. The range is 0..1
-     */
-    struct cmsRGB {
-        /** The red value. */
-        cmsFloat64Number red;
-        /** The green value. */
-        cmsFloat64Number green;
-        /** The blue value. */
-        cmsFloat64Number blue;
-    };
-
-    cmsCIELab toLab(const cmsCIELCh &lch);
-
-    cmsCIELCh toLch(const cmsCIELab &lab);
 
     QImage transparencyBackground();
 
-    QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
+    qreal standardWheelSteps(QWheelEvent *event);
 
-    qreal wheelSteps(QWheelEvent *event);
 }
 
 }

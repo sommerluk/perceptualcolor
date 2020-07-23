@@ -140,7 +140,7 @@ void GradientSelector::setFraction(qreal newFraction)
 
 void GradientSelector::wheelEvent(QWheelEvent* event)
 {
-    qreal steps = Helper::wheelSteps(event);
+    qreal steps = Helper::standardWheelSteps(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
         setFraction(m_fraction + steps * m_singleStep);

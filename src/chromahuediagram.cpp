@@ -56,9 +56,9 @@ ChromaHueDiagram::ChromaHueDiagram(RgbColorSpace *colorSpace, QWidget *parent) :
     // (and refreshDiagram relies itself on m_hue, m_markerRadius and
     // m_markerThickness)
     cmsCIELCh temp;
-    temp.h = Helper::LchBoundaries::defaultHue;
-    temp.C = Helper::LchBoundaries::versatileSrgbChroma;
-    temp.L = Helper::LchBoundaries::defaultLightness;
+    temp.h = Helper::LchDefaults::defaultHue;
+    temp.C = Helper::LchDefaults::versatileSrgbChroma;
+    temp.L = Helper::LchDefaults::defaultLightness;
     m_color = FullColorDescription(
         m_rgbColorSpace,
         temp,
@@ -412,7 +412,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
         (event->angleDelta().y() != 0)
     ) {
         cmsCIELCh lch = m_color.toLch();
-        lch.h += Helper::wheelSteps(event) * m_singleStepHue;
+        lch.h += Helper::standardWheelSteps(event) * m_singleStepHue;
         setColor(FullColorDescription(m_rgbColorSpace, lch, FullColorDescription::outOfGamutBehaviour::sacrifyChroma));
     } else {
         event->ignore();
@@ -831,8 +831,8 @@ void ChromaHueDiagram::updateWheelCache()
         m_diameter,                                 // diameter
         2 * m_markerThickness,                      // border
         4 * m_markerThickness,                      // thickness
-        Helper::LchBoundaries::defaultLightness,    // lightness
-        Helper::LchBoundaries::versatileSrgbChroma      // chroma
+        Helper::LchDefaults::defaultLightness,    // lightness
+        Helper::LchDefaults::versatileSrgbChroma      // chroma
     );
 
     // Mark cache as ready

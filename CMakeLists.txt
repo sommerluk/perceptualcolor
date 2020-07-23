@@ -40,7 +40,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 # Instruct CMake to create code from Qt designer ui files
-set(CMAKE_AUTOUIC ON)
+# set(CMAKE_AUTOUIC ON)
 # Use also our local FIND modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 # Enable compiler warings
@@ -58,7 +58,7 @@ include(GNUInstallDirs)
 find_package(Qt5 COMPONENTS Core Gui Widgets Test REQUIRED) # TODO require Test only for unit tests, not for normal building
 find_package(LCMS2 REQUIRED)
 include_directories(${LCMS2_INCLUDE_DIRS})
-set(LIBS ${LIBS} Qt5::Widgets ${LCMS2_LIBRARIES}) # Define external library dependencies
+set(LIBS ${LIBS} Qt5::Core Qt5::Gui Qt5::Widgets ${LCMS2_LIBRARIES}) # Define external library dependencies
 
 
 # TODO Do this only during development, not for release
@@ -136,3 +136,7 @@ add_test (NAME testpolarpointf COMMAND testpolarpointf)
 add_executable (testcolordialog test/testcolordialog.cpp)
 target_link_libraries (testcolordialog ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testcolordialog COMMAND testcolordialog)
+
+add_executable (testcolorpatch test/testcolorpatch.cpp)
+target_link_libraries (testcolorpatch ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testcolorpatch COMMAND testcolorpatch)

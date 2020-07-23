@@ -55,9 +55,9 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(RgbColorSpace *colorSpace, QWidge
     // (and refreshDiagram relies itself on m_hue, m_markerRadius and
     // m_markerThickness)
     cmsCIELCh temp;
-    temp.h = Helper::LchBoundaries::defaultHue;
-    temp.C = Helper::LchBoundaries::versatileSrgbChroma;
-    temp.L = Helper::LchBoundaries::defaultLightness;
+    temp.h = Helper::LchDefaults::defaultHue;
+    temp.C = Helper::LchDefaults::versatileSrgbChroma;
+    temp.L = Helper::LchDefaults::defaultLightness;
     m_color = FullColorDescription(
         m_rgbColorSpace,
         temp,
@@ -106,7 +106,7 @@ void ChromaLightnessDiagram::updateBorder()
 void ChromaLightnessDiagram::setImageCoordinates(const QPoint newImageCoordinates)
 {
     updateDiagramCache();
-    QPoint correctedImageCoordinates = Helper::nearestNeighborSearch(newImageCoordinates, m_diagramImage);
+    QPoint correctedImageCoordinates = nearestNeighborSearch(newImageCoordinates, m_diagramImage);
     QPointF chromaLightness;
     cmsCIELCh lch;
     if (correctedImageCoordinates != currentImageCoordinates()) {
@@ -668,6 +668,36 @@ FullColorDescription ChromaLightnessDiagram::color() const
  * downscale it to the final resolution. Would this be an absolute
  * performance killer? Even if not: Is it really worth the performance
  * loss?
+ * 
+ * @todo Should this function be made static? Or the opposite: Stay a normal
+ * function (but maybe even remove all agruments like imageHue and imageSize
+ * because we can get them directly from underlying object data)?
+ * 
+ * @todo Possible unit test for this function:
+ * @code
+    void testChromaLightnessDiagramm() {
+        QImage mImage;
+
+        // Testing extremly small images
+        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(0, 0), littlecmsColorTransform);
+        QCOMPARE(mImage.size(), QSize(0, 0));
+        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(1, 1), littlecmsColorTransform);
+        QCOMPARE(mImage.size(), QSize(1, 1));
+        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(2, 2), littlecmsColorTransform);
+        QCOMPARE(mImage.size(), QSize(2, 2));
+        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(-1, -1), littlecmsColorTransform);
+        QCOMPARE(mImage.size(), QSize(0, 0));
+
+        // Start testing for a normal size image
+        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(201, 101), littlecmsColorTransform);
+        QCOMPARE(mImage.height(), 101);
+        QCOMPARE(mImage.width(), 201);
+        QCOMPARE(mImage.pixelColor(0, 0).isValid(), true); // position within the QImage is valid
+        QCOMPARE(mImage.pixelColor(0, 100).isValid(), true); // position within the QImage is valid
+        QTest::ignoreMessage(QtWarningMsg, "QImage::pixelColor: coordinate (0,101) out of range");
+        QCOMPARE(mImage.pixelColor(0, 101).isValid(), false); // position within the QImage is invalid
+    }
+ * @endcode
  */
 QImage ChromaLightnessDiagram::diagramImage(
         const qreal imageHue,
@@ -756,6 +786,60 @@ void ChromaLightnessDiagram::updateDiagramCache()
 
     // Mark cache as ready
     m_diagramCacheReady = true;
+}
+
+/** @brief Search the nearest non-transparent neighbor pixel
+* 
+* @note This code is a terribly inefficient implementation of a “nearest neigbor search”. See
+* https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast
+* for a better approach.
+* 
+* @param originalPoint The point for which you search the nearest neigbor,
+* expressed in the coordinate system of the image. This point may be within
+* or outside the image.
+* @param image The image in which the nearest neigbor is searched.
+* Must contain at least one pixel with an alpha value that is fully opaque.
+* @returns
+* \li If originalPoint itself is within the image and a
+*     non-transparent pixel, it returns originalPoint.
+* \li Else, if there is are non-transparent pixels in the image, the nearest non-transparent
+*     pixel is returned. (If there are various nearest neigbors at the same distance, it is
+*     undefined which one is returned.)
+* \li Else there are no non-transparent pixels, and simply the point <tt>0, 0</t> is returned,
+*     but this is a very slow case.
+*/
+QPoint ChromaLightnessDiagram::nearestNeighborSearch(const QPoint originalPoint, const QImage &image) {
+    // test for special case: originalPoint itself is within the image and non-transparent
+    if (image.valid(originalPoint)) {
+        if (image.pixelColor(originalPoint).alpha() == 255) {
+            return originalPoint;
+        }
+    }
+
+    // No special case. So we have to actually perfor a nearest-neighbor-search.
+    int x;
+    int y;
+    int currentBestX;
+    int currentBestY;
+    int currentBestDistanceSquare = std::numeric_limits<int>::max();
+    int temp;
+    for (x = 0; x < image.width(); x++) {
+        for (y = 0; y < image.height(); y++) {
+            if (image.pixelColor(x, y).alpha() == 255) {
+                temp = pow(originalPoint.x() - x, 2) + pow(originalPoint.y() - y, 2);
+                if (temp < currentBestDistanceSquare) {
+                    currentBestX = x;
+                    currentBestY = y;
+                    currentBestDistanceSquare = temp;
+                }
+            }
+        }
+    }
+    if (currentBestDistanceSquare == std::numeric_limits<int>::max()) {
+        return QPoint(0, 0);
+    } else {
+        return QPoint(currentBestX, currentBestY);
+    }
 }
 
 }

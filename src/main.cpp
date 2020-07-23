@@ -30,6 +30,7 @@
 
 #include <QColorDialog>
 #include <QDebug>
+#include <QPainter>
 
 // TODO code analysis clazy cppcheck clazy
 
@@ -85,7 +86,10 @@ int main(int argc, char *argv[])
         true
     );
     m_colorDialog.show();
-    
+
+//     for (int i = -1; i < 80; ++i) {
+//         qDebug() << i << ":" << QColorDialog::standardColor(i);
+//     }
     // Run
     return app.exec();
 }

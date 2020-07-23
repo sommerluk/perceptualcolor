@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QTest>
-#include <QObject>
+#include <QtTest/QtTest>
 
 class TestXXX : public QObject
 {
@@ -52,4 +51,4 @@ private Q_SLOTS:
 };
 
 QTEST_MAIN(TestXXX);
-#include "testXXX.moc" // necessary because we do not use a header file
+#include "testxxx.moc" // necessary because we do not use a header file

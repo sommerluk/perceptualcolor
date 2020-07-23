@@ -51,9 +51,13 @@ namespace PerceptualColor {
  * 
  * The color dialog's function is to allow users to choose colors intuitively.
  * For example, you might use this in a drawing program to allow the user to
- * set the brush color. It is a almost source-compatible replacement for
+ * set the brush color.
+ * 
+ * It is a almost source-compatible replacement for
  * QColorDialog (see below for details) and also adds some extra functionality
- * that is not available in QColordialog. At difference to QColorDialog, this
+ * that is not available in QColordialog.
+ * 
+ * At difference to QColorDialog, this
  * dialog's graphical components are perceptually uniform and therefor more
  * intuitive. It's internally based on the LCh color model, which does reflect
  * the human perceptuan much better than RGB or its transforms like HSV. At
@@ -61,28 +65,30 @@ namespace PerceptualColor {
  * anything about LCh at all, because the graphical representations tend to be
  * intuitive enough.
  * 
- * The default window title is <em>Select Color</em>, and not the title of
- * your application. It can of course be customized with
- * <tt>QWidget::setWindowTitle()</tt>.
- * 
  * Just as with QColorDialog, the static functions provide modal color
  * dialogs. The static getColor() function shows the dialog, and allows
  * the user to specify a color:
  * @code
  * QColor myColor = PerceptualColor::ColorDialog::getColor();
  * @endcode
- * This function can also be used to let
+ * The function can also be used to let
  * users choose a color with a level of transparency: pass the
  * ColorDialogOption::ShowAlphaChannel option as an
  * additional argument:
  * @code
  * QColor myColor = PerceptualColor::ColorDialog::getColor(
  *     Qt::green,      // current color at widget startup
- *     0,              // parent widget
- *     "Window title", // window title
+ *     nullptr,        // parent widget (or nullptr for no parent)
+ *     "Window title", // window title (or an empty string for default title)
  *     ColorDialogOption::ShowAlphaChannel
  * );
  * @endcode
+ * 
+ * For non-modal dialogs, use the normal constructors of this class.
+ * 
+ * The default window title is <em>Select Color</em>, and not the title of
+ * your application. It can of course be customized with
+ * <tt>QWidget::setWindowTitle()</tt>.
  * 
  * @note The API of this class is fully source-compatible to the API of
  * QColorDialog and the API behaves exactly as for QColorDialog (if not,
@@ -115,7 +121,9 @@ namespace PerceptualColor {
  * based on the LCh model and LCh’s hue component is different from HSV’s hue
  * component, and the jump is a consequence of rounding errors. There is no
  * jump when using the LCh input widget because the old hue is guarded. How
- * can we get a similar continuity for HSV’s hue?
+ * can we get a similar continuity for HSV’s hue? (By the way: Similar problem
+ * for RGB values changing along the gray axis: #444 → #555 → #666 changes
+ * the graphically displayed hue.
  * 
  * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
  * letters on-the-fly (as-you-type) to upper-case letters.
@@ -155,13 +163,6 @@ namespace PerceptualColor {
  * 
  * @todo For the tab widget, use rather icons instead of the text “hue first”
  * and “lightness first”.
- * 
- * @todo As the aspect ration of the widget content for some of our widgets is
- * fixed (and square), we could make better use of the available space: If
- * 250 px × 350 px are available, why not resize to 250 px × 250 px, as anyway
- * we will not see a bigger pixmap, and use the free 100 px otherwise? But
- * following discussions on Internet about failing heighForWidth(), propably
- * the only way is creating a custom layout manager.
  */
 class ColorDialog : public QDialog
 {
@@ -249,7 +250,10 @@ class ColorDialog : public QDialog
     /** @brief Layout dimensions
      * 
      * Defines if the dialog uses a rather collapsed (small) or a rather
-     * expanded (large) layout.
+     * expanded (large) layout. In both cases, all elements are present.
+     * But for the collapsed variant, more elements are put in
+     * tab widgets, while for the expanded variant, more elements are
+     * visible at the same time.
      * 
      * Default value: @c PerceptualColor::DialogLayoutDimensions::automatic
      * 
@@ -281,6 +285,8 @@ public:
         collapsed,  /**< Use the small, “collapsed“ layout of this dialog. */
         expanded    /**< Use the large, “expanded” layout of this dialog.  */
     };
+    /** @brief Make DialogLayoutDimensions() available to the meta-object
+     *  system. */
     Q_ENUM(DialogLayoutDimensions);
     explicit ColorDialog(QWidget *parent = nullptr);
     explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
@@ -320,9 +326,9 @@ Q_SIGNALS:
     void colorSelected(const QColor &color);
     /** @brief Notify signal for property currentColor().
      * 
-     * This signal is emitted whenever the current color changes in the
+     * This signal is emitted whenever the “current color” changes in the
      * dialog.
-     * @param color The current color */
+     * @param color the new “current color” */
     void currentColorChanged(const QColor &color);
 
 protected:

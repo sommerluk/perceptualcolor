@@ -168,7 +168,7 @@ private:
     int m_diameter = 0;
     /** position (measured in widget coordinates) of the center of the diagram coordinate system */
     int m_diagramOffset = 0;
-    qreal m_maxChroma = Helper::LchBoundaries::maxSrgbChroma;
+    qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
     static constexpr qreal m_singleStepChroma = 1;
     /* TODO What would be a good value for this? Its effect depends on chroma: On higher chroma,
      * the same step in hue means a bigger visual color differente. We could even calculate that,

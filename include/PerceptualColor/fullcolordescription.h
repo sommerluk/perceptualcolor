@@ -119,6 +119,8 @@ private:
 
     void moveChromaIntoGamut(RgbColorSpace *colorSpace);
     void normalizeLch();
+    static cmsCIELab toLab(const cmsCIELCh &lch);
+    static cmsCIELCh toLch(const cmsCIELab &lab);
 };
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value);

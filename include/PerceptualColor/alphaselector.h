@@ -31,6 +31,7 @@ namespace PerceptualColor {
  *
  * Convenience widget to display and select an alpha channel value. 
  */
+// TODO The API should be similar to QSlider or at lest QAbstractSlider
 class AlphaSelector : public QWidget
 {
     Q_OBJECT

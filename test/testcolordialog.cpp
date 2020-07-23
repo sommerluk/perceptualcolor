@@ -24,11 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QObject>
-#include <QPointer>
-#include <QSignalSpy>
-#include <QTest>
-#include <qtestcase.h>
+#include <QtTest/QtTest>
 #include "PerceptualColor/colordialog.h"
 
 class TestColorDialog : public QObject
@@ -43,12 +39,17 @@ private:
     QColor m_color;
 
 
-    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &) {
+    static void voidMessageHandler(
+        QtMsgType,
+        const QMessageLogContext &,
+        const QString &
+    ) {
         // dummy message handler that does not print messages
     }
     
     void helperProvideQColors() {
-        qInstallMessageHandler(voidMessageHandler); // supress warning for generating invalid QColor
+        // supress warning for generating invalid QColor
+        qInstallMessageHandler(voidMessageHandler);
 
         QTest::addColumn<QColor>("color");
         QTest::newRow("RGB 1 2 3") << QColor(1, 2, 3);
@@ -57,43 +58,63 @@ private:
         QTest::newRow("RGBA 1 2 300 4") << QColor(1, 2, 300, 4);
 
         QTest::newRow("RGB 0.1 0.2 0.3") << QColor::fromRgbF(0.1, 0.2, 0.3);
-        QTest::newRow("RGBA 0.1 0.2 0.3 0.4") << QColor::fromRgbF(0.1, 0.2, 0.3, 0.4);
-        QTest::newRow("RGB 0.1 6.2 0.300") << QColor::fromRgbF(0.1, 6.2, 0.300);
-        QTest::newRow("RGBA 0.1 6.2 0.300 0.4") << QColor::fromRgbF(0.1, 6.2, 0.300, 0.4);
+        QTest::newRow("RGBA 0.1 0.2 0.3 0.4")
+            << QColor::fromRgbF(0.1, 0.2, 0.3, 0.4);
+        QTest::newRow("RGB 0.1 6.2 0.300")
+            << QColor::fromRgbF(0.1, 6.2, 0.300);
+        QTest::newRow("RGBA 0.1 6.2 0.300 0.4")
+            << QColor::fromRgbF(0.1, 6.2, 0.300, 0.4);
 
         QTest::newRow("CMYK 1 2 3 4") << QColor::fromCmyk(1, 2, 3, 4);
         QTest::newRow("CMYK 1 2 3 4 5") << QColor::fromCmyk(1, 2, 3, 4, 5);
         QTest::newRow("CMYK 1 2 300 4") << QColor::fromCmyk(1, 2, 300, 4);
-        QTest::newRow("CMYK 1 2 300 4 5") << QColor::fromCmyk(1, 2, 300, 4, 5);
-        QTest::newRow("CMYK 0.1 0.2 0.300 0.4") << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4);
-        QTest::newRow("CMYK 0.1 0.2 0.300 0.4 0.6495217645") << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4, 0.6495217645);
-        QTest::newRow("CMYK 0.1 6.2 0.300 0.4") << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4);
-        QTest::newRow("CMYK 0.1 6.2 0.300 0.4 0.6495217645") << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("CMYK 1 2 300 4 5")
+            << QColor::fromCmyk(1, 2, 300, 4, 5);
+        QTest::newRow("CMYK 0.1 0.2 0.300 0.4")
+            << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4);
+        QTest::newRow("CMYK 0.1 0.2 0.300 0.4 0.6495217645")
+            << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("CMYK 0.1 6.2 0.300 0.4")
+            << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4);
+        QTest::newRow("CMYK 0.1 6.2 0.300 0.4 0.6495217645")
+            << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4, 0.6495217645);
         
         QTest::newRow("HSL 2 3 4") << QColor::fromHsl(2, 3, 4);
         QTest::newRow("HSL 2 3 4 5") << QColor::fromHsl(2, 3, 4, 5);
         QTest::newRow("HSL 2 300 4") << QColor::fromHsl(2, 300, 4);
         QTest::newRow("HSL 2 300 4 5") << QColor::fromHsl(2, 300, 4, 5);
-        QTest::newRow("HSL 0.2 0.300 0.4") << QColor::fromHslF(0.2, 0.300, 0.4);
-        QTest::newRow("HSL 0.2 0.300 0.4 0.6495217645") << QColor::fromHslF(0.2, 0.300, 0.4, 0.6495217645);
-        QTest::newRow("HSL 6.2 0.300 0.4") << QColor::fromHslF(6.2, 0.300, 0.4);
-        QTest::newRow("HSL 6.2 0.300 0.4 0.6495217645") << QColor::fromHslF(6.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSL 0.2 0.300 0.4")
+            << QColor::fromHslF(0.2, 0.300, 0.4);
+        QTest::newRow("HSL 0.2 0.300 0.4 0.6495217645")
+            << QColor::fromHslF(0.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSL 6.2 0.300 0.4")
+            << QColor::fromHslF(6.2, 0.300, 0.4);
+        QTest::newRow("HSL 6.2 0.300 0.4 0.6495217645")
+            << QColor::fromHslF(6.2, 0.300, 0.4, 0.6495217645);
         
         QTest::newRow("HSV 2 3 4") << QColor::fromHsv(2, 3, 4);
         QTest::newRow("HSV 2 3 4 5") << QColor::fromHsv(2, 3, 4, 5);
         QTest::newRow("HSV 2 300 4") << QColor::fromHsv(2, 300, 4);
         QTest::newRow("HSV 2 300 4 5") << QColor::fromHsv(2, 300, 4, 5);
-        QTest::newRow("HSV 0.2 0.300 0.4") << QColor::fromHsvF(0.2, 0.300, 0.4);
-        QTest::newRow("HSV 0.2 0.300 0.4 0.6495217645") << QColor::fromHsvF(0.2, 0.300, 0.4, 0.6495217645);
-        QTest::newRow("HSV 6.2 0.300 0.4") << QColor::fromHsvF(6.2, 0.300, 0.4);
-        QTest::newRow("HSV 6.2 0.300 0.4 0.6495217645") << QColor::fromHsvF(6.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSV 0.2 0.300 0.4")  
+        << QColor::fromHsvF(0.2, 0.300, 0.4);
+        QTest::newRow("HSV 0.2 0.300 0.4 0.6495217645")
+            << QColor::fromHsvF(0.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSV 6.2 0.300 0.4")
+            << QColor::fromHsvF(6.2, 0.300, 0.4);
+        QTest::newRow("HSV 6.2 0.300 0.4 0.6495217645")
+            << QColor::fromHsvF(6.2, 0.300, 0.4, 0.6495217645);
 
         QTest::newRow("invalid") << QColor();
 
-        qInstallMessageHandler(0); // supress warning for generating invalid QColor anymore
+        // do not supress warning for generating invalid QColor anymore
+        qInstallMessageHandler(0);
     }
 
-    void helperCompareDialog(PerceptualColor::ColorDialog *m_perceptualDialog, QColorDialog *m_qDialog) {
+    void helperCompareDialog(
+        PerceptualColor::ColorDialog *m_perceptualDialog,
+        QColorDialog *m_qDialog
+    ) {
         // Compare the state of m_perceptualDialog (actual) to m_qDialog (expected)
         QCOMPARE(
             m_perceptualDialog->selectedColor().name(),
@@ -457,16 +478,7 @@ private Q_SLOTS:
         QCOMPARE(testClassProperty.notifySignal().tag(), referenceClassProperty.notifySignal().tag());
         QCOMPARE(testClassProperty.notifySignal().typeName(), referenceClassProperty.notifySignal().typeName());
         QCOMPARE(testClassProperty.type(), referenceClassProperty.type());
-        
         QCOMPARE(testClassProperty.typeName(), referenceClassProperty.typeName());
-        /*
-        QString testClassString = QString(testClassProperty.typeName());
-        QString referenceClassString = QString(referenceClassProperty.typeName());
-        QVERIFY2(
-            (testClassString == referenceClassString)
-                || (testClassString == QString(referenceClass.className()) + QString("::") + referenceClassString),
-            "Verify if type is identical or just differs by being a fully qualified name."
-        );*/
         QCOMPARE(testClassProperty.userType(), referenceClassProperty.userType());
     }
 

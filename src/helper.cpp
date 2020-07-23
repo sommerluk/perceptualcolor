@@ -27,128 +27,105 @@
 // Own header
 #include "PerceptualColor/helper.h"
 
-#include "PerceptualColor/rgbcolorspace.h"
-#include "PerceptualColor/polarpointf.h"
-
-#include <QDebug>
 #include <QPainter>
 
-#include <limits>
 #include <math.h>
-
-#include <lcms2.h>
 
 namespace PerceptualColor {
 
 namespace Helper {
 
+    /** @brief Background for semi-transparent colors.
+     * 
+     * When showing a semi-transparent color, there has to be a background
+     * on which it is shown.
+     * 
+     * @returns An image of a mosaik of neutral gray rectangles of different
+     * lightnesses. You can use this as tiles to paint a background.
+     * 
+     * Example:
+     * @code
+     * QImage myImage(150, 200, QImage::Format_ARGB32);
+     * 
+     * QPainter myPainter(&myImage);
+     * 
+     * // Fill the hole image with tiles made of transparencyBackground()
+     * myPainter.fillRect(
+     *     0,
+     *     0,
+     *     150,
+     *     200,
+     *     QBrush(PerceptualColor::Helper::transparencyBackground())
+     * );
+     * 
+     * // Paint semi-transparent red color above
+     * myPainter.fillRect(
+     *     0,
+     *     0,
+     *     150,
+     *     200,
+     *     QBrush(QColor(255, 0, 0, 128))
+     * );
+     * @endcode
+     * 
+     * @todo Provide color management support? Thought we use the same value
+     * for red, green and blue, this might @em not be perfectly neutral gray
+     * depending on the color profile of the monitor… */
     QImage transparencyBackground()
     {
         // The width and height of 12 px per square might be a good choise
         // because 12 is a multiple of 2, 3 and 4, which might make scaling
-        // with better quality easier. But 12 px is also quite big…
-        const int squareSize = 6;
+        // with better quality easier. But 12 px is also quite big. So we
+        // go on with a smaller square size.
+        constexpr int squareSize = 10;
+        constexpr int colorValueOne = 210;
+        constexpr int colorValueTwo = 240;
         QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
-        temp.fill(QColor(102, 102, 102));
+        temp.fill(QColor(colorValueOne, colorValueOne, colorValueOne));
         QPainter painter(&temp);
-        QColor foregroundColor(153, 153, 153);
-        painter.fillRect(0, 0, squareSize, squareSize, foregroundColor);
-        painter.fillRect(squareSize, squareSize, squareSize, squareSize, foregroundColor);
+        QColor foregroundColor(colorValueTwo, colorValueTwo, colorValueTwo);
+        painter.fillRect(
+            0,
+            0,
+            squareSize,
+            squareSize,
+            foregroundColor
+        );
+        painter.fillRect(
+            squareSize,
+            squareSize,
+            squareSize,
+            squareSize,
+            foregroundColor
+        );
         return temp;
     }
 
-    /** @brief Convert to LCh
+    /** @brief Number of vertical @em standard wheel steps done by a
+     *  wheel event
      * 
-     * Convenience function
-     * @param lab a point in Lab color space
-     * @returns the same point in LCh representation */
-    cmsCIELCh toLch(const cmsCIELab &lab)
-    {
-        cmsCIELCh temp;
-        cmsLab2LCh(&temp, &lab);
-        return temp;
-    }
-
-    /** @brief Convert to Lab
+     * As the QWheelEvent documentation explains, there is a common physical
+     * standard wheel step size for mouse wheels: 15°. But there are some
+     * mouse models, which use non-standard physical wheel step sizes for
+     * their mouse wheel, for example because they have a higher wheel
+     * resolution.
      * 
-     * Convenience function
-     * @param lch a point in Lab color space
-     * @returns the same point in LCh representation */
-    cmsCIELab toLab(const cmsCIELCh &lch)
-    {
-        cmsCIELab temp;
-        cmsLCh2Lab(&temp, &lch);
-        return temp;
-    }
-
-
-    /** @brief Search the nearest non-transparent neighbor pixel
-    * 
-    * TODO @todo This code is a terribly inefficient implementation of a “nearest neigbor search”. See
-    * https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast
-    * for a better approach.
-    * 
-    * @param originalPoint The point for which you search the nearest neigbor,
-    * expressed in the coordinate system of the image. This point may be within
-    * or outside the image.
-    * @param image The image in which the nearest neigbor is searched.
-    * Must contain at least one pixel with an alpha value that is fully opaque.
-    * @returns
-    * \li If originalPoint itself is within the image and a
-    * non-transparent pixel, it returns originalPoint.
-    * \li Else, if there is are non-transparent pixels in the image, the nearest non-transparent
-    * pixel is returned. (If there are various nearest neigbors at the same distance, it is
-    * undefined which one is returned.)
-    * \li Else there are no non-transparent pixels, and simply the point <tt>0, 0</t> is returned,
-    * but this is a very slow case.
-    */
-    QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image) {
-        // test for special case: originalPoint itself is within the image and non-transparent
-        if (image.valid(originalPoint)) {
-            if (image.pixelColor(originalPoint).alpha() == 255) {
-                return originalPoint;
-            }
-        }
-
-        // No special case. So we have to actually perfor a nearest-neighbor-search.
-        int x;
-        int y;
-        int currentBestX;
-        int currentBestY;
-        int currentBestDistanceSquare = std::numeric_limits<int>::max();
-        int temp;
-        for (x = 0; x < image.width(); x++) {
-            for (y = 0; y < image.height(); y++) {
-                if (image.pixelColor(x, y).alpha() == 255) {
-                    temp = pow(originalPoint.x() - x, 2) + pow(originalPoint.y() - y, 2);
-                    if (temp < currentBestDistanceSquare) {
-                        currentBestX = x;
-                        currentBestY = y;
-                        currentBestDistanceSquare = temp;
-                    }
-                }
-            }
-        }
-        if (currentBestDistanceSquare == std::numeric_limits<int>::max()) {
-            return QPoint(0, 0);
-        } else {
-            return QPoint(currentBestX, currentBestY);
-        }
-    }
-
-    /** @brief Number of steps done by a wheel event
-     * 
-     * As of Qt documentation, there are different mouse wheels which can give
-     * different step sizes. This function provides a standard way to calculate
-     * the step size for a standard mouse.
+     * This function converts the values in QMouseEvent to the @em standard
+     * wheel step count.
      * 
      * @param event the QWheelEvent
-     * @returns the number of steps in y axis (this is the “normal” mouse
-     * wheel). The value is positive of up-steps and negative for down-steps.
-     * It might not be an integer. */
-    qreal wheelSteps(QWheelEvent *event)
+     * @returns the count of vertical @em standard wheel steps done within
+     * this mouse event. The value is positive for up-steps and negative for
+     * down-steps. On a standard mouse wheel, moving the wheel one physical
+     * step up will return the value 1. On a non-standard, higher resolution
+     * mouse wheel, moving the wheel one physical step up will return a
+     * smaller value, for example 0.7 */
+    qreal standardWheelSteps(QWheelEvent *event)
     {
-        return event->angleDelta().y() / static_cast<qreal>(120);
+        // QWheelEvent::angleDelta() returns 8 units for each degree.
+        // The standard wheel step is 15°. So on a standard
+        // mouse, one wheel step results in (8 × 15) units.
+        return event->angleDelta().y() / static_cast<qreal>(8 * 15);
     }
 }
 

@@ -57,8 +57,8 @@ SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
     // We don't use the reset methods as they would update the image/pixmap
     // each time, and this could crash if done before everything is
     // initialized.
-    m_hue = Helper::LchBoundaries::defaultHue;
-    m_wheelRibbonChroma = Helper::LchBoundaries::versatileSrgbChroma;
+    m_hue = Helper::LchDefaults::defaultHue;
+    m_wheelRibbonChroma = Helper::LchDefaults::versatileSrgbChroma;
     m_markerThickness = default_markerThickness;
     m_wheelThickness = default_wheelThickness;
     m_mouseEventActive = false;
@@ -219,7 +219,7 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
         /* Only react on good old vertical wheels, and not on horizontal wheels */
         (event->angleDelta().y() != 0)
     ) {
-        setHue(m_hue + Helper::wheelSteps(event) * wheelStep);
+        setHue(m_hue + Helper::standardWheelSteps(event) * wheelStep);
     } else {
         event->ignore();
     }
@@ -490,7 +490,7 @@ void SimpleColorWheel::updateWheelImage()
         qMin(size().width(), size().height()),
         border(),
         m_wheelThickness,
-        Helper::LchBoundaries::defaultLightness,
+        Helper::LchDefaults::defaultLightness,
         wheelRibbonChroma()
     );
     m_wheelImageReady = true;
@@ -499,13 +499,13 @@ void SimpleColorWheel::updateWheelImage()
 /** @brief Reset the hue() property. */
 void SimpleColorWheel::resetHue()
 {
-    setHue(Helper::LchBoundaries::defaultHue);
+    setHue(Helper::LchDefaults::defaultHue);
 }
 
 /** @brief Reset the wheelRibbonChroma() property. */
 void SimpleColorWheel::resetWheelRibbonChroma()
 {
-    setWheelRibbonChroma(Helper::LchBoundaries::versatileSrgbChroma);
+    setWheelRibbonChroma(Helper::LchDefaults::versatileSrgbChroma);
 }
 
 int SimpleColorWheel::markerThickness() const

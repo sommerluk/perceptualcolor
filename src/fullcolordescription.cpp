@@ -52,7 +52,7 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const Help
     m_rgbQColor = QColor::fromRgbF(m_rgb.red, m_rgb.green, m_rgb.blue, alpha);
     m_hsvQColor = m_rgbQColor.toHsv();
     m_lab = colorSpace->colorLab(rgb);
-    m_lch = Helper::toLch(m_lab);
+    m_lch = toLch(m_lab);
     m_alpha = alpha;
     m_rgbQColor.setAlphaF(alpha);
     m_hsvQColor.setAlphaF(alpha);
@@ -90,7 +90,7 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor col
     m_rgb.green = m_rgbQColor.greenF();
     m_rgb.blue = m_rgbQColor.blueF();
     m_lab = colorSpace->colorLab(m_rgbQColor);
-    m_lch = Helper::toLch(m_lab);
+    m_lch = toLch(m_lab);
     m_alpha = color.alphaF();
     m_valid = true;
 }
@@ -104,12 +104,12 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor col
  */
 FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour behaviour, qreal alpha)
 {
-    m_lch = Helper::toLch(lab);
+    m_lch = toLch(lab);
     normalizeLch();
     if (behaviour == outOfGamutBehaviour::sacrifyChroma) {
         moveChromaIntoGamut(colorSpace);
     }
-    m_lab = Helper::toLab(m_lch);
+    m_lab = toLab(m_lch);
     m_rgb = colorSpace->colorRgbBoundSimple(m_lab);
     m_rgbQColor = QColor::fromRgbF(m_rgb.red, m_rgb.green, m_rgb.blue, alpha);
     m_hsvQColor = m_rgbQColor.toHsv();
@@ -136,7 +136,7 @@ FullColorDescription::FullColorDescription(
     if (behaviour == outOfGamutBehaviour::sacrifyChroma) {
         moveChromaIntoGamut(colorSpace);
     }
-    m_lab = Helper::toLab(m_lch);
+    m_lab = toLab(m_lch);
     m_rgb = colorSpace->colorRgbBoundSimple(m_lab);
     m_rgbQColor = QColor::fromRgbF(m_rgb.red, m_rgb.green, m_rgb.blue, alpha);
     m_hsvQColor = m_rgbQColor.toHsv();
@@ -323,6 +323,28 @@ QString FullColorDescription::toRgbHexString() const
         .arg(qRound(m_rgb.green * 255), 2, 16, QLatin1Char('0'))
         .arg(qRound(m_rgb.blue  * 255), 2, 16, QLatin1Char('0'))
         .toUpper();
+}
+
+/** @brief Convert to LCh
+ * 
+ * @param lab a point in Lab representation
+ * @returns the same point in LCh representation */
+cmsCIELCh FullColorDescription::toLch(const cmsCIELab &lab)
+{
+    cmsCIELCh temp;
+    cmsLab2LCh(&temp, &lab);
+    return temp;
+}
+
+/** @brief Convert to Lab
+ * 
+ * @param lch a point in LCh representation
+ * @returns the same point in Lab representation */
+cmsCIELab FullColorDescription::toLab(const cmsCIELCh &lch)
+{
+    cmsCIELab temp;
+    cmsLCh2Lab(&temp, &lch);
+    return temp;
 }
 
 // TODO Isn't it inconsistent if toRgbHexString is gererated on-the-fly while all others are generated previously?
