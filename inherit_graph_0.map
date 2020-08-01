@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,129,84,156"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_alpha_selector.html" title="Combined widget with a gradient slider and a spin box; for selecting alpha channel." alt="" coords="144,5,367,32"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html" title="A widget that displays the plan of chroma and hue." alt="" coords="150,57,361,98"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html" title="A widget that displays a chroma&#45;lightness diagram." alt="" coords="132,122,379,163"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_gradient_selector.html" title="A slider displaying a gradient." alt="" coords="161,187,350,229"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_simple_color_wheel.html" title="Widget to choose the hue in a wheel." alt="" coords="149,253,361,294"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_wheel_color_picker.html" title="Complete wheel&#45;based color picker widget." alt="" coords="427,253,635,294"/>
+</map>

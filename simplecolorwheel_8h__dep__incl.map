@@ -1,0 +1,10 @@
+<map id="include/PerceptualColor/simplecolorwheel.h" name="include/PerceptualColor/simplecolorwheel.h">
+<area shape="rect" id="node1" title=" " alt="" coords="234,5,410,47"/>
+<area shape="rect" id="node2" href="$chromahuediagram_8cpp.html" title=" " alt="" coords="5,102,204,129"/>
+<area shape="rect" id="node3" href="$simplecolorwheel_8cpp.html" title=" " alt="" coords="229,102,415,129"/>
+<area shape="rect" id="node4" href="$wheelcolorpicker_8h.html" title=" " alt="" coords="439,95,615,136"/>
+<area shape="rect" id="node5" href="$wheelcolorpicker_8cpp.html" title=" " alt="" coords="335,191,517,218"/>
+<area shape="rect" id="node6" href="$colordialog_8h.html" title=" " alt="" coords="541,184,717,225"/>
+<area shape="rect" id="node7" href="$colordialog_8cpp.html" title=" " alt="" coords="482,273,626,300"/>
+<area shape="rect" id="node8" href="$main_8cpp.html" title=" " alt="" coords="651,273,756,300"/>
+</map>

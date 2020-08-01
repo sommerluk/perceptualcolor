@@ -1,0 +1,9 @@
+<map id="PerceptualColor::AlphaSelector" name="PerceptualColor::AlphaSelector">
+<area shape="rect" id="node1" title="Combined widget with a gradient slider and a spin box; for selecting alpha channel." alt="" coords="1003,85,1225,112"/>
+<area shape="rect" id="node2" title=" " alt="" coords="331,5,410,32"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_gradient_selector.html" title="A slider displaying a gradient." alt="" coords="633,47,823,89"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_full_color_description.html" title="A fully qualified color." alt="" coords="275,89,466,130"/>
+<area shape="rect" id="node4" href="$struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html" title="An RGB color." alt="" coords="5,89,181,130"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="275,161,467,202"/>
+<area shape="rect" id="node6" title=" " alt="" coords="56,168,131,195"/>
+</map>

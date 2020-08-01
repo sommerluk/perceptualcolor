@@ -1,0 +1,6 @@
+<map id="PerceptualColor::SimpleColorWheel" name="PerceptualColor::SimpleColorWheel">
+<area shape="rect" id="node1" title="Widget to choose the hue in a wheel." alt="" coords="5,185,217,227"/>
+<area shape="rect" id="node2" title=" " alt="" coords="51,89,129,115"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="154,81,346,123"/>
+<area shape="rect" id="node4" title=" " alt="" coords="213,5,287,32"/>
+</map>
