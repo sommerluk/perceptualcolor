@@ -202,9 +202,9 @@ namespace Helper {
         static constexpr qreal versatileSrgbChroma = 32;
     };
 
-    QImage transparencyBackground();
-
     qreal standardWheelSteps(QWheelEvent *event);
+
+    QImage transparencyBackground();
 
 }
 

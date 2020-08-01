@@ -318,7 +318,7 @@ QString FullColorDescription::toRgbHexString() const
     // - Minimal field width:                   2
     // - The base of the number represenation:  16 (hexadecimal)
     // - The fill character (leading zero):     QLatin1Char('0')
-    return QString(u8"#%1%2%3")
+    return QStringLiteral(u"#%1%2%3")
         .arg(qRound(m_rgb.red   * 255), 2, 16, QLatin1Char('0'))
         .arg(qRound(m_rgb.green * 255), 2, 16, QLatin1Char('0'))
         .arg(qRound(m_rgb.blue  * 255), 2, 16, QLatin1Char('0'))

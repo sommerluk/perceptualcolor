@@ -1212,8 +1212,33 @@ private Q_SLOTS:
     }
 
     void benchmarkChangeColorPerceptual() {
-            m_perceptualDialog = new PerceptualColor::ColorDialog;
-            m_perceptualDialog->show();
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_perceptualDialog->show();
+        QBENCHMARK {
+            m_perceptualDialog->setCurrentColor(Qt::green);
+            m_perceptualDialog->repaint();
+            m_perceptualDialog->setCurrentColor(Qt::blue);
+            m_perceptualDialog->repaint();
+            m_perceptualDialog->setCurrentColor(Qt::yellow);
+            m_perceptualDialog->repaint();
+        }
+    }
+
+    void benchmarkChangeColorPerceptualSecondTab() {
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        m_perceptualDialog->show();
+
+        QTabWidget *theTabWidget =
+            m_perceptualDialog->findChild<QTabWidget*>();
+        if (!theTabWidget) {
+            throw 0;
+        }
+        constexpr int myIndex = 1;
+        if (theTabWidget->tabText(myIndex) != "&Lightness first") {
+            throw 0;
+        }
+        theTabWidget->setCurrentIndex(myIndex);
+
         QBENCHMARK {
             m_perceptualDialog->setCurrentColor(Qt::green);
             m_perceptualDialog->repaint();
@@ -1225,8 +1250,8 @@ private Q_SLOTS:
     }
 
     void benchmarkChangeColorQColorDialog() {
-            m_qDialog = new QColorDialog;
-            m_qDialog->show();
+        m_qDialog = new QColorDialog;
+        m_qDialog->show();
         QBENCHMARK {
             m_qDialog->setCurrentColor(Qt::green);
             m_qDialog->repaint();

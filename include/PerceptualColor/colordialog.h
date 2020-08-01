@@ -55,7 +55,7 @@ namespace PerceptualColor {
  * 
  * It is a almost source-compatible replacement for
  * QColorDialog (see below for details) and also adds some extra functionality
- * that is not available in QColordialog.
+ * that is not available in QColorDialog.
  * 
  * At difference to QColorDialog, this
  * dialog's graphical components are perceptually uniform and therefor more
@@ -184,12 +184,7 @@ class ColorDialog : public QDialog
      * @sa WRITE setCurrentColor()
      * @sa NOTIFY currentColorChanged()
      * @sa m_currentOpaqueColor */
-    Q_PROPERTY(
-        QColor currentColor
-        READ currentColor
-        WRITE setCurrentColor
-        NOTIFY currentColorChanged
-    )
+    Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
     /** @brief Various options that affect the look and feel of the dialog
      * 
@@ -241,11 +236,7 @@ class ColorDialog : public QDialog
      * @sa WRITE setOptions()
      * @sa setOption()
      * @sa m_options */
-    Q_PROPERTY(
-        ColorDialogOptions options
-        READ options
-        WRITE setOptions
-    )
+    Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions)
 
     /** @brief Layout dimensions
      * 
@@ -263,11 +254,7 @@ class ColorDialog : public QDialog
      * @sa DialogLayoutDimensions
      * @sa layoutDimensions
      * @sa setLayoutDimensions */
-    Q_PROPERTY(
-        DialogLayoutDimensions layoutDimensions
-        READ layoutDimensions
-        WRITE setLayoutDimensions
-    )
+    Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions)
         
 public:
     /** @brief Local alias for QColorDialog::ColorDialogOption */
@@ -285,8 +272,13 @@ public:
         collapsed,  /**< Use the small, “collapsed“ layout of this dialog. */
         expanded    /**< Use the large, “expanded” layout of this dialog.  */
     };
-    /** @brief Make DialogLayoutDimensions() available to the meta-object
-     *  system. */
+    /** @brief <tt>DialogLayoutDimensions()</tt> is declared to the
+     * meta-object system
+     * 
+     * This macro in the header makes sure that the enum
+     * <tt>DialogLayoutDimensions()</tt> is available to the meta-object
+     * system. This happens automatically. You do not need to make any
+     * manual calls. */
     Q_ENUM(DialogLayoutDimensions);
     explicit ColorDialog(QWidget *parent = nullptr);
     explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
@@ -438,6 +430,7 @@ private Q_SLOTS:
         const PerceptualColor::FullColorDescription &color
     );
     void setCurrentOpaqueQColor(const QColor &color);
+    void updateColorPatch();
 };
 
 }

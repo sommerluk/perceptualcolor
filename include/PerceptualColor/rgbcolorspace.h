@@ -35,8 +35,7 @@
 
 namespace PerceptualColor {
 
-/** @brief Interface to LittleCMS for working with an RGB color space
- */
+/** @brief Interface to LittleCMS for working with an RGB color space */
 class RgbColorSpace : public QObject
 {
     Q_OBJECT
@@ -70,7 +69,10 @@ private:
     cmsHTRANSFORM m_transformLabToRgbHandle;
     cmsHTRANSFORM m_transformRgbToLabHandle;
     qreal m_whitepointL;
-    static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
+    static QString getInformationFromProfile(
+        cmsHPROFILE profileHandle,
+        cmsInfoType infoType
+    );
 };
 
 }

@@ -39,6 +39,8 @@
 
 #include <lcms2.h>
 
+#include <QElapsedTimer>
+
 namespace PerceptualColor {
 
 /** @brief The constructor.
@@ -699,10 +701,12 @@ FullColorDescription ChromaLightnessDiagram::color() const
     }
  * @endcode
  */
-QImage ChromaLightnessDiagram::diagramImage(
+QImage ChromaLightnessDiagram::generateDiagramImage(
         const qreal imageHue,
         const QSize imageSize) const
 {
+QElapsedTimer myTimer;
+myTimer.start();
     cmsCIELCh LCh; // uses cmsFloat64Number internally
     QColor rgbColor;
     int x;
@@ -751,6 +755,7 @@ QImage ChromaLightnessDiagram::diagramImage(
         }
     }
 
+qDebug() << "Generating chroma-lightness gamut image took" << myTimer.restart() << "ms.";
     return temp_image;
 }
 
@@ -779,7 +784,7 @@ void ChromaLightnessDiagram::updateDiagramCache()
     }
 
     // Update QImage
-    m_diagramImage = diagramImage(
+    m_diagramImage = generateDiagramImage(
         m_color.toLch().h,
         QSize(size().width() - 2 * m_border, size().height() - 2 * m_border)
     );

@@ -40,6 +40,8 @@
 
 #include <lcms2.h>
 
+#include <QElapsedTimer>
+
 namespace PerceptualColor {
 
 /** @brief The constructor.
@@ -240,17 +242,17 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     //       may not be respected by any given engine.”
     //
     // Painting here directly on the widget might lead to different
-    // anti-aliasing results depending on the underlying window system. This is
-    // especially problematic as anti-aliasing might shift or not a pixel to the
-    // left or to the right. So we paint on a QImage first. As QImage (at
-    // difference to QPixmap and a QWidget) is independant of native platform
-    // rendering, it guarantees identical anti-aliasing results on all
-    // platforms. Here the quote from QPainter class documentation:
+    // anti-aliasing results depending on the underlying window system. This
+    // is especially problematic as anti-aliasing might shift or not a pixel
+    // to the left or to the right. So we paint on a QImage first. As QImage
+    // (at difference to QPixmap and a QWidget) is independant of native
+    // platform rendering, it guarantees identical anti-aliasing results on
+    // all platforms. Here the quote from QPainter class documentation:
     //
-    //      “To get the optimal rendering result using QPainter, you should use
-    //       the platform independent QImage as paint device; i.e. using QImage
-    //       will ensure that the result has an identical pixel representation
-    //       on any platform.”
+    //      “To get the optimal rendering result using QPainter, you should
+    //       use the platform independent QImage as paint device; i.e. using
+    //       QImage will ensure that the result has an identical pixel
+    //       representation on any platform.”
     QImage paintBuffer(m_diameter, m_diameter, QImage::Format_ARGB32);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
@@ -268,10 +270,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     painter.setPen(pen);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.drawEllipse(
-        m_border, // x
-        m_border, // y
-        m_diameter - 2 * m_border,      // width
-        m_diameter - 2 * m_border       // height
+        m_border,                   // x
+        m_border,                   // y
+        m_diameter - 2 * m_border,  // width
+        m_diameter - 2 * m_border   // height
     );
     painter.setRenderHint(QPainter::Antialiasing, false);
     // Paint the diagram itself as available in the cache.
@@ -288,7 +290,8 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
 
     // paint also an additional marker indicating the hue
     if (m_mouseEventActive) {
-        qreal radius = m_diameter / static_cast<qreal>(2) - 2 * m_markerThickness;
+        qreal radius =
+            m_diameter / static_cast<qreal>(2) - 2 * m_markerThickness;
         // get widget coordinates for our marker
         QPointF myMarkerInner = PolarPointF(
                 radius - 4 * m_markerThickness,
@@ -387,7 +390,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     qreal newRadial = lineEndPolar.radial() - m_markerRadius - 1.5;
     QPointF lineEndCartesian;
     if (newRadial > 0) {
-        lineEndCartesian = PolarPointF(newRadial, lineEndPolar.angleDegree()).toCartesian();
+        lineEndCartesian = PolarPointF(
+            newRadial,
+            lineEndPolar.angleDegree()
+        ).toCartesian();
         lineEndCartesian.setY(lineEndCartesian.y() * (-1));
         lineEndCartesian += QPointF(m_diagramOffset, m_diagramOffset);
         painter.drawLine(
@@ -413,7 +419,13 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
     ) {
         cmsCIELCh lch = m_color.toLch();
         lch.h += Helper::standardWheelSteps(event) * m_singleStepHue;
-        setColor(FullColorDescription(m_rgbColorSpace, lch, FullColorDescription::outOfGamutBehaviour::sacrifyChroma));
+        setColor(
+            FullColorDescription(
+                m_rgbColorSpace,
+                lch,
+                FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            )
+        );
     } else {
         event->ignore();
     }
@@ -480,7 +492,13 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     if (lch.C < 0) {
         lch.C = 0;
     }
-    setColor(FullColorDescription(m_rgbColorSpace, lch, FullColorDescription::outOfGamutBehaviour::sacrifyChroma));
+    setColor(
+        FullColorDescription(
+            m_rgbColorSpace,
+            lch,
+            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+        )
+    );
 }
 
 /**
@@ -603,7 +621,9 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
         m_diagramOffset = (m_diameter - 1) / 2;
         m_diagramCacheReady = false;
         m_wheelCacheReady = false;
-        // As by Qt documentation: The widget will be erased and receive a paint event immediately after processing the resize event. No drawing need be (or should be) done inside this handler.
+        // As by Qt documentation: The widget will be erased and receive a
+        // paint event immediately after processing the resize event. No
+        // drawing need be (or should be) done inside this handler.
     }
 }
 
@@ -737,20 +757,25 @@ QImage ChromaHueDiagram::generateDiagramImage(
     );
     tempImage.fill(Qt::transparent); // Initialize the image with transparency
     const qreal scaleFactor = static_cast<qreal>(2 * maxChroma) / (imageSize - 2 * border);
-
+ 
+QElapsedTimer myTimer;
+myTimer.start();   
     // Paint the gamut.
     lab.L = lightness;
     for (y = border; y <= maxIndex - border; ++y) {
         lab.b = maxChroma - (y - border) * scaleFactor; // floating point division thanks to static_cast to cmsFloat64Number
         for (x = border; x <= maxIndex - border; ++x) {
             lab.a = (x - border) * scaleFactor - maxChroma;
-            tempColor = colorSpace->colorRgb(lab);
-            if (tempColor.isValid()) {
-                // The pixel is within the gamut
-                tempImage.setPixelColor(x, y, tempColor);
+            if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= (qPow(maxChroma, 2))) {
+                tempColor = colorSpace->colorRgb(lab);
+                if (tempColor.isValid()) {
+                    // The pixel is within the gamut
+                    tempImage.setPixelColor(x, y, tempColor);
+                }
             }
         }
     }
+qDebug() << "Generating chroma-hue gamut image took" << myTimer.restart() << "ms.";
 
     QImage result = QImage(
         QSize(imageSize, imageSize),
@@ -763,10 +788,10 @@ QImage ChromaHueDiagram::generateDiagramImage(
     myPainter.setPen(QPen(Qt::NoPen));
     myPainter.setBrush(QBrush(tempImage));
     myPainter.drawEllipse(
-        border, // x
-        border, // y
-        imageSize - 2 * border,      // width
-        imageSize - 2 * border       // height
+        border,                 // x
+        border,                 // y
+        imageSize - 2 * border, // width
+        imageSize - 2 * border  // height
     );
 
     return result;
@@ -831,8 +856,8 @@ void ChromaHueDiagram::updateWheelCache()
         m_diameter,                                 // diameter
         2 * m_markerThickness,                      // border
         4 * m_markerThickness,                      // thickness
-        Helper::LchDefaults::defaultLightness,    // lightness
-        Helper::LchDefaults::versatileSrgbChroma      // chroma
+        Helper::LchDefaults::defaultLightness,      // lightness
+        Helper::LchDefaults::versatileSrgbChroma    // chroma
     );
 
     // Mark cache as ready

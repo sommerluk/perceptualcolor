@@ -152,6 +152,17 @@ void ColorDialog::setCurrentOpaqueQColor(const QColor& color)
     setCurrentOpaqueColor(FullColorDescription(m_rgbColorSpace, color));
 }
 
+/** @brief Updates the color patch widget
+ * 
+ * @post The color page widget will show the color of m_currentOpaqueColor()
+ * and the alpha value of m_alphaSelector()->alpha() */
+void ColorDialog::updateColorPatch()
+{
+    QColor tempRgbQColor = m_currentOpaqueColor.toRgbQColor();
+    tempRgbQColor.setAlphaF(m_alphaSelector->alpha());
+    m_colorPatch->setColor(tempRgbQColor);
+}
+
 /** @brief Updates m_currentOpaqueColor() and all affected widgets.
  * 
  * This function ignores the alpha component!
@@ -175,7 +186,7 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     // If we have really work to do, block recursive calls of this function
     m_isColorChangeInProgress = true;
 
-    // Same currentColor() for later comparision
+    // Save currentColor() for later comparision
     // Using currentColor() makes sure correct alpha treatment!
     QColor oldQColor = currentColor();
 
@@ -193,7 +204,6 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
         color.toHsvQColor().hsvSaturationF() * 255
     );
     m_hsvValueSpinbox->setValue(color.toHsvQColor().valueF() * 255);
-    m_colorPatch->setColor(tempRgbQColor);
     m_hlcLineEdit->setText(textForHlcLineEdit());
     m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
     m_lchLightnessSelector->setFraction(
@@ -203,6 +213,9 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
     m_alphaSelector->setColor(m_currentOpaqueColor);
 
+    // Update widgets that take alpha information
+    updateColorPatch();
+
     // Emit signal currentColorChanged() only if necessary
     if (currentColor() != oldQColor) {
         Q_EMIT currentColorChanged(currentColor());
@@ -211,7 +224,6 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     // End of this function. Unblock resursive
     // function calls before returning.
     m_isColorChangeInProgress = false;
-qDebug() << m_currentOpaqueColor.toLch().C;
 }
 
 /** @brief Reads the value from the lightness selector in the dialog and
@@ -362,8 +374,8 @@ void ColorDialog::initialize()
     // Create the main layout
     QVBoxLayout *tempMainLayout = new QVBoxLayout();
     tempMainLayout->addLayout(m_selectorLayout);
-    tempMainLayout->addWidget(m_colorPatch);
     tempMainLayout->addLayout(tempAlphaLayout);
+    tempMainLayout->addWidget(m_colorPatch);
     tempMainLayout->addWidget(m_buttonBox);
     setLayout(tempMainLayout);
     
@@ -439,6 +451,12 @@ void ColorDialog::initialize()
         &ChromaHueDiagram::colorChanged,
         this,
         &ColorDialog::setCurrentOpaqueColor
+    );
+    connect(
+        m_alphaSelector,
+        &AlphaSelector::alphaChanged,
+        this,
+        &ColorDialog::updateColorPatch
     );
 
     // initialize the options

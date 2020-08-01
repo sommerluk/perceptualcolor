@@ -161,7 +161,7 @@ private:
     /** @brief Pointer to RgbColorSpace() object */
     RgbColorSpace *m_rgbColorSpace;
 
-    QImage diagramImage(
+    QImage generateDiagramImage(
         const qreal imageHue,
         const QSize imageSize) const;
     QPoint currentImageCoordinates();

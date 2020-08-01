@@ -161,7 +161,11 @@ private:
     QImage m_wheelImage;
     /** Holds wether or not m_wheelImage is up-to-date.
      *  @sa refreshWheelImage()
-     *  @sa updateWheelImage */
+     *  @sa updateWheelImage
+     * @todo It might be better to erase m_wheelImageReady when it gets
+     * invalid (and get rid of m_wheelImageReady). So memory can be
+     * freed more quickly, without having outdated data taking space
+     * on the heap. */
     bool m_wheelImageReady = false;
     /** @brief Internal storage of the hue() property */
     qreal m_hue;

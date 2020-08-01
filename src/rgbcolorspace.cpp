@@ -40,12 +40,18 @@ namespace PerceptualColor {
 RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
 {
     // Create an ICC v4 profile object for the Lab color space.
-    // NULL means: Default white point (D50) // TODO Does this make sense? sRGB white point is D65!
+    // NULL means: Default white point (D50)
+    // TODO Does this make sense? sRGB white point is D65!
     cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(NULL);
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-    m_description = getInformationFromProfile(rgbProfileHandle, cmsInfoDescription);
-    m_description = tr("sRGB"); // TODO Do this only if the build-in sRGB is used, not when an actual external ICC profile is used.
+    m_description = getInformationFromProfile(
+        rgbProfileHandle,
+        cmsInfoDescription
+    );
+    // TODO Only change the description to "sRGB" if the build-in sRGB is
+    // used, not when an actual external ICC profile is used.
+    m_description = tr("sRGB");
     // Create the transforms
     m_transformLabToRgbHandle = cmsCreateTransform(
         labProfileHandle,             // input profile handle
@@ -75,7 +81,8 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
     cmsCloseProfile(labProfileHandle);
     cmsCloseProfile(rgbProfileHandle);
 
-    // Now we know for sure that lowerChroma is in-gamut and upperChroma is out-of-gamut…
+    // Now we know for sure that lowerChroma is in-gamut and upperChroma is
+    // out-of-gamut…
     cmsCIELCh candidate;
     candidate.L = 0;
     candidate.C = 0;
@@ -269,74 +276,106 @@ QString RgbColorSpace::description() const
     return m_description;
 }
 
-/** @brief Get information from the ICC profile
+/** @brief Get information from an ICC profile via LittleCMS
  * 
- * Fetches information from the ICC profile.
- * @param profileHandle the profile in which is searched
+ * @param profileHandle handle to the ICC profile in which will be searched
  * @param infoType the type of information that is searched
- * @returns a QString with the information. It prefers the information in the
- * current locale (country code and language code as used by QLocale()). If
- * this is not available in the ICC profile, it silently falls back to an
- * available localization. The returned QString() might be empty if the
- * information is not available in the ICC profile.
- */
-QString RgbColorSpace::getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType)
+ * @returns A QString with the information. First, it searchs the information
+ * in the current locale (language code and country code as provided currently
+ * by @c QLocale). If the information is not available in this locale, it
+ * silently falls back to another available localization. Note that the
+ * returned QString() might be empty if the requested information is not
+ * available in the ICC profile. */
+QString RgbColorSpace::getInformationFromProfile(
+    cmsHPROFILE profileHandle,
+    cmsInfoType infoType
+)
 {
-    char languageCode[3] = "en"; // recommended default value following LittleCMS documentation
-    char countryCode[3] = "US";  // recommended default value following LittleCMS documentation
-    // Update languageCode and countryCode to actual values if possible
-    // TODO What is the result does not contain, as expected, 2 x 2 characters? Crash!
+    // Initialize a char array of 3 values (two actual characters and a
+    // terminating null)
+    // The recommended default value for language following LittleCMS
+    // documentation is "en".
+    char languageCode[3] = "en";
+    // The recommended default value for country following LittleCMS
+    // documentation is "US".
+    char countryCode[3] = "US";
+    // Update languageCode and countryCode to the actual locale (if possible)
     QStringList list = QLocale().name().split('_');
+    // The locale codes should be ASCII only, so QString::toLatin1() should
+    // return valid results.
     if (list.at(0).size() == 2) {
         languageCode[0] = list.at(0).at(0).toLatin1();
         languageCode[1] = list.at(0).at(1).toLatin1();
-    }
-    if (list.at(1).size() == 2) {
-        countryCode[0] = list.at(1).at(0).toLatin1();
-        countryCode[1] = list.at(1).at(1).toLatin1();
+        // No need for languageCode[2] = 0; for null-terminated string,
+        // because the array was yet initialized
+        if (list.at(1).size() == 2) {
+            countryCode[0] = list.at(1).at(0).toLatin1();
+            countryCode[1] = list.at(1).at(1).toLatin1();
+            // No need for countryCode[2] = 0; for null-terminated string,
+            // because the array was yet initialized
+        }
     }
 
-    // Get the size of the buffer that cmsGetProfileInfo needs to return a value
+    // Calculate the size of the buffer that we have to provide for
+    // cmsGetProfileInfo in order to return a value.
     cmsUInt32Number resultLength = cmsGetProfileInfo(
-        profileHandle,  // profile in which we search
-        infoType,       // the type of information we search
-        languageCode,   // the preferred language in which we want to get the information
-        countryCode,    // the preferred country in which we want to get the information
-        NULL,           // do not actually return the information, just calculate the required buffer size
-        0               // do not actually return the information, just calculate the required buffer size
+        // profile in which we search
+        profileHandle,
+        // the type of information we search
+        infoType,
+        // the preferred language in which we want to get the information
+        languageCode,
+        // the preferred country for which we want to get the information
+        countryCode,
+        // do not actually return the information,
+        // just calculate the required buffer size
+        NULL,
+        // do not actually return the information,
+        // just calculate the required buffer size
+        0
     );
-    // For the actual buffer, we add +1 which will later serve to guarantee zero-terminated string
+    // For the actual buffer size, increment by 1. This helps us to
+    // guarantee a null-terminated string later on.
     cmsUInt32Number bufferLength = resultLength + 1;
+
     // Allocate the buffer
     wchar_t *buffer = new wchar_t [bufferLength];
     // Initialize the buffer with NULL
     for (int i = 0; i < bufferLength - 1; ++i) {
         *(buffer + i) = 0;
     }
-    // Get the actual description
+
+    // Write the actual information to the buffer
     cmsGetProfileInfo(
-        profileHandle,  // profile in which we search
-        infoType,       // the type of information we search
-        languageCode,   // the preferred language in which we want to get the information
-        countryCode,    // the preferred country in which we want to get the information
-        buffer,         // the buffer into which the requested information will be writen
-        resultLength    // the buffer size as previously calculated
+        // profile in which we search
+        profileHandle,
+        // the type of information we search
+        infoType,       
+        // the preferred language in which we want to get the information
+        languageCode,
+        // the preferred country for which we want to get the information
+        countryCode,
+        // the buffer into which the requested information will be written
+        buffer,
+        // the buffer size as previously calculated
+        resultLength    
     );
-    /* QString::fromWCharArray allows to specify the number of elements to read.
-     * But cmsGetProfileInfo returns often strings that are smaller than the
-     * previewed buffer size. So it's better to read-in the buffer as
-     * null-terminated buffer.
-     */
     // Make absolutely sure the buffer is null-terminated by marking its last
     // element (the one that was the +1 "extra" element) as NULL.
     *(buffer + (bufferLength - 1)) = 0;
-    // Read-in from the buffer
+
+    // Create a QString() from the from the buffer
+    /* cmsGetProfileInfo returns often strings that are smaller than the
+     * previously calculated buffer size. But it seems they are
+     * null-terminated strings. */
     QString result = QString::fromWCharArray(
         buffer, // read from the buffer
         -1      // read until the first NULL element
     );
+
     // Free allocated memory of the buffer
     delete [] buffer;
+
     // Return
     return result;
 }

@@ -37,6 +37,8 @@
 #include <QPainter>
 #include <QtMath>
 
+#include <QElapsedTimer>
+
 namespace PerceptualColor {
 
 /** @brief Constructor */
@@ -378,8 +380,17 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
  */
 void SimpleColorWheel::resizeEvent(QResizeEvent* event)
 {
+    // TODO The image cache is not necessarily invalid now. Thought the widget
+    // was resized, the image itself might stay in the same size. See also
+    // same problem for chromahuediagram and for chromalightnessdiagram and
+    // chromalightnessdiagram's resize() call done here within the child class
+    // wheelcolorpicker. This situation is relevant for the real-world usage,
+    // when the user scales the window only horizontally or only vertically.
     m_wheelImageReady = false;
-    // As by Qt documentation: The widget will be erased and receive a paint event immediately after processing the resize event. No drawing need be (or should be) done inside this handler.
+    /* As by Qt documentation:
+     *     “The widget will be erased and receive a paint event immediately
+     *      after processing the resize event. No drawing need be (or should
+     *      be) done inside this handler.” */
 }
 
 qreal SimpleColorWheel::hue() const
@@ -463,21 +474,21 @@ QSize SimpleColorWheel::minimumSizeHint() const
  * 
  * This class has a cache for the pixmap of the wheel ribbon.
  * 
- * This data is cached because it is often needed and it would be expensive to calculate it
- * again and again on the fly.
+ * This data is cached because it is often needed and it would be expensive
+ * to calculate it again and again on the fly.
  * 
  * Calling this function updates this cached data.
  * 
- * An update might be necessary if the data
- * the pixmap relies on, has changed. For example, if the wheelRibbonChroma() property
- * or the widget size have changed, this function has to be called. But do not call
- * this function directly. Rather set m_wheelPixmapReady to @e false, so that the
- * update is only calculated when really a paint event is done, and not when the
+ * An update might be necessary if the data the pixmap relies on, has changed.
+ * For example, if the wheelRibbonChroma() property or the widget size have
+ * changed, this function has to be called. But do not call this function
+ * directly. Rather set m_wheelPixmapReady to @e false, so that the update
+ * is only calculated when really a paint event is done, and not when the
  * widget is invisible anyway.
  * 
- * This function does not repaint the widget! After calling this function, you have to call
- * manually @c update() to schedule a re-paint of the widget, if you wish so.
- */
+ * This function does not repaint the widget! After calling this function,
+ * you have to call manually @c update() to schedule a re-paint of the widget,
+ * if you wish so. */
 void SimpleColorWheel::updateWheelImage()
 {
     if (m_wheelImageReady) {
@@ -588,27 +599,33 @@ QImage SimpleColorWheel::generateWheelImage(
     const qreal lightness,
     const qreal chroma)
 {
+QElapsedTimer myTimer;
+myTimer.start();
     if (outerDiameter <= 0) {
         return QImage();
     }
 
-    // Firsts of all, generate a non-antialised, intermediate, color wheel, but
-    // with some pixels extra at the inner and outer side. The overlap defines
-    // an overlap for the wheel, so there are some more pixels that are drawn
-    // at the outer and at the inner border of the wheel, to allow later
-    // clipping with antialising
+    // Firsts of all, generate a non-antialised, intermediate, color wheel,
+    // but with some pixels extra at the inner and outer side. The overlap
+    // defines an overlap for the wheel, so there are some more pixels that
+    // are drawn at the outer and at the inner border of the wheel, to allow
+    // later clipping with antialising
     constexpr int overlap = 1;
     PolarPointF polarCoordinates;
     int x;
     int y;
     QColor rgbColor;
     cmsCIELCh LCh; // uses cmsFloat64Number internally
-    int maxExtension = outerDiameter - 1; // maximum value for x index and y index
+    // Calculate maximum value for x index and y index
+    int maxExtension = outerDiameter - 1; 
     qreal center = maxExtension / static_cast<qreal>(2);
-    QImage rawWheel = QImage(QSize(outerDiameter, outerDiameter), QImage::Format_ARGB32);
-    // Because there may be out-of-gamut colors for some hue (depending on the given
-    // lightness and chroma value) which are drawn transparent, it is important to
-    // initialize this image with a transparent background.
+    QImage rawWheel = QImage(
+        QSize(outerDiameter, outerDiameter),
+        QImage::Format_ARGB32
+    );
+    // Because there may be out-of-gamut colors for some hue (depending on the
+    // given lightness and chroma value) which are drawn transparent, it is
+    // important to initialize this image with a transparent background.
     rawWheel.fill(Qt::transparent);
     LCh.L = lightness;
     LCh.C = chroma;
@@ -637,15 +654,24 @@ QImage SimpleColorWheel::generateWheelImage(
     }
 
     // construct our final QImage with transparent background
-    QImage finalWheel = QImage(QSize(outerDiameter, outerDiameter), QImage::Format_ARGB32);
+    QImage finalWheel = QImage(
+        QSize(outerDiameter, outerDiameter),
+        QImage::Format_ARGB32
+    );
     finalWheel.fill(Qt::transparent);
     
-    // paint an anti-alised circle with the raw (non-antialiased) color wheel as brush
+    // paint an anti-alised circle with the raw (non-antialiased)
+    // color wheel as brush
     QPainter myPainter(&finalWheel);
     myPainter.setRenderHint(QPainter::Antialiasing, true);
     myPainter.setPen(QPen(Qt::NoPen));
     myPainter.setBrush(QBrush(rawWheel));
-    myPainter.drawEllipse(border, border, outerDiameter - 2 * border, outerDiameter - 2 * border);
+    myPainter.drawEllipse(
+        border,
+        border,
+        outerDiameter - 2 * border,
+        outerDiameter - 2 * border
+    );
     
     // set the inner circle of the wheel to antialised transparency
     myPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
@@ -658,7 +684,8 @@ QImage SimpleColorWheel::generateWheelImage(
         outerDiameter - 2 * (thickness + border),
         outerDiameter - 2 * (thickness + border)
     );
-    
+
+qDebug() << "Generating simple color wheel image took" << myTimer.restart() << "ms.";    
     // return
     return finalWheel;
 }

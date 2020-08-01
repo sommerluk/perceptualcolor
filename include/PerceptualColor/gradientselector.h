@@ -75,7 +75,7 @@ class GradientSelector : public QWidget
      * @sa setFraction()
      * @sa m_fraction()
      */
-    Q_PROPERTY(qreal fraction READ orientation WRITE setFraction NOTIFY fractionChanged USER true)
+    Q_PROPERTY(qreal fraction READ fraction WRITE setFraction NOTIFY fractionChanged USER true)
 
     /** @brief This property holds the page step.
      * 

@@ -60,6 +60,8 @@ private Q_SLOTS:
             INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
             0                             // flags
         );
+        cmsCloseProfile(labProfileHandle);
+        cmsCloseProfile(rgbProfileHandle);
         PerceptualColor::Helper::cmsRGB rgb;
         cmsCIELab lab;
         lab.L = 50;
@@ -92,6 +94,9 @@ private Q_SLOTS:
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
         QVERIFY2(rgb.blue > 0.8, "Test if Blue is at the correcpt position in memory");
+        
+        // Clean up
+        cmsDeleteTransform(m_transformLabToRgbHandle);
     }
      
     void testInRangeInt() {
@@ -164,16 +169,14 @@ private Q_SLOTS:
             PerceptualColor::Helper::inRange<double>(-3.1, 0.2, -1.3),
             false
         );
-    };
+    }
 
     void testGamutPrecision() {
         // The value is somewhat arbitrary.
         // Make sure that at least it is not too high.
         QVERIFY2(
-            static_cast<qreal>(
-                PerceptualColor::Helper::gamutPrecision
-            ) < 1,
-            "Gamut precison is not too high"
+            PerceptualColor::Helper::gamutPrecision < 1,
+            "Verify that gamut precison value is not too high"
         );
     }
 
@@ -199,10 +202,10 @@ private Q_SLOTS:
             ),
             50
         );
-        
+
         PerceptualColor::RgbColorSpace temp;
         cmsCIELCh color;
-        qreal presicion = 0.03;
+        qreal presicion = 0.1;
 
         // Test if maxSrgbChroma is big enough
         qreal precisionDegreeMaxSrgbChroma =
