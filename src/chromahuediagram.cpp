@@ -34,6 +34,7 @@
 #include <math.h>
 
 #include <QDebug>
+#include <QBuffer>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
@@ -45,8 +46,8 @@
 namespace PerceptualColor {
 
 /** @brief The constructor.
+ * @param colorSpace The colorSpace within this widget should operate
  * @param parent Passed to the QWidget base class constructor
- * @param f Passed to the QWidget base class constructor
  */
 ChromaHueDiagram::ChromaHueDiagram(RgbColorSpace *colorSpace, QWidget *parent) : QWidget(parent)
 {
@@ -235,6 +236,7 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
  */
 void ChromaHueDiagram::paintEvent(QPaintEvent* event)
 {
+    Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
     // Render anti-aliased looks better. But as Qt documentation says:
     //
@@ -604,6 +606,7 @@ void ChromaHueDiagram::setColor(const FullColorDescription &newColor)
  */
 void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
 {
+    Q_UNUSED(event);
     // Find the smaller one of width and height
     int newDiameter = qMin(size().width(), size().height());
     // Make sure the diameter is an odd integer (so that center of the
@@ -730,19 +733,207 @@ FullColorDescription ChromaHueDiagram::color() const
     return m_color;
 }
 
-/** @brief in image of a-b plane of the color space at a given lightness */
 QImage ChromaHueDiagram::generateDiagramImage(
     const RgbColorSpace *colorSpace,
     const int imageSize,
-    const int maxChroma,
+    const qreal maxChroma,
     const qreal lightness,
     const int border
 )
 {
-    int maxIndex = imageSize - 1;
+/*
+Re: [Lcms-user] Out-of-gamut colours?
+From: Marti <marti@li...> - 2005-07-29 08:23:37
+
+Hi,
+
+There is a special built-in profile called the null profile. This
+profile operates on gray scale and returns always zero. Since the gamut
+warning bypasses the output profile, you can use the null profile to do
+a quick gamut check: You will obtain 0 for in-gamut and 255 (or whatever
+gamut alarm you set) for out of gamut.
+
+Example:
+
+You want to check gamut colors on cmyk.icc, then:
+
+    cmsSetAlarmCodes(255, 255, 255)     // This would turn gray alarm code to 255
+    hNULL =  cmsCreateNULLProfile();
+    cmsCreateProofingTransform(
+        hXYZ,
+        TYPE_XYZ_DBL,
+        hNULL, TYPE_GRAY_8,
+        hCMYK,
+        INTENT_RELATIVE_COLORIMETRIC,
+        INTENT_RELATIVE_COLORIMETRIC,
+        (cmsFLAGS_GAMUTCHECK|cmsFLAGS_SOFTPROOFING)
+    );
+
+Then, for checking a single color
+
+    cmsCIEXYZ XYZ;
+    BYTE gamut;
+
+... put value to check into XYZ ...
+
+    cmsDoTransform(xform, &XYZ, &gamut, 1);
+*/
+    QElapsedTimer myTimer;
+    myTimer.start();
+
+    /* We do not call cmsSetAlarmCodes(alarmCodes); because this seems to be
+     * not able to change the alpa channel. And apparently, with gamut
+     * checking, transparency seems to be the default for out-of-gamut
+     * colors anyway, so no need to do anything. Anyway, here is some
+     * example code snipped that could change the alarm code. */
+    // cmsUInt16Number alarmCodes[cmsMAXCHANNELS];
+    // cmsUInt16Number alarmCode = std::numeric_limits<cmsUInt16Number>::max();
+    // for (int i = 0; i < cmsMAXCHANNELS; ++i) {
+    //     alarmCodes[i] = alarmCode;
+    // }
+    // cmsSetAlarmCodes(alarmCodes);
+
+    // There is a special built-in profile called the null profile. This
+    // profile operates on gray scale and returns always zero. Since the gamut
+    // warning bypasses the output profile, you can use the null profile to do
+    // a quick gamut check: You will obtain 0 for in-gamut and 255 (or
+    // whatever gamut alarm you set) for out of gamut. Currently we do not use
+    // this technique.
+    // cmsHPROFILE hNULL = cmsCreateNULLProfile();
+    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(NULL);
+    cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
+
+    cmsHTRANSFORM xform = cmsCreateProofingTransform(
+        labProfileHandle,                           // Input profile handle
+        TYPE_Lab_FLT,                               // InputFormat
+        rgbProfileHandle,                           // Output
+        TYPE_BGRA_8,                                // OutputFormat TODO endianess?
+        rgbProfileHandle,                           // Proofing
+        INTENT_ABSOLUTE_COLORIMETRIC,               // Intent
+        INTENT_ABSOLUTE_COLORIMETRIC,               // ProofingIntent
+        (cmsFLAGS_SOFTPROOFING|cmsFLAGS_GAMUTCHECK) // dwFlags // TODO cmsFLAGS_SOFTPROOFING slown down. And cmsFLAGS_GAMUTCHECK slows down a lot and is not exact.
+    );
+
+    qDebug()
+        << "Generating the lcms transform took"
+        << myTimer.restart()
+        << "ms.";
+
+    const int maxIndex = imageSize - 1;
     // Test if image size is too small.
     if (maxIndex < 1) {
         // maxIndex must be at least >= 1 for our algorithm. If they are 0, this would crash (division by 0). // TODO how to solve this?
+        return QImage();
+    }
+
+    // Setup
+    cmsCIELab lab; // uses cmsFloat64Number internally
+    int x;
+    int y;
+    const qreal scaleFactor = static_cast<qreal>(2 * maxChroma) / (imageSize - 2 * border);
+
+    int myBufferSize = imageSize * imageSize * 3;
+    float *myBuffer = new float[myBufferSize];
+    // Paint the gamut.
+    lab.L = lightness;
+    int index = 0;
+    for (y = 0; y <= maxIndex; ++y) {
+        lab.b = maxChroma - (y - border) * scaleFactor;
+        for (x = 0; x <= maxIndex; ++x) {
+            lab.a = (x - border) * scaleFactor - maxChroma;
+//             if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= (qPow(maxChroma, 2))) {
+//                 tempColor = colorSpace->colorRgb(lab);
+//                 if (tempColor.isValid()) {
+//                     // The pixel is within the gamut
+//                     tempImage.setPixelColor(x, y, tempColor);
+//                 }
+//             }
+            // Buffer for 3 channels à 1 bytes
+            myBuffer[index] = lab.L;
+            ++index;
+            myBuffer[index] = lab.a;
+            ++index;
+            myBuffer[index] = lab.b;
+            ++index;
+        }
+    }
+
+    static_assert(
+        sizeof(uchar) == sizeof(quint8),
+        "LittleCMS expects uchar as buffer type. We are using however quint8 "
+            "to be sure it is actually 8 bit (important for the rest of the "
+            "image processing code. Therefore uchar and quint8 must have the "
+            "same size to make the code reliable."
+    );
+    const int outputBufferArrayLength = imageSize * imageSize * 4;
+    quint8 *outputBuffer = new quint8[outputBufferArrayLength];
+    for (int i = 0 ; i < outputBufferArrayLength; ++i) {
+        outputBuffer[i] = 250;
+    }
+
+    cmsDoTransform(
+        xform,
+        myBuffer,
+        outputBuffer,
+        imageSize * imageSize
+    );
+
+    QImage tempImage = QImage(
+        outputBuffer,
+        imageSize,
+        imageSize,
+        QImage::Format_ARGB32
+    );
+    
+    qDebug()
+        << "Generating chroma-hue gamut image took"
+        << myTimer.restart()
+        << "ms.";
+
+    QImage result = QImage(
+        QSize(imageSize, imageSize),
+        QImage::Format_ARGB32
+    );
+
+    result.fill(Qt::transparent);
+
+    // Cut of everything outside the circle
+    QPainter myPainter(&result);
+    myPainter.setRenderHint(QPainter::Antialiasing, true);
+    myPainter.setPen(QPen(Qt::NoPen));
+    myPainter.setBrush(QBrush(tempImage));
+    myPainter.drawEllipse(
+        border,                 // x
+        border,                 // y
+        imageSize - 2 * border, // width
+        imageSize - 2 * border  // height
+    );
+
+    delete[] myBuffer;
+    // Delete the original content of tempImage before deleting outputBuffer,
+    // because tempImage relies on the presence of outputBuffer.
+    tempImage = QImage();
+    delete[] outputBuffer;
+    qDebug()
+        << "Generating chroma-hue gamut image took cleanup"
+        << myTimer.restart() << "ms.";
+    return result;
+}
+
+/** @brief in image of a-b plane of the color space at a given lightness */
+QImage ChromaHueDiagram::generateDiagramImage2(
+    const RgbColorSpace *colorSpace,
+    const int imageSize,
+    const qreal maxChroma,
+    const qreal lightness,
+    const int border
+)
+{
+    const int maxIndex = imageSize - 1;
+    // Test if image size is too small.
+    if (maxIndex < 1) {
+        // maxIndex must be at least >= 1 for our algorithm. If they are 0,
+        // this would crash (division by 0). TODO how to solve this?
         return QImage();
     }
     
@@ -756,14 +947,15 @@ QImage ChromaHueDiagram::generateDiagramImage(
         QImage::Format_ARGB32
     );
     tempImage.fill(Qt::transparent); // Initialize the image with transparency
-    const qreal scaleFactor = static_cast<qreal>(2 * maxChroma) / (imageSize - 2 * border);
+    const qreal scaleFactor =
+        static_cast<qreal>(2 * maxChroma) / (imageSize - 2 * border);
  
-QElapsedTimer myTimer;
-myTimer.start();   
+    QElapsedTimer myTimer; // TODO remove me!
+    myTimer.start(); // TODO remove me!
     // Paint the gamut.
     lab.L = lightness;
     for (y = border; y <= maxIndex - border; ++y) {
-        lab.b = maxChroma - (y - border) * scaleFactor; // floating point division thanks to static_cast to cmsFloat64Number
+        lab.b = maxChroma - (y - border) * scaleFactor;
         for (x = border; x <= maxIndex - border; ++x) {
             lab.a = (x - border) * scaleFactor - maxChroma;
             if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= (qPow(maxChroma, 2))) {
@@ -775,7 +967,7 @@ myTimer.start();
             }
         }
     }
-qDebug() << "Generating chroma-hue gamut image took" << myTimer.restart() << "ms.";
+    qDebug() << "Generating chroma-hue gamut image took" << myTimer.restart() << "ms.";  // TODO remove me!
 
     QImage result = QImage(
         QSize(imageSize, imageSize),

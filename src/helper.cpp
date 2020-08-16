@@ -24,6 +24,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** @file
+ * 
+ * Definition of @ref PerceptualColor::Helper namespace and its members. */
+
 // Own header
 #include "PerceptualColor/helper.h"
 
@@ -44,29 +48,7 @@ namespace Helper {
      * lightnesses. You can use this as tiles to paint a background.
      * 
      * Example:
-     * @code
-     * QImage myImage(150, 200, QImage::Format_ARGB32);
-     * 
-     * QPainter myPainter(&myImage);
-     * 
-     * // Fill the hole image with tiles made of transparencyBackground()
-     * myPainter.fillRect(
-     *     0,
-     *     0,
-     *     150,
-     *     200,
-     *     QBrush(PerceptualColor::Helper::transparencyBackground())
-     * );
-     * 
-     * // Paint semi-transparent red color above
-     * myPainter.fillRect(
-     *     0,
-     *     0,
-     *     150,
-     *     200,
-     *     QBrush(QColor(255, 0, 0, 128))
-     * );
-     * @endcode
+     * @snippet test/testhelper.cpp Helper Use transparencyBackground
      * 
      * @todo Provide color management support? Thought we use the same value
      * for red, green and blue, this might @em not be perfectly neutral gray
@@ -106,11 +88,11 @@ namespace Helper {
      * 
      * As the QWheelEvent documentation explains, there is a common physical
      * standard wheel step size for mouse wheels: 15°. But there are some
-     * mouse models, which use non-standard physical wheel step sizes for
+     * mouse models which use non-standard physical wheel step sizes for
      * their mouse wheel, for example because they have a higher wheel
      * resolution.
      * 
-     * This function converts the values in QMouseEvent to the @em standard
+     * This function converts the values in a QMouseEvent to the @em standard
      * wheel step count.
      * 
      * @param event the QWheelEvent

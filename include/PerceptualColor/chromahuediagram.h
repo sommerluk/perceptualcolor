@@ -39,13 +39,18 @@ namespace PerceptualColor {
     
 /** @brief A widget that displays the plan of chroma and hue
  * 
- * A widget that displays the plan of chroma and hue, that means an  a*-b* diagram
- * (the a* axis and the b* axis of the L*a*b* color model).
+ * A widget that displays the plan of chroma and hue, that means an a*-b*
+ * diagram (the a* axis and the b* axis of the L*a*b* color model).
  *
- * The lightness (L* axis in Lab/LCh color model) can be controled by a property.
+ * The lightness (L* axis in Lab/LCh color model) can be controled by a
+ * property.
  * 
- * The widget reacts on mouse events and on keyboard events (see keyPressEvent() for details).
- */
+ * The widget reacts on mouse events and on keyboard events (see
+ * keyPressEvent() for details).
+ * 
+ * @todo When the mouse is within the circle, but above the gray background
+ * and outside the gamut, then the widget should continue to accept clicks,
+ * but it should now also show the mouse curser. */
 class ChromaHueDiagram : public QWidget
 {
     Q_OBJECT
@@ -183,7 +188,14 @@ private:
     static QImage generateDiagramImage(
         const RgbColorSpace *colorSpace,
         const int imageSize,
-        const int maxChroma,
+        const qreal maxChroma,
+        const qreal lightness,
+        const int border
+    );
+    static QImage generateDiagramImage2(
+        const RgbColorSpace *colorSpace,
+        const int imageSize,
+        const qreal maxChroma,
         const qreal lightness,
         const int border
     );

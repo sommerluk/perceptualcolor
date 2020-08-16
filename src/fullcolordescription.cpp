@@ -1,17 +1,27 @@
+// SPDX-License-Identifier: MIT
 /*
- * Copyright 2020 <copyright holder> <email>
+ * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
  */
 
 // own header
@@ -44,7 +54,8 @@ FullColorDescription::FullColorDescription()
  *
  * @param colorSpace The color space in which the color description is created.
  * Only needed during constructor call. Can be deleted afterwards.
- * @param rgb rgb color
+ * @param rgb color (in RGB mode)
+ * @param alpha the alpha channel for color
  */
 FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const Helper::cmsRGB &rgb, qreal alpha)
 {
@@ -101,6 +112,8 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor col
  * Only needed during constructor call. Can be deleted afterwards.
  * @param lab lab color (if out-of-gamut, it will be maintained as-is, but the
  * RGB value will be forced into the gamut.
+ * @param behaviour how to treat out-of-gamut values
+ * @param alpha the alpha channel of the color
  */
 FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour behaviour, qreal alpha)
 {
@@ -123,6 +136,8 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const cmsC
  * Only needed during constructor call. Can be deleted afterwards.
  * @param lch lch color (if out-of-gamut, it will be maintained as-is, but the
  * RGB value will be forced into the gamut.
+ * @param behaviour how to tread out-of-gamut values
+ * @param alpha the alpha channel
  */
 FullColorDescription::FullColorDescription(
     RgbColorSpace *colorSpace,
@@ -268,8 +283,8 @@ cmsCIELCh FullColorDescription::toLch() const
 }
 
 /**
- * @returns if this object is valid, the alpha channel, otherwise an arbitrary value. 0 is fully transparent, 1 is fully opaque.
- */
+ * @returns if this object is valid, the alpha channel, otherwise an arbitrary
+ * value. 0 is fully transparent, 1 is fully opaque. */
 qreal FullColorDescription::alpha() const
 {
     return m_alpha;
@@ -308,7 +323,7 @@ void FullColorDescription::normalizeLch()
 /** @brief  A string with a hexadecimal representation of the color.
  * 
  * This function is similar to QColor::name(), but provides correct rounding.
- * @returns A string of the form @em #RRGGBB with the red (R), green (G) and
+ * @returns A string of the form @em \#RRGGBB with the red (R), green (G) and
  * blue (B) values represented as two hexadecimal digits in the range 00⁠–⁠FF.
  * The digits A–⁠F are always upper-case.
  */

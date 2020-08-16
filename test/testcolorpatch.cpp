@@ -182,7 +182,16 @@ private Q_SLOTS:
         QCOMPARE(m_color, QColor());
     }
 
+void testSnippet01() {
+//! [ColorPatch Create widget]
+PerceptualColor::ColorPatch *m_patch = new PerceptualColor::ColorPatch;
+m_patch->setColor(Qt::blue);
+//! [ColorPatch Create widget]
+QCOMPARE(m_patch->color(), QColor(Qt::blue));
+delete m_patch;
+}
+
 };
 
-QTEST_MAIN(TestColorPatch);
+QTEST_MAIN(TestColorPatch)
 #include "testcolorpatch.moc" // necessary because we do not use a header file

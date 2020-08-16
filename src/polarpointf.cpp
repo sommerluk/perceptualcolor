@@ -24,6 +24,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** @file
+ * 
+ * Definition of the @ref PerceptualColor::PolarPointF class and its
+ * members. */
+
 // Own header
 #include "PerceptualColor/polarpointf.h"
 
@@ -34,7 +39,7 @@ namespace PerceptualColor {
 
 /** @brief Constructor
  * 
- * Constructs an object with radial() = 0 and angleDegree() = 0 */
+ * Constructs an object with @ref radial() = 0 and @ref angleDegree() = 0 */
 PolarPointF::PolarPointF()
 {
     m_radial = 0;
@@ -43,11 +48,12 @@ PolarPointF::PolarPointF()
 
 /** @brief Constructor
  * 
- * Constructs an object with the given radial and angle values. The
- * values get normalized, see the general class description for details.
+ * Constructs an object with the given @ref radial() and @ref angleDegree()
+ * values. The values get normalized, see the general class description for
+ * details.
  * 
- * @param newRadial the radial value
- * @param newAngleDegree the angle mesured in degree */
+ * @param newRadial the @ref radial() value
+ * @param newAngleDegree the @ref angleDegree() value */
 PolarPointF::PolarPointF(const qreal newRadial, const qreal newAngleDegree)
 {
     if (newRadial < 0) {
@@ -63,8 +69,8 @@ PolarPointF::PolarPointF(const qreal newRadial, const qreal newAngleDegree)
  * 
  * Constructs an object converting from the given cartesian coordinates.
  * 
- * If the cartesian coordinates are (0, 0) than the angle (which is
- * meaningless for a radial of 0) is set to 0°.
+ * If the cartesian coordinates are (0, 0) than the @ref angleDegree (which is
+ * meaningless for a @ref radial of 0) is set to 0°.
  * 
  * @param cartesianCoordiantes the cartesian coordinates */
 PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
@@ -92,9 +98,9 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 /** @brief Equal operator
  * 
  * Equal means, both values reference to the same point in the coordinates
- * space. So <tt>(radial: 0, angleDegree: 50)</tt> is considered equal to
- * <tt>(radial: 0, angleDegree: 80)</tt> because the angleDegree is
- * meaningless if the radial is 0.
+ * space. So <tt>(@ref radial(): 0, @ref angleDegree(): 50)</tt> is considered
+ * equal to <tt>(@ref radial(): 0, @ref angleDegree(): 80)</tt> because the
+ * @ref angleDegree() is meaningless if the @ref radial() is 0.
  * 
  * @param other the polar coordinates to compare with
  * @returns @c true if equal, @c false otherwise */
@@ -110,7 +116,7 @@ bool PolarPointF::operator==(const PolarPointF other) const
 
 /** @brief Unequal operator
  * 
- * Inverse behaviour to operator==()
+ * Inverse behaviour to @ref operator==()
  * 
  * @param other the polar coordinates to compare with
  * @returns @c true if unequal, @c false otherwise */
@@ -148,7 +154,7 @@ qreal PolarPointF::angleDegree() const
  * | <tt> −1°  </tt> | <tt>359°  </tt>  |
  * | <tt> −1.3°</tt> | <tt>358.7°</tt>  |
  * 
- * @param angle an angle (mesured in degree)
+ * @param angleDegree an angle (mesured in degree)
  * @returns the angle, normalized to the range 0° ≤ value < 360° */
 qreal PolarPointF::normalizedAngleDegree(const qreal angleDegree)
 {

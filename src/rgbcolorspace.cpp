@@ -143,8 +143,7 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
 
 /** @brief Calculates the Lab value
  * 
- * @param rgbColor the color that will be converted. (If this is not an RGB color, it
- * will be converted first into an RGB color by QColor methods.)
+ * @param rgb the color that will be converted.
  * @returns If the color is valid, the corresponding LCh value might also be invalid.
  */
 cmsCIELab RgbColorSpace::colorLab(const Helper::cmsRGB &rgb) const
@@ -319,19 +318,19 @@ QString RgbColorSpace::getInformationFromProfile(
     // Calculate the size of the buffer that we have to provide for
     // cmsGetProfileInfo in order to return a value.
     cmsUInt32Number resultLength = cmsGetProfileInfo(
-        // profile in which we search
+        // Profile in which we search:
         profileHandle,
-        // the type of information we search
+        // The type of information we search:
         infoType,
-        // the preferred language in which we want to get the information
+        // The preferred language in which we want to get the information:
         languageCode,
-        // the preferred country for which we want to get the information
+        // The preferred country for which we want to get the information:
         countryCode,
-        // do not actually return the information,
-        // just calculate the required buffer size
+        // Do not actually provide the information,
+        // just return the required buffer size:
         NULL,
-        // do not actually return the information,
-        // just calculate the required buffer size
+        // Do not actually provide the information,
+        // just return the required buffer size:
         0
     );
     // For the actual buffer size, increment by 1. This helps us to
@@ -339,7 +338,7 @@ QString RgbColorSpace::getInformationFromProfile(
     cmsUInt32Number bufferLength = resultLength + 1;
 
     // Allocate the buffer
-    wchar_t *buffer = new wchar_t [bufferLength];
+    wchar_t *buffer = new wchar_t[bufferLength];
     // Initialize the buffer with NULL
     for (int i = 0; i < bufferLength - 1; ++i) {
         *(buffer + i) = 0;
@@ -374,7 +373,7 @@ QString RgbColorSpace::getInformationFromProfile(
     );
 
     // Free allocated memory of the buffer
-    delete [] buffer;
+    delete[] buffer;
 
     // Return
     return result;

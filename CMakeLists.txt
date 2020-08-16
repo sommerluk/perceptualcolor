@@ -43,12 +43,17 @@ set(CMAKE_AUTOMOC ON)
 # set(CMAKE_AUTOUIC ON)
 # Use also our local FIND modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-# Enable compiler warings
+# TODO Make the following code support more compilers
+# Enable compiler warings and optimization
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(warnings "-Wall -Wextra -Werror -Wconversion -Wsign-conversion -pedantic-errors")
+    # Like Qt 5, that requieres C++11 since Qt 5.7, here we requiere also C++11:
+    # https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
+    # TODO add also -Werror
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++11 -Wall -Wextra -Wvla -Wconversion -pedantic-errors -Wsign-conversion")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(warnings "/W4 /WX /EHsc")
+    # TODO Enable optimaization?
 endif()
 message("-- Using compiler ${CMAKE_CXX_COMPILER_ID} with these warnings: ${warnings}")
 # Get directories for installation process
@@ -120,6 +125,12 @@ install(TARGETS perceptualcolor LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBL
 
 # Create our application
 add_executable(perceptualcolorpicker src/main.cpp)
+# add_compile_definitions(FOO=BAR) would also target the unit tests, which seems inappropriate
+# TODO The following line makes only sense if actually tested against Qt 6,
+# and if Qt 5 actually does no further development.
+target_compile_definitions(perceptualcolorpicker PRIVATE QT_DEPRECATED_WARNINGS)
+# TODO It should be on debug only, and not on release build:
+target_compile_definitions(perceptualcolorpicker PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0x060000)
 target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolor)
 install(TARGETS perceptualcolorpicker DESTINATION ${CMAKE_INSTALL_BINDIR})
 

@@ -44,8 +44,8 @@
 namespace PerceptualColor {
 
 /** @brief The constructor.
+ * @param colorSpace The colorspace within the widget should operate
  * @param parent Passed to the QWidget base class constructor
- * @param f Passed to the QWidget base class constructor
  */
 ChromaLightnessDiagram::ChromaLightnessDiagram(RgbColorSpace *colorSpace, QWidget *parent) : QWidget(parent)
 {
@@ -231,6 +231,7 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
  */
 void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
 {
+    Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
     // Render anti-aliased looks better. But as Qt documentation says:
     //
@@ -535,6 +536,7 @@ void ChromaLightnessDiagram::setColor(const FullColorDescription &newColor)
  */
 void ChromaLightnessDiagram::resizeEvent(QResizeEvent* event)
 {
+    Q_UNUSED(event);
     m_diagramCacheReady = false;
     // As by Qt documentation: The widget will be erased and receive a paint event immediately after processing the resize event. No drawing need be (or should be) done inside this handler.
 }
@@ -652,9 +654,6 @@ FullColorDescription ChromaLightnessDiagram::color() const
  * 
  * @param imageHue the (Lch) hue of the image
  * @param imageSize the size of the requested image
- * @param colorTransform the LittleCMS color transform to use. The input profile must be based on
- * cmsCreateLab4ProfileTHR() or cmsCreateLab4Profile(). The output profile must be an RGB
- * profile.
  * @returns A chroma-lightness diagram for the given hue. For the y axis, its heigth covers
  * the lightness range 0..100. [Pixel (0) corresponds to value 100. Pixel (height-1) corresponds
  * to value 0.] Its x axis uses always the same scale as the y axis. So if the size
@@ -676,31 +675,30 @@ FullColorDescription ChromaLightnessDiagram::color() const
  * because we can get them directly from underlying object data)?
  * 
  * @todo Possible unit test for this function:
- * @code
-    void testChromaLightnessDiagramm() {
-        QImage mImage;
 
-        // Testing extremly small images
-        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(0, 0), littlecmsColorTransform);
-        QCOMPARE(mImage.size(), QSize(0, 0));
-        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(1, 1), littlecmsColorTransform);
-        QCOMPARE(mImage.size(), QSize(1, 1));
-        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(2, 2), littlecmsColorTransform);
-        QCOMPARE(mImage.size(), QSize(2, 2));
-        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(-1, -1), littlecmsColorTransform);
-        QCOMPARE(mImage.size(), QSize(0, 0));
+void testChromaLightnessDiagramm() {
+    QImage mImage;
 
-        // Start testing for a normal size image
-        mImage = PerceptualColor::ChromaLightnessDiagram::diagramImage(0, QSize(201, 101), littlecmsColorTransform);
-        QCOMPARE(mImage.height(), 101);
-        QCOMPARE(mImage.width(), 201);
-        QCOMPARE(mImage.pixelColor(0, 0).isValid(), true); // position within the QImage is valid
-        QCOMPARE(mImage.pixelColor(0, 100).isValid(), true); // position within the QImage is valid
-        QTest::ignoreMessage(QtWarningMsg, "QImage::pixelColor: coordinate (0,101) out of range");
-        QCOMPARE(mImage.pixelColor(0, 101).isValid(), false); // position within the QImage is invalid
-    }
- * @endcode
- */
+    // Testing extremly small images
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(0, 0));
+    QCOMPARE(mImage.size(), QSize(0, 0));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(1, 1));
+    QCOMPARE(mImage.size(), QSize(1, 1));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(2, 2));
+    QCOMPARE(mImage.size(), QSize(2, 2));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(-1, -1));
+    QCOMPARE(mImage.size(), QSize(0, 0));
+
+    // Start testing for a normal size image
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(201, 101));
+    QCOMPARE(mImage.height(), 101);
+    QCOMPARE(mImage.width(), 201);
+    QCOMPARE(mImage.pixelColor(0, 0).isValid(), true); // position within the QImage is valid
+    QCOMPARE(mImage.pixelColor(0, 100).isValid(), true); // position within the QImage is valid
+    QTest::ignoreMessage(QtWarningMsg, "QImage::pixelColor: coordinate (0,101) out of range");
+    QCOMPARE(mImage.pixelColor(0, 101).isValid(), false); // position within the QImage is invalid
+}
+*/
 QImage ChromaLightnessDiagram::generateDiagramImage(
         const qreal imageHue,
         const QSize imageSize) const
@@ -761,12 +759,7 @@ qDebug() << "Generating chroma-lightness gamut image took" << myTimer.restart() 
 
 /** @brief Refresh the diagram and associated data
  * 
- * This class has a cache of various data related to the diagram
- * - @ref m_diagramImage
- * - @ref m_diagramPixmap
- * - @ref m_maxY
- * - @ref m_minY
- * 
+ * This class has a cache of various data related to the diagram.
  * This data is cached because it is often needed and it would be expensive to calculate it
  * again and again on the fly.
  * 
@@ -795,7 +788,8 @@ void ChromaLightnessDiagram::updateDiagramCache()
 
 /** @brief Search the nearest non-transparent neighbor pixel
 * 
-* @note This code is a terribly inefficient implementation of a “nearest neigbor search”. See
+* @note This code is a terribly inefficient
+* implementation of a “nearest neigbor search”. See
 * https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast
 * for a better approach.
 * 
@@ -807,13 +801,15 @@ void ChromaLightnessDiagram::updateDiagramCache()
 * @returns
 * \li If originalPoint itself is within the image and a
 *     non-transparent pixel, it returns originalPoint.
-* \li Else, if there is are non-transparent pixels in the image, the nearest non-transparent
-*     pixel is returned. (If there are various nearest neigbors at the same distance, it is
-*     undefined which one is returned.)
-* \li Else there are no non-transparent pixels, and simply the point <tt>0, 0</t> is returned,
-*     but this is a very slow case.
-*/
-QPoint ChromaLightnessDiagram::nearestNeighborSearch(const QPoint originalPoint, const QImage &image) {
+* \li Else, if there is are non-transparent pixels in the image, the nearest
+*     non-transparent pixel is returned. (If there are various nearest
+*     neigbors at the same distance, it is undefined which one is returned.)
+* \li Else there are no non-transparent pixels, and simply the point
+*     <tt>0, 0</tt> is returned, but this is a very slow case. */
+QPoint ChromaLightnessDiagram::nearestNeighborSearch(
+    const QPoint originalPoint,
+    const QImage &image
+) {
     // test for special case: originalPoint itself is within the image and non-transparent
     if (image.valid(originalPoint)) {
         if (image.pixelColor(originalPoint).alpha() == 255) {

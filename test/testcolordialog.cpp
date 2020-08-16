@@ -27,6 +27,19 @@
 #include <QtTest/QtTest>
 #include "PerceptualColor/colordialog.h"
 
+class helperClass : public QWidget {
+void testSnippet05() {
+// Do not actually test the snippet, because it would include user interaction
+return;
+//! [ColorDialog Open]
+PerceptualColor::ColorDialog *m_dialog = new PerceptualColor::ColorDialog;
+m_dialog->open(this, SLOT(mySlot(QColor)));
+//! [ColorDialog Open]
+delete m_dialog;
+};
+};
+
+
 class TestColorDialog : public QObject
 {
     Q_OBJECT
@@ -1262,7 +1275,62 @@ private Q_SLOTS:
         }
     }
 
+void testSnippet01() {
+// Do not actually test the snippet, because it would include user interaction
+return;
+//! [ColorDialog Get color with alpha channel]
+QColor myColor = PerceptualColor::ColorDialog::getColor(
+    Qt::green,      // current color at widget startup
+    nullptr,        // parent widget (or nullptr for no parent)
+    "Window title", // window title (or an empty string for default title)
+    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
+);
+//! [ColorDialog Get color with alpha channel]
+}
+
+void testSnippet02() {
+//! [ColorDialog Set options with local enum]
+PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
+myDialog->setOption(
+    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel,
+    false
+);
+//! [ColorDialog Set options with local enum]
+QCOMPARE(
+    myDialog->testOption(
+        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
+    ),
+    false
+);
+delete myDialog;
+}
+
+void testSnippet03() {
+//! [ColorDialog Set options with QColorDialog enum]
+PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
+myDialog->setOption(
+    QColorDialog::ShowAlphaChannel,
+    false
+);
+//! [ColorDialog Set options with QColorDialog enum]
+QCOMPARE(
+    myDialog->testOption(
+        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
+    ),
+    false
+);
+delete myDialog;
+}
+
+void testSnippet04() {
+// Do not actually test the snippet, because it would include user interaction
+return;
+//! [ColorDialog Get color]
+QColor myColor = PerceptualColor::ColorDialog::getColor();
+//! [ColorDialog Get color]
+}
+
 };
 
-QTEST_MAIN(TestColorDialog);
+QTEST_MAIN(TestColorDialog)
 #include "testcolordialog.moc" // necessary because we do not use a header file

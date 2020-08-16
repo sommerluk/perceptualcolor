@@ -24,6 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <QPainter>
 #include <QtTest/QtTest>
 #include <PerceptualColor/helper.h>
 #include <PerceptualColor/rgbcolorspace.h>
@@ -328,7 +329,59 @@ private Q_SLOTS:
         );
         QCOMPARE(PerceptualColor::Helper::standardWheelSteps(&temp), 1);
     }
+
+void testSnippet01() {
+cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(NULL);
+cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
+cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(
+    rgbProfileHandle,             // input profile handle
+    TYPE_RGB_DBL,                 // input buffer format
+    labProfileHandle,             // output profile handle
+    TYPE_Lab_DBL,                 // output buffer format
+    INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+    0                             // flags
+);
+cmsCloseProfile(labProfileHandle);
+cmsCloseProfile(rgbProfileHandle);
+//! [Helper Use cmsRGB]
+PerceptualColor::Helper::cmsRGB rgb;
+rgb.red = 1;
+rgb.green = 0;
+rgb.blue = 0;
+cmsCIELab lab;
+// Convert exactly 1 value:
+cmsDoTransform(m_transformRgbToLabHandle, &rgb, &lab, 1);
+//! [Helper Use cmsRGB]
+cmsDeleteTransform(m_transformRgbToLabHandle);
+}
+
+void testSnippet02() {
+//! [Helper Use transparencyBackground]
+QImage myImage(150, 200, QImage::Format_ARGB32);
+
+QPainter myPainter(&myImage);
+
+// Fill the hole image with tiles made of transparencyBackground()
+myPainter.fillRect(
+    0,
+    0,
+    150,
+    200,
+    QBrush(PerceptualColor::Helper::transparencyBackground())
+);
+
+// Paint semi-transparent red color above
+myPainter.fillRect(
+    0,
+    0,
+    150,
+    200,
+    QBrush(QColor(255, 0, 0, 128))
+);
+//! [Helper Use transparencyBackground]
+}
+
 };
 
-QTEST_MAIN(TestHelper);
+QTEST_MAIN(TestHelper)
 #include "testhelper.moc" // necessary because we do not use a header file

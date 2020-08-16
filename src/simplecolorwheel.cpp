@@ -301,6 +301,7 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  */
 void SimpleColorWheel::paintEvent(QPaintEvent* event)
 {
+    Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
     // Render anti-aliased looks better. But as Qt documentation says:
     //
@@ -380,6 +381,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
  */
 void SimpleColorWheel::resizeEvent(QResizeEvent* event)
 {
+    Q_UNUSED(event);
     // TODO The image cache is not necessarily invalid now. Thought the widget
     // was resized, the image itself might stay in the same size. See also
     // same problem for chromahuediagram and for chromalightnessdiagram and
@@ -577,11 +579,12 @@ int SimpleColorWheel::border() const
 
 /** @brief Generates an image of a color wheel
 * 
+* @param colorSpace the color space that is used
 * @param outerDiameter the outer diameter of the wheel in pixel
+* @param border the border that is left empty around the wheel
 * @param thickness the thickness of the wheel
 * @param lightness the  (LCh lightness, range 0..100)
 * @param chroma the LCh chroma value
-* @param colorTransform the color transform that is used
 * @returns Generates a square image of a color wheel. Its size
 * is <tt>QSize(outerDiameter, outerDiameter)</tt>. All pixels
 * that do not belong to the wheel itself will be transparent.

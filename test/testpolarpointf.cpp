@@ -224,5 +224,5 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(TestPolarPointF);
+QTEST_MAIN(TestPolarPointF)
 #include "testpolarpointf.moc" // necessary because we do not use a header file

@@ -40,10 +40,10 @@ namespace PerceptualColor {
  * is calculated by equal steps in the LCh color space. Concerning the h
  * value (hue), which is circular, always the shorter side of the circle
  * is choosen. Examples:
- * <li> If the first hue is 182° and the second hue is 1°, than
- * the hue will increase from 182° to 360° than 1°.</li>
- * <li>If the first hue is 169° and the second hue is 359°, than
- * the hue will decrease from 169° to 0°, than 359°.
+ * @li If the first hue is 182° and the second hue is 1°, than
+ *     the hue will increase from 182° to 360° than 1°.
+ * @li If the first hue is 169° and the second hue is 359°, than
+ *     the hue will decrease from 169° to 0°, than 359°.
  * 
  * This widget also renders the alpha channel, using a background
  * of gray squares for colors that are not fully opaque.

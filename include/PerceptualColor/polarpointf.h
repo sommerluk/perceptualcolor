@@ -27,6 +27,11 @@
 #ifndef POLARPOINTF_H
 #define POLARPOINTF_H
 
+/** @file
+ * 
+ * Declaration of the @ref PerceptualColor::PolarPointF class and its
+ * members. */
+
 #include <QDebug>
 #include <QPointF>
 #include <QMetaType>
@@ -47,25 +52,25 @@ namespace PerceptualColor {
  *   of 57° is the same as a radial of 0 and an angle of 233°.
  * 
  * This class automatically normalizes the values:
- * @invariant 
- * - the radial is normalized to value ≥ 0
- * - the angle is normalized to 0° ≤ value < 360° (see normalizedAngleDegree()
- *   for details)
+ * @invariant
+ * - the @ref radial() is normalized to value ≥ 0
+ * - the @ref angleDegree() is normalized to 0° ≤ value < 360°
+ *   (see @ref normalizedAngleDegree() for details)
  * 
  * When the radial is 0, often by convention the (meaningless) angle is set
  * also 0. This class does \em not normalize the angle to 0 when the radial
  * is 0 as long as initialized with a radial and an angle. However, when
  * initialized with cartesian coordinates (0, 0) then the result is
- * radial 0 and angle 0. See also operator==().
+ * radial 0 and angle 0. See also @ref operator==().
  * 
  * This class is declared as type to Qt’s type system:
- * Q_DECLARE_METATYPE(PerceptualColor::PolarPointF). Depending on your use
- * case (for example if you want to use it relyably in Qt's signals and
+ * @ref Q_DECLARE_METATYPE(PerceptualColor::PolarPointF). Depending on your
+ * use case (for example if you want to use it relyably in Qt's signals and
  * slots), you might consider calling qRegisterMetaType() for this type,
  * once you have a QApplication object.
  * 
  * This data type can be passed to QDebug thanks to
- * operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
+ * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
  */
 class PolarPointF
 {
@@ -111,10 +116,10 @@ public:
 
 private:
 
-    /** @brief Holds the angleDegree() value. */
+    /** @brief Holds the @ref angleDegree() value. */
     qreal m_angleDegree;
 
-    /** @brief Holds the radial() value. */
+    /** @brief Holds the @ref radial() value. */
     qreal m_radial;
 };
 
@@ -124,8 +129,8 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf);
 
 /** @brief Declares this data type to QMetaType().
  * 
- * This declaration is intentionally outside the namespace, according to Qt
- * documentation. */
-Q_DECLARE_METATYPE(PerceptualColor::PolarPointF);
+ * This declaration is intentionally outside the namespace, according to the
+ * Qt documentation. */
+Q_DECLARE_METATYPE(PerceptualColor::PolarPointF)
 
 #endif // POLARPOINTF_H

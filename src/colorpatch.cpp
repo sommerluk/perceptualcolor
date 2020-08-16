@@ -24,6 +24,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** @file
+ * 
+ * Definition of the @ref PerceptualColor::ColorPatch class and its members. */
+
 // Own header
 #include "PerceptualColor/colorpatch.h"
 
@@ -47,7 +51,7 @@ ColorPatch::ColorPatch(QWidget *parent) : QFrame(parent)
  * 
  * @returns the size hint
  * 
- * @sa minimumSizeHint() */
+ * @sa @ref minimumSizeHint() */
 QSize ColorPatch::sizeHint() const
 {
     return minimumSizeHint();
@@ -59,7 +63,7 @@ QSize ColorPatch::sizeHint() const
  * 
  * @returns the minimum size hint
  * 
- * @sa sizeHint() */
+ * @sa @ref sizeHint() */
 QSize ColorPatch::minimumSizeHint() const
 {
     return QSize(50, 50);
@@ -70,7 +74,7 @@ QColor ColorPatch::color() const
     return m_color;
 }
 
-/** @brief Set the color() property. */
+/** @brief Set the @ref color property. */
 void ColorPatch::setColor(const QColor &newColor)
 {
     if (newColor != m_color) {

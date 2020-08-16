@@ -40,7 +40,7 @@ GradientSelector::GradientSelector(RgbColorSpace *colorSpace, QWidget *parent) :
     initialize(colorSpace, Qt::Orientation::Vertical);
 }
 
-GradientSelector::GradientSelector(RgbColorSpace* colorSpace, Qt::Orientation orientation, QWidget* parent)
+GradientSelector::GradientSelector(RgbColorSpace* colorSpace, Qt::Orientation orientation, QWidget* parent) : QWidget(parent)
 {
     initialize(colorSpace, orientation);
 }
@@ -226,6 +226,7 @@ void GradientSelector::setPageStep(qreal newPageStep)
 
 void GradientSelector::paintEvent(QPaintEvent* event)
 {
+    Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
     // Render anti-aliased looks better. But as Qt documentation says:
     //
@@ -415,6 +416,7 @@ void GradientSelector::updateGradientImage()
 
 void GradientSelector::resizeEvent(QResizeEvent *event)
 {
+    Q_UNUSED(event);
     m_gradientImageReady = false;
 }
 

@@ -24,6 +24,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** @file
+ * 
+ * Definition of the @ref PerceptualColor::ColorDialog class and its
+ * members. */
+
 // Own header
 #include "PerceptualColor/colordialog.h"
 
@@ -39,7 +44,7 @@ namespace PerceptualColor {
 /** @brief Constructor
  * 
  *  @param parent pointer to the parent widget, if any
- *  @post The currentColor() property is set to Qt::white. */
+ *  @post The @ref currentColor property is set to Qt::white. */
 ColorDialog::ColorDialog(QWidget *parent) : QDialog(parent)
 {
     initialize();
@@ -53,11 +58,10 @@ ColorDialog::ColorDialog(QWidget *parent) : QDialog(parent)
 
 /** @brief Constructor
  * 
- *  @param initial the initially chosen color of the
- *  dialog
+ *  @param initial the initially chosen color of the dialog
  *  @param parent pointer to the parent widget, if any
- *  @post The object is constructed and setCurrentColor() is called
- *  with @em initial. See setCurrentColor() for the modifications that
+ *  @post The object is constructed and @ref setCurrentColor() is called
+ *  with @em initial. See @ref setCurrentColor() for the modifications that
  *  will be applied before setting the current color. Especially, as
  *  this dialog is constructed by default without alpha support, the
  *  alpha channel of @em initial is ignored and a fully opaque color is
@@ -94,16 +98,16 @@ QColor ColorDialog::currentColor() const
     return temp;
 }
 
-/** @brief Setter for currentColor() property.
+/** @brief Setter for @ref currentColor property.
  * 
  * @param color the new color
- * \post The property currentColor() is adapted as follows:
+ * \post The property @ref currentColor is adapted as follows:
  * - If @em color is not valid, <tt>Qt::black</tt> is used instead.
  * - If <em>color</em>'s <tt>QColor::Spec</tt> is @em not
  *   <tt>QColor::Spec::Rgb</tt> then it will be converted silently
  *   to <tt>QColor::Spec::Rgb</tt>
- * - The RGB part of currentColor() will be the RGB part of <tt>color</tt>.
- * - The alpha channel of currentColor() will be the alpha channel
+ * - The RGB part of @ref currentColor will be the RGB part of <tt>color</tt>.
+ * - The alpha channel of @ref currentColor will be the alpha channel
  *   of <tt>color</tt> if at the moment of the function call
  *   the <tt>QColorDialog::ColorDialogOption::ShowAlphaChannel</tt> option is
  *   set. It will be fully opaque otherwise. */
@@ -126,16 +130,13 @@ void ColorDialog::setCurrentColor(const QColor& color)
     setCurrentOpaqueColor(FullColorDescription(m_rgbColorSpace, temp));
 }
 
-/** @brief Opens the dialog and connects its colorSelected() signal to the
- * slot specified by receiver and member.
+/** @brief Opens the dialog and connects its @ref colorSelected() signal to
+ * the slot specified by receiver and member.
  * 
  * The signal will be disconnected from the slot when the dialog is closed.
  * 
  * Example:
- * @code
- *  PerceptualColor::ColorDialog m_dialog = new PerceptualColor::ColorDialog;
- *  m_dialog->open(this, SLOT(mySlot(QColor)));
- * @endcode */
+ * @snippet test/testcolordialog.cpp ColorDialog Open */
 void ColorDialog::open(QObject *receiver, const char *member)
 {
     connect(this, SIGNAL(colorSelected(QColor)), receiver, member);
@@ -144,7 +145,8 @@ void ColorDialog::open(QObject *receiver, const char *member)
     QDialog::open();
 }
 
-/** @brief Convenience version of setCurrentOpaqueColor(), accepting QColor
+/** @brief Convenience version of @ref setCurrentOpaqueColor(), accepting
+ * QColor
  * @param color the new color. Expected to be in RGB color
  *              space (RGB, HSV etc.) */
 void ColorDialog::setCurrentOpaqueQColor(const QColor& color)
@@ -154,8 +156,10 @@ void ColorDialog::setCurrentOpaqueQColor(const QColor& color)
 
 /** @brief Updates the color patch widget
  * 
- * @post The color page widget will show the color of m_currentOpaqueColor()
- * and the alpha value of m_alphaSelector()->alpha() */
+ * @post The color page widget will show the color of
+ * @ref m_currentOpaqueColor and the alpha value of
+ * @ref m_alphaSelector() as available with
+ * @ref AlphaSelector::alpha(). */
 void ColorDialog::updateColorPatch()
 {
     QColor tempRgbQColor = m_currentOpaqueColor.toRgbQColor();
@@ -163,12 +167,12 @@ void ColorDialog::updateColorPatch()
     m_colorPatch->setColor(tempRgbQColor);
 }
 
-/** @brief Updates m_currentOpaqueColor() and all affected widgets.
+/** @brief Updates @ref m_currentOpaqueColor and all affected widgets.
  * 
  * This function ignores the alpha component!
  * @param color the new color
  * @post If color is invalid, nothing happens. If this function is called
- * recursively, nothing happens. Else m_currentOpaqueColor is updated,
+ * recursively, nothing happens. Else @ref m_currentOpaqueColor is updated,
  * and the corresponding widgets are updated.
  * @note Recursive functions calls are ignored. This is useful, because you
  * can connect signals from various widgets to this slot without having to
@@ -287,8 +291,7 @@ void ColorDialog::readRgbHexValues()
 
 /** @brief Basic initialization.
  * 
- * Code that is shared between the various overloaded constructors.
- */
+ * Code that is shared between the various overloaded constructors. */
 void ColorDialog::initialize()
 {
     // initialize color space
@@ -466,8 +469,8 @@ void ColorDialog::initialize()
     setWindowTitle(tr("Select Color"));
 }
 
-/** @brief Get text for m_hlcLineEdit() based on m_currentOpaqueColor()
- * @returns A QString appropriate for m_hlcLineEdit() */
+/** @brief Get text for @ref m_hlcLineEdit based on @ref m_currentOpaqueColor
+ * @returns A QString appropriate for @ref m_hlcLineEdit */
 QString ColorDialog::textForHlcLineEdit() const
 {
     return
@@ -479,13 +482,14 @@ QString ColorDialog::textForHlcLineEdit() const
 
 /** @brief React on focus changes
  * 
- * This function tests if the focus is leaving m_hlcLineEdit(). If so, it will
- * update the other widgets if necessary. We have to to this because
- * m_hlcLineEdit is a QLineEdit and its editingFinished() will not be emited
- * if the current value is not conform to the input mask and the validator.
- * So we might miss (invalid) value changes. It is nevertheless important to
- * catch these cases, because the widget must be reset to a valid value. */
-void ColorDialog::handleFocusChange(QWidget *old, QWidget *now)
+ * This function tests if the focus is leaving @ref m_hlcLineEdit(). If so, it
+ * will update the other widgets if necessary. We have to to this because
+ * @ref m_hlcLineEdit is a QLineEdit and its editingFinished() will not be
+ * emited if the current value is not conform to the input mask and the
+ * validator. So we might miss (invalid) value changes. It is nevertheless
+ * important to catch these cases, because the widget must be reset to a valid
+ * value. */
+void ColorDialog::handleFocusChange(QWidget *old/*, QWidget *now*/)
 {
     if (old == m_hlcLineEdit) {
         if (m_hlcLineEdit->text() != textForHlcLineEdit()) {
@@ -643,9 +647,9 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
     return m_options;
 }
 
-/** @brief Setter for options().
+/** @brief Setter for @ref options.
  * 
- * Sets a value for just one single option within options().
+ * Sets a value for just one single option within @ref options.
  * @param option the option to set
  * @param on the new value of the option
  */
@@ -656,7 +660,7 @@ void ColorDialog::setOption(QColorDialog::ColorDialogOption option, bool on)
     setOptions(temp);
 }
 
-/** @brief Setter for options(). */
+/** @brief Setter for @ref options */
 void ColorDialog::setOptions(QColorDialog::ColorDialogOptions options)
 {
     // Save the new options
@@ -680,9 +684,9 @@ void ColorDialog::setOptions(QColorDialog::ColorDialogOptions options)
     );
 }
 
-/** @brief Getter for options()
+/** @brief Getter for @ref options
  * 
- * Gets the value of just one single option within options().
+ * Gets the value of just one single option within @ref options.
  * 
  * @param option the requested option
  * @returns the value of the requested option
@@ -724,7 +728,7 @@ QColor ColorDialog::getColor(
 
 /** @brief The color that was actually selected by the user.
  * 
- * At difference to the currentColor() property, this function provides
+ * At difference to the @ref currentColor property, this function provides
  * the color that was actually selected by the user by clicking the OK button
  * or pressing the return key or another equivalent action.
  * 
@@ -732,7 +736,7 @@ QColor ColorDialog::getColor(
  * the dialog has been closed.
  * 
  * When a dialog that had been closed or hidden is shown again,
- * selectedColor() returns to an invalid QColor().
+ * this function returns to an invalid QColor().
  * 
  * @returns Just after showing the dialog, the value is an invalid QColor. If
  * the user selects a color by clicking the OK button or another equivalent
@@ -749,7 +753,7 @@ QColor ColorDialog::selectedColor() const
  * Reimplemented from base class.
  * 
  * When a dialog, that wasn't formerly visible, gets visible,
- * it's m_selectedColor() is cleared.
+ * it's @ref m_selectedColor is cleared.
  * 
  * @param visible holds wether or not the dialog should be visible */
 void ColorDialog::setVisible(bool visible)
@@ -794,7 +798,7 @@ ColorDialog::DialogLayoutDimensions ColorDialog::layoutDimensions() const
     return m_layoutDimensions;
 }
 
-/** @brief Setter for property layoutDimensions() */
+/** @brief Setter for property @ref layoutDimensions */
 void ColorDialog::setLayoutDimensions(
     const ColorDialog::DialogLayoutDimensions newLayoutDimensions
 )
@@ -803,11 +807,11 @@ void ColorDialog::setLayoutDimensions(
     applyLayoutDimensions();
 }
 
-/** @brief Arranges the layout conforming to layoutDimensions()
+/** @brief Arranges the layout conforming to @ref layoutDimensions
  * 
- * If layoutDimensions() is DialogLayoutDimensions::automatic than it is first
- * evaluated again if for the current display the collapsed or the expanded
- * layout is used. */
+ * If @ref layoutDimensions is DialogLayoutDimensions::automatic than it is
+ * first evaluated again if for the current display the collapsed or the
+ * expanded layout is used. */
 void ColorDialog::applyLayoutDimensions()
 {
     bool collapsedLayout; // true for small layout, false for large layout.
