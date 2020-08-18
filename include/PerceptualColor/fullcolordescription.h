@@ -46,7 +46,7 @@ namespace PerceptualColor {
  * normalized.
  * 
  * This class is declared as type to Qt's type system:
- * Q_DECLARE_METATYPE(PerceptualColor::FullColorDescription).
+ * @ref Q_DECLARE_METATYPE(PerceptualColor::FullColorDescription).
  * Depending on your use case (for example if you want
  * to use it relyably in Qt's signals and slots), you might consider calling
  * qRegisterMetaType() for this type, once you have a QApplication object.

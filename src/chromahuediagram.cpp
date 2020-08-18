@@ -733,7 +733,7 @@ FullColorDescription ChromaHueDiagram::color() const
     return m_color;
 }
 
-QImage ChromaHueDiagram::generateDiagramImage(
+QImage ChromaHueDiagram::generateDiagramImage2(
     const RgbColorSpace *colorSpace,
     const int imageSize,
     const qreal maxChroma,
@@ -921,7 +921,7 @@ Then, for checking a single color
 }
 
 /** @brief in image of a-b plane of the color space at a given lightness */
-QImage ChromaHueDiagram::generateDiagramImage2(
+QImage ChromaHueDiagram::generateDiagramImage(
     const RgbColorSpace *colorSpace,
     const int imageSize,
     const qreal maxChroma,

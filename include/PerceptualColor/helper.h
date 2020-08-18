@@ -148,10 +148,14 @@ namespace Helper {
      * @param low the lower limit
      * @param x the value that will be tested
      * @param high the higher limit
-     * @returns <tt>(low <= x) && (x <= high)</tt> */
+     * @returns @snippet this Helper inRange */
     template<typename T> bool inRange(const T& low, const T& x, const T& high)
     {
-        return ( (low <= x) && (x <= high) );
+        return (
+            //! [Helper inRange]
+            (low <= x) && (x <= high)
+            //! [Helper inRange]
+        );
     }
 
     /** @brief LCh default values
