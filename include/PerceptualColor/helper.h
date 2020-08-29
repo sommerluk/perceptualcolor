@@ -98,7 +98,16 @@ static_assert(
  * @todo Provide more than 8 bit per channel for more precision? 10 bit? 12 bit?
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
- * @todo Switch to the pimpl ideom?
+ * @todo Switch to the pimpl ideom? Export symbols like in
+ * https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
+ * Seel also http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
+ * and https://labjack.com/news/simple-cpp-symbol-visibility-demo
+ * @todo A program that uses our library could also use LittleCMS itself. If
+ * it would use LittleCMS without thread-save API, but using it always in
+ * the very same thread which is @em not the main thread, this could make
+ * problems for our library if we use non-thread-save LittleCMS APIs. So
+ * best would be that our library uses exclusively <em>thread-save</em>
+ * APIs of LittleCMS.
  * @todo Qt Designer support for the widgets
  * @todo QPainter: Quote from documentation: For optimal performance only use
  * the format types @c QImage::Format_ARGB32_Premultiplied,

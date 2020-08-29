@@ -24,35 +24,37 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+#ifndef CIRCULARDIAGRAM_H
+#define CIRCULARDIAGRAM_H
 
-class TestXXX : public QObject
+#include "PerceptualColor/abstractdiagram.h"
+
+namespace PerceptualColor {
+    
+/** @brief Base class for circular diagrams.
+ * 
+ * Provides some elements that are common for all circular diagrams in this
+ * library. 
+ * 
+ * As the natural interaction space of these diagrams is a circle, it’s best
+ * to have equal <tt>width()</tt> and <tt>hight()</tt> for the widget. This
+ * class provides the corresponding implementations to notify the layout
+ * manager about that. See @ref hasHeightForWidth and @ref heightForWidth for
+ * details. */
+class CircularDiagram : public AbstractDiagram
 {
     Q_OBJECT
 
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first testfunction is executed
-    };
+public:
+    CircularDiagram(QWidget *parent = nullptr);
+    virtual bool hasHeightForWidth() const override;
+    virtual int heightForWidth(int w) const override;
 
-    void cleanupTestCase() {
-        // Called after the last testfunction was executed
-    };
+private:
+    Q_DISABLE_COPY(CircularDiagram)
 
-    void init() {
-        // Called before each testfunction is executed
-    };
-
-    void cleanup() {
-        // Called after every testfunction
-    };
-
-    void testDef() {
-        // TODO implement me!
-    };
 };
 
-QTEST_MAIN(TestXXX)
+}
 
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+#endif // CIRCULARDIAGRAM_H

@@ -47,15 +47,19 @@ namespace PerceptualColor {
  * @param colorSpace The colorspace within the widget should operate
  * @param parent Passed to the QWidget base class constructor
  */
-ChromaLightnessDiagram::ChromaLightnessDiagram(RgbColorSpace *colorSpace, QWidget *parent) : QWidget(parent)
+ChromaLightnessDiagram::ChromaLightnessDiagram(
+    RgbColorSpace *colorSpace,
+    QWidget *parent)
+: AbstractDiagram(parent)
 {
-    // Setup LittleCMS (must be first thing because other operations rely on working LittleCMS)
+    // Setup LittleCMS (must be first thing because other operations
+    // rely on working LittleCMS)
     m_rgbColorSpace = colorSpace;
 
     // Simple initializations
     // We don't use the reset methods as they rely on refreshDiagram
-    // (and refreshDiagram relies itself on m_hue, m_markerRadius and
-    // m_markerThickness)
+    // (and refreshDiagram relies itself on m_hue, markerRadius and
+    // markerThickness)
     cmsCIELCh temp;
     temp.h = Helper::LchDefaults::defaultHue;
     temp.C = Helper::LchDefaults::versatileSrgbChroma;
@@ -65,8 +69,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(RgbColorSpace *colorSpace, QWidge
         temp,
         FullColorDescription::outOfGamutBehaviour::sacrifyChroma
     );
-    m_markerRadius = default_markerRadius;
-    m_markerThickness = default_markerThickness;
     updateBorder();
 
     // Other initializations
@@ -84,12 +86,10 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(RgbColorSpace *colorSpace, QWidge
 void ChromaLightnessDiagram::updateBorder()
 {
     // Code
-    m_border = qRound(m_markerRadius + (m_markerThickness / static_cast<qreal>(2)));
+    m_border = qRound(markerRadius + (markerThickness / static_cast<qreal>(2)));
 }
 
 // TODO high-dpi support
-
-// TODO automatically scale marker radius and thickness with widget size
 
 // TODO reasonable boundary for markerWidth and markerRadius and minimumSizeHint: How to make sure the diagram has at least a few pixels? And if it's very low: For precision wouldn't it be better to internally calculate with a higher-resolution pixmap for more precision? Alternative: for the border() property: better quint16? No, that's not a good idea...
 
@@ -290,15 +290,15 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
      * does, which looks nice.
      */
     if (hasFocus()) {
-        pen.setWidth(m_markerThickness);
+        pen.setWidth(markerThickness);
         pen.setColor(
             palette().color(QPalette::Highlight)
         );
         painter.setPen(pen);
         painter.drawLine(
-            m_markerThickness / 2, // 0.5 is rounded down to 0.0
+            markerThickness / 2, // 0.5 is rounded down to 0.0
             0 + m_border,
-            m_markerThickness / 2, // 0.5 is rounded down to 0.0
+            markerThickness / 2, // 0.5 is rounded down to 0.0
             size().height() - m_border
         );
     }
@@ -318,7 +318,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     // representation on any platform.
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint imageCoordinates = currentImageCoordinates();
-    pen.setWidth(m_markerThickness);
+    pen.setWidth(markerThickness);
     int markerBackgroundLightness = m_color.toLch().L; // range: 0..100
     if (markerBackgroundLightness >= 50) {
         pen.setColor(Qt::black);
@@ -327,10 +327,10 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     }
     painter.setPen(pen);
     painter.drawEllipse(
-        imageCoordinates.x() + m_border - m_markerRadius,
-        imageCoordinates.y() + m_border - m_markerRadius,
-        2 * m_markerRadius + 1,
-        2 * m_markerRadius + 1
+        imageCoordinates.x() + m_border - markerRadius,
+        imageCoordinates.y() + m_border - markerRadius,
+        2 * markerRadius + 1,
+        2 * markerRadius + 1
     );
 
     // Paint the buffer to the actual widget
@@ -339,10 +339,14 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
 
 /** @brief Transforms from widget to image coordinates
  * 
- * @param widgetCoordinates a coordinate pair within the widget's coordinate system
- * @returns the corresponding coordinate pair within m_diagramImage's coordinate system
+ * @param widgetCoordinates a coordinate pair within the widget’s coordinate
+ * system
+ * @returns the corresponding coordinate pair within m_diagramImage’s
+ * coordinate system
  */
-QPoint ChromaLightnessDiagram::fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const
+QPoint ChromaLightnessDiagram::fromWidgetCoordinatesToImageCoordinates(
+    const QPoint widgetCoordinates
+) const
 {
     return widgetCoordinates - QPoint(m_border, m_border);
 }
@@ -351,23 +355,27 @@ QPoint ChromaLightnessDiagram::fromWidgetCoordinatesToImageCoordinates(const QPo
  * 
  * Reimplemented from base class.
  * 
- * Reacts on key press events. When the arrow keys are pressed, it moves the marker by one pixel
- * into the desired direction if this is still within gamut. When @c Qt::Key_PageUp,
- * @c Qt::Key_PageDown, @c Qt::Key_Home or @c Qt::Key_End are pressed, it moves the marker as much
- * as possible into the desired direction as long as this is still in the gamut.
+ * Reacts on key press events. When the arrow keys are pressed, it moves the
+ * marker by one pixel into the desired direction if this is still within
+ * gamut. When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
+ * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
+ * marker as much as possible into the desired direction as long as this is
+ * still in the gamut.
  * 
  * @param event the paint event
  * 
- * @warning This function might have an infinite loop if called when the currently selected
- * color has no non-transparent pixel on its row or line. TODO This is a problem because it
- * is well possibe this will arrive because of possible rounding errors!
+ * @warning This function might have an infinite loop if called when the
+ * currently selected color has no non-transparent pixel on its row or line.
+ * @todo This is a problem because it is well possibe this will arrive because
+ * of possible rounding errors!
  * 
- * // TODO Still the darkest color is far from RGB zero on usual widget size. This has to get better to allow choosing RGB 0, 0, 0!!!
+ * @todo Still the darkest color is far from RGB zero on usual widget size.
+ * This has to get better to allow choosing RGB 0, 0, 0!!!
  */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
     // TODO singleStep & pageStep for ALL graphical widgets expressed in LCh
-    // values, not in pixel. And the same values accross all widgets!
+    // values, not in pixel. Use values as inherited from base class!
     
     QPoint newImageCoordinates = currentImageCoordinates();
     updateDiagramCache();
@@ -574,62 +582,6 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
 
 // TODO what if a part of the gammut at the right is not displayed?
-
-// TODO allow imaginary colors?
-
-int ChromaLightnessDiagram::markerRadius() const
-{
-    return m_markerRadius;
-}
-
-/** @brief Setter for the markerRadius() property.
- * 
- * @param newMarkerRadius the new marker radius
- */
-void ChromaLightnessDiagram::setMarkerRadius(const int newMarkerRadius)
-{
-// TODO bound markerRadius and markerThickness to maximum 10 px (or something like that) to make sure the minimal size hint of the widget still allows a diagram to be displayed. (And border property does not overflow.)
-    int temp = qMax(newMarkerRadius, 0);
-    if (m_markerRadius != temp) {
-        m_markerRadius = temp;
-        updateBorder();
-        m_diagramCacheReady = false; // because the border has changed, so the size of the pixmap will change.
-        update();
-    }
-}
-
-/** @brief Reset the markerRadius() property.
- */
-void ChromaLightnessDiagram::resetMarkerRadius()
-{
-    setMarkerRadius(default_markerRadius);
-}
-
-int ChromaLightnessDiagram::markerThickness() const
-{
-    return m_markerThickness;
-}
-
-/** @brief Setter for the markerThickness() property.
- * 
- * @param newMarkerThickness the new marker thickness
- */
-void ChromaLightnessDiagram::setMarkerThickness(const int newMarkerThickness)
-{
-    int temp = qMax(newMarkerThickness, 0);
-    if (m_markerThickness != temp) {
-        m_markerThickness = temp;
-        updateBorder();
-        m_diagramCacheReady = false; // because the border has changed, so the size of the pixmap will change.
-        update();
-    }
-}
-
-/** @brief Reset the markerThickness() property. */
-void ChromaLightnessDiagram::resetMarkerThickness()
-{
-    setMarkerThickness(default_markerThickness);
-}
 
 int ChromaLightnessDiagram::border() const
 {

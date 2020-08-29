@@ -24,35 +24,46 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+// Own header
+#include "PerceptualColor/circulardiagram.h"
 
-class TestXXX : public QObject
+namespace PerceptualColor {
+
+/** @brief The constructor.
+ * @param parent The widget’s parent widget. This paramenter will be passed
+ * to the QWidget base class constructor. */
+CircularDiagram::CircularDiagram(QWidget *parent)
+: AbstractDiagram(parent)
 {
-    Q_OBJECT
+}
 
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first testfunction is executed
-    };
+/** @brief Indicates that the widget's preferred height depends on its width.
+ * 
+ * Reimplemented from base class.
+ * 
+ * @note Qt’s layout management makes only very limited use of this
+ * information.
+ * @sa @ref heightForWidth */
+bool CircularDiagram::hasHeightForWidth() const
+{
+    return true;
+}
 
-    void cleanupTestCase() {
-        // Called after the last testfunction was executed
-    };
+/** @brief Returns the preferred height for this widget, given the
+ * width <tt>w</tt>.
+ * 
+ * The widget preferres a circular form, so same height as width.
+ * 
+ * Reimplemented from base class.
+ * 
+ * @note Qt’s layout management makes only very limited use of this
+ * information.
+ * @param w widget width
+ * @returns the preferred height for this widget, given the width <tt>w</tt>
+ * @sa @ref hasHeightForWidth */
+int CircularDiagram::heightForWidth(int w) const
+{
+    return w;
+}
 
-    void init() {
-        // Called before each testfunction is executed
-    };
-
-    void cleanup() {
-        // Called after every testfunction
-    };
-
-    void testDef() {
-        // TODO implement me!
-    };
-};
-
-QTEST_MAIN(TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+}

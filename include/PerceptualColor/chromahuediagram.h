@@ -28,163 +28,143 @@
 #define CHROMAHUEDIAGRAM_H
 
 #include <QImage>
-#include <QWidget>
 
-#include <lcms2.h>
-
+#include "PerceptualColor/circulardiagram.h"
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor {
     
-/** @brief A widget that displays the plan of chroma and hue
+/** @brief A widget for selecting chroma and hue in LCh color space
  * 
- * A widget that displays the plan of chroma and hue, that means an a*-b*
- * diagram (the a* axis and the b* axis of the L*a*b* color model).
- *
- * The lightness (L* axis in Lab/LCh color model) can be controled by a
- * property.
+ * This widget displays the plan of chroma and hue
+ * (that means a diagram of the radial and the angle of the
+ * LCh color space respectively the a axis and the b axis of the
+ * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
+ * Lab color model</a>) at a given lightness.
  * 
- * The widget reacts on mouse events and on keyboard events (see
- * keyPressEvent() for details).
+ * The widget allows to select a color within the specified gamut at the
+ * given lightness. It reacts on mouse events and on keyboard events (see
+ * @ref keyPressEvent() for details).
  * 
- * @todo When the mouse is within the circle, but above the gray background
- * and outside the gamut, then the widget should continue to accept clicks,
- * but it should now also show the mouse curser. */
-class ChromaHueDiagram : public QWidget
+ * The circle form of the widget and the selection marker that always
+ * indicates the distance from the center of the diagram, all this
+ * helps the user to understand intuitively that he is moving within a
+ * polar coordinate system and to capture easily the current radial
+ * and angle.
+ * 
+ * @todo Example code: How to create the widget at a given
+ * lightness.
+ * 
+ * @todo The image cache should be updated asynchroniasly (in its own thread
+ * or even various own threads in parallel), but this should only be
+ * triggered when the widget is visible, and not while the widget is
+ * hidden. While waiting for the result, an empty image could be used.
+ * It might be useful to provide first a low-resolution version, and only
+ * later-on a high-resolution version.
+ * 
+ * @todo High-dpi support.
+ * 
+ * @todo Automatically scale the thickness of the wheel (and maybe even the
+ * marker) with varying widget size?
+ * @todo Provide RESET functions for all properties around the library? */
+class ChromaHueDiagram : public CircularDiagram
 {
     Q_OBJECT
 
-    /** @brief The border between the widget outer border and the diagram itself.
-     * 
-     * The diagram is not painted on the whole extend of the widget. A border is
-     * left to allow that the selection marker can be painted completly even when
-     * a pixel on the border of the diagram is selected. The border is
-     * determined automatically, its value depends on markerRadius() and
-     * markerThickness().
-     * 
-     * @sa border()
-     * @sa updateBorder()
-     */
-    Q_PROPERTY(int border READ border STORED false)
-
-    /** @brief the radius of the marker
-     * 
-     * @sa markerRadius()
-     * @sa setMarkerRadius()
-     * @sa resetMarkerRadius()
-     * @sa default_markerRadius
-     */
-    Q_PROPERTY(int markerRadius READ markerRadius WRITE setMarkerRadius RESET resetMarkerRadius)
-
-    /** @brief the thickness of the marker
-     * 
-     * @sa markerThickness()
-     * @sa setMarkerThickness()
-     * @sa resetMarkerThickness()
-     * @sa default_markerThickness
-     */
-    Q_PROPERTY(int markerThickness READ markerThickness WRITE setMarkerThickness RESET resetMarkerThickness)
-
     /** @brief Currently selected color
      * 
-     * @sa color()
-     * @sa setColor()
-     * @sa colorChanged()
-     */
+     * The widget allows the user to change the LCh chroma and the LCh hue
+     * values. However, the LCh lightness value cannot be changed by the
+     * user, but only by the programmer through this property.
+     * 
+     * @sa READ @ref color()
+     * @sa WRITE @ref setColor()
+     * @sa NOTIFY @ref colorChanged() */
     Q_PROPERTY(FullColorDescription color READ color WRITE setColor NOTIFY colorChanged USER true)
 
 public:
-    explicit ChromaHueDiagram(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
+    explicit ChromaHueDiagram(
+        RgbColorSpace *colorSpace,
+        QWidget *parent = nullptr
+    );
+    /** @brief Destructor */
     virtual ~ChromaHueDiagram() override = default;
-    int border() const;
+    /** @brief Getter for property @ref color
+     *  @returns the property @ref color */
     FullColorDescription color() const;
-    qreal lightness() const;
-    int markerRadius() const;
-    int markerThickness() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void resetMarkerRadius();
-    void resetMarkerThickness();
     void setColor(const PerceptualColor::FullColorDescription &newColor);
-    void setLightness(const qreal newLightness);
-    void setMarkerRadius(const int newMarkerRadius);
-    void setMarkerThickness(const int newMarkerThickness);
 
 Q_SIGNALS:
-    /** @brief Signal for color() property. */
-    void colorChanged(const PerceptualColor::FullColorDescription &newColor);
+    /** @brief Notify signal for property @ref color().
+     *  @param color the new color */
+    void colorChanged(const PerceptualColor::FullColorDescription &color);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void wheelEvent(QWheelEvent* event) override;
     virtual void paintEvent(QPaintEvent* event) override;
     virtual void resizeEvent(QResizeEvent* event) override;
+    virtual void wheelEvent(QWheelEvent* event) override;
 
 private:
 
     Q_DISABLE_COPY(ChromaHueDiagram)
 
-    /** @brief Default value for markerRadius() property. */
-    static constexpr int default_markerRadius = 4;
-    /** @brief Default value for markerThickness() property. */
-    static constexpr int default_markerThickness = 2;
-
-    /** @brief Internal storage of the border() property */
-    int m_border;
-    /** @brief Internal storage of the chromaLightness() property */
-//     QPointF m_chromaLightness;
-    /** @brief Internal storage of the color() property */
+    // Member variables
+    /** TODO document me! 
+     * @sa @ref markerRadius
+     * @sa @ref markerThickness */
+    static constexpr int border = 8 * markerThickness;
+    /** @brief Internal storage of the @ref color() property */
     FullColorDescription m_color;
-    /** @brief A cache for the diagram as QImage. Might be outdated.
-     *  @sa updateDiagramCache()
-     *  @sa m_diagramCacheReady */
-    QImage m_diagramImage;
-    /** Holds wether or not m_diagramImage() is up-to-date.
-     *  @sa updateDiagramCache() */
+    /** Holds wether or not @ref m_diagramImage() is up-to-date.
+     *  @sa @ref updateDiagramCache() */
     bool m_diagramCacheReady = false;
-    /** @brief A cache for the wheel as QImage. Might be outdated.
-     *  @sa updateWheelCache()
-     *  @sa m_wheelCacheReady */
-    QImage m_wheelImage;
-    /** Holds wether or not m_wheelImage() is up-to-date.
-     *  @sa updateWheelCache() */
-    bool m_wheelCacheReady = false;
-    /** @brief Internal storage of the markerRadius() property */
-    int m_markerRadius;
-    /** @brief Internal storage of the markerThickness() property */
-    int m_markerThickness;
-    /** @brief If a mouse event is active
+    /** @brief A cache for the diagram as QImage. Might be outdated.
+     *  @sa @ref updateDiagramCache()
+     *  @sa @ref m_diagramCacheReady */
+    QImage m_diagramImage;
+    /** @brief Position of the center of the diagram coordinate system
      * 
-     * Holds if currently a mouse event is active or not.
-     * @sa mousePressEvent()
-     * @sa mouseMoveEvent()
-     * @sa mouseReleaseEvent()
-     */
-    bool m_mouseEventActive = false;
-    /** @brief Pointer to RgbColorSpace() object */
-    RgbColorSpace *m_rgbColorSpace;
-    /** @brief diameter of the diagram */
-    int m_diameter = 0;
-    /** position (measured in widget coordinates) of the center of the diagram coordinate system */
+     * This value is measured in widget coordinates. */
     int m_diagramOffset = 0;
+    /** @brief Diameter of the diagram */
+    int m_diameter = 0;
+    /** @todo This should not be hard-coded sRGB. */
     qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
-    static constexpr qreal m_singleStepChroma = 1;
-    /* TODO What would be a good value for this? Its effect depends on chroma: On higher chroma,
-     * the same step in hue means a bigger visual color differente. We could even calculate that,
-     * but it does not seem to be very intuitive if the reaction on mouse wheel events are different
-     * depending on chroma - that would not be easy to unserstand for the user. And it might be
-     * better that the user this way also notices intuitively that hue changes are not linear
-     * accross chroma. Anyway: What would be a sensible default step? for m_singleStepHue? */
-    static constexpr qreal m_singleStepHue = 1;
-    static constexpr qreal m_pageStepChroma = 10 * m_singleStepChroma;
-    static constexpr qreal m_pageStepHue = 10 * m_singleStepHue;
+    /** @brief Holds if currently a mouse event is active or not.
+     * 
+     * Default value is @c false.
+     * - A mouse event gets typically actived on a @ref mousePressEvent()
+     *   done within the gamut diagram. The value is set to @c true.
+     * - While active, all @ref mouseMoveEvent() will move the diagram’s color
+     *   marker.
+     * - Once a @ref mouseReleaseEvent() occurs, the value is set to @c false.
+     *   Further mouse movements will not move the marker anymore. */
+    bool m_isMouseEventActive = false;
+    /** @brief Pointer to @ref RgbColorSpace object */
+    RgbColorSpace *m_rgbColorSpace;
+    /** Holds wether or not @ref m_wheelImage() is up-to-date.
+     *  @sa @ref updateWheelCache() */
+    bool m_isWheelCacheReady = false;
+    /** @brief A cache for the wheel as QImage. Might be outdated.
+     *  @sa @ref updateWheelCache()
+     *  @sa @ref m_isWheelCacheReady */
+    QImage m_wheelImage;
 
+    // Member functions
+    bool areImageCoordinatesWithinDiagramSurface(
+        const QPoint imageCoordinates
+    );
+    QPoint imageCoordinatesFromColor();
+    QPointF fromImageCoordinatesToAB(const QPoint imageCoordinates);
     static QImage generateDiagramImage(
         const RgbColorSpace *colorSpace,
         const int imageSize,
@@ -199,13 +179,17 @@ private:
         const qreal lightness,
         const int border
     );
-    QPoint currentImageCoordinates();
-    QPointF fromImageCoordinatesToAB(const QPoint imageCoordinates);
-    bool imageCoordinatesInGamut(const QPoint imageCoordinates);
-    void updateWheelCache();
+    static QImage generateDiagramImage3(
+        const RgbColorSpace *colorSpace,
+        const int imageSize,
+        const qreal maxChroma,
+        const qreal lightness,
+        const int border
+    );
+    void setColorFromImageCoordinates(const QPoint imageCoordinates);
     void updateDiagramCache();
-    void setWidgetCoordinates(const QPoint newImageCoordinates);
-    void updateBorder();
+    void updateWheelCache();
+
 };
 
 }

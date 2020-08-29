@@ -98,8 +98,8 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 /** @brief Equal operator
  * 
  * Equal means, both values reference to the same point in the coordinates
- * space. So <tt>(@ref radial(): 0, @ref angleDegree(): 50)</tt> is considered
- * equal to <tt>(@ref radial(): 0, @ref angleDegree(): 80)</tt> because the
+ * space. So <tt>[@ref radial() 0, @ref angleDegree() 50]</tt> is considered
+ * equal to <tt>[@ref radial() 0, @ref angleDegree() 80]</tt> because the
  * @ref angleDegree() is meaningless if the @ref radial() is 0.
  * 
  * @param other the polar coordinates to compare with

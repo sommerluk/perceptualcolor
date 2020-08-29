@@ -30,6 +30,7 @@
 #include <QImage>
 #include <QWidget>
 
+#include "PerceptualColor/circulardiagram.h"
 #include "PerceptualColor/polarpointf.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -41,7 +42,7 @@ namespace PerceptualColor {
  * 
  * This widget allows to select the hue (as defined in the LCh color space) in the form of a wheel.
  */
-class SimpleColorWheel : public QWidget
+class SimpleColorWheel : public CircularDiagram
 {
     Q_OBJECT
 
@@ -73,15 +74,6 @@ class SimpleColorWheel : public QWidget
      */
     Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged USER true)
 
-    /** @brief the thickness of the marker
-     * 
-     * @sa markerThickness()
-     * @sa setMarkerThickness()
-     * @sa resetMarkerThickness()
-     * @sa default_markerThickness
-     */
-    Q_PROPERTY(int markerThickness READ markerThickness WRITE setMarkerThickness RESET resetMarkerThickness)
-
     /** @brief the chroma with which the wheel ribbon is painted.
      * 
      * @sa wheelRibbonChroma()
@@ -103,10 +95,7 @@ public:
     explicit SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
     virtual ~SimpleColorWheel() override = default;
     int border() const;
-    virtual bool hasHeightForWidth() const override;
-    virtual int	heightForWidth(int width) const override;
     qreal hue() const;
-    int markerThickness() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
     int wheelThickness() const;
@@ -126,11 +115,9 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void resetHue();
-    void resetMarkerThickness();
     void resetWheelRibbonChroma();
     void resetWheelThickness();
     void setHue(const qreal newHue);
-    void setMarkerThickness(const int newMarkerThickness);
     void setWheelRibbonChroma(const qreal newChroma);
     void setWheelThickness(const int newMarkerThickness);
 
@@ -169,8 +156,6 @@ private:
     bool m_wheelImageReady = false;
     /** @brief Internal storage of the hue() property */
     qreal m_hue;
-    /** @brief Internal storage of the markerThickness() property */
-    int m_markerThickness;
     /** @brief Pointer to RgbColorSpace() object */
     RgbColorSpace *m_rgbColorSpace;
     /** @brief Internal storage of the wheelRibbonChroma() property */
@@ -178,8 +163,6 @@ private:
     /** @brief Internal storage of the wheelThickness() property */
     int m_wheelThickness;
 
-    /** @brief Default value for markerThickness() property. */
-    static constexpr int default_markerThickness = 2;
     /** @brief Default value for wheelThickness() property. */
     static constexpr int default_wheelThickness = 20;
 

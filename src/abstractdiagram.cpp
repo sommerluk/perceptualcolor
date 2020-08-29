@@ -24,35 +24,17 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+// Own header
+#include "PerceptualColor/abstractdiagram.h"
 
-class TestXXX : public QObject
+namespace PerceptualColor {
+
+/** @brief The constructor.
+ * @param parent The widget’s parent widget. This paramenter will be passed
+ * to the QWidget base class constructor. */
+AbstractDiagram::AbstractDiagram(QWidget *parent)
+: QWidget(parent)
 {
-    Q_OBJECT
+}
 
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first testfunction is executed
-    };
-
-    void cleanupTestCase() {
-        // Called after the last testfunction was executed
-    };
-
-    void init() {
-        // Called before each testfunction is executed
-    };
-
-    void cleanup() {
-        // Called after every testfunction
-    };
-
-    void testDef() {
-        // TODO implement me!
-    };
-};
-
-QTEST_MAIN(TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+}

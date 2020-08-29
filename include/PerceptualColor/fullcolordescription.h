@@ -46,10 +46,11 @@ namespace PerceptualColor {
  * normalized.
  * 
  * This class is declared as type to Qt's type system:
- * @ref Q_DECLARE_METATYPE(PerceptualColor::FullColorDescription).
- * Depending on your use case (for example if you want
- * to use it relyably in Qt's signals and slots), you might consider calling
- * qRegisterMetaType() for this type, once you have a QApplication object.
+ * <tt>Q_DECLARE_METATYPE(PerceptualColor::FullColorDescription)</tt>.
+ * Depending on your use case (for example if you want to use it
+ * reliably in Qt's signals and slots), you might consider calling
+ * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
+ * object.
  * 
  * This data type can be passed to QDebug thanks to
  * operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value)
@@ -137,9 +138,6 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value
 
 } // namespace PerceptualColor
 
-/** @brief Declares this data type to QMetaType().
- * 
- * This declaration is intentionally outside the namespace, according to Qt documentation. */
 Q_DECLARE_METATYPE(PerceptualColor::FullColorDescription)
 
 #endif // FULLCOLORDESCRIPTION_H

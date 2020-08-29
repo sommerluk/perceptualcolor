@@ -122,14 +122,17 @@ namespace PerceptualColor {
  * for RGB values changing along the gray axis: #444 → #555 → #666 changes
  * the graphically displayed hue.
  * 
+ * @todo High-dpi-support: Scale the icons of the “OK button” and “Cancel
+ * button” correctly. More details:
+ * https://bugs.kde.org/show_bug.cgi?id=273938
  * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
  * letters on-the-fly (as-you-type) to upper-case letters.
  * 
  * @todo Provide <tt>setWhatsThis()</tt> help for widgets. Or tooltips? Or
  * both? What is more appropritate? Or use both? For @ref WheelColorPicker and
  * @ref ChromaLightnessDiagram, this help text could describe the keyboard
- * controls and be integrated as default value in the class itself. For the other
- * widgets, a help text could be defined here within \em this class,
+ * controls and be integrated as default value in the class itself. For the
+ * other widgets, a help text could be defined here within \em this class,
  * if appropriate.
  * 
  * @todo Make sure that @ref ChromaHueDiagram always shows at least at the
@@ -147,8 +150,8 @@ namespace PerceptualColor {
  * 
  * @todo The child widget @ref m_hsvHueSpinbox() is a QDoubleSpinBox. The
  * current behaviour for pageStep‌ = 10 is 356 → 360 → 0 → 10. The expected
- * behaviour would be 356 → 6 for a continuous experience. A solution will likely
- * require a new class inherited from QDoubleSpinBox or maybe
+ * behaviour would be 356 → 6 for a continuous experience. A solution will
+ * likely require a new class inherited from QDoubleSpinBox or maybe
  * QAbstractSpinbox.
  * 
  * @todo Support for other models like HSL, Munsell? With an option to

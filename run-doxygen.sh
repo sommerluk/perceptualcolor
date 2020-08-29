@@ -30,9 +30,12 @@ doxygen > /dev/null
 
 CODEDIRECTORIES="include src test"
 
-# Search for some patterns that should not be used in the source code
-# Do not use the “code” and “endcode” tags for Doxygen documentation.
-# Use @snippet instead!
+# Search for some patterns that should not be used in the source code. If
+# these patterns are found, a message is displayed. Otherwise, nothing is
+# displayed. Pattern list:
+# -> Do not use the “code” and “endcode” tags for Doxygen documentation. Use
+#    @snippet instead! That allows that the example code is actually compiled
+#    and that helps detecting errors.
 grep --fixed-strings --recursive "\\code" $CODEDIRECTORIES
 grep --fixed-strings --recursive "\\endcode" $CODEDIRECTORIES
 grep --fixed-strings --recursive "@code" $CODEDIRECTORIES

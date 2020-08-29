@@ -50,7 +50,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     # Like Qt 5, that requieres C++11 since Qt 5.7, here we requiere also C++11:
     # https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
     # TODO add also -Werror
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++11 -Wall -Wextra -Wvla -Wconversion -pedantic-errors -Wsign-conversion")
+    set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -Wall -Wextra -Wvla -Wconversion -pedantic-errors -Wsign-conversion -Wsuggest-override")
+    set(warnings "-O3 -std=c++11 -Wall -Wextra -Wvla -Wconversion -pedantic-errors -Wsign-conversion -Wsuggest-override")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(warnings "/W4 /WX /EHsc")
     # TODO Enable optimaization?
@@ -81,9 +82,11 @@ set(LIBS ${LIBS} Qt5::Core Qt5::Gui Qt5::Widgets ${LCMS2_LIBRARIES}) # Define ex
 
 # Set the sources for our library
 set(perceptualcolor_SRC
+  src/abstractdiagram.cpp
   src/alphaselector.cpp
   src/chromahuediagram.cpp
   src/chromalightnessdiagram.cpp
+  src/circulardiagram.cpp
   src/colordialog.cpp
   src/colorpatch.cpp
   src/fullcolordescription.cpp
@@ -97,9 +100,11 @@ set(perceptualcolor_SRC
 
 # Set the headers for our library
 set(perceptualcolor_HEADERS
+  include/PerceptualColor/abstractdiagram.h
   include/PerceptualColor/alphaselector.h
   include/PerceptualColor/chromahuediagram.h
   include/PerceptualColor/chromalightnessdiagram.h
+  include/PerceptualColor/circulardiagram.h
   include/PerceptualColor/colordialog.h
   include/PerceptualColor/colorpatch.h
   include/PerceptualColor/fullcolordescription.h
@@ -135,14 +140,18 @@ target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolor)
 install(TARGETS perceptualcolorpicker DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Provide unit tests
-enable_testing ()
-add_executable (testhelper test/testhelper.cpp)
-target_link_libraries (testhelper ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testhelper COMMAND testhelper)
 
-add_executable (testpolarpointf test/testpolarpointf.cpp)
-target_link_libraries (testpolarpointf ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testpolarpointf COMMAND testpolarpointf)
+add_executable (testabstractdiagram test/testabstractdiagram.cpp)
+target_link_libraries (testabstractdiagram ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testabstractdiagram COMMAND testabstractdiagram)
+
+add_executable (testchromahuediagram test/testchromahuediagram.cpp)
+target_link_libraries (testchromahuediagram ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testchromahuediagram COMMAND testchromahuediagram)
+
+add_executable (testcirculardiagram test/testcirculardiagram.cpp)
+target_link_libraries (testcirculardiagram ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testcirculardiagram COMMAND testcirculardiagram)
 
 add_executable (testcolordialog test/testcolordialog.cpp)
 target_link_libraries (testcolordialog ${LIBS} Qt5::Test perceptualcolor)
@@ -151,3 +160,12 @@ add_test (NAME testcolordialog COMMAND testcolordialog)
 add_executable (testcolorpatch test/testcolorpatch.cpp)
 target_link_libraries (testcolorpatch ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testcolorpatch COMMAND testcolorpatch)
+
+enable_testing ()
+add_executable (testhelper test/testhelper.cpp)
+target_link_libraries (testhelper ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testhelper COMMAND testhelper)
+
+add_executable (testpolarpointf test/testpolarpointf.cpp)
+target_link_libraries (testpolarpointf ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testpolarpointf COMMAND testpolarpointf)

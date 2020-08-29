@@ -64,10 +64,10 @@ namespace PerceptualColor {
  * radial 0 and angle 0. See also @ref operator==().
  * 
  * This class is declared as type to Qt’s type system:
- * @ref Q_DECLARE_METATYPE(PerceptualColor::PolarPointF). Depending on your
- * use case (for example if you want to use it relyably in Qt's signals and
- * slots), you might consider calling qRegisterMetaType() for this type,
- * once you have a QApplication object.
+ * <tt>Q_DECLARE_METATYPE(PerceptualColor::PolarPointF)</tt>. Depending on
+ * your use case (for example if you want to use it relyably in Qt's signals
+ * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object.
  * 
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
@@ -127,10 +127,6 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf);
 
 } // namespace PerceptualColor
 
-/** @brief Declares this data type to QMetaType().
- * 
- * This declaration is intentionally outside the namespace, according to the
- * Qt documentation. */
 Q_DECLARE_METATYPE(PerceptualColor::PolarPointF)
 
 #endif // POLARPOINTF_H

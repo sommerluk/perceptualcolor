@@ -1286,6 +1286,7 @@ QColor myColor = PerceptualColor::ColorDialog::getColor(
     PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
 );
 //! [ColorDialog Get color with alpha channel]
+Q_UNUSED(myColor);
 }
 
 void testSnippet02() {
@@ -1328,6 +1329,7 @@ return;
 //! [ColorDialog Get color]
 QColor myColor = PerceptualColor::ColorDialog::getColor();
 //! [ColorDialog Get color]
+Q_UNUSED(myColor);
 }
 
 };

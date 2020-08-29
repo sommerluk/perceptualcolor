@@ -52,6 +52,7 @@ public:
     cmsCIELab colorLab(const QColor &rgbColor) const;
     cmsCIELab colorLab(const Helper::cmsRGB &rgb) const;
     QString description() const;
+    bool inGamut(const cmsCIELab &Lab);
     bool inGamut(
         const cmsFloat64Number lightness,
         const cmsFloat64Number chroma,

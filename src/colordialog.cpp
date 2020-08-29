@@ -825,21 +825,28 @@ void ColorDialog::applyLayoutDimensions()
             collapsedLayout = false;
             break;
         case DialogLayoutDimensions::automatic:
+            // Note: The following code works correctly on scaled
+            // devices (high-DPI…).
+            
             // We should not use more than 70% of the screen for a dialog.
             // That's roughly the same as the default maximum sizes for
             // a QDialog.
-            effectivelyAvailableScreenWidth =
-                QGuiApplication::primaryScreen()->availableSize().width() * 0.7;
+            effectivelyAvailableScreenWidth = qRound(
+                QGuiApplication::primaryScreen()->availableSize().width() * 0.7
+            );
 
             // Now we calculate the space we need for displaying the
             // graphical selectors and the numerical selector at their
             // preferred size in an expanded layout.
+            // Start with the size of the graphical selectors.
             widthThreeshold = qMax(
                 m_wheelColorPicker->sizeHint().width(),
                 m_lightnessFirstWidget->sizeHint().width()
             );
+            // Add the size of the numerical selector.
             widthThreeshold += m_numericalWidget->sizeHint().width();
-            widthThreeshold *= 1.2; // Leave some space for margins.
+            // Add some space for margins.
+            widthThreeshold = qRound(widthThreeshold * 1.2);
 
             // Now decide between collapsed layout and expanded layout
             collapsedLayout = (

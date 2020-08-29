@@ -26,7 +26,9 @@
 
 #include <QtTest/QtTest>
 
-class TestXXX : public QObject
+#include <PerceptualColor/abstractdiagram.h>
+
+class TestAbstractDiagram : public QObject
 {
     Q_OBJECT
 
@@ -34,7 +36,6 @@ private Q_SLOTS:
     void initTestCase() {
         // Called before the first testfunction is executed
     };
-
     void cleanupTestCase() {
         // Called after the last testfunction was executed
     };
@@ -42,17 +43,21 @@ private Q_SLOTS:
     void init() {
         // Called before each testfunction is executed
     };
-
     void cleanup() {
         // Called after every testfunction
     };
 
     void testDef() {
-        // TODO implement me!
+        // No public functions that would be available for a test.
+        // Just test if instanciation does not crash:
+        PerceptualColor::AbstractDiagram myDiagram;
+        myDiagram.show();
+        QVERIFY2(
+            myDiagram.isVisible(),
+            "Test is diagram was shown correctly."
+        );
     };
 };
 
-QTEST_MAIN(TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+QTEST_MAIN(TestAbstractDiagram)
+#include "testabstractdiagram.moc" // necessary because we do not use a header file

@@ -42,7 +42,7 @@
 namespace PerceptualColor {
 
 /** @brief Constructor */
-SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) : QWidget(parent)
+SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) : CircularDiagram(parent)
 {
     // Setup LittleCMS (must be first thing because other operations rely on working LittleCMS)
     m_rgbColorSpace = colorSpace;
@@ -61,31 +61,8 @@ SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
     // initialized.
     m_hue = Helper::LchDefaults::defaultHue;
     m_wheelRibbonChroma = Helper::LchDefaults::versatileSrgbChroma;
-    m_markerThickness = default_markerThickness;
     m_wheelThickness = default_wheelThickness;
     m_mouseEventActive = false;
-}
-
-/** @brief Return the corresponding height for a given width of this widget.
- * 
- * Reimplemented from base class.
- *
- * @param width the width
- * @returns As the widget is meant to be square, it returns always the parameter @c width
- */
-int	SimpleColorWheel::heightForWidth(int width) const
-{
-    return width;
-}
-
-/** @brief Return that this widget has a specific height for a given width
- * 
- * Reimplemented from base class.
- * @returns @c true
- */
-bool SimpleColorWheel::hasHeightForWidth() const
-{
-    return true;
 }
 
 /** @brief The diameter of the widget content
@@ -347,7 +324,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     );
     // draw the line
     QPen pen;
-    pen.setWidth(m_markerThickness);
+    pen.setWidth(markerThickness);
     pen.setCapStyle(Qt::FlatCap);
     pen.setColor(Qt::black);
     painter.setPen(pen);
@@ -356,16 +333,16 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
 
     // Paint a focus indicator if the widget has the focus
     if (hasFocus()) {
-        pen.setWidth(m_markerThickness);
+        pen.setWidth(markerThickness);
         pen.setColor(
             palette().color(QPalette::Highlight)
         );
         painter.setPen(pen);
         painter.drawEllipse(
-            m_markerThickness / static_cast<qreal>(2),
-            m_markerThickness / static_cast<qreal>(2),
-            contentDiameter() - m_markerThickness,
-            contentDiameter() - m_markerThickness
+            markerThickness / static_cast<qreal>(2),
+            markerThickness / static_cast<qreal>(2),
+            contentDiameter() - markerThickness,
+            contentDiameter() - markerThickness
         );
     }
 
@@ -521,31 +498,6 @@ void SimpleColorWheel::resetWheelRibbonChroma()
     setWheelRibbonChroma(Helper::LchDefaults::versatileSrgbChroma);
 }
 
-int SimpleColorWheel::markerThickness() const
-{
-    return m_markerThickness;
-}
-
-/** @brief Setter for the markerThickness() property.
- * 
- * @param newMarkerThickness the new marker thickness
- */
-void SimpleColorWheel::setMarkerThickness(const int newMarkerThickness)
-{
-    int temp = qMax(newMarkerThickness, 0);
-    if (m_markerThickness != temp) {
-        m_markerThickness = temp;
-        m_wheelImageReady = false; // because the border has changed, so the size of the pixmap will change.
-        update();
-    }
-}
-
-/** @brief Reset the markerThickness() property. */
-void SimpleColorWheel::resetMarkerThickness()
-{
-    setMarkerThickness(default_markerThickness);
-}
-
 int SimpleColorWheel::wheelThickness() const
 {
     return m_wheelThickness;
@@ -573,7 +525,7 @@ void SimpleColorWheel::resetWheelThickness()
 
 int SimpleColorWheel::border() const
 {
-    return 2 * m_markerThickness;
+    return 2 * markerThickness;
 }
 
 

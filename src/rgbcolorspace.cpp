@@ -256,10 +256,20 @@ bool RgbColorSpace::inGamut(const cmsCIELCh &LCh)
 {
     // variables
     cmsCIELab Lab; // uses cmsFloat64Number internally
-    Helper::cmsRGB rgb;
 
     // code
     cmsLCh2Lab(&Lab, &LCh); // TODO no normalization necessary previously?
+    return inGamut(Lab);
+}
+
+/** @brief check if a Lab value is within a specific RGB gamut
+ * @param Lab the Lab color
+ * @returns Returns true if it is in the specified RGB gamut. Returns false otherwise.
+ */
+bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
+{
+    Helper::cmsRGB rgb;
+    
     cmsDoTransform(m_transformLabToRgbHandle, &Lab, &rgb, 1); // convert exactly 1 value
 
     return (

@@ -26,9 +26,14 @@
 
 #include <QtTest/QtTest>
 
-class TestXXX : public QObject
+#include "include/PerceptualColor/chromahuediagram.h"
+
+class TestChromaHueDiagram : public QObject
 {
     Q_OBJECT
+
+private:
+    PerceptualColor::RgbColorSpace m_rgbColorSpace;
 
 private Q_SLOTS:
     void initTestCase() {
@@ -47,12 +52,13 @@ private Q_SLOTS:
         // Called after every testfunction
     };
 
-    void testDef() {
-        // TODO implement me!
+    void testConstructor() {
+        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+        myDiagram.show();
     };
 };
 
-QTEST_MAIN(TestXXX)
+QTEST_MAIN(TestChromaHueDiagram)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+#include "testchromahuediagram.moc" 

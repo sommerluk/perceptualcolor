@@ -26,7 +26,9 @@
 
 #include <QtTest/QtTest>
 
-class TestXXX : public QObject
+#include <PerceptualColor/circulardiagram.h>
+
+class TestCircularDiagram : public QObject
 {
     Q_OBJECT
 
@@ -47,12 +49,19 @@ private Q_SLOTS:
         // Called after every testfunction
     };
 
-    void testDef() {
-        // TODO implement me!
+    void testHasHeighForWidth() {
+        PerceptualColor::CircularDiagram myCircularDiagram;
+        QCOMPARE(myCircularDiagram.hasHeightForWidth(), true);
+    };
+
+    void testHeighForWidth() {
+        PerceptualColor::CircularDiagram myCircularDiagram;
+        QCOMPARE(myCircularDiagram.heightForWidth(1), 1);
+        QCOMPARE(myCircularDiagram.heightForWidth(15), 15);
+        QCOMPARE(myCircularDiagram.heightForWidth(100), 100);
+        QCOMPARE(myCircularDiagram.heightForWidth(1000), 1000);
     };
 };
 
-QTEST_MAIN(TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+QTEST_MAIN(TestCircularDiagram)
+#include "testcirculardiagram.moc" // necessary because we do not use a header file
