@@ -1,9 +1,13 @@
 var searchData=
 [
-  ['updateborder_463',['updateBorder',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a807b337e79a7d3e010ca1cc41bd3cd1a',1,'PerceptualColor::ChromaHueDiagram::updateBorder()'],['../class_perceptual_color_1_1_chroma_lightness_diagram.html#a8b311dabc050709f083ff5ca4e2bc6a4',1,'PerceptualColor::ChromaLightnessDiagram::updateBorder()']]],
-  ['updatecolorpatch_464',['updateColorPatch',['../class_perceptual_color_1_1_color_dialog.html#a18985e0cf14c64400f1edc5f64da159d',1,'PerceptualColor::ColorDialog']]],
-  ['updatediagramcache_465',['updateDiagramCache',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6',1,'PerceptualColor::ChromaHueDiagram::updateDiagramCache()'],['../class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84',1,'PerceptualColor::ChromaLightnessDiagram::updateDiagramCache()']]],
-  ['updategradientimage_466',['updateGradientImage',['../class_perceptual_color_1_1_gradient_selector.html#a82a87ec1701c4db18f821c3b35026e90',1,'PerceptualColor::GradientSelector']]],
-  ['updatewheelcache_467',['updateWheelCache',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a7d8f858f515726d5e171b8e150c6ec2b',1,'PerceptualColor::ChromaHueDiagram']]],
-  ['updatewheelimage_468',['updateWheelImage',['../class_perceptual_color_1_1_simple_color_wheel.html#ac454a7cd994298cad632b343c2efe6ba',1,'PerceptualColor::SimpleColorWheel']]]
+  ['testoption_461',['testOption',['../class_perceptual_color_1_1_color_dialog.html#a089b98a6748380428f2d77411168e930',1,'PerceptualColor::ColorDialog']]],
+  ['textforhlclineedit_462',['textForHlcLineEdit',['../class_perceptual_color_1_1_color_dialog.html#a38134a3e22f2b3df4602a08025ec1d52',1,'PerceptualColor::ColorDialog']]],
+  ['tocartesian_463',['toCartesian',['../class_perceptual_color_1_1_polar_point_f.html#aed5188496a9aa06270e590f1f5d3202a',1,'PerceptualColor::PolarPointF']]],
+  ['tohsvqcolor_464',['toHsvQColor',['../class_perceptual_color_1_1_full_color_description.html#aaa17133c6e1d040b2f088e79a42d3283',1,'PerceptualColor::FullColorDescription']]],
+  ['tolab_465',['toLab',['../class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5',1,'PerceptualColor::FullColorDescription::toLab() const'],['../class_perceptual_color_1_1_full_color_description.html#aead0ed9ecd570f03af7e5ab876081a4b',1,'PerceptualColor::FullColorDescription::toLab(const cmsCIELCh &amp;lch)']]],
+  ['tolch_466',['toLch',['../class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe',1,'PerceptualColor::FullColorDescription::toLch() const'],['../class_perceptual_color_1_1_full_color_description.html#a8dff298f74decac94e054a9a1e74630e',1,'PerceptualColor::FullColorDescription::toLch(const cmsCIELab &amp;lab)']]],
+  ['torgb_467',['toRgb',['../class_perceptual_color_1_1_full_color_description.html#a4f716eee81c1d3b1fda841dff80f97f1',1,'PerceptualColor::FullColorDescription']]],
+  ['torgbhexstring_468',['toRgbHexString',['../class_perceptual_color_1_1_full_color_description.html#a572e2abe28e31c6315732d30f06b1732',1,'PerceptualColor::FullColorDescription']]],
+  ['torgbqcolor_469',['toRgbQColor',['../class_perceptual_color_1_1_full_color_description.html#aad1d9cc70b7a9ae81c829c391334d768',1,'PerceptualColor::FullColorDescription']]],
+  ['transparencybackground_470',['transparencyBackground',['../namespace_perceptual_color_1_1_helper.html#a5e5b05b338fc63c8d9a591b1be979ec4',1,'PerceptualColor::Helper']]]
 ];

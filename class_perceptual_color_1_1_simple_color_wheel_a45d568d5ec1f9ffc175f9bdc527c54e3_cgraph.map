@@ -1,0 +1,5 @@
+<map id="PerceptualColor::SimpleColorWheel::fromWheelCoordinatesToWidgetCoordinates" name="PerceptualColor::SimpleColorWheel::fromWheelCoordinatesToWidgetCoordinates">
+<area shape="rect" id="node1" title="Converts wheel coordinates to widget coordinates." alt="" coords="5,31,184,83"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#a6fe09144d693f81d5c7d8306666bc2aa" title="The diameter of the widget content." alt="" coords="232,5,367,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_polar_point_f.html#aed5188496a9aa06270e590f1f5d3202a" title="Convert to cartesion coordinates." alt="" coords="235,68,363,107"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="PerceptualColor::RgbColorSpace::inGamut" name="PerceptualColor::RgbColorSpace::inGamut">
+<area shape="rect" id="node1" title="check if an LCh value is within a specific RGB gamut" alt="" coords="5,5,128,44"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="176,5,299,44"/>
+</map>

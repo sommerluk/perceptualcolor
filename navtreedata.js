@@ -57,9 +57,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"alphaselector_8cpp.html",
-"class_perceptual_color_1_1_gradient_selector.html#a2c074fbb043b1b00f9b3e621a102e2a7",
-"wheelcolorpicker_8cpp.html"
+"abstractdiagram_8cpp.html",
+"class_perceptual_color_1_1_gradient_selector.html#a58bbe35919e206f7abc06815145f470e"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

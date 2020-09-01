@@ -1,0 +1,6 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::imageCoordinatesInGamut" name="PerceptualColor::ChromaLightnessDiagram::imageCoordinatesInGamut">
+<area shape="rect" id="node1" title="Tests if image coordinates are in gamut." alt="" coords="209,68,376,107"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#abd23775803f181201fefbdcc08378ab8" title="React on key press events." alt="" coords="5,5,161,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a1697a065cdb13e6a5b8af378673c77f3" title="React on a mouse move event." alt="" coords="5,68,161,107"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#aa0aa6d31cefd3b9dfbfe9acfcac18e3d" title="React on a mouse press event." alt="" coords="5,131,161,169"/>
+</map>

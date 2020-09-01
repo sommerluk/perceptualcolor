@@ -1,0 +1,12 @@
+<map id="PerceptualColor::ChromaHueDiagram::mouseMoveEvent" name="PerceptualColor::ChromaHueDiagram::mouseMoveEvent">
+<area shape="rect" id="node1" title="React on a mouse move event." alt="" coords="5,133,140,172"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#aa447440e88450057faa8bfc5f31dfb46" title="Tests if image coordinates are within the diagram surface." alt="" coords="195,5,366,57"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a82bab0738efff92bf357584527f85b65" title=" " alt="" coords="422,75,593,113"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="219,133,342,172"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a65ff87dfbc2ffa5d71b5e58c30d3b39c" title="Sets the color property corresponding to given widget coordinates." alt="" coords="188,196,373,235"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="641,257,763,296"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="443,12,571,51"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a3a62b8d0b33df74dacd6150865c57382" title=" " alt="" coords="421,137,593,176"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a443db20bc2c25119febcd61ca9299d21" title="Setter for the color() property." alt="" coords="440,200,575,239"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5" title=" " alt="" coords="641,137,763,176"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="PerceptualColor::ColorDialog::colorSelected" name="PerceptualColor::ColorDialog::colorSelected">
+<area shape="rect" id="node1" title="This signal is emitted just after the user has clicked OK to select a color to use." alt="" coords="187,37,320,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a701b56b846a415fe2b16a1ae302c2049" title="Various updates when closing the dialog." alt="" coords="5,5,139,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a28ba2d1ec20acc6a732d8fbe60f9fbd4" title="Opens the dialog and connects its colorSelected() signal to the slot specified by receiver and member..." alt="" coords="5,68,139,107"/>
+</map>

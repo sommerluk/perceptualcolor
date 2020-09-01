@@ -100,8 +100,8 @@ Inheritance diagram for PerceptualColor::RgbColorSpace:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_perceptual_color_1_1_rgb_color_space__inherit__graph.png" border="0" usemap="#_perceptual_color_1_1_rgb_color_space_inherit__map" alt="Inheritance graph"/></div>
 <map name="_perceptual_color_1_1_rgb_color_space_inherit__map" id="_perceptual_color_1_1_rgb_color_space_inherit__map">
-<area shape="rect" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="5,80,197,121"/>
-<area shape="rect" title=" " alt="" coords="64,5,139,32"/>
+<area shape="rect" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="5,79,128,117"/>
+<area shape="rect" title=" " alt="" coords="40,5,93,31"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -109,8 +109,8 @@ Collaboration diagram for PerceptualColor::RgbColorSpace:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_perceptual_color_1_1_rgb_color_space__coll__graph.png" border="0" usemap="#_perceptual_color_1_1_rgb_color_space_coll__map" alt="Collaboration graph"/></div>
 <map name="_perceptual_color_1_1_rgb_color_space_coll__map" id="_perceptual_color_1_1_rgb_color_space_coll__map">
-<area shape="rect" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="5,80,197,121"/>
-<area shape="rect" title=" " alt="" coords="64,5,139,32"/>
+<area shape="rect" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="5,79,128,117"/>
+<area shape="rect" title=" " alt="" coords="40,5,93,31"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -147,6 +147,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aeb749cb42b24d3989be041a7d4096258"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2df7974ab008d1f6c8a056641ca014a9"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">description</a> () const</td></tr>
 <tr class="separator:a2df7974ab008d1f6c8a056641ca014a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24382dbdad4c514bde0842b5a8313be0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">inGamut</a> (const cmsCIELab &amp;Lab)</td></tr>
+<tr class="memdesc:a24382dbdad4c514bde0842b5a8313be0"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if a Lab value is within a specific RGB gamut  <a href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">More...</a><br /></td></tr>
+<tr class="separator:a24382dbdad4c514bde0842b5a8313be0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f8768171dbdd80cd2577088b4156a03"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_rgb_color_space.html#a2f8768171dbdd80cd2577088b4156a03">inGamut</a> (const cmsCIELCh &amp;LCh)</td></tr>
 <tr class="memdesc:a2f8768171dbdd80cd2577088b4156a03"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if an LCh value is within a specific RGB gamut  <a href="class_perceptual_color_1_1_rgb_color_space.html#a2f8768171dbdd80cd2577088b4156a03">More...</a><br /></td></tr>
 <tr class="separator:a2f8768171dbdd80cd2577088b4156a03"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,6 +206,16 @@ Private Attributes</h2></td></tr>
 <p>Creates an sRGB color space. </p>
 
 <p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00040">40</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a013f1458308475d288bd260a28a75e10_cgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a013f1458308475d288bd260a28a75e10_cgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a013f1458308475d288bd260a28a75e10_cgraph" id="class_perceptual_color_1_1_rgb_color_space_a013f1458308475d288bd260a28a75e10_cgraph">
+<area shape="rect" title="Default constructor." alt="" coords="5,37,128,76"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c" title="Get information from an ICC profile via LittleCMS." alt="" coords="176,5,331,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="192,68,315,107"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -255,6 +268,16 @@ Private Attributes</h2></td></tr>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_perceptual_color_1_1_rgb_color_space.html#a1e3cb8f4108729442a61b43df4664397" title="The lightest in-gamut point on the L* axis.">whitepointL</a> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00116">116</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a805768f351ccde875254755901d943fa_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a805768f351ccde875254755901d943fa_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a805768f351ccde875254755901d943fa_icgraph" id="class_perceptual_color_1_1_rgb_color_space_a805768f351ccde875254755901d943fa_icgraph">
+<area shape="rect" title="The darkest in&#45;gamut point on the L* axis." alt="" coords="415,5,537,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a5c7e9555e961f25f39c961b6aedda06a" title=" " alt="" coords="200,5,367,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a7d27cb4b18ebaf0a3d0374201c2d283a" title="Constructor." alt="" coords="5,5,152,44"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -277,13 +300,13 @@ Private Attributes</h2></td></tr>
 <p>Calculates the Lab value. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">rgbColor</td><td>the color that will be converted. (If this is not an RGB color, it will be converted first into an RGB color by QColor methods.) </td></tr>
+    <tr><td class="paramname">rgb</td><td>the color that will be converted. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the color is valid, the corresponding LCh value might also be invalid. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00150">150</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00149">149</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
 
 </div>
 </div>
@@ -313,6 +336,18 @@ Private Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>If the color is valid, the corresponding LCh value might also be invalid. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00135">135</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a813721e6284e83c8493f1557eeeb4469_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a813721e6284e83c8493f1557eeeb4469_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a813721e6284e83c8493f1557eeeb4469_icgraph" id="class_perceptual_color_1_1_rgb_color_space_a813721e6284e83c8493f1557eeeb4469_icgraph">
+<area shape="rect" title="Calculates the Lab value." alt="" coords="587,37,709,76"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#aa2dcf30047c54b1c4acb8a1da5dacabf" title="Constructor." alt="" coords="387,5,534,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#adc53e31427f7c15d0aedc521aea5edd7" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="383,68,539,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6" title="Refresh the diagram and associated data." alt="" coords="188,68,335,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="5,68,140,107"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -341,7 +376,33 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the color is within the RGB gammut, a QColor with the RGB values. An invald QColor otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00163">163</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00162">162</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_ab494c2d0f561c49b8325688a8ddc0095_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_ab494c2d0f561c49b8325688a8ddc0095_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_ab494c2d0f561c49b8325688a8ddc0095_icgraph" id="class_perceptual_color_1_1_rgb_color_space_ab494c2d0f561c49b8325688a8ddc0095_icgraph">
+<area shape="rect" title="Calculates the RGB value." alt="" coords="1077,231,1200,270"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a266051234c1eea006f34c6866f91e7b9" title="Calculates the RGB value." alt="" coords="887,137,1010,175"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#ae0395993434db2cd0d74b146fed6621c" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="871,199,1027,238"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#ae428f431ada900440488548dce47f74c" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="868,262,1029,301"/>
+<area shape="rect" href="class_perceptual_color_1_1_simple_color_wheel.html#acff6e0159f9cb6c41c0bbedb9f6da1c4" title="Generates an image of a color wheel." alt="" coords="879,354,1018,393"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84" title="Refresh the diagram and associated data." alt="" coords="664,170,820,209"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#a9f6471b44d4f4eba95914945bc53037a" title=" " alt="" coords="439,113,601,151"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#abd23775803f181201fefbdcc08378ab8" title="React on key press events." alt="" coords="5,107,161,146"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#a82c4e4f64c0d5e9307d767f2bfa052db" title="Paint the widget." alt="" coords="215,55,371,94"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#ac9b6d25ecc2c6a954f1ba361960458b1" title=" " alt="" coords="215,233,371,271"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#a9bfa53bcbfd4010c082294c9cfb5b2eb" title=" " alt="" coords="424,278,616,330"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#a00a13ef1aa732e2f16d0d9f371aa4746" title="Tests if image coordinates are in gamut." alt="" coords="209,170,376,209"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#a1697a065cdb13e6a5b8af378673c77f3" title="React on a mouse move event." alt="" coords="5,170,161,209"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#aa0aa6d31cefd3b9dfbfe9acfcac18e3d" title="React on a mouse press event." alt="" coords="5,233,161,271"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_lightness_diagram.html#a9bd534e0817d1afb0a3674f98919b8db" title="React on a mouse release event." alt="" coords="5,295,161,334"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#a7d8f858f515726d5e171b8e150c6ec2b" title="Refresh the wheel and associated data." alt="" coords="673,417,811,455"/>
+<area shape="rect" href="class_perceptual_color_1_1_simple_color_wheel.html#ac454a7cd994298cad632b343c2efe6ba" title="Refresh the wheel ribbon pixmap." alt="" coords="675,354,809,393"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="453,417,587,455"/>
+<area shape="rect" href="class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="453,354,587,393"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -370,7 +431,16 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the color is within the RGB gammut, a QColor with the RGB values. An invald QColor otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00183">183</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00182">182</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a266051234c1eea006f34c6866f91e7b9_cgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a266051234c1eea006f34c6866f91e7b9_cgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a266051234c1eea006f34c6866f91e7b9_cgraph" id="class_perceptual_color_1_1_rgb_color_space_a266051234c1eea006f34c6866f91e7b9_cgraph">
+<area shape="rect" title="Calculates the RGB value." alt="" coords="5,5,128,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="176,5,299,44"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -399,7 +469,28 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the color is within the RGB gammut, a QColor with the RGB values. A nearby (in-gamut) RGB QColor otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00208">208</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00207">207</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_cgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_cgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_cgraph" id="class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_cgraph">
+<area shape="rect" title="Calculates the RGB value." alt="" coords="5,5,128,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258" title=" " alt="" coords="176,5,312,44"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_icgraph" id="class_perceptual_color_1_1_rgb_color_space_a597d093bcc9c79444792359569e537b4_icgraph">
+<area shape="rect" title="Calculates the RGB value." alt="" coords="587,68,709,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a8e32b4bb53a99edbb7d8f238489b54d4" title="Calculates the RGB value." alt="" coords="399,5,522,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#adc53e31427f7c15d0aedc521aea5edd7" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="383,68,539,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="5,97,140,136"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6" title="Refresh the diagram and associated data." alt="" coords="188,68,335,107"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -428,7 +519,17 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the color is within the RGB gammut, a QColor with the RGB values. A nearby (in-gamut) RGB QColor otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00220">220</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00219">219</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a8e32b4bb53a99edbb7d8f238489b54d4_cgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a8e32b4bb53a99edbb7d8f238489b54d4_cgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a8e32b4bb53a99edbb7d8f238489b54d4_cgraph" id="class_perceptual_color_1_1_rgb_color_space_a8e32b4bb53a99edbb7d8f238489b54d4_cgraph">
+<area shape="rect" title="Calculates the RGB value." alt="" coords="5,5,128,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4" title="Calculates the RGB value." alt="" coords="176,5,299,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258" title=" " alt="" coords="347,5,483,44"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -448,7 +549,21 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00191">191</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00190">190</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_aeb749cb42b24d3989be041a7d4096258_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_aeb749cb42b24d3989be041a7d4096258_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_aeb749cb42b24d3989be041a7d4096258_icgraph" id="class_perceptual_color_1_1_rgb_color_space_aeb749cb42b24d3989be041a7d4096258_icgraph">
+<area shape="rect" title=" " alt="" coords="781,100,917,139"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4" title="Calculates the RGB value." alt="" coords="599,68,721,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a7d27cb4b18ebaf0a3d0374201c2d283a" title="Constructor." alt="" coords="587,131,733,169"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a8e32b4bb53a99edbb7d8f238489b54d4" title="Calculates the RGB value." alt="" coords="399,5,522,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#adc53e31427f7c15d0aedc521aea5edd7" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="383,68,539,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="5,97,140,136"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6" title="Refresh the diagram and associated data." alt="" coords="188,68,335,107"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -468,7 +583,7 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the description of the RGB color space. </p>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00274">274</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00283">283</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
 
 </div>
 </div>
@@ -516,12 +631,63 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A QString with the information. First, it searchs the information in the current locale (language code and country code as provided currently by <code>QLocale</code>). If the information is not available in this locale, it silently falls back to another available localization. Note that the returned QString() might be empty if the requested information is not available in the ICC profile. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00289">289</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00298">298</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a54c2f6f7eb590907c3cd4cadacb7fe2c_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a54c2f6f7eb590907c3cd4cadacb7fe2c_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a54c2f6f7eb590907c3cd4cadacb7fe2c_icgraph" id="class_perceptual_color_1_1_rgb_color_space_a54c2f6f7eb590907c3cd4cadacb7fe2c_icgraph">
+<area shape="rect" title="Get information from an ICC profile via LittleCMS." alt="" coords="176,5,331,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a013f1458308475d288bd260a28a75e10" title="Default constructor." alt="" coords="5,5,128,44"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a24382dbdad4c514bde0842b5a8313be0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24382dbdad4c514bde0842b5a8313be0">&#9670;&nbsp;</a></span>inGamut() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool PerceptualColor::RgbColorSpace::inGamut </td>
+          <td>(</td>
+          <td class="paramtype">const cmsCIELab &amp;&#160;</td>
+          <td class="paramname"><em>Lab</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>check if a Lab value is within a specific RGB gamut </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Lab</td><td>the Lab color </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns true if it is in the specified RGB gamut. Returns false otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00269">269</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a24382dbdad4c514bde0842b5a8313be0_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a24382dbdad4c514bde0842b5a8313be0_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a24382dbdad4c514bde0842b5a8313be0_icgraph" id="class_perceptual_color_1_1_rgb_color_space_a24382dbdad4c514bde0842b5a8313be0_icgraph">
+<area shape="rect" title="check if a Lab value is within a specific RGB gamut" alt="" coords="415,100,537,139"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123" title="check if an LCh value is within a specific RGB gamut" alt="" coords="222,5,345,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#a16bcb9d0eee3536fe4f1034d2b9c3329" title="React on a mouse move event." alt="" coords="216,68,351,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a5c7e9555e961f25f39c961b6aedda06a" title=" " alt="" coords="200,131,367,169"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a013f1458308475d288bd260a28a75e10" title="Default constructor." alt="" coords="222,193,345,232"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a7d27cb4b18ebaf0a3d0374201c2d283a" title="Constructor." alt="" coords="5,131,152,169"/>
+</map>
+</div>
 
 </div>
 </div>
 <a id="a2f8768171dbdd80cd2577088b4156a03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f8768171dbdd80cd2577088b4156a03">&#9670;&nbsp;</a></span>inGamut() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f8768171dbdd80cd2577088b4156a03">&#9670;&nbsp;</a></span>inGamut() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -545,12 +711,21 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if lightness/chroma/hue is in the specified RGB gamut. Returns false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00256">256</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00255">255</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a2f8768171dbdd80cd2577088b4156a03_cgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a2f8768171dbdd80cd2577088b4156a03_cgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a2f8768171dbdd80cd2577088b4156a03_cgraph" id="class_perceptual_color_1_1_rgb_color_space_a2f8768171dbdd80cd2577088b4156a03_cgraph">
+<area shape="rect" title="check if an LCh value is within a specific RGB gamut" alt="" coords="5,5,128,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="176,5,299,44"/>
+</map>
+</div>
 
 </div>
 </div>
 <a id="a33ed96ad94f8b884e9c224bedfa3f123"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33ed96ad94f8b884e9c224bedfa3f123">&#9670;&nbsp;</a></span>inGamut() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a33ed96ad94f8b884e9c224bedfa3f123">&#9670;&nbsp;</a></span>inGamut() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -592,7 +767,16 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if lightness/chroma/hue is in the specified RGB gamut. Returns false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00236">236</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00235">235</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a33ed96ad94f8b884e9c224bedfa3f123_cgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a33ed96ad94f8b884e9c224bedfa3f123_cgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a33ed96ad94f8b884e9c224bedfa3f123_cgraph" id="class_perceptual_color_1_1_rgb_color_space_a33ed96ad94f8b884e9c224bedfa3f123_cgraph">
+<area shape="rect" title="check if an LCh value is within a specific RGB gamut" alt="" coords="5,5,128,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="176,5,299,44"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -615,6 +799,16 @@ Private Attributes</h2></td></tr>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_perceptual_color_1_1_rgb_color_space.html#a805768f351ccde875254755901d943fa" title="The darkest in-gamut point on the L* axis.">blackpointL()</a> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="rgbcolorspace_8cpp_source.html#l00124">124</a> of file <a class="el" href="rgbcolorspace_8cpp_source.html">rgbcolorspace.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_perceptual_color_1_1_rgb_color_space_a1e3cb8f4108729442a61b43df4664397_icgraph.png" border="0" usemap="#class_perceptual_color_1_1_rgb_color_space_a1e3cb8f4108729442a61b43df4664397_icgraph" alt=""/></div>
+<map name="class_perceptual_color_1_1_rgb_color_space_a1e3cb8f4108729442a61b43df4664397_icgraph" id="class_perceptual_color_1_1_rgb_color_space_a1e3cb8f4108729442a61b43df4664397_icgraph">
+<area shape="rect" title="The lightest in&#45;gamut point on the L* axis." alt="" coords="415,5,537,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a5c7e9555e961f25f39c961b6aedda06a" title=" " alt="" coords="200,5,367,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a7d27cb4b18ebaf0a3d0374201c2d283a" title="Constructor." alt="" coords="5,5,152,44"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -639,7 +833,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00065">65</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00066">66</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
 
 </div>
 </div>
@@ -664,7 +858,7 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>internal storage for <a class="el" href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">description()</a> property. </p>
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00067">67</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00068">68</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
 
 </div>
 </div>
@@ -688,7 +882,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00068">68</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00069">69</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
 
 </div>
 </div>
@@ -712,7 +906,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00069">69</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00070">70</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
 
 </div>
 </div>
@@ -736,7 +930,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00070">70</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00071">71</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
 
 </div>
 </div>
@@ -760,7 +954,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00071">71</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rgbcolorspace_8h_source.html#l00072">72</a> of file <a class="el" href="rgbcolorspace_8h_source.html">rgbcolorspace.h</a>.</p>
 
 </div>
 </div>

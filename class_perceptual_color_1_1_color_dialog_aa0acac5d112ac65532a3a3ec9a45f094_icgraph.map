@@ -1,0 +1,5 @@
+<map id="PerceptualColor::ColorDialog::applyLayoutDimensions" name="PerceptualColor::ColorDialog::applyLayoutDimensions">
+<area shape="rect" id="node1" title="Arranges the layout conforming to layoutDimensions." alt="" coords="187,37,320,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a4d8c3a0e0ac520c789565d68c135431b" title="Setter for property layoutDimensions." alt="" coords="5,5,139,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a2569086f612b1714dc922564808fe5e9" title="Setter for property visible." alt="" coords="5,68,139,107"/>
+</map>

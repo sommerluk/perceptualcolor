@@ -1,0 +1,8 @@
+<map id="PerceptualColor::ChromaHueDiagram::updateBorder" name="PerceptualColor::ChromaHueDiagram::updateBorder">
+<area shape="rect" id="node1" title="Updates the border()." alt="" coords="388,68,523,107"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ab475879389bf24744c33d77c57097623" title="The constructor." alt="" coords="199,5,340,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ae020fe346d710c4a58d4f3c034b32dda" title="Setter for the markerRadius() property." alt="" coords="202,68,337,107"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a0290b2baf7a8a452fc7d709eac97d8cc" title="Setter for the markerThickness() property." alt="" coords="201,131,338,169"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a6286c233e116b16215f083719420603c" title="Reset the markerRadius() property." alt="" coords="11,68,145,107"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a36bb12d22421ef152d3fc460010fdf17" title="Reset the markerThickness() property." alt="" coords="5,131,151,169"/>
+</map>

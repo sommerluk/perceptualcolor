@@ -124,7 +124,7 @@ Variables</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Various smaller help elements. </p>
 <p>This namespace groups together various smaller elements that are used across the library but do not belong stricly to one of the classes.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000018">Todo:</a></b></dt><dd>Decide for each member of this namespace if it can be moved into a class because it’s only used in one single class. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000030">Todo:</a></b></dt><dd>Decide for each member of this namespace if it can be moved into a class because it’s only used in this single class. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a0ac9e3004ee9494a04cf1324adaa292e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0ac9e3004ee9494a04cf1324adaa292e">&#9670;&nbsp;</a></span>inRange()</h2>
@@ -169,9 +169,12 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><code>(low &lt;= x) &amp;&amp; (x &lt;= high)</code> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><div class="fragment"><div class="line">            (low &lt;= x) &amp;&amp; (x &lt;= high)</div>
+</div><!-- fragment --></dd></dl>
+<p>[<a class="el" href="namespace_perceptual_color_1_1_helper.html" title="Various smaller help elements.">Helper</a> inRange]</p>
+<p>[<a class="el" href="namespace_perceptual_color_1_1_helper.html" title="Various smaller help elements.">Helper</a> inRange]</p>
 
-<p class="definition">Definition at line <a class="el" href="helper_8h_source.html#l00127">127</a> of file <a class="el" href="helper_8h_source.html">helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="helper_8h_source.html#l00161">161</a> of file <a class="el" href="helper_8h_source.html">helper.h</a>.</p>
 
 </div>
 </div>
@@ -192,8 +195,8 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Number of vertical <em>standard</em> wheel steps done by a wheel event. </p>
-<p>As the QWheelEvent documentation explains, there is a common physical standard wheel step size for mouse wheels:&#160;15°. But there are some mouse models, which use non-standard physical wheel step sizes for their mouse wheel, for example because they have a higher wheel resolution.</p>
-<p>This function converts the values in QMouseEvent to the <em>standard</em> wheel step count.</p>
+<p>As the QWheelEvent documentation explains, there is a common physical standard wheel step size for mouse wheels:&#160;15°. But there are some mouse models which use non-standard physical wheel step sizes for their mouse wheel, for example because they have a higher wheel resolution.</p>
+<p>This function converts the values in a QMouseEvent to the <em>standard</em> wheel step count.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">event</td><td>the QWheelEvent </td></tr>
@@ -202,7 +205,18 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the count of vertical <em>standard</em> wheel steps done within this mouse event. The value is positive for up-steps and negative for down-steps. On a standard mouse wheel, moving the wheel one physical step up will return the value&#160;1. On a non-standard, higher resolution mouse wheel, moving the wheel one physical step up will return a smaller value, for example&#160;0.7 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="helper_8cpp_source.html#l00123">123</a> of file <a class="el" href="helper_8cpp_source.html">helper.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="helper_8cpp_source.html#l00105">105</a> of file <a class="el" href="helper_8cpp_source.html">helper.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespace_perceptual_color_1_1_helper_a38f2fafe1c8902cdf2aa059f62396986_icgraph.png" border="0" usemap="#namespace_perceptual_color_1_1_helper_a38f2fafe1c8902cdf2aa059f62396986_icgraph" alt=""/></div>
+<map name="namespace_perceptual_color_1_1_helper_a38f2fafe1c8902cdf2aa059f62396986_icgraph" id="namespace_perceptual_color_1_1_helper_a38f2fafe1c8902cdf2aa059f62396986_icgraph">
+<area shape="rect" title="Number of vertical standard wheel steps done by a wheel event." alt="" coords="188,68,303,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_gradient_selector.html#a2f1ad73ad864cffe3061133c3a048b0d" title=" " alt="" coords="11,5,134,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6" title="React on a mouse wheel event." alt="" coords="5,68,140,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7" title=" " alt="" coords="5,131,140,169"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -245,9 +259,20 @@ template&lt;typename T &gt; </div>
 <div class="line">    200,</div>
 <div class="line">    QBrush(QColor(255, 0, 0, 128))</div>
 <div class="line">);</div>
-</div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>Provide color management support? Thought we use the same value for red, green and blue, this might <em>not</em> be perfectly neutral gray depending on the color profile of the monitor… </dd></dl>
+</div><!-- fragment --> <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000009">Todo:</a></b></dt><dd>Provide color management support? Thought we use the same value for red, green and blue, this might <em>not</em> be perfectly neutral gray depending on the color profile of the monitor… </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="helper_8cpp_source.html#l00074">74</a> of file <a class="el" href="helper_8cpp_source.html">helper.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="helper_8cpp_source.html#l00056">56</a> of file <a class="el" href="helper_8cpp_source.html">helper.cpp</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespace_perceptual_color_1_1_helper_a5e5b05b338fc63c8d9a591b1be979ec4_icgraph.png" border="0" usemap="#namespace_perceptual_color_1_1_helper_a5e5b05b338fc63c8d9a591b1be979ec4_icgraph" alt=""/></div>
+<map name="namespace_perceptual_color_1_1_helper_a5e5b05b338fc63c8d9a591b1be979ec4_icgraph" id="namespace_perceptual_color_1_1_helper_a5e5b05b338fc63c8d9a591b1be979ec4_icgraph">
+<area shape="rect" title="Background for semi&#45;transparent colors." alt="" coords="356,37,479,76"/>
+<area shape="rect" href="class_perceptual_color_1_1_gradient_selector.html#a4a19e9fef9d31d5e028ff7eeb783d1be" title=" " alt="" coords="181,5,304,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_color_patch.html#aac1b80677833c04915faece6c67ce6d0" title="Handle paint events." alt="" coords="177,68,308,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_gradient_selector.html#a9afd88c06d6ae19d85a0f91e4def1b01" title=" " alt="" coords="5,5,129,44"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -275,13 +300,13 @@ template&lt;typename T &gt; </div>
 <p>Precision for gamut boundary search. </p>
 <p>We have to search sometimes for the gamut boundary. This value defines the precision of the search: Smaller values mean better precision and slower processing. </p>
 
-<p class="definition">Definition at line <a class="el" href="helper_8h_source.html#l00119">119</a> of file <a class="el" href="helper_8h_source.html">helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="helper_8h_source.html#l00154">154</a> of file <a class="el" href="helper_8h_source.html">helper.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="anamespace_perceptual_color_1_1_helper_html_a5e5b05b338fc63c8d9a591b1be979ec4"><div class="ttname"><a href="namespace_perceptual_color_1_1_helper.html#a5e5b05b338fc63c8d9a591b1be979ec4">PerceptualColor::Helper::transparencyBackground</a></div><div class="ttdeci">QImage transparencyBackground()</div><div class="ttdoc">Background for semi-transparent colors.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8cpp_source.html#l00074">helper.cpp:74</a></div></div>
+<div class="ttc" id="anamespace_perceptual_color_1_1_helper_html_a5e5b05b338fc63c8d9a591b1be979ec4"><div class="ttname"><a href="namespace_perceptual_color_1_1_helper.html#a5e5b05b338fc63c8d9a591b1be979ec4">PerceptualColor::Helper::transparencyBackground</a></div><div class="ttdeci">QImage transparencyBackground()</div><div class="ttdoc">Background for semi-transparent colors.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8cpp_source.html#l00056">helper.cpp:56</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

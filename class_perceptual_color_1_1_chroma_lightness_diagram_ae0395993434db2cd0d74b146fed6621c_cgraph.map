@@ -1,0 +1,6 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::generateDiagramImage" name="PerceptualColor::ChromaLightnessDiagram::generateDiagramImage">
+<area shape="rect" id="node1" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="5,37,161,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="212,5,335,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="209,68,337,107"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="385,68,513,107"/>
+</map>

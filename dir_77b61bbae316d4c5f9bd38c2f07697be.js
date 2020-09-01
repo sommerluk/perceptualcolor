@@ -1,13 +1,20 @@
 var dir_77b61bbae316d4c5f9bd38c2f07697be =
 [
+    [ "abstractdiagram.h", "abstractdiagram_8h.html", [
+      [ "AbstractDiagram", "class_perceptual_color_1_1_abstract_diagram.html", "class_perceptual_color_1_1_abstract_diagram" ]
+    ] ],
     [ "alphaselector.h", "alphaselector_8h.html", [
       [ "AlphaSelector", "class_perceptual_color_1_1_alpha_selector.html", "class_perceptual_color_1_1_alpha_selector" ]
     ] ],
     [ "chromahuediagram.h", "chromahuediagram_8h.html", [
-      [ "ChromaHueDiagram", "class_perceptual_color_1_1_chroma_hue_diagram.html", "class_perceptual_color_1_1_chroma_hue_diagram" ]
+      [ "ChromaHueDiagram", "class_perceptual_color_1_1_chroma_hue_diagram.html", "class_perceptual_color_1_1_chroma_hue_diagram" ],
+      [ "KeyPressEater", "class_perceptual_color_1_1_key_press_eater.html", "class_perceptual_color_1_1_key_press_eater" ]
     ] ],
     [ "chromalightnessdiagram.h", "chromalightnessdiagram_8h.html", [
       [ "ChromaLightnessDiagram", "class_perceptual_color_1_1_chroma_lightness_diagram.html", "class_perceptual_color_1_1_chroma_lightness_diagram" ]
+    ] ],
+    [ "circulardiagram.h", "circulardiagram_8h.html", [
+      [ "CircularDiagram", "class_perceptual_color_1_1_circular_diagram.html", "class_perceptual_color_1_1_circular_diagram" ]
     ] ],
     [ "colordialog.h", "colordialog_8h.html", [
       [ "ColorDialog", "class_perceptual_color_1_1_color_dialog.html", "class_perceptual_color_1_1_color_dialog" ]

@@ -1,0 +1,5 @@
+<map id="PerceptualColor::ChromaHueDiagram::resetMarkerRadius" name="PerceptualColor::ChromaHueDiagram::resetMarkerRadius">
+<area shape="rect" id="node1" title="Reset the markerRadius() property." alt="" coords="5,5,140,44"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ae020fe346d710c4a58d4f3c034b32dda" title="Setter for the markerRadius() property." alt="" coords="188,5,323,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a807b337e79a7d3e010ca1cc41bd3cd1a" title="Updates the border()." alt="" coords="371,5,505,44"/>
+</map>

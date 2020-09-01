@@ -1,0 +1,5 @@
+<map id="PerceptualColor::ChromaHueDiagram::resetMarkerThickness" name="PerceptualColor::ChromaHueDiagram::resetMarkerThickness">
+<area shape="rect" id="node1" title="Reset the markerThickness() property." alt="" coords="5,5,151,44"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a0290b2baf7a8a452fc7d709eac97d8cc" title="Setter for the markerThickness() property." alt="" coords="199,5,336,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a807b337e79a7d3e010ca1cc41bd3cd1a" title="Updates the border()." alt="" coords="384,5,519,44"/>
+</map>

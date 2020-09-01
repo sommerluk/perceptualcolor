@@ -1,0 +1,8 @@
+<map id="PerceptualColor::AlphaSelector::setAlpha" name="PerceptualColor::AlphaSelector::setAlpha">
+<area shape="rect" id="node1" title=" " alt="" coords="412,48,555,87"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_alpha_selector.html#a3054b783bd88068bbf6caa4553dc4649" title=" " alt="" coords="5,5,148,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_alpha_selector.html#a5d4081da5f351f6c98a2ffda568f434e" title=" " alt="" coords="196,48,364,87"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a64b6c698ebfaf2461c513ebbb7ef2637" title="Setter for currentColor property." alt="" coords="213,111,347,149"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="10,96,143,135"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="10,159,143,197"/>
+</map>

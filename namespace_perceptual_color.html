@@ -101,14 +101,20 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_abstract_diagram.html">AbstractDiagram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class for LCh diagrams.  <a href="class_perceptual_color_1_1_abstract_diagram.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_alpha_selector.html">AlphaSelector</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Combined widget with a gradient slider and a spin box; for selecting alpha channel.  <a href="class_perceptual_color_1_1_alpha_selector.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_chroma_hue_diagram.html">ChromaHueDiagram</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A widget that displays the plan of chroma and hue.  <a href="class_perceptual_color_1_1_chroma_hue_diagram.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A widget for selecting chroma and hue in LCh&#160;color&#160;space.  <a href="class_perceptual_color_1_1_chroma_hue_diagram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_chroma_lightness_diagram.html">ChromaLightnessDiagram</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A widget that displays a chroma-lightness diagram.  <a href="class_perceptual_color_1_1_chroma_lightness_diagram.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_circular_diagram.html">CircularDiagram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class for circular diagrams.  <a href="class_perceptual_color_1_1_circular_diagram.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_color_dialog.html">ColorDialog</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A perceptually uniform color picker dialog.  <a href="class_perceptual_color_1_1_color_dialog.html#details">More...</a><br /></td></tr>
@@ -121,6 +127,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_gradient_selector.html">GradientSelector</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A slider displaying a gradient.  <a href="class_perceptual_color_1_1_gradient_selector.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_key_press_eater.html">KeyPressEater</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perceptual_color_1_1_polar_point_f.html">PolarPointF</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A point in the polar coordinate system.  <a href="class_perceptual_color_1_1_polar_point_f.html#details">More...</a><br /></td></tr>
@@ -147,15 +155,17 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The namespace of this library. </p>
 <p>Everything that is provides in this library is encapsulated within this namespace.</p>
-<p>The library provides various Qt GUI components for choosing colors, with focus on an intuitive and perceptually uniform presentation. The GUI widgets are based internally on the LCh color model, which does reflect the human perceptuan much better than RGB or its transforms like HSV. However, the widgets do not require the user itself to know anything about LCh at all, because the graphical representations tend to be intuitive enough.</p>
-<p>The library depends on (and therefore you have to link against) Qt&#160;Core, Qt&#160;Gui, Qt&#160;Widgets (Qt&#160;5) and LittleCMS&#160;2.</p>
-<p>The library uses in general <code>int</code> for integer values, because QSize() and QPoint() also do. As the library relies heavily on the usage of QSize() and QPoint(), this seems reasonable. For the same reason, it uses generally <code>qreal</code> for floating point values, because QPointF() also does.</p>
-<p>The source code of the library is in UTF8. A static_assert within the header <code><a class="el" href="helper_8h.html">helper.h</a></code> makes sure your compiler actually treats it as UTF8.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000017">Todo:</a></b></dt><dd><p class="startdd">Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc… </p>
-<p class="interdd">Does the OS-side color management change the RGB value we want to display? If so, how to prevent this? </p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000029">Todo:</a></b></dt><dd><p class="startdd">Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc… </p>
+<p class="interdd">Provide more than 8 bit per channel for more precision? 10 bit? 12 bit? </p>
 <p class="interdd">Only expose in the headers and in the public API what is absolutely necessary. </p>
-<p class="interdd">Switch to the pimpl ideom? </p>
-<p class="enddd">Qt Designer support for the widgets </p>
+<p class="interdd">Switch to the pimpl ideom? Export symbols like in <a href="https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries">https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries</a> Seel also <a href="http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html">http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html</a> and <a href="https://labjack.com/news/simple-cpp-symbol-visibility-demo">https://labjack.com/news/simple-cpp-symbol-visibility-demo</a> </p>
+<p class="interdd">A program that uses our library could also use LittleCMS itself. If it would use LittleCMS without thread-save API, but using it always in the very same thread which is <em>not</em> the main thread, this could make problems for our library if we use non-thread-save LittleCMS APIs. So best would be that our library uses exclusively <em>thread-save</em> APIs of LittleCMS. </p>
+<p class="interdd">Qt Designer support for the widgets </p>
+<p class="interdd">QPainter: Quote from documentation: For optimal performance only use the format types <code>QImage::Format_ARGB32_Premultiplied</code>, <code>QImage::Format_RGB32</code> or <code>QImage::Format_RGB16</code>. Any other format, including <code>QImage::Format_ARGB32</code>, has significantly worse performance. </p>
+<p class="interdd">Follow KDE's <b><a href="https://hig.kde.org/index.html">HIG</a></b> </p>
+<p class="interdd">Add screenshots of widgets to the documentation </p>
+<p class="interdd">Would it be a good idea to implement Q_PROPERTY RESET overall? See also <a href="https://phabricator.kde.org/T12359">https://phabricator.kde.org/T12359</a> </p>
+<p class="enddd">Spell checking for the documentation </p>
 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a620b7112ca52bb01e49162724d26887f"></a>
@@ -186,7 +196,21 @@ Functions</h2></td></tr>
 
 <p>Adds QDebug() support for this data type. </p>
 
-<p class="definition">Definition at line <a class="el" href="fullcolordescription_8cpp_source.html#l00287">287</a> of file <a class="el" href="fullcolordescription_8cpp_source.html">fullcolordescription.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fullcolordescription_8cpp_source.html#l00302">302</a> of file <a class="el" href="fullcolordescription_8cpp_source.html">fullcolordescription.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespace_perceptual_color_a620b7112ca52bb01e49162724d26887f_cgraph.png" border="0" usemap="#namespace_perceptual_color_a620b7112ca52bb01e49162724d26887f_cgraph" alt=""/></div>
+<map name="namespace_perceptual_color_a620b7112ca52bb01e49162724d26887f_cgraph" id="namespace_perceptual_color_a620b7112ca52bb01e49162724d26887f_cgraph">
+<area shape="rect" title="Adds QDebug() support for this data type." alt="" coords="5,169,137,195"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#aa4fabb35ce1684e4321ff58d008a2885" title=" " alt="" coords="185,5,307,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#aaa17133c6e1d040b2f088e79a42d3283" title=" " alt="" coords="185,68,307,107"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5" title=" " alt="" coords="185,131,307,169"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="185,193,307,232"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#a4f716eee81c1d3b1fda841dff80f97f1" title=" " alt="" coords="185,256,307,295"/>
+<area shape="rect" href="class_perceptual_color_1_1_full_color_description.html#aad1d9cc70b7a9ae81c829c391334d768" title=" " alt="" coords="185,319,307,357"/>
+</map>
+</div>
 
 </div>
 </div>
@@ -218,7 +242,17 @@ Functions</h2></td></tr>
 
 <p>Adds QDebug() support for this data type. </p>
 
-<p class="definition">Definition at line <a class="el" href="polarpointf_8cpp_source.html#l00174">174</a> of file <a class="el" href="polarpointf_8cpp_source.html">polarpointf.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="polarpointf_8cpp_source.html#l00180">180</a> of file <a class="el" href="polarpointf_8cpp_source.html">polarpointf.cpp</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespace_perceptual_color_a7636e0ac59a0d18af45252df7c81bca1_cgraph.png" border="0" usemap="#namespace_perceptual_color_a7636e0ac59a0d18af45252df7c81bca1_cgraph" alt=""/></div>
+<map name="namespace_perceptual_color_a7636e0ac59a0d18af45252df7c81bca1_cgraph" id="namespace_perceptual_color_a7636e0ac59a0d18af45252df7c81bca1_cgraph">
+<area shape="rect" title="Adds QDebug() support for this data type." alt="" coords="5,44,137,69"/>
+<area shape="rect" href="class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="185,5,313,44"/>
+<area shape="rect" href="class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="185,68,313,107"/>
+</map>
+</div>
 
 </div>
 </div>

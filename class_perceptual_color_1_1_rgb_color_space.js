@@ -11,6 +11,7 @@ var class_perceptual_color_1_1_rgb_color_space =
     [ "colorRgbBound", "class_perceptual_color_1_1_rgb_color_space.html#a8e32b4bb53a99edbb7d8f238489b54d4", null ],
     [ "colorRgbBoundSimple", "class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258", null ],
     [ "description", "class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9", null ],
+    [ "inGamut", "class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0", null ],
     [ "inGamut", "class_perceptual_color_1_1_rgb_color_space.html#a2f8768171dbdd80cd2577088b4156a03", null ],
     [ "inGamut", "class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123", null ],
     [ "whitepointL", "class_perceptual_color_1_1_rgb_color_space.html#a1e3cb8f4108729442a61b43df4664397", null ],

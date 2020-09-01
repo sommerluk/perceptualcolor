@@ -15,7 +15,7 @@ var class_perceptual_color_1_1_color_dialog =
     [ "currentColor", "class_perceptual_color_1_1_color_dialog.html#a911339cb2ea6dc1d72c49f3b5e5a5338", null ],
     [ "currentColorChanged", "class_perceptual_color_1_1_color_dialog.html#affecc403ee4931b39249720079f7f36b", null ],
     [ "done", "class_perceptual_color_1_1_color_dialog.html#a701b56b846a415fe2b16a1ae302c2049", null ],
-    [ "handleFocusChange", "class_perceptual_color_1_1_color_dialog.html#ada76901aa90d9ca4bfac65eb8b38c898", null ],
+    [ "handleFocusChange", "class_perceptual_color_1_1_color_dialog.html#a64f6d0e30a627458ccb7bbf4a77ad42b", null ],
     [ "initialize", "class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51", null ],
     [ "initializeNumericPage", "class_perceptual_color_1_1_color_dialog.html#a9b3605a59f06f199999f466e5ffcaf00", null ],
     [ "layoutDimensions", "class_perceptual_color_1_1_color_dialog.html#af8c81206a8b99a1b777d5ca6a067c3cc", null ],

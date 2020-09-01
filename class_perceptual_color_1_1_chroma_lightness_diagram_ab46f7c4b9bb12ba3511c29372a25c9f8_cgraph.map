@@ -1,0 +1,5 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::setHue" name="PerceptualColor::ChromaLightnessDiagram::setHue">
+<area shape="rect" id="node1" title="Set the hue." alt="" coords="5,35,161,73"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a27d7c972e420480674da1a0fae0b10b3" title="Setter for the color() property." alt="" coords="209,5,365,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="413,35,535,73"/>
+</map>

@@ -11,15 +11,20 @@ var hierarchy =
       [ "PerceptualColor::ColorPatch", "class_perceptual_color_1_1_color_patch.html", null ]
     ] ],
     [ "QObject", null, [
+      [ "PerceptualColor::KeyPressEater", "class_perceptual_color_1_1_key_press_eater.html", null ],
       [ "PerceptualColor::RgbColorSpace", "class_perceptual_color_1_1_rgb_color_space.html", null ]
     ] ],
     [ "QWidget", null, [
+      [ "PerceptualColor::AbstractDiagram", "class_perceptual_color_1_1_abstract_diagram.html", [
+        [ "PerceptualColor::ChromaLightnessDiagram", "class_perceptual_color_1_1_chroma_lightness_diagram.html", null ],
+        [ "PerceptualColor::CircularDiagram", "class_perceptual_color_1_1_circular_diagram.html", [
+          [ "PerceptualColor::ChromaHueDiagram", "class_perceptual_color_1_1_chroma_hue_diagram.html", null ],
+          [ "PerceptualColor::SimpleColorWheel", "class_perceptual_color_1_1_simple_color_wheel.html", [
+            [ "PerceptualColor::WheelColorPicker", "class_perceptual_color_1_1_wheel_color_picker.html", null ]
+          ] ]
+        ] ]
+      ] ],
       [ "PerceptualColor::AlphaSelector", "class_perceptual_color_1_1_alpha_selector.html", null ],
-      [ "PerceptualColor::ChromaHueDiagram", "class_perceptual_color_1_1_chroma_hue_diagram.html", null ],
-      [ "PerceptualColor::ChromaLightnessDiagram", "class_perceptual_color_1_1_chroma_lightness_diagram.html", null ],
-      [ "PerceptualColor::GradientSelector", "class_perceptual_color_1_1_gradient_selector.html", null ],
-      [ "PerceptualColor::SimpleColorWheel", "class_perceptual_color_1_1_simple_color_wheel.html", [
-        [ "PerceptualColor::WheelColorPicker", "class_perceptual_color_1_1_wheel_color_picker.html", null ]
-      ] ]
+      [ "PerceptualColor::GradientSelector", "class_perceptual_color_1_1_gradient_selector.html", null ]
     ] ]
 ];

@@ -1,0 +1,6 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::fromWidgetCoordinatesToImageCoordinates" name="PerceptualColor::ChromaLightnessDiagram::fromWidgetCoordinatesToImageCoordinates">
+<area shape="rect" id="node1" title="Transforms from widget to image coordinates." alt="" coords="209,61,399,113"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a1697a065cdb13e6a5b8af378673c77f3" title="React on a mouse move event." alt="" coords="5,5,161,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#aa0aa6d31cefd3b9dfbfe9acfcac18e3d" title="React on a mouse press event." alt="" coords="5,68,161,107"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9bd534e0817d1afb0a3674f98919b8db" title="React on a mouse release event." alt="" coords="5,131,161,169"/>
+</map>

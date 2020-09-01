@@ -1,0 +1,13 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::generateDiagramImage" name="PerceptualColor::ChromaLightnessDiagram::generateDiagramImage">
+<area shape="rect" id="node1" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="868,136,1024,174"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84" title="Refresh the diagram and associated data." alt="" coords="664,136,820,174"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9f6471b44d4f4eba95914945bc53037a" title=" " alt="" coords="439,106,601,145"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#abd23775803f181201fefbdcc08378ab8" title="React on key press events." alt="" coords="5,105,161,144"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a82c4e4f64c0d5e9307d767f2bfa052db" title="Paint the widget." alt="" coords="215,52,371,90"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ac9b6d25ecc2c6a954f1ba361960458b1" title=" " alt="" coords="215,168,371,206"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9bfa53bcbfd4010c082294c9cfb5b2eb" title=" " alt="" coords="424,221,616,273"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a00a13ef1aa732e2f16d0d9f371aa4746" title="Tests if image coordinates are in gamut." alt="" coords="209,290,376,329"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a1697a065cdb13e6a5b8af378673c77f3" title="React on a mouse move event." alt="" coords="5,230,161,269"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#aa0aa6d31cefd3b9dfbfe9acfcac18e3d" title="React on a mouse press event." alt="" coords="5,293,161,332"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9bd534e0817d1afb0a3674f98919b8db" title="React on a mouse release event." alt="" coords="5,168,161,206"/>
+</map>

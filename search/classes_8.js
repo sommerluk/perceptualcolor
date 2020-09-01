@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wheelcolorpicker_299',['WheelColorPicker',['../class_perceptual_color_1_1_wheel_color_picker.html',1,'PerceptualColor']]]
+  ['simplecolorwheel_303',['SimpleColorWheel',['../class_perceptual_color_1_1_simple_color_wheel.html',1,'PerceptualColor']]]
 ];

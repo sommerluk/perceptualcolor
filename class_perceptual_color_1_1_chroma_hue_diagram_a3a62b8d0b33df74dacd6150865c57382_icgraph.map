@@ -1,0 +1,8 @@
+<map id="PerceptualColor::ChromaHueDiagram::imageCoordinatesFromColor" name="PerceptualColor::ChromaHueDiagram::imageCoordinatesFromColor">
+<area shape="rect" id="node1" title=" " alt="" coords="427,37,599,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="219,5,353,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a65ff87dfbc2ffa5d71b5e58c30d3b39c" title="Sets the color property corresponding to given widget coordinates." alt="" coords="193,68,379,107"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a16bcb9d0eee3536fe4f1034d2b9c3329" title="React on a mouse move event." alt="" coords="8,5,143,44"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad8957ee9c3a3ecb73841c00110ee3058" title="React on a mouse press event." alt="" coords="8,68,143,107"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#adfe93a3ac0005a23c03465635089d846" title="React on a mouse release event." alt="" coords="5,131,145,169"/>
+</map>

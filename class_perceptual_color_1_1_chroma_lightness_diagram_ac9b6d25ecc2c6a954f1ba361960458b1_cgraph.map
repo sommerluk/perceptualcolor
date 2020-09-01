@@ -1,0 +1,13 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::setImageCoordinates" name="PerceptualColor::ChromaLightnessDiagram::setImageCoordinates">
+<area shape="rect" id="node1" title=" " alt="" coords="5,141,161,179"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9f6471b44d4f4eba95914945bc53037a" title=" " alt="" coords="225,111,386,150"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="671,141,792,179"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84" title="Refresh the diagram and associated data." alt="" coords="449,51,605,90"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9bfa53bcbfd4010c082294c9cfb5b2eb" title=" " alt="" coords="209,35,401,87"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a5dfa80fbb52c1217a61fb9adb108bd14" title="Search the nearest non&#45;transparent neighbor pixel." alt="" coords="227,226,383,265"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a27d7c972e420480674da1a0fae0b10b3" title="Setter for the color() property." alt="" coords="449,169,605,207"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ae0395993434db2cd0d74b146fed6621c" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="653,51,809,90"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="860,21,983,59"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="857,83,985,122"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="1033,83,1161,122"/>
+</map>

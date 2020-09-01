@@ -1,0 +1,11 @@
+<map id="PerceptualColor::SimpleColorWheel::paintEvent" name="PerceptualColor::SimpleColorWheel::paintEvent">
+<area shape="rect" id="node1" title="Paint the widget." alt="" coords="5,68,140,107"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#a6fe09144d693f81d5c7d8306666bc2aa" title="The diameter of the widget content." alt="" coords="417,5,551,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a45d568d5ec1f9ffc175f9bdc527c54e3" title="Converts wheel coordinates to widget coordinates." alt="" coords="188,61,367,113"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_simple_color_wheel.html#ac454a7cd994298cad632b343c2efe6ba" title="Refresh the wheel ribbon pixmap." alt="" coords="210,137,345,176"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_polar_point_f.html#aed5188496a9aa06270e590f1f5d3202a" title="Convert to cartesion coordinates." alt="" coords="420,68,548,107"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_simple_color_wheel.html#acff6e0159f9cb6c41c0bbedb9f6da1c4" title="Generates an image of a color wheel." alt="" coords="415,137,553,176"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="601,75,729,113"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="604,137,727,176"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="601,200,729,239"/>
+</map>

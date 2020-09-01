@@ -1,0 +1,6 @@
+<map id="PerceptualColor::RgbColorSpace::inGamut" name="PerceptualColor::RgbColorSpace::inGamut">
+<area shape="rect" id="node1" title="check if an LCh value is within a specific RGB gamut" alt="" coords="415,37,537,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_full_color_description.html#a5c7e9555e961f25f39c961b6aedda06a" title=" " alt="" coords="200,5,367,44"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html#a013f1458308475d288bd260a28a75e10" title="Default constructor." alt="" coords="222,68,345,107"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_full_color_description.html#a7d27cb4b18ebaf0a3d0374201c2d283a" title="Constructor." alt="" coords="5,5,152,44"/>
+</map>

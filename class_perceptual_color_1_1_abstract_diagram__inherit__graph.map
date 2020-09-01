@@ -1,0 +1,9 @@
+<map id="PerceptualColor::AbstractDiagram" name="PerceptualColor::AbstractDiagram">
+<area shape="rect" id="node1" title="Base class for LCh diagrams." alt="" coords="103,79,223,117"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html" title="A widget that displays a chroma&#45;lightness diagram." alt="" coords="5,165,161,204"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_circular_diagram.html" title="Base class for circular diagrams." alt="" coords="186,165,303,204"/>
+<area shape="rect" id="node2" title=" " alt="" coords="135,5,191,31"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html" title="A widget for selecting chroma and hue in LCh color space." alt="" coords="97,252,232,291"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_simple_color_wheel.html" title="Widget to choose the hue in a wheel." alt="" coords="256,252,391,291"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_wheel_color_picker.html" title="Complete wheel&#45;based color picker widget." alt="" coords="257,339,390,377"/>
+</map>

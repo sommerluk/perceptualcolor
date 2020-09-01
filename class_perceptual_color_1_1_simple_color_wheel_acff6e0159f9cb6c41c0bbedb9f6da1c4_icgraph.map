@@ -1,0 +1,7 @@
+<map id="PerceptualColor::SimpleColorWheel::generateWheelImage" name="PerceptualColor::SimpleColorWheel::generateWheelImage">
+<area shape="rect" id="node1" title="Generates an image of a color wheel." alt="" coords="373,37,512,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a7d8f858f515726d5e171b8e150c6ec2b" title="Refresh the wheel and associated data." alt="" coords="188,5,325,44"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_simple_color_wheel.html#ac454a7cd994298cad632b343c2efe6ba" title="Refresh the wheel ribbon pixmap." alt="" coords="189,68,324,107"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="5,5,140,44"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="5,68,140,107"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="PerceptualColor::ChromaHueDiagram::generateDiagramImage" name="PerceptualColor::ChromaHueDiagram::generateDiagramImage">
+<area shape="rect" id="node1" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="383,5,539,44"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6" title="Refresh the diagram and associated data." alt="" coords="188,5,335,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="5,5,140,44"/>
+</map>

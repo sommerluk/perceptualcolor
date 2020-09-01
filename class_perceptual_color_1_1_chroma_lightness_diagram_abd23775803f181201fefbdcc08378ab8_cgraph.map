@@ -1,0 +1,15 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::keyPressEvent" name="PerceptualColor::ChromaLightnessDiagram::keyPressEvent">
+<area shape="rect" id="node1" title="React on key press events." alt="" coords="5,77,161,116"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9f6471b44d4f4eba95914945bc53037a" title=" " alt="" coords="439,101,601,140"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84" title="Refresh the diagram and associated data." alt="" coords="664,136,820,174"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a00a13ef1aa732e2f16d0d9f371aa4746" title="Tests if image coordinates are in gamut." alt="" coords="209,48,376,86"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ac9b6d25ecc2c6a954f1ba361960458b1" title=" " alt="" coords="215,234,371,273"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="885,224,1007,262"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ae0395993434db2cd0d74b146fed6621c" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="868,136,1024,174"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="1075,104,1197,142"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="1072,166,1200,205"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="1248,166,1376,205"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a9bfa53bcbfd4010c082294c9cfb5b2eb" title=" " alt="" coords="424,164,616,216"/>
+<area shape="rect" id="node12" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a5dfa80fbb52c1217a61fb9adb108bd14" title="Search the nearest non&#45;transparent neighbor pixel." alt="" coords="442,342,598,381"/>
+<area shape="rect" id="node13" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a27d7c972e420480674da1a0fae0b10b3" title="Setter for the color() property." alt="" coords="664,370,820,409"/>
+</map>

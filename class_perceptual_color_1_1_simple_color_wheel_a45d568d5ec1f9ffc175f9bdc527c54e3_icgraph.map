@@ -1,0 +1,4 @@
+<map id="PerceptualColor::SimpleColorWheel::fromWheelCoordinatesToWidgetCoordinates" name="PerceptualColor::SimpleColorWheel::fromWheelCoordinatesToWidgetCoordinates">
+<area shape="rect" id="node1" title="Converts wheel coordinates to widget coordinates." alt="" coords="188,5,367,57"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="5,12,140,51"/>
+</map>

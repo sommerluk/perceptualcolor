@@ -1,0 +1,21 @@
+<map id="PerceptualColor::ChromaHueDiagram::setColor" name="PerceptualColor::ChromaHueDiagram::setColor">
+<area shape="rect" id="node1" title="Setter for the color() property." alt="" coords="971,193,1105,232"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a896cd3a826210cf78a39e3cbbdbc34f8" title="React on key press events." alt="" coords="763,68,897,107"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a65ff87dfbc2ffa5d71b5e58c30d3b39c" title="Sets the color property corresponding to given widget coordinates." alt="" coords="737,131,923,169"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_color_dialog.html#abd0da334b7034a67a3cc83bc3ed0a425" title="Updates m_currentOpaqueColor and all affected widgets." alt="" coords="763,256,897,295"/>
+<area shape="rect" id="node19" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7" title=" " alt="" coords="763,319,897,357"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a16bcb9d0eee3536fe4f1034d2b9c3329" title="React on a mouse move event." alt="" coords="552,131,687,169"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad8957ee9c3a3ecb73841c00110ee3058" title="React on a mouse press event." alt="" coords="552,5,687,44"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#adfe93a3ac0005a23c03465635089d846" title="React on a mouse release event." alt="" coords="549,68,689,107"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="187,344,320,383"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_color_dialog.html#adf67594f0cb9416b245d6cf726f18bf4" title="Reads the HLC numbers in the dialog and updates the dialog accordingly." alt="" coords="553,256,686,295"/>
+<area shape="rect" id="node12" href="$class_perceptual_color_1_1_color_dialog.html#a2a48f4c33652bc9a1a0cb22fd0a6b221" title="Reads the value from the lightness selector in the dialog and updates the dialog accordingly." alt="" coords="368,313,501,352"/>
+<area shape="rect" id="node13" href="$class_perceptual_color_1_1_color_dialog.html#a64b6c698ebfaf2461c513ebbb7ef2637" title="Setter for currentColor property." alt="" coords="553,193,686,232"/>
+<area shape="rect" id="node15" href="$class_perceptual_color_1_1_color_dialog.html#acf0e7b1b619cee3fc7f5a992e2c93e7d" title="Convenience version of setCurrentOpaqueColor(), accepting QColor." alt="" coords="553,408,686,447"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,227,139,265"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_color_dialog.html#a64f6d0e30a627458ccb7bbf4a77ad42b" title="React on focus changes." alt="" coords="368,199,501,237"/>
+<area shape="rect" id="node14" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="368,136,501,175"/>
+<area shape="rect" id="node16" href="$class_perceptual_color_1_1_color_dialog.html#ad834c4b1975dd4b226a054497bd1ef47" title="Reads the HSV numbers in the dialog and updates the dialog accordingly." alt="" coords="368,376,501,415"/>
+<area shape="rect" id="node17" href="$class_perceptual_color_1_1_color_dialog.html#a4554999f424ac055986478fe8c899ae1" title="Reads the hexadecimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="368,439,501,477"/>
+<area shape="rect" id="node18" href="$class_perceptual_color_1_1_color_dialog.html#a9bb8f87d25714fc283fdda98424030fe" title="Reads the decimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="368,501,501,540"/>
+</map>

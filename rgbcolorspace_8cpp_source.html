@@ -170,12 +170,12 @@ $(document).ready(function(){initNavTree('rgbcolorspace_8cpp_source.html',''); i
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    candidate.L = 0;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    candidate.C = 0;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    candidate.h = 0;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">while</span> (!<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">inGamut</a>(candidate) &amp;&amp; (candidate.L &lt; 100)) {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">while</span> (!<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">inGamut</a>(candidate) &amp;&amp; (candidate.L &lt; 100)) {</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        candidate.L += <a class="code" href="namespace_perceptual_color_1_1_helper.html#af00a2a74fd33c7a37f07950a3e998d55">Helper::gamutPrecision</a>;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a002d857a0cb02cd431e4c255e8e6095a">m_blackpointL</a> = candidate.L;</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    candidate.L = 100;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordflow">while</span> (!<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">inGamut</a>(candidate) &amp;&amp; (candidate.L &gt; 0)) {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordflow">while</span> (!<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">inGamut</a>(candidate) &amp;&amp; (candidate.L &gt; 0)) {</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        candidate.L -= <a class="code" href="namespace_perceptual_color_1_1_helper.html#af00a2a74fd33c7a37f07950a3e998d55">Helper::gamutPrecision</a>;</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a7934de4cbedadfccf4c26a3fdadb6701">m_whitepointL</a> = candidate.L;</div>
@@ -211,222 +211,228 @@ $(document).ready(function(){initNavTree('rgbcolorspace_8cpp_source.html',''); i
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a813721e6284e83c8493f1557eeeb4469">colorLab</a>(my_rgb);</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;}</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a5980fcf2e2e9a9dcddc18235e65aad71">  150</a></span>&#160;cmsCIELab <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a813721e6284e83c8493f1557eeeb4469">RgbColorSpace::colorLab</a>(<span class="keyword">const</span> <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> &amp;rgb)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    cmsCIELab lab;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a4a5f7384b3e12f6a36303b719b989256">m_transformRgbToLabHandle</a>, &amp;rgb, &amp;lab, 1); <span class="comment">// convert exactly 1 value</span></div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordflow">return</span> lab;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;}</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">  163</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">RgbColorSpace::colorRgb</a>(<span class="keyword">const</span> cmsCIELab &amp;Lab)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    QColor temp; <span class="comment">// By default, without initialization this is an invalid color</span></div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> rgb;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a41624d4c1c7c2943d90cb51935684367">m_transformLabToRgbHandle</a>, &amp;Lab, &amp;rgb, 1); <span class="comment">// convert exactly 1 value</span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">if</span> (Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, 1) &amp;&amp;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, 1) &amp;&amp;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>, 1)) {</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="comment">// We are within the gamut</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        temp = QColor::fromRgbF(rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>);</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    }</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordflow">return</span> temp;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;}</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a266051234c1eea006f34c6866f91e7b9">  183</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">RgbColorSpace::colorRgb</a>(<span class="keyword">const</span> cmsCIELCh &amp;LCh)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    cmsCIELab Lab; <span class="comment">// uses cmsFloat64Number internally</span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="comment">// convert from LCh to Lab</span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    cmsLCh2Lab(&amp;Lab, &amp;LCh); </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">colorRgb</a>(Lab);</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;}</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">  191</a></span>&#160;<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">RgbColorSpace::colorRgbBoundSimple</a>(<span class="keyword">const</span> cmsCIELab &amp;Lab)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    cmsUInt16Number rgb_int[3];</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab0bc15f693fea81ed270ad9ddcba17a8">m_transformLabToRgb16Handle</a>, &amp;Lab, rgb_int, 1); <span class="comment">// convert exactly 1 value</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> temp;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a> = rgb_int[0] / <span class="keyword">static_cast&lt;</span>qreal<span class="keyword">&gt;</span>(65535);</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a> = rgb_int[1] / <span class="keyword">static_cast&lt;</span>qreal<span class="keyword">&gt;</span>(65535);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a> = rgb_int[2] / <span class="keyword">static_cast&lt;</span>qreal<span class="keyword">&gt;</span>(65535);</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keywordflow">return</span> temp;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;}</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00208"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">  208</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">RgbColorSpace::colorRgbBound</a>(<span class="keyword">const</span> cmsCIELab &amp;Lab)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> temp = <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">colorRgbBoundSimple</a>(Lab);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keywordflow">return</span> QColor::fromRgbF(temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>);</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;}</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
-<div class="line"><a name="l00220"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a8e32b4bb53a99edbb7d8f238489b54d4">  220</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">RgbColorSpace::colorRgbBound</a>(<span class="keyword">const</span> cmsCIELCh &amp;LCh)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    cmsCIELab Lab; <span class="comment">// uses cmsFloat64Number internally</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="comment">// convert from LCh to Lab</span></div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    cmsLCh2Lab(&amp;Lab, &amp;LCh); </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">colorRgbBound</a>(Lab);</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;}</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="comment">// TODO What to do with in-gamut tests if little cms has fallen back to bounded mode because of too complicate profiles? Out in-gamut detection would not work anymore!</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">  236</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">RgbColorSpace::inGamut</a>(</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <span class="keyword">const</span> cmsFloat64Number lightness,</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="keyword">const</span> cmsFloat64Number chroma,</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="keyword">const</span> cmsFloat64Number hue</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;)</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;{</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="comment">// variables</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    cmsCIELCh LCh; <span class="comment">// uses cmsFloat64Number internally</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="comment">// code</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    LCh.L = lightness;</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    LCh.C = chroma;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    LCh.h = hue;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">inGamut</a>(LCh);</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;}</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00256"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a2f8768171dbdd80cd2577088b4156a03">  256</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">RgbColorSpace::inGamut</a>(<span class="keyword">const</span> cmsCIELCh &amp;LCh)</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;{</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="comment">// variables</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    cmsCIELab Lab; <span class="comment">// uses cmsFloat64Number internally</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> rgb;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="comment">// code</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    cmsLCh2Lab(&amp;Lab, &amp;LCh); <span class="comment">// TODO no normalization necessary previously?</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a41624d4c1c7c2943d90cb51935684367">m_transformLabToRgbHandle</a>, &amp;Lab, &amp;rgb, 1); <span class="comment">// convert exactly 1 value</span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="keywordflow">return</span> (</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, 1) &amp;&amp;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, 1) &amp;&amp;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>, 1)</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    );</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;}</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">  274</a></span>&#160;QString <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">RgbColorSpace::description</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="keyword"></span>{</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab3ce0df6c179f4efac2f09d602cedab3">m_description</a>;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;}</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00289"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c">  289</a></span>&#160;QString <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c">RgbColorSpace::getInformationFromProfile</a>(</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    cmsHPROFILE profileHandle,</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    cmsInfoType infoType</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;)</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;{</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    <span class="comment">// Initialize a char array of 3 values (two actual characters and a</span></div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <span class="comment">// terminating null)</span></div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <span class="comment">// The recommended default value for language following LittleCMS</span></div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <span class="comment">// documentation is &quot;en&quot;.</span></div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    <span class="keywordtype">char</span> languageCode[3] = <span class="stringliteral">&quot;en&quot;</span>;</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="comment">// The recommended default value for country following LittleCMS</span></div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="comment">// documentation is &quot;US&quot;.</span></div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <span class="keywordtype">char</span> countryCode[3] = <span class="stringliteral">&quot;US&quot;</span>;</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <span class="comment">// Update languageCode and countryCode to the actual locale (if possible)</span></div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    QStringList list = QLocale().name().split(<span class="charliteral">&#39;_&#39;</span>);</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="comment">// The locale codes should be ASCII only, so QString::toLatin1() should</span></div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="comment">// return valid results.</span></div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordflow">if</span> (list.at(0).size() == 2) {</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        languageCode[0] = list.at(0).at(0).toLatin1();</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        languageCode[1] = list.at(0).at(1).toLatin1();</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <span class="comment">// No need for languageCode[2] = 0; for null-terminated string,</span></div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <span class="comment">// because the array was yet initialized</span></div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <span class="keywordflow">if</span> (list.at(1).size() == 2) {</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            countryCode[0] = list.at(1).at(0).toLatin1();</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;            countryCode[1] = list.at(1).at(1).toLatin1();</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            <span class="comment">// No need for countryCode[2] = 0; for null-terminated string,</span></div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;            <span class="comment">// because the array was yet initialized</span></div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        }</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    }</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160; </div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="comment">// Calculate the size of the buffer that we have to provide for</span></div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    <span class="comment">// cmsGetProfileInfo in order to return a value.</span></div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    cmsUInt32Number resultLength = cmsGetProfileInfo(</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        <span class="comment">// profile in which we search</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        profileHandle,</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        <span class="comment">// the type of information we search</span></div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        infoType,</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        <span class="comment">// the preferred language in which we want to get the information</span></div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        languageCode,</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        <span class="comment">// the preferred country for which we want to get the information</span></div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        countryCode,</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        <span class="comment">// do not actually return the information,</span></div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        <span class="comment">// just calculate the required buffer size</span></div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        NULL,</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="comment">// do not actually return the information,</span></div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        <span class="comment">// just calculate the required buffer size</span></div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        0</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    );</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="comment">// For the actual buffer size, increment by 1. This helps us to</span></div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="comment">// guarantee a null-terminated string later on.</span></div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    cmsUInt32Number bufferLength = resultLength + 1;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    <span class="comment">// Allocate the buffer</span></div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <span class="keywordtype">wchar_t</span> *buffer = <span class="keyword">new</span> <span class="keywordtype">wchar_t</span> [bufferLength];</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    <span class="comment">// Initialize the buffer with NULL</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; bufferLength - 1; ++i) {</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        *(buffer + i) = 0;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    }</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160; </div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <span class="comment">// Write the actual information to the buffer</span></div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    cmsGetProfileInfo(</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        <span class="comment">// profile in which we search</span></div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        profileHandle,</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        <span class="comment">// the type of information we search</span></div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        infoType,       </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        <span class="comment">// the preferred language in which we want to get the information</span></div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        languageCode,</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        <span class="comment">// the preferred country for which we want to get the information</span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        countryCode,</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <span class="comment">// the buffer into which the requested information will be written</span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        buffer,</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        <span class="comment">// the buffer size as previously calculated</span></div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        resultLength    </div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    );</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="comment">// Make absolutely sure the buffer is null-terminated by marking its last</span></div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="comment">// element (the one that was the +1 &quot;extra&quot; element) as NULL.</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    *(buffer + (bufferLength - 1)) = 0;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="comment">// Create a QString() from the from the buffer</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <span class="comment">/* cmsGetProfileInfo returns often strings that are smaller than the</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="comment">     * previously calculated buffer size. But it seems they are</span></div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="comment">     * null-terminated strings. */</span></div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    QString result = QString::fromWCharArray(</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        buffer, <span class="comment">// read from the buffer</span></div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        -1      <span class="comment">// read until the first NULL element</span></div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    );</div>
+<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a5980fcf2e2e9a9dcddc18235e65aad71">  149</a></span>&#160;cmsCIELab <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a813721e6284e83c8493f1557eeeb4469">RgbColorSpace::colorLab</a>(<span class="keyword">const</span> <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> &amp;rgb)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="keyword"></span>{</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    cmsCIELab lab;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a4a5f7384b3e12f6a36303b719b989256">m_transformRgbToLabHandle</a>, &amp;rgb, &amp;lab, 1); <span class="comment">// convert exactly 1 value</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordflow">return</span> lab;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;}</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">  162</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">RgbColorSpace::colorRgb</a>(<span class="keyword">const</span> cmsCIELab &amp;Lab)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword"></span>{</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    QColor temp; <span class="comment">// By default, without initialization this is an invalid color</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> rgb;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a41624d4c1c7c2943d90cb51935684367">m_transformLabToRgbHandle</a>, &amp;Lab, &amp;rgb, 1); <span class="comment">// convert exactly 1 value</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">if</span> (Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, 1) &amp;&amp;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, 1) &amp;&amp;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>, 1)) {</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="comment">// We are within the gamut</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        temp = QColor::fromRgbF(rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>);</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    }</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordflow">return</span> temp;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;}</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a266051234c1eea006f34c6866f91e7b9">  182</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">RgbColorSpace::colorRgb</a>(<span class="keyword">const</span> cmsCIELCh &amp;LCh)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="keyword"></span>{</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    cmsCIELab Lab; <span class="comment">// uses cmsFloat64Number internally</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="comment">// convert from LCh to Lab</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    cmsLCh2Lab(&amp;Lab, &amp;LCh); </div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">colorRgb</a>(Lab);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;}</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
+<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">  190</a></span>&#160;<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">RgbColorSpace::colorRgbBoundSimple</a>(<span class="keyword">const</span> cmsCIELab &amp;Lab)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="keyword"></span>{</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    cmsUInt16Number rgb_int[3];</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab0bc15f693fea81ed270ad9ddcba17a8">m_transformLabToRgb16Handle</a>, &amp;Lab, rgb_int, 1); <span class="comment">// convert exactly 1 value</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> temp;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a> = rgb_int[0] / <span class="keyword">static_cast&lt;</span>qreal<span class="keyword">&gt;</span>(65535);</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a> = rgb_int[1] / <span class="keyword">static_cast&lt;</span>qreal<span class="keyword">&gt;</span>(65535);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a> = rgb_int[2] / <span class="keyword">static_cast&lt;</span>qreal<span class="keyword">&gt;</span>(65535);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keywordflow">return</span> temp;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">  207</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">RgbColorSpace::colorRgbBound</a>(<span class="keyword">const</span> cmsCIELab &amp;Lab)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="keyword"></span>{</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> temp = <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">colorRgbBoundSimple</a>(Lab);</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keywordflow">return</span> QColor::fromRgbF(temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, temp.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>);</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;}</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a8e32b4bb53a99edbb7d8f238489b54d4">  219</a></span>&#160;QColor <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">RgbColorSpace::colorRgbBound</a>(<span class="keyword">const</span> cmsCIELCh &amp;LCh)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="keyword"></span>{</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    cmsCIELab Lab; <span class="comment">// uses cmsFloat64Number internally</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="comment">// convert from LCh to Lab</span></div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    cmsLCh2Lab(&amp;Lab, &amp;LCh); </div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">colorRgbBound</a>(Lab);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;}</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment">// TODO What to do with in-gamut tests if little cms has fallen back to bounded mode because of too complicate profiles? Out in-gamut detection would not work anymore!</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
+<div class="line"><a name="l00235"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">  235</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">RgbColorSpace::inGamut</a>(</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="keyword">const</span> cmsFloat64Number lightness,</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <span class="keyword">const</span> cmsFloat64Number chroma,</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="keyword">const</span> cmsFloat64Number hue</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;)</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;{</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="comment">// variables</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    cmsCIELCh LCh; <span class="comment">// uses cmsFloat64Number internally</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="comment">// code</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    LCh.L = lightness;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    LCh.C = chroma;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    LCh.h = hue;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">inGamut</a>(LCh);</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;}</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00255"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a2f8768171dbdd80cd2577088b4156a03">  255</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">RgbColorSpace::inGamut</a>(<span class="keyword">const</span> cmsCIELCh &amp;LCh)</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;{</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <span class="comment">// variables</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    cmsCIELab Lab; <span class="comment">// uses cmsFloat64Number internally</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="comment">// code</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    cmsLCh2Lab(&amp;Lab, &amp;LCh); <span class="comment">// TODO no normalization necessary previously?</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">inGamut</a>(Lab);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;}</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">  269</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">RgbColorSpace::inGamut</a>(<span class="keyword">const</span> cmsCIELab &amp;Lab)</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;{</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">Helper::cmsRGB</a> rgb;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    </div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    cmsDoTransform(<a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a41624d4c1c7c2943d90cb51935684367">m_transformLabToRgbHandle</a>, &amp;Lab, &amp;rgb, 1); <span class="comment">// convert exactly 1 value</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    <span class="keywordflow">return</span> (</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">red</a>, 1) &amp;&amp;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">green</a>, 1) &amp;&amp;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        Helper::inRange&lt;cmsFloat64Number&gt;(0, rgb.<a class="code" href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">blue</a>, 1)</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    );</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;}</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160; </div>
+<div class="line"><a name="l00283"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">  283</a></span>&#160;QString <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">RgbColorSpace::description</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="keyword"></span>{</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#ab3ce0df6c179f4efac2f09d602cedab3">m_description</a>;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;}</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
+<div class="line"><a name="l00298"></a><span class="lineno"><a class="line" href="class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c">  298</a></span>&#160;QString <a class="code" href="class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c">RgbColorSpace::getInformationFromProfile</a>(</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    cmsHPROFILE profileHandle,</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    cmsInfoType infoType</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;)</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;{</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="comment">// Initialize a char array of 3 values (two actual characters and a</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="comment">// terminating null)</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="comment">// The recommended default value for language following LittleCMS</span></div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="comment">// documentation is &quot;en&quot;.</span></div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keywordtype">char</span> languageCode[3] = <span class="stringliteral">&quot;en&quot;</span>;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="comment">// The recommended default value for country following LittleCMS</span></div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="comment">// documentation is &quot;US&quot;.</span></div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <span class="keywordtype">char</span> countryCode[3] = <span class="stringliteral">&quot;US&quot;</span>;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="comment">// Update languageCode and countryCode to the actual locale (if possible)</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    QStringList list = QLocale().name().split(<span class="charliteral">&#39;_&#39;</span>);</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <span class="comment">// The locale codes should be ASCII only, so QString::toLatin1() should</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="comment">// return valid results.</span></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordflow">if</span> (list.at(0).size() == 2) {</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        languageCode[0] = list.at(0).at(0).toLatin1();</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        languageCode[1] = list.at(0).at(1).toLatin1();</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="comment">// No need for languageCode[2] = 0; for null-terminated string,</span></div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="comment">// because the array was yet initialized</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keywordflow">if</span> (list.at(1).size() == 2) {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            countryCode[0] = list.at(1).at(0).toLatin1();</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            countryCode[1] = list.at(1).at(1).toLatin1();</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            <span class="comment">// No need for countryCode[2] = 0; for null-terminated string,</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            <span class="comment">// because the array was yet initialized</span></div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        }</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    }</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160; </div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="comment">// Calculate the size of the buffer that we have to provide for</span></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="comment">// cmsGetProfileInfo in order to return a value.</span></div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    cmsUInt32Number resultLength = cmsGetProfileInfo(</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        <span class="comment">// Profile in which we search:</span></div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        profileHandle,</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="comment">// The type of information we search:</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        infoType,</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        <span class="comment">// The preferred language in which we want to get the information:</span></div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        languageCode,</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        <span class="comment">// The preferred country for which we want to get the information:</span></div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        countryCode,</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        <span class="comment">// Do not actually provide the information,</span></div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        <span class="comment">// just return the required buffer size:</span></div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        NULL,</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="comment">// Do not actually provide the information,</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="comment">// just return the required buffer size:</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        0</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    );</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="comment">// For the actual buffer size, increment by 1. This helps us to</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    <span class="comment">// guarantee a null-terminated string later on.</span></div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    cmsUInt32Number bufferLength = resultLength + 1;</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160; </div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="comment">// Allocate the buffer</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="keywordtype">wchar_t</span> *buffer = <span class="keyword">new</span> <span class="keywordtype">wchar_t</span>[bufferLength];</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="comment">// Initialize the buffer with NULL</span></div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; bufferLength - 1; ++i) {</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        *(buffer + i) = 0;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    }</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="comment">// Write the actual information to the buffer</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    cmsGetProfileInfo(</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <span class="comment">// profile in which we search</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        profileHandle,</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        <span class="comment">// the type of information we search</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        infoType,       </div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        <span class="comment">// the preferred language in which we want to get the information</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        languageCode,</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        <span class="comment">// the preferred country for which we want to get the information</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        countryCode,</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        <span class="comment">// the buffer into which the requested information will be written</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        buffer,</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;        <span class="comment">// the buffer size as previously calculated</span></div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        resultLength    </div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    );</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <span class="comment">// Make absolutely sure the buffer is null-terminated by marking its last</span></div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="comment">// element (the one that was the +1 &quot;extra&quot; element) as NULL.</span></div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    *(buffer + (bufferLength - 1)) = 0;</div>
 <div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    <span class="comment">// Free allocated memory of the buffer</span></div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    <span class="keyword">delete</span> [] buffer;</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <span class="comment">// Return</span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;}</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160; </div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;}</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    <span class="comment">// Create a QString() from the from the buffer</span></div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    <span class="comment">/* cmsGetProfileInfo returns often strings that are smaller than the</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="comment">     * previously calculated buffer size. But it seems they are</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="comment">     * null-terminated strings. */</span></div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    QString result = QString::fromWCharArray(</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        buffer, <span class="comment">// read from the buffer</span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        -1      <span class="comment">// read until the first NULL element</span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    );</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    <span class="comment">// Free allocated memory of the buffer</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keyword">delete</span>[] buffer;</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="comment">// Return</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;}</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160; </div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a1e3cb8f4108729442a61b43df4664397"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a1e3cb8f4108729442a61b43df4664397">PerceptualColor::RgbColorSpace::whitepointL</a></div><div class="ttdeci">qreal whitepointL() const</div><div class="ttdoc">The lightest in-gamut point on the L* axis.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00124">rgbcolorspace.cpp:124</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_aeb749cb42b24d3989be041a7d4096258"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">PerceptualColor::RgbColorSpace::colorRgbBoundSimple</a></div><div class="ttdeci">Helper::cmsRGB colorRgbBoundSimple(const cmsCIELab &amp;Lab) const</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00191">rgbcolorspace.cpp:191</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_aeb749cb42b24d3989be041a7d4096258"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258">PerceptualColor::RgbColorSpace::colorRgbBoundSimple</a></div><div class="ttdeci">Helper::cmsRGB colorRgbBoundSimple(const cmsCIELab &amp;Lab) const</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00190">rgbcolorspace.cpp:190</a></div></div>
 <div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a813721e6284e83c8493f1557eeeb4469"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a813721e6284e83c8493f1557eeeb4469">PerceptualColor::RgbColorSpace::colorLab</a></div><div class="ttdeci">cmsCIELab colorLab(const QColor &amp;rgbColor) const</div><div class="ttdoc">Calculates the Lab value.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00135">rgbcolorspace.cpp:135</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a41624d4c1c7c2943d90cb51935684367"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a41624d4c1c7c2943d90cb51935684367">PerceptualColor::RgbColorSpace::m_transformLabToRgbHandle</a></div><div class="ttdeci">cmsHTRANSFORM m_transformLabToRgbHandle</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00069">rgbcolorspace.h:69</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a41624d4c1c7c2943d90cb51935684367"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a41624d4c1c7c2943d90cb51935684367">PerceptualColor::RgbColorSpace::m_transformLabToRgbHandle</a></div><div class="ttdeci">cmsHTRANSFORM m_transformLabToRgbHandle</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00070">rgbcolorspace.h:70</a></div></div>
 <div class="ttc" id="argbcolorspace_8h_html"><div class="ttname"><a href="rgbcolorspace_8h.html">rgbcolorspace.h</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a33ed96ad94f8b884e9c224bedfa3f123"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a33ed96ad94f8b884e9c224bedfa3f123">PerceptualColor::RgbColorSpace::inGamut</a></div><div class="ttdeci">bool inGamut(const cmsFloat64Number lightness, const cmsFloat64Number chroma, const cmsFloat64Number hue)</div><div class="ttdoc">check if an LCh value is within a specific RGB gamut</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00236">rgbcolorspace.cpp:236</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a2df7974ab008d1f6c8a056641ca014a9"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">PerceptualColor::RgbColorSpace::description</a></div><div class="ttdeci">QString description() const</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00274">rgbcolorspace.cpp:274</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a2df7974ab008d1f6c8a056641ca014a9"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a2df7974ab008d1f6c8a056641ca014a9">PerceptualColor::RgbColorSpace::description</a></div><div class="ttdeci">QString description() const</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00283">rgbcolorspace.cpp:283</a></div></div>
 <div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a013f1458308475d288bd260a28a75e10"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a013f1458308475d288bd260a28a75e10">PerceptualColor::RgbColorSpace::RgbColorSpace</a></div><div class="ttdeci">RgbColorSpace(QObject *parent=nullptr)</div><div class="ttdoc">Default constructor.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00040">rgbcolorspace.cpp:40</a></div></div>
-<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html_af22741e39ad970f852564cfbf41e2f2e"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">PerceptualColor::Helper::cmsRGB::green</a></div><div class="ttdeci">cmsFloat64Number green</div><div class="ttdoc">The green value.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00109">helper.h:109</a></div></div>
+<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html_af22741e39ad970f852564cfbf41e2f2e"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#af22741e39ad970f852564cfbf41e2f2e">PerceptualColor::Helper::cmsRGB::green</a></div><div class="ttdeci">cmsFloat64Number green</div><div class="ttdoc">The green value.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00144">helper.h:144</a></div></div>
 <div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_aae2204f1d97e2f61a3579f2e81969ce3"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#aae2204f1d97e2f61a3579f2e81969ce3">PerceptualColor::RgbColorSpace::~RgbColorSpace</a></div><div class="ttdeci">virtual ~RgbColorSpace()</div><div class="ttdoc">Destructor.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00106">rgbcolorspace.cpp:106</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a597d093bcc9c79444792359569e537b4"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">PerceptualColor::RgbColorSpace::colorRgbBound</a></div><div class="ttdeci">QColor colorRgbBound(const cmsCIELab &amp;Lab) const</div><div class="ttdoc">Calculates the RGB value.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00208">rgbcolorspace.cpp:208</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a4a5f7384b3e12f6a36303b719b989256"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a4a5f7384b3e12f6a36303b719b989256">PerceptualColor::RgbColorSpace::m_transformRgbToLabHandle</a></div><div class="ttdeci">cmsHTRANSFORM m_transformRgbToLabHandle</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00070">rgbcolorspace.h:70</a></div></div>
-<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html_afb9f0c44133fc9b0220c07593ba0d0ad"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">PerceptualColor::Helper::cmsRGB::blue</a></div><div class="ttdeci">cmsFloat64Number blue</div><div class="ttdoc">The blue value.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00111">helper.h:111</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a54c2f6f7eb590907c3cd4cadacb7fe2c"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c">PerceptualColor::RgbColorSpace::getInformationFromProfile</a></div><div class="ttdeci">static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType)</div><div class="ttdoc">Get information from an ICC profile via LittleCMS.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00289">rgbcolorspace.cpp:289</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_ab3ce0df6c179f4efac2f09d602cedab3"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#ab3ce0df6c179f4efac2f09d602cedab3">PerceptualColor::RgbColorSpace::m_description</a></div><div class="ttdeci">QString m_description</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00067">rgbcolorspace.h:67</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_ab0bc15f693fea81ed270ad9ddcba17a8"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#ab0bc15f693fea81ed270ad9ddcba17a8">PerceptualColor::RgbColorSpace::m_transformLabToRgb16Handle</a></div><div class="ttdeci">cmsHTRANSFORM m_transformLabToRgb16Handle</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00068">rgbcolorspace.h:68</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a597d093bcc9c79444792359569e537b4"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4">PerceptualColor::RgbColorSpace::colorRgbBound</a></div><div class="ttdeci">QColor colorRgbBound(const cmsCIELab &amp;Lab) const</div><div class="ttdoc">Calculates the RGB value.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00207">rgbcolorspace.cpp:207</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a4a5f7384b3e12f6a36303b719b989256"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a4a5f7384b3e12f6a36303b719b989256">PerceptualColor::RgbColorSpace::m_transformRgbToLabHandle</a></div><div class="ttdeci">cmsHTRANSFORM m_transformRgbToLabHandle</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00071">rgbcolorspace.h:71</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a24382dbdad4c514bde0842b5a8313be0"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0">PerceptualColor::RgbColorSpace::inGamut</a></div><div class="ttdeci">bool inGamut(const cmsCIELab &amp;Lab)</div><div class="ttdoc">check if a Lab value is within a specific RGB gamut</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00269">rgbcolorspace.cpp:269</a></div></div>
+<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html_afb9f0c44133fc9b0220c07593ba0d0ad"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#afb9f0c44133fc9b0220c07593ba0d0ad">PerceptualColor::Helper::cmsRGB::blue</a></div><div class="ttdeci">cmsFloat64Number blue</div><div class="ttdoc">The blue value.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00146">helper.h:146</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a54c2f6f7eb590907c3cd4cadacb7fe2c"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c">PerceptualColor::RgbColorSpace::getInformationFromProfile</a></div><div class="ttdeci">static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType)</div><div class="ttdoc">Get information from an ICC profile via LittleCMS.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00298">rgbcolorspace.cpp:298</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_ab3ce0df6c179f4efac2f09d602cedab3"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#ab3ce0df6c179f4efac2f09d602cedab3">PerceptualColor::RgbColorSpace::m_description</a></div><div class="ttdeci">QString m_description</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00068">rgbcolorspace.h:68</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_ab0bc15f693fea81ed270ad9ddcba17a8"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#ab0bc15f693fea81ed270ad9ddcba17a8">PerceptualColor::RgbColorSpace::m_transformLabToRgb16Handle</a></div><div class="ttdeci">cmsHTRANSFORM m_transformLabToRgb16Handle</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00069">rgbcolorspace.h:69</a></div></div>
 <div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a805768f351ccde875254755901d943fa"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a805768f351ccde875254755901d943fa">PerceptualColor::RgbColorSpace::blackpointL</a></div><div class="ttdeci">qreal blackpointL() const</div><div class="ttdoc">The darkest in-gamut point on the L* axis.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00116">rgbcolorspace.cpp:116</a></div></div>
-<div class="ttc" id="anamespace_perceptual_color_1_1_helper_html_af00a2a74fd33c7a37f07950a3e998d55"><div class="ttname"><a href="namespace_perceptual_color_1_1_helper.html#af00a2a74fd33c7a37f07950a3e998d55">PerceptualColor::Helper::gamutPrecision</a></div><div class="ttdeci">constexpr qreal gamutPrecision</div><div class="ttdoc">Precision for gamut boundary search.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00119">helper.h:119</a></div></div>
-<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html_a7121da73c67e9a9c700a1ca6ef969604"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">PerceptualColor::Helper::cmsRGB::red</a></div><div class="ttdeci">cmsFloat64Number red</div><div class="ttdoc">The red value.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00107">helper.h:107</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_ab494c2d0f561c49b8325688a8ddc0095"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">PerceptualColor::RgbColorSpace::colorRgb</a></div><div class="ttdeci">QColor colorRgb(const cmsCIELab &amp;Lab) const</div><div class="ttdoc">Calculates the RGB value.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00163">rgbcolorspace.cpp:163</a></div></div>
-<div class="ttc" id="anamespace_perceptual_color_html"><div class="ttname"><a href="namespace_perceptual_color.html">PerceptualColor</a></div><div class="ttdoc">The namespace of this library.</div><div class="ttdef"><b>Definition:</b> <a href="alphaselector_8cpp_source.html#l00023">alphaselector.cpp:23</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a002d857a0cb02cd431e4c255e8e6095a"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a002d857a0cb02cd431e4c255e8e6095a">PerceptualColor::RgbColorSpace::m_blackpointL</a></div><div class="ttdeci">qreal m_blackpointL</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00065">rgbcolorspace.h:65</a></div></div>
-<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a7934de4cbedadfccf4c26a3fdadb6701"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a7934de4cbedadfccf4c26a3fdadb6701">PerceptualColor::RgbColorSpace::m_whitepointL</a></div><div class="ttdeci">qreal m_whitepointL</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00071">rgbcolorspace.h:71</a></div></div>
+<div class="ttc" id="anamespace_perceptual_color_1_1_helper_html_af00a2a74fd33c7a37f07950a3e998d55"><div class="ttname"><a href="namespace_perceptual_color_1_1_helper.html#af00a2a74fd33c7a37f07950a3e998d55">PerceptualColor::Helper::gamutPrecision</a></div><div class="ttdeci">constexpr qreal gamutPrecision</div><div class="ttdoc">Precision for gamut boundary search.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00154">helper.h:154</a></div></div>
+<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html_a7121da73c67e9a9c700a1ca6ef969604"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604">PerceptualColor::Helper::cmsRGB::red</a></div><div class="ttdeci">cmsFloat64Number red</div><div class="ttdoc">The red value.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00142">helper.h:142</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_ab494c2d0f561c49b8325688a8ddc0095"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095">PerceptualColor::RgbColorSpace::colorRgb</a></div><div class="ttdeci">QColor colorRgb(const cmsCIELab &amp;Lab) const</div><div class="ttdoc">Calculates the RGB value.</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8cpp_source.html#l00162">rgbcolorspace.cpp:162</a></div></div>
+<div class="ttc" id="anamespace_perceptual_color_html"><div class="ttname"><a href="namespace_perceptual_color.html">PerceptualColor</a></div><div class="ttdoc">The namespace of this library.</div><div class="ttdef"><b>Definition:</b> <a href="abstractdiagram_8cpp_source.html#l00030">abstractdiagram.cpp:30</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a002d857a0cb02cd431e4c255e8e6095a"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a002d857a0cb02cd431e4c255e8e6095a">PerceptualColor::RgbColorSpace::m_blackpointL</a></div><div class="ttdeci">qreal m_blackpointL</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00066">rgbcolorspace.h:66</a></div></div>
+<div class="ttc" id="aclass_perceptual_color_1_1_rgb_color_space_html_a7934de4cbedadfccf4c26a3fdadb6701"><div class="ttname"><a href="class_perceptual_color_1_1_rgb_color_space.html#a7934de4cbedadfccf4c26a3fdadb6701">PerceptualColor::RgbColorSpace::m_whitepointL</a></div><div class="ttdeci">qreal m_whitepointL</div><div class="ttdef"><b>Definition:</b> <a href="rgbcolorspace_8h_source.html#l00072">rgbcolorspace.h:72</a></div></div>
 <div class="ttc" id="ahelper_8h_html"><div class="ttname"><a href="helper_8h.html">helper.h</a></div></div>
-<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">PerceptualColor::Helper::cmsRGB</a></div><div class="ttdoc">An RGB color.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00105">helper.h:105</a></div></div>
+<div class="ttc" id="astruct_perceptual_color_1_1_helper_1_1cms_r_g_b_html"><div class="ttname"><a href="struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html">PerceptualColor::Helper::cmsRGB</a></div><div class="ttdoc">An RGB color.</div><div class="ttdef"><b>Definition:</b> <a href="helper_8h_source.html#l00140">helper.h:140</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

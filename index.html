@@ -80,13 +80,25 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </iframe>
 </div>
 
-<div class="header">
+<div class="PageDoc"><div class="header">
   <div class="headertitle">
 <div class="title">PerceptualColor Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p>This library provides various Qt GUI components for choosing colors, with focus on an intuitive and perceptually uniform presentation. The GUI widgets are based internally on the LCh color model, which does reflect the human perceptuan much better than RGB or its transforms like HSV. However, the widgets do not require the user itself to know anything about LCh at all, because the graphical representations is intuitive enough. This library lives in the namespace <a class="el" href="namespace_perceptual_color.html" title="The namespace of this library.">PerceptualColor</a>.</p>
+<p>How to get started? <a class="el" href="class_perceptual_color_1_1_color_dialog.html">PerceptualColor::ColorDialog</a> provides a perceptual replacement for QColorDialog: </p><div class="fragment"><div class="line">QColor myColor = <a class="code" href="class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2">PerceptualColor::ColorDialog::getColor</a>();</div>
+</div><!-- fragment --><p> And there are also individual widgets available. Among others:</p><ul>
+<li><a class="el" href="class_perceptual_color_1_1_wheel_color_picker.html">PerceptualColor::WheelColorPicker</a> (a full-featureed color wheel)</li>
+<li><a class="el" href="class_perceptual_color_1_1_color_patch.html">PerceptualColor::ColorPatch</a> (to show a particular color)</li>
+<li><a class="el" href="class_perceptual_color_1_1_chroma_hue_diagram.html">PerceptualColor::ChromaHueDiagram</a> (for selecting colors at a given lightness)</li>
+</ul>
+<p>The library depends on (and therefore you has to link against) <a href="https://www.qt.io/">Qt</a>&#160;5 (only the modules Qt&#160;Core, Qt&#160;Gui and Qt&#160;Widgets are necessary) and <a href="http://www.littlecms.com/">LittleCMS&#160;2</a>.</p>
+<p>The library uses in general <code>int</code> for integer values, because <code>QSize()</code> and <code>QPoint()</code> also do. As the library relies heavily on the usage of <code>QSize()</code> and <code>QPoint()</code>, this seems reasonable. For the same reason, it uses generally <code>qreal</code> for floating point values, because <code>QPointF()</code> also does. Output colors that are shown on the screen, are usually 8-bit-per-channel colors. For internal transformation, usually <code>qreal</code> is used for each channel, giving a better precision and reducing rounding errors.</p>
+<p>The source code of the library is in UTF8. A static_assert within the header <a class="el" href="helper_8h.html">helper.h</a> makes sure your compiler actually treats it as UTF8. </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="aclass_perceptual_color_1_1_color_dialog_html_a08677555088721a366cc839a90b5eea2"><div class="ttname"><a href="class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2">PerceptualColor::ColorDialog::getColor</a></div><div class="ttdeci">static QColor getColor(const QColor &amp;initial=Qt::white, QWidget *parent=nullptr, const QString &amp;title=QString(), ColorDialogOptions options=ColorDialogOptions())</div><div class="ttdoc">Pops up a modal color dialog, lets the user choose a color, and returns that color.</div><div class="ttdef"><b>Definition:</b> <a href="colordialog_8cpp_source.html#l00710">colordialog.cpp:710</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

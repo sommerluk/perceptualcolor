@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['singlestep_597',['singleStep',['../class_perceptual_color_1_1_gradient_selector.html#a5e89423c36e459f6c31c9154c9a22fd7',1,'PerceptualColor::GradientSelector']]]
+  ['wheelribbonchroma_604',['wheelRibbonChroma',['../class_perceptual_color_1_1_simple_color_wheel.html#ace077e19741c0b12eda02ebd74847cea',1,'PerceptualColor::SimpleColorWheel']]],
+  ['wheelthickness_605',['wheelThickness',['../class_perceptual_color_1_1_simple_color_wheel.html#adb308fb09c34e30f5dfba6eaf2f893b3',1,'PerceptualColor::SimpleColorWheel']]]
 ];

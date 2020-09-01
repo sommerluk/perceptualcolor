@@ -1,0 +1,9 @@
+<map id="PerceptualColor::WheelColorPicker::WheelColorPicker" name="PerceptualColor::WheelColorPicker::WheelColorPicker">
+<area shape="rect" id="node1" title="Constructor." alt="" coords="5,100,139,139"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_wheel_color_picker.html#aba042e926a0c507c43d0f16afb63cb8e" title="Update the size of the child widget." alt="" coords="198,68,331,107"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ab46f7c4b9bb12ba3511c29372a25c9f8" title="Set the hue." alt="" coords="187,131,343,169"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a6fe09144d693f81d5c7d8306666bc2aa" title="The diameter of the widget content." alt="" coords="401,5,536,44"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_wheel_color_picker.html#a82999bc171a84656147c0b4f332dd38a" title="Scale a rectangle to a given diagonal line length." alt="" coords="393,68,545,107"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a27d7c972e420480674da1a0fae0b10b3" title="Setter for the color() property." alt="" coords="391,131,547,169"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="595,160,716,199"/>
+</map>

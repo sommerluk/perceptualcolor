@@ -1,14 +1,16 @@
 <map id="include/PerceptualColor/simplecolorwheel.h" name="include/PerceptualColor/simplecolorwheel.h">
-<area shape="rect" id="node1" title=" " alt="" coords="174,5,350,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="122,244,195,271"/>
-<area shape="rect" id="node3" title=" " alt="" coords="55,95,134,121"/>
-<area shape="rect" id="node4" href="$polarpointf_8h.html" title=" " alt="" coords="157,95,368,121"/>
-<area shape="rect" id="node8" href="$rgbcolorspace_8h.html" title=" " alt="" coords="420,95,652,121"/>
-<area shape="rect" id="node10" title=" " alt="" coords="628,244,702,271"/>
-<area shape="rect" id="node5" title=" " alt="" coords="150,169,225,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="250,169,323,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="31,169,126,196"/>
-<area shape="rect" id="node9" title=" " alt="" coords="553,169,628,196"/>
-<area shape="rect" id="node11" href="$helper_8h.html" title=" " alt="" coords="348,169,529,196"/>
-<area shape="rect" id="node12" title=" " alt="" coords="383,244,494,271"/>
+<area shape="rect" id="node1" title=" " alt="" coords="319,5,435,44"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,239,60,264"/>
+<area shape="rect" id="node3" title=" " alt="" coords="433,239,489,264"/>
+<area shape="rect" id="node4" href="$circulardiagram_8h.html" title=" " alt="" coords="440,92,596,117"/>
+<area shape="rect" id="node6" href="$polarpointf_8h.html" title=" " alt="" coords="642,92,781,117"/>
+<area shape="rect" id="node10" href="$rgbcolorspace_8h.html" title=" " alt="" coords="155,92,305,117"/>
+<area shape="rect" id="node12" title=" " alt="" coords="197,239,249,264"/>
+<area shape="rect" id="node5" href="$abstractdiagram_8h.html" title=" " alt="" coords="439,165,599,191"/>
+<area shape="rect" id="node7" title=" " alt="" coords="792,165,847,191"/>
+<area shape="rect" id="node8" title=" " alt="" coords="624,165,676,191"/>
+<area shape="rect" id="node9" title=" " alt="" coords="701,165,767,191"/>
+<area shape="rect" id="node11" title=" " alt="" coords="261,165,314,191"/>
+<area shape="rect" id="node13" href="$helper_8h.html" title=" " alt="" coords="66,165,186,191"/>
+<area shape="rect" id="node14" title=" " alt="" coords="89,239,163,264"/>
 </map>

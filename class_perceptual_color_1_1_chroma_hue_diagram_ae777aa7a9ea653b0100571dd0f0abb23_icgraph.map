@@ -1,0 +1,13 @@
+<map id="PerceptualColor::ChromaHueDiagram::border" name="PerceptualColor::ChromaHueDiagram::border">
+<area shape="rect" id="node1" title="The border between the widget’s outer border and the diagram itself." alt="" coords="812,163,947,201"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#adc53e31427f7c15d0aedc521aea5edd7" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="605,131,761,169"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#aa646df872482f4abc4ec2a48e29ff127" title=" " alt="" coords="603,193,764,232"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6" title="Refresh the diagram and associated data." alt="" coords="408,131,555,169"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a4146a454e42523139b3a1868e2555297" title="Tests if image coordinates are in gamut." alt="" coords="193,131,360,169"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="209,193,344,232"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ae320a53c67ed052ea4e41b978c65303c" title=" " alt="" coords="203,68,350,107"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a16bcb9d0eee3536fe4f1034d2b9c3329" title="React on a mouse move event." alt="" coords="8,68,143,107"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad8957ee9c3a3ecb73841c00110ee3058" title="React on a mouse press event." alt="" coords="8,131,143,169"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7" title=" " alt="" coords="8,193,143,232"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#adfe93a3ac0005a23c03465635089d846" title="React on a mouse release event." alt="" coords="5,5,145,44"/>
+</map>

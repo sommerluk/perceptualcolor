@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['red_569',['red',['../struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html#a7121da73c67e9a9c700a1ca6ef969604',1,'PerceptualColor::Helper::cmsRGB']]]
+  ['pagestepchroma_573',['pageStepChroma',['../class_perceptual_color_1_1_abstract_diagram.html#a02e11add3776ca161145cf89fa62f6fa',1,'PerceptualColor::AbstractDiagram']]],
+  ['pagestephue_574',['pageStepHue',['../class_perceptual_color_1_1_abstract_diagram.html#a50a5645eabbdc504774d38b6c0558e6f',1,'PerceptualColor::AbstractDiagram']]]
 ];

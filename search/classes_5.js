@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['polarpointf_296',['PolarPointF',['../class_perceptual_color_1_1_polar_point_f.html',1,'PerceptualColor']]]
+  ['lchdefaults_300',['LchDefaults',['../struct_perceptual_color_1_1_helper_1_1_lch_defaults.html',1,'PerceptualColor::Helper']]]
 ];

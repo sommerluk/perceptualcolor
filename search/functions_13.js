@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['wheelcolorpicker_469',['WheelColorPicker',['../class_perceptual_color_1_1_wheel_color_picker.html#a44595e05acd7bf6ad716242f987507da',1,'PerceptualColor::WheelColorPicker']]],
-  ['wheelevent_470',['wheelEvent',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7',1,'PerceptualColor::ChromaHueDiagram::wheelEvent()'],['../class_perceptual_color_1_1_gradient_selector.html#a2f1ad73ad864cffe3061133c3a048b0d',1,'PerceptualColor::GradientSelector::wheelEvent()'],['../class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6',1,'PerceptualColor::SimpleColorWheel::wheelEvent()']]],
-  ['wheelribbonchroma_471',['wheelRibbonChroma',['../class_perceptual_color_1_1_simple_color_wheel.html#acfb73b692137416cd0e74563ff91f0a1',1,'PerceptualColor::SimpleColorWheel']]],
-  ['wheelthickness_472',['wheelThickness',['../class_perceptual_color_1_1_simple_color_wheel.html#a7646099c79270d82642db538179e5b1c',1,'PerceptualColor::SimpleColorWheel']]],
-  ['whitepointl_473',['whitepointL',['../class_perceptual_color_1_1_rgb_color_space.html#a1e3cb8f4108729442a61b43df4664397',1,'PerceptualColor::RgbColorSpace']]]
+  ['updateborder_471',['updateBorder',['../class_perceptual_color_1_1_chroma_lightness_diagram.html#a8b311dabc050709f083ff5ca4e2bc6a4',1,'PerceptualColor::ChromaLightnessDiagram']]],
+  ['updatecolorpatch_472',['updateColorPatch',['../class_perceptual_color_1_1_color_dialog.html#a18985e0cf14c64400f1edc5f64da159d',1,'PerceptualColor::ColorDialog']]],
+  ['updatediagramcache_473',['updateDiagramCache',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6',1,'PerceptualColor::ChromaHueDiagram::updateDiagramCache()'],['../class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84',1,'PerceptualColor::ChromaLightnessDiagram::updateDiagramCache()']]],
+  ['updategradientimage_474',['updateGradientImage',['../class_perceptual_color_1_1_gradient_selector.html#a82a87ec1701c4db18f821c3b35026e90',1,'PerceptualColor::GradientSelector']]],
+  ['updatewheelcache_475',['updateWheelCache',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a7d8f858f515726d5e171b8e150c6ec2b',1,'PerceptualColor::ChromaHueDiagram']]],
+  ['updatewheelimage_476',['updateWheelImage',['../class_perceptual_color_1_1_simple_color_wheel.html#ac454a7cd994298cad632b343c2efe6ba',1,'PerceptualColor::SimpleColorWheel']]]
 ];

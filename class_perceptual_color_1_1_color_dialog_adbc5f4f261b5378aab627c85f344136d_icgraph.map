@@ -1,0 +1,8 @@
+<map id="PerceptualColor::ColorDialog::setOptions" name="PerceptualColor::ColorDialog::setOptions">
+<area shape="rect" id="node1" title="Setter for options." alt="" coords="368,68,501,107"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="187,5,320,44"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="187,68,320,107"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_color_dialog.html#aa1d3f439ea4df8d1be100d7dff89875b" title="Setter for options." alt="" coords="187,131,320,169"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,68,139,107"/>
+<area shape="rect" id="node6" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="51,137,93,163"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="PerceptualColor::SimpleColorWheel::contentDiameter" name="PerceptualColor::SimpleColorWheel::contentDiameter">
+<area shape="rect" id="node1" title="The diameter of the widget content." alt="" coords="415,159,549,197"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#a45d568d5ec1f9ffc175f9bdc527c54e3" title="Converts wheel coordinates to widget coordinates." alt="" coords="188,5,367,57"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="5,12,140,51"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_simple_color_wheel.html#a59df6b50669b8b8b5aec2e190bd23aa8" title="Converts window coordinates to wheel coordinates." alt="" coords="188,184,367,236"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_simple_color_wheel.html#a8e6801f8291ff6214d93d56d0ec59e22" title="React on a mouse press event." alt="" coords="5,75,140,113"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6" title="React on a mouse wheel event." alt="" coords="5,263,140,301"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_wheel_color_picker.html#aba042e926a0c507c43d0f16afb63cb8e" title="Update the size of the child widget." alt="" coords="211,325,344,364"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_simple_color_wheel.html#abe3135d19fc45216402f78bce2cf85f3" title="React on a mouse move event." alt="" coords="5,137,140,176"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_simple_color_wheel.html#af9f91c60348e415b8726732231230fd0" title="React on a mouse release event." alt="" coords="5,200,140,239"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_wheel_color_picker.html#adec0d229991217cd17e06887e829cdc2" title="React on a resive event." alt="" coords="6,325,139,364"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_wheel_color_picker.html#a44595e05acd7bf6ad716242f987507da" title="Constructor." alt="" coords="6,388,139,427"/>
+</map>

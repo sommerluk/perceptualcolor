@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rgbcolorspace_297',['RgbColorSpace',['../class_perceptual_color_1_1_rgb_color_space.html',1,'PerceptualColor']]]
+  ['polarpointf_301',['PolarPointF',['../class_perceptual_color_1_1_polar_point_f.html',1,'PerceptualColor']]]
 ];

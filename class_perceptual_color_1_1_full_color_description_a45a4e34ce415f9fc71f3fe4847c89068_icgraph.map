@@ -1,0 +1,15 @@
+<map id="PerceptualColor::FullColorDescription::isValid" name="PerceptualColor::FullColorDescription::isValid">
+<area shape="rect" id="node1" title=" " alt="" coords="912,256,1033,295"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#abd0da334b7034a67a3cc83bc3ed0a425" title="Updates m_currentOpaqueColor and all affected widgets." alt="" coords="731,256,864,295"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="187,217,320,256"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_color_dialog.html#adf67594f0cb9416b245d6cf726f18bf4" title="Reads the HLC numbers in the dialog and updates the dialog accordingly." alt="" coords="549,256,683,295"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_color_dialog.html#a2a48f4c33652bc9a1a0cb22fd0a6b221" title="Reads the value from the lightness selector in the dialog and updates the dialog accordingly." alt="" coords="549,328,683,367"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_color_dialog.html#a64b6c698ebfaf2461c513ebbb7ef2637" title="Setter for currentColor property." alt="" coords="549,411,683,449"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_color_dialog.html#acf0e7b1b619cee3fc7f5a992e2c93e7d" title="Convenience version of setCurrentOpaqueColor(), accepting QColor." alt="" coords="549,100,683,139"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,357,139,396"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_color_dialog.html#a64f6d0e30a627458ccb7bbf4a77ad42b" title="React on focus changes." alt="" coords="368,245,501,284"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="368,411,501,449"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_color_dialog.html#ad834c4b1975dd4b226a054497bd1ef47" title="Reads the HSV numbers in the dialog and updates the dialog accordingly." alt="" coords="368,131,501,169"/>
+<area shape="rect" id="node12" href="$class_perceptual_color_1_1_color_dialog.html#a4554999f424ac055986478fe8c899ae1" title="Reads the hexadecimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="368,5,501,44"/>
+<area shape="rect" id="node13" href="$class_perceptual_color_1_1_color_dialog.html#a9bb8f87d25714fc283fdda98424030fe" title="Reads the decimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="368,68,501,107"/>
+</map>

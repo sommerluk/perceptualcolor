@@ -1,0 +1,7 @@
+<map id="PerceptualColor::ChromaHueDiagram::imageCoordinatesInGamut" name="PerceptualColor::ChromaHueDiagram::imageCoordinatesInGamut">
+<area shape="rect" id="node1" title="Tests if image coordinates are in gamut." alt="" coords="5,37,172,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a1ffe1f34cd9e77800b8836e9383e0fd6" title="Refresh the diagram and associated data." alt="" coords="220,37,367,76"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#adc53e31427f7c15d0aedc521aea5edd7" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="415,5,571,44"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="432,68,553,107"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="619,5,741,44"/>
+</map>

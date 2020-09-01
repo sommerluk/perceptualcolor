@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['_7echromahuediagram_474',['~ChromaHueDiagram',['../class_perceptual_color_1_1_chroma_hue_diagram.html#ab0eef5d4d38f300e69f2770df6bf2c37',1,'PerceptualColor::ChromaHueDiagram']]],
-  ['_7echromalightnessdiagram_475',['~ChromaLightnessDiagram',['../class_perceptual_color_1_1_chroma_lightness_diagram.html#a155434a71b5eabdb79c60e3470a9229d',1,'PerceptualColor::ChromaLightnessDiagram']]],
-  ['_7ecolordialog_476',['~ColorDialog',['../class_perceptual_color_1_1_color_dialog.html#aa9dc00ed91af07b7a71ddb5a40ba843f',1,'PerceptualColor::ColorDialog']]],
-  ['_7efullcolordescription_477',['~FullColorDescription',['../class_perceptual_color_1_1_full_color_description.html#a4658c9f8efce93b7f2f54957491c222a',1,'PerceptualColor::FullColorDescription']]],
-  ['_7ergbcolorspace_478',['~RgbColorSpace',['../class_perceptual_color_1_1_rgb_color_space.html#aae2204f1d97e2f61a3579f2e81969ce3',1,'PerceptualColor::RgbColorSpace']]],
-  ['_7esimplecolorwheel_479',['~SimpleColorWheel',['../class_perceptual_color_1_1_simple_color_wheel.html#a704539159aa0526adc1e569994996444',1,'PerceptualColor::SimpleColorWheel']]],
-  ['_7ewheelcolorpicker_480',['~WheelColorPicker',['../class_perceptual_color_1_1_wheel_color_picker.html#aa00c504a7ff07966fce7b00ed459f2c7',1,'PerceptualColor::WheelColorPicker']]]
+  ['wheelcolorpicker_477',['WheelColorPicker',['../class_perceptual_color_1_1_wheel_color_picker.html#a44595e05acd7bf6ad716242f987507da',1,'PerceptualColor::WheelColorPicker']]],
+  ['wheelevent_478',['wheelEvent',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7',1,'PerceptualColor::ChromaHueDiagram::wheelEvent()'],['../class_perceptual_color_1_1_gradient_selector.html#a2f1ad73ad864cffe3061133c3a048b0d',1,'PerceptualColor::GradientSelector::wheelEvent()'],['../class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6',1,'PerceptualColor::SimpleColorWheel::wheelEvent()']]],
+  ['wheelribbonchroma_479',['wheelRibbonChroma',['../class_perceptual_color_1_1_simple_color_wheel.html#acfb73b692137416cd0e74563ff91f0a1',1,'PerceptualColor::SimpleColorWheel']]],
+  ['wheelthickness_480',['wheelThickness',['../class_perceptual_color_1_1_simple_color_wheel.html#a7646099c79270d82642db538179e5b1c',1,'PerceptualColor::SimpleColorWheel']]],
+  ['whitepointl_481',['whitepointL',['../class_perceptual_color_1_1_rgb_color_space.html#a1e3cb8f4108729442a61b43df4664397',1,'PerceptualColor::RgbColorSpace']]]
 ];

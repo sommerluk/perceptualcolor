@@ -1,0 +1,9 @@
+<map id="PerceptualColor::SimpleColorWheel::mousePressEvent" name="PerceptualColor::SimpleColorWheel::mousePressEvent">
+<area shape="rect" id="node1" title="React on a mouse press event." alt="" coords="5,72,140,110"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="597,53,725,92"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a6fe09144d693f81d5c7d8306666bc2aa" title="The diameter of the widget content." alt="" coords="415,44,549,82"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_simple_color_wheel.html#a59df6b50669b8b8b5aec2e190bd23aa8" title="Converts window coordinates to wheel coordinates." alt="" coords="188,65,367,117"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="213,141,341,180"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_simple_color_wheel.html#aa9eec6e96f6069be6d983d1c854644d1" title=" " alt="" coords="210,204,345,242"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="418,141,546,180"/>
+</map>
