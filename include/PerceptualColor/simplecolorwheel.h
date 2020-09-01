@@ -41,6 +41,13 @@ namespace PerceptualColor {
 /** @brief Widget to choose the hue in a wheel.
  * 
  * This widget allows to select the hue (as defined in the LCh color space) in the form of a wheel.
+ * 
+ * @note This widget <em>always</em> accepts focus by a mouse click within
+ * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
+ * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
+ * value that accepts focus by mouse click, the focus will not only be
+ * accepted for clicks within the actuel circle, but also for clicks
+ * within the surrounding rectangle.
  */
 class SimpleColorWheel : public CircularDiagram
 {

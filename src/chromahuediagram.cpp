@@ -43,6 +43,9 @@
 
 namespace PerceptualColor {
 
+
+  
+    
 /** @brief The constructor.
  * @param colorSpace The color spaces within this widget should operate.
  * @param parent The widget’s parent widget. This paramenter will be passed
@@ -74,6 +77,11 @@ ChromaHueDiagram::ChromaHueDiagram(
 
     // Define the size policy of this widget.
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+// TODO Remove me!
+setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+PerceptualColor::KeyPressEater *temp = new KeyPressEater();
+installEventFilter(temp);
 }
 
 /** @brief Sets the @ref color property corresponding to given widget
@@ -83,11 +91,11 @@ ChromaHueDiagram::ChromaHueDiagram(
  * system. This does not necessarily need to be within the actual displayed
  * diagram or even the gamut itself. It might even be negative.
  * 
- * \post If the widget coordinates are within the represented gamut, then the
- * @ref color property is set correcpondingly. If the coordinates are outside
- * the gamut, then the chroma value is reduced (while the hue is maintained)
- * until arriving at the outer shell of the gamut; this adapted color is than
- * used for the @ref color property.
+ * @post If the widget coordinates are within the represented gamut, then
+ * the @ref color property is set correcpondingly. If the coordinates are
+ * outside the gamut, then the chroma value is reduced (while the hue is
+ * maintained) until arriving at the outer shell of the gamut; this adapted
+ * color is than used for the @ref color property.
  * 
  * @note This function works independently of the actually display color
  * gamut diagram. So if parts of the gamut are cut off in the diagram,
@@ -136,9 +144,6 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         // rejecting focus otherwise. In the constructor, therefore
         // Qt::FocusPolicy::TabFocus is specified, so that manual handling
         // of mouse focus is up to this code here.
-        // TODO Find another solution that guarantees that setFocusPolicy()
-        // API of this class behaves as expected, and not as a dirty hack that
-        // accepts mouse focus even when set to Qt::FocusPolicy::TabFocus.
         setFocus(Qt::MouseFocusReason);
         // Enable mouse tracking from now on:
         m_isMouseEventActive = true;
@@ -249,24 +254,21 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
 /** @brief Paint the widget.
  * 
  * Reimplemented from base class.
- * 
- * Paints the widget. Takes the existing m_diagramImage and m_diagramPixmap
- * and paints them on the widget. Paints, if approperiate, the focus
- * indicator. Paints the marker. Relies on that m_diagramImage and
- * m_diagramPixmap are up to date.
+ *
+ * Paints the widget. Takes the existing @ref m_diagramImage and
+ * @ref m_wheelImage and paints them on the widget. If the widget has
+ * focus, it also paints the focus indicator. Paints the marker.
  * 
  * @param event the paint event
  * 
- * @todo What when m_color has a valid in-gamut color, but this color is out
- * of the <em>displayed</em> diagram? How to handle that?
+ * @todo What when @ref m_color has a valid in-gamut color, but this color is
+ * out of the <em>displayed</em> diagram? How to handle that?
  * 
- * @todo Make the wheel to be drawn horizontally and vertically aligned.
- * 
- * @todo Better design on small widget sizes
- */
+ * @todo Better design on small widget sizes */
 void ChromaHueDiagram::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
+
     // We do not paint directly on the widget, but on a QImage buffer first:
     // Render anti-aliased looks better. But as Qt documentation says:
     //
@@ -874,7 +876,7 @@ Then, for checking a single color
 
 /** @brief in image of a-b plane of the color space at a given lightness */
 // How to make sure the diagram has at least a few pixels?
-QImage ChromaHueDiagram::generateDiagramImage3(
+QImage ChromaHueDiagram::generateDiagramImage(
     const RgbColorSpace *colorSpace,
     const int imageSize,
     const qreal maxChroma,
@@ -887,17 +889,17 @@ QImage ChromaHueDiagram::generateDiagramImage3(
     qreal h;
     qreal s;
     qreal v;
-    constexpr qreal step = 0.1;
+    constexpr qreal step = 1;
     cmsCIELab lab; //     cmsCIELab lab; 
     QColor color;
-    for (h = 0; h < 360; h += step) {
+    for (h = 0; h < 359; h += step) {
         s = 255;
-        for (v = 0; v <= 255; v += step) {
+        for (v = 1; v <= 254; v += step) {
             lab = colorSpace->colorLab(QColor::fromHsv(h, s, v));
             cmsGDBAddPoint(h_gamutBoundaryDescriptor, &lab);
         }
         v = 255;
-        for (s = 0; s <= 255; s += step) {
+        for (s = 1; s <= 254; s += step) {
             lab = colorSpace->colorLab(QColor::fromHsv(h, s, v));
             cmsGDBAddPoint(h_gamutBoundaryDescriptor, &lab);
         }
@@ -971,7 +973,7 @@ QImage ChromaHueDiagram::generateDiagramImage3(
 
 /** @brief in image of a-b plane of the color space at a given lightness */
 // How to make sure the diagram has at least a few pixels?
-QImage ChromaHueDiagram::generateDiagramImage(
+QImage ChromaHueDiagram::generateDiagramImage3(
     const RgbColorSpace *colorSpace,
     const int imageSize,
     const qreal maxChroma,

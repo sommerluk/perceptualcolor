@@ -34,7 +34,31 @@
 #include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor {
-    
+
+// TODO Remove me!
+  class KeyPressEater : public QObject
+  {
+      Q_OBJECT
+  public:
+      KeyPressEater() = default;
+
+  protected:
+      bool eventFilter(QObject *obj, QEvent *event) override
+        {
+            if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::FocusIn) {
+//                 QFocusEvent *focusEvent = static_cast<QFocusEvent *>(event);
+//                 if (focusEvent->reason() == Qt::FocusReason::MouseFocusReason) {
+                    qDebug("Ate focus");
+                    event->accept();
+                    return true;
+//                 }
+            } else {
+                // standard event processing
+                return QObject::eventFilter(obj, event);
+            }
+        }
+  };
+
 /** @brief A widget for selecting chroma and hue in LCh color space
  * 
  * This widget displays the plan of chroma and hue
@@ -52,6 +76,13 @@ namespace PerceptualColor {
  * helps the user to understand intuitively that he is moving within a
  * polar coordinate system and to capture easily the current radial
  * and angle.
+ * 
+ * @note This widget <em>always</em> accepts focus by a mouse click within
+ * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
+ * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
+ * value that accepts focus by mouse click, the focus will not only be
+ * accepted for clicks within the actuel circle, but also for clicks
+ * within the surrounding rectangle.
  * 
  * @todo Example code: How to create the widget at a given
  * lightness.

@@ -27,6 +27,11 @@
 // Own header
 #include "PerceptualColor/circulardiagram.h"
 
+#include <QFocusEvent>
+
+// TODO Remove me:
+#include <QDebug>
+
 namespace PerceptualColor {
 
 /** @brief The constructor.

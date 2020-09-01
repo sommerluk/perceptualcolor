@@ -51,6 +51,13 @@ namespace PerceptualColor {
  * width is larger than the widget height, the @c x range goes beyond @c 100.
  * 
  * The widget reacts on mouse events and on keyboard events (see keyPressEvent() for details).
+ * 
+ * @note This widget <em>always</em> accepts focus by a mouse click within
+ * the displayed gamut. This happens regardless of the <tt>QWidget::focusPolicy</tt>
+ * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
+ * value that accepts focus by mouse click, the focus will not only be
+ * accepted for clicks within the actuel display gamut, but also for clicks
+ * within the surrounding rectangle.
  */
 class ChromaLightnessDiagram : public AbstractDiagram
 {

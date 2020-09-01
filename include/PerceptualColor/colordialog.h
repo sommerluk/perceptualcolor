@@ -152,7 +152,12 @@ namespace PerceptualColor {
  * current behaviour for pageStep‌ = 10 is 356 → 360 → 0 → 10. The expected
  * behaviour would be 356 → 6 for a continuous experience. A solution will
  * likely require a new class inherited from QDoubleSpinBox or maybe
- * QAbstractSpinbox.
+ * QAbstractSpinbox. Prodide directly a widget that would also do the
+ * work for HLC etc (calender-widget-like with various values within
+ * a single spinbox).
+ * 
+ * @todo Background color (or text color) for RGB could be red, green and
+ * blue, corresponding to each component?
  * 
  * @todo Support for other models like HSL, Munsell? With an option to
  * enable or disable them? (NCS not, because it is not free.)
