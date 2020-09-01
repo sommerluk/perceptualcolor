@@ -1,5 +1,5 @@
 <map id="PerceptualColor::RgbColorSpace::RgbColorSpace" name="PerceptualColor::RgbColorSpace::RgbColorSpace">
-<area shape="rect" id="node1" title="Default constructor." alt="" coords="5,37,128,76"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c" title="Get information from an ICC profile via LittleCMS." alt="" coords="176,5,331,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="192,68,315,107"/>
+<area shape="rect" id="node1" title="Default constructor." alt="" coords="5,39,197,80"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#a54c2f6f7eb590907c3cd4cadacb7fe2c" title="Get information from an ICC profile via LittleCMS." alt="" coords="245,5,485,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="269,71,461,112"/>
 </map>

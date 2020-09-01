@@ -1,4 +1,4 @@
 <map id="PerceptualColor::ColorDialog::selectedColor" name="PerceptualColor::ColorDialog::selectedColor">
-<area shape="rect" id="node1" title="The color that was actually selected by the user." alt="" coords="187,5,320,44"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="5,5,139,44"/>
+<area shape="rect" id="node1" title="The color that was actually selected by the user." alt="" coords="263,5,472,47"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="5,5,215,47"/>
 </map>

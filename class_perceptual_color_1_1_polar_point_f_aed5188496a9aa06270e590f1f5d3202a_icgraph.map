@@ -1,6 +1,6 @@
 <map id="PerceptualColor::PolarPointF::toCartesian" name="PerceptualColor::PolarPointF::toCartesian">
-<area shape="rect" id="node1" title="Convert to cartesion coordinates." alt="" coords="415,47,543,85"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#a45d568d5ec1f9ffc175f9bdc527c54e3" title="Converts wheel coordinates to widget coordinates." alt="" coords="188,5,367,57"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="210,81,345,120"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="5,12,140,51"/>
+<area shape="rect" id="node1" title="Convert to cartesion coordinates." alt="" coords="595,50,793,91"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#a45d568d5ec1f9ffc175f9bdc527c54e3" title="Converts wheel coordinates to widget coordinates." alt="" coords="265,5,547,61"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="301,86,511,127"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="5,13,217,54"/>
 </map>

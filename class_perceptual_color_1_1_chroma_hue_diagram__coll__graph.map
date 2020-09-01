@@ -1,10 +1,10 @@
 <map id="PerceptualColor::ChromaHueDiagram" name="PerceptualColor::ChromaHueDiagram">
-<area shape="rect" id="node1" title="A widget for selecting chroma and hue in LCh color space." alt="" coords="552,68,687,107"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_circular_diagram.html" title="Base class for circular diagrams." alt="" coords="311,5,428,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="111,5,231,44"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,12,61,37"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_full_color_description.html" title="A fully qualified color." alt="" coords="309,68,430,107"/>
-<area shape="rect" id="node6" href="$struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html" title="An RGB color." alt="" coords="113,68,228,107"/>
-<area shape="rect" id="node7" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="308,131,431,169"/>
-<area shape="rect" id="node8" title=" " alt="" coords="144,137,197,163"/>
+<area shape="rect" id="node1" title="A widget for selecting chroma and hue in LCh color space." alt="" coords="772,71,983,112"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_circular_diagram.html" title="Base class for circular diagrams." alt="" coords="418,5,601,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="133,5,320,47"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,13,84,39"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_full_color_description.html" title="A fully qualified color." alt="" coords="414,71,605,112"/>
+<area shape="rect" id="node6" href="$struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html" title="An RGB color." alt="" coords="139,71,315,112"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="413,136,605,177"/>
+<area shape="rect" id="node8" title=" " alt="" coords="189,143,264,170"/>
 </map>

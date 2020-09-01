@@ -1,8 +1,0 @@
-<map id="PerceptualColor::ChromaHueDiagram::setColorFromWidgetCoordinates" name="PerceptualColor::ChromaHueDiagram::setColorFromWidgetCoordinates">
-<area shape="rect" id="node1" title="Sets the color corresponding to given widget coordinates." alt="" coords="5,97,192,136"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a82bab0738efff92bf357584527f85b65" title=" " alt="" coords="242,5,413,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a443db20bc2c25119febcd61ca9299d21" title="Setter for the color() property." alt="" coords="260,68,395,107"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="463,95,584,133"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a663ccf965c55edef807d590e0bab99a4" title=" " alt="" coords="240,183,415,221"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5" title=" " alt="" coords="463,183,584,221"/>
-</map>

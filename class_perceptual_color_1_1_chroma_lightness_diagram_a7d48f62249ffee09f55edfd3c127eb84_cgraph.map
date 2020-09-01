@@ -1,8 +1,8 @@
 <map id="PerceptualColor::ChromaLightnessDiagram::updateDiagramCache" name="PerceptualColor::ChromaLightnessDiagram::updateDiagramCache">
-<area shape="rect" id="node1" title="Refresh the diagram and associated data." alt="" coords="5,68,161,107"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ae0395993434db2cd0d74b146fed6621c" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="209,36,365,75"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="227,99,348,137"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="416,5,539,44"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="413,68,541,107"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="589,68,717,107"/>
+<area shape="rect" id="node1" title="Refresh the diagram and associated data." alt="" coords="5,71,252,112"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ae0395993434db2cd0d74b146fed6621c" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="300,37,547,79"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="328,103,519,144"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="598,5,790,47"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="595,71,793,112"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="841,71,1040,112"/>
 </map>

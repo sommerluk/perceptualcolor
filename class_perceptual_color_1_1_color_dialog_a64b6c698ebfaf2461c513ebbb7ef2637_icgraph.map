@@ -1,5 +1,5 @@
 <map id="PerceptualColor::ColorDialog::setCurrentColor" name="PerceptualColor::ColorDialog::setCurrentColor">
-<area shape="rect" id="node1" title="Setter for currentColor property." alt="" coords="187,37,320,76"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,5,139,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="5,68,139,107"/>
+<area shape="rect" id="node1" title="Setter for currentColor property." alt="" coords="263,39,472,80"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,5,215,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="5,71,215,112"/>
 </map>

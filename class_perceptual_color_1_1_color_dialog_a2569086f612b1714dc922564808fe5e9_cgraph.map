@@ -1,5 +1,5 @@
 <map id="PerceptualColor::ColorDialog::setVisible" name="PerceptualColor::ColorDialog::setVisible">
-<area shape="rect" id="node1" title="Setter for property visible." alt="" coords="5,5,139,44"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#aa0acac5d112ac65532a3a3ec9a45f094" title="Arranges the layout conforming to layoutDimensions." alt="" coords="187,5,320,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a7e050ae3afdec8f4f5e7ee348ab83002" title="Provide the size hint." alt="" coords="368,5,503,44"/>
+<area shape="rect" id="node1" title="Setter for property visible." alt="" coords="5,5,215,47"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#aa0acac5d112ac65532a3a3ec9a45f094" title="Arranges the layout conforming to layoutDimensions." alt="" coords="263,5,472,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a7e050ae3afdec8f4f5e7ee348ab83002" title="Provide the size hint." alt="" coords="520,5,732,47"/>
 </map>

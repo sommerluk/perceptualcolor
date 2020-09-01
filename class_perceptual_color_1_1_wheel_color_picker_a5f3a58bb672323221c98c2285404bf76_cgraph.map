@@ -1,8 +1,8 @@
 <map id="PerceptualColor::WheelColorPicker::setCurrentColor" name="PerceptualColor::WheelColorPicker::setCurrentColor">
-<area shape="rect" id="node1" title="Setter for currentColorRgb() property." alt="" coords="5,63,139,101"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a27d7c972e420480674da1a0fae0b10b3" title="Setter for the color() property." alt="" coords="187,5,343,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="394,32,515,71"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_simple_color_wheel.html#aa9eec6e96f6069be6d983d1c854644d1" title=" " alt="" coords="197,120,332,159"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="391,120,519,159"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="567,120,695,159"/>
+<area shape="rect" id="node1" title="Setter for currentColorRgb() property." alt="" coords="5,64,213,105"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a27d7c972e420480674da1a0fae0b10b3" title="Setter for the color() property." alt="" coords="261,5,508,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="560,32,751,73"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_simple_color_wheel.html#aa9eec6e96f6069be6d983d1c854644d1" title=" " alt="" coords="279,123,491,164"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="556,123,755,164"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="803,123,1001,164"/>
 </map>

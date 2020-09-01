@@ -1,9 +1,9 @@
 <map id="PerceptualColor::ChromaHueDiagram::mouseReleaseEvent" name="PerceptualColor::ChromaHueDiagram::mouseReleaseEvent">
-<area shape="rect" id="node1" title="React on a mouse release event." alt="" coords="5,100,145,139"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a65ff87dfbc2ffa5d71b5e58c30d3b39c" title="Sets the color property corresponding to given widget coordinates." alt="" coords="193,100,379,139"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a82bab0738efff92bf357584527f85b65" title=" " alt="" coords="427,5,598,44"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a3a62b8d0b33df74dacd6150865c57382" title=" " alt="" coords="427,68,599,107"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a443db20bc2c25119febcd61ca9299d21" title="Setter for the color() property." alt="" coords="445,131,580,169"/>
-<area shape="rect" id="node7" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="647,159,768,197"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5" title=" " alt="" coords="647,68,768,107"/>
+<area shape="rect" id="node1" title="React on a mouse release event." alt="" coords="5,104,224,145"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a65ff87dfbc2ffa5d71b5e58c30d3b39c" title="Sets the color property corresponding to given widget coordinates." alt="" coords="272,104,564,145"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a82bab0738efff92bf357584527f85b65" title=" " alt="" coords="614,5,882,47"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a3a62b8d0b33df74dacd6150865c57382" title=" " alt="" coords="612,71,884,112"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a443db20bc2c25119febcd61ca9299d21" title="Setter for the color() property." alt="" coords="643,136,853,177"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="932,165,1123,207"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5" title=" " alt="" coords="932,71,1123,112"/>
 </map>

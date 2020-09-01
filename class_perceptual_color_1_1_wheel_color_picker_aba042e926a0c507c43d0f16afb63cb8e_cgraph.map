@@ -1,5 +1,5 @@
 <map id="PerceptualColor::WheelColorPicker::resizeChildWidget" name="PerceptualColor::WheelColorPicker::resizeChildWidget">
-<area shape="rect" id="node1" title="Update the size of the child widget." alt="" coords="5,37,139,76"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#a6fe09144d693f81d5c7d8306666bc2aa" title="The diameter of the widget content." alt="" coords="195,5,330,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_wheel_color_picker.html#a82999bc171a84656147c0b4f332dd38a" title="Scale a rectangle to a given diagonal line length." alt="" coords="187,68,339,107"/>
+<area shape="rect" id="node1" title="Update the size of the child widget." alt="" coords="5,39,213,80"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#a6fe09144d693f81d5c7d8306666bc2aa" title="The diameter of the widget content." alt="" coords="275,5,487,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_wheel_color_picker.html#a82999bc171a84656147c0b4f332dd38a" title="Scale a rectangle to a given diagonal line length." alt="" coords="261,71,501,112"/>
 </map>

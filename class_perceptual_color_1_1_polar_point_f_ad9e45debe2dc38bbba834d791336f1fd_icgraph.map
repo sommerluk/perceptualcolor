@@ -1,17 +1,17 @@
 <map id="PerceptualColor::PolarPointF::radial" name="PerceptualColor::PolarPointF::radial">
-<area shape="rect" id="node1" title="Normalized radial." alt="" coords="601,371,729,409"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#aa447440e88450057faa8bfc5f31dfb46" title="Tests if image coordinates are within the diagram surface." alt="" coords="383,93,553,145"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_simple_color_wheel.html#acff6e0159f9cb6c41c0bbedb9f6da1c4" title="Generates an image of a color wheel." alt="" coords="399,256,537,295"/>
-<area shape="rect" id="node8" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="5,284,140,323"/>
-<area shape="rect" id="node11" href="$class_perceptual_color_1_1_simple_color_wheel.html#a8e6801f8291ff6214d93d56d0ec59e22" title="React on a mouse press event." alt="" coords="401,371,535,409"/>
-<area shape="rect" id="node12" href="$class_perceptual_color_1_1_full_color_description.html#aa9eb9b1edc15f59182dbad8add233291" title=" " alt="" coords="407,433,529,472"/>
-<area shape="rect" id="node14" href="$namespace_perceptual_color.html#a7636e0ac59a0d18af45252df7c81bca1" title="Adds QDebug() support for this data type." alt="" coords="402,496,534,521"/>
-<area shape="rect" id="node15" href="$class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6" title="React on a mouse wheel event." alt="" coords="401,545,535,584"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a16bcb9d0eee3536fe4f1034d2b9c3329" title="React on a mouse move event." alt="" coords="194,68,329,107"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad8957ee9c3a3ecb73841c00110ee3058" title="React on a mouse press event." alt="" coords="194,131,329,169"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7" title=" " alt="" coords="194,5,329,44"/>
-<area shape="rect" id="node7" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a7d8f858f515726d5e171b8e150c6ec2b" title="Refresh the wheel and associated data." alt="" coords="193,256,330,295"/>
-<area shape="rect" id="node9" href="$class_perceptual_color_1_1_simple_color_wheel.html#ac454a7cd994298cad632b343c2efe6ba" title="Refresh the wheel ribbon pixmap." alt="" coords="194,193,329,232"/>
-<area shape="rect" id="node10" href="$class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="5,193,140,232"/>
-<area shape="rect" id="node13" href="$class_perceptual_color_1_1_full_color_description.html#a7d27cb4b18ebaf0a3d0374201c2d283a" title="Constructor." alt="" coords="188,433,335,472"/>
+<area shape="rect" id="node1" title="Normalized radial." alt="" coords="864,384,1063,425"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#aa447440e88450057faa8bfc5f31dfb46" title="Tests if image coordinates are within the diagram surface." alt="" coords="548,97,816,153"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_simple_color_wheel.html#acff6e0159f9cb6c41c0bbedb9f6da1c4" title="Generates an image of a color wheel." alt="" coords="576,267,788,308"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad7709d55647d4a6842f34a5dd10cb2a9" title="Paint the widget." alt="" coords="6,296,217,337"/>
+<area shape="rect" id="node11" href="$class_perceptual_color_1_1_simple_color_wheel.html#a8e6801f8291ff6214d93d56d0ec59e22" title="React on a mouse press event." alt="" coords="576,384,788,425"/>
+<area shape="rect" id="node12" href="$class_perceptual_color_1_1_full_color_description.html#aa9eb9b1edc15f59182dbad8add233291" title=" " alt="" coords="587,449,777,491"/>
+<area shape="rect" id="node14" href="$namespace_perceptual_color.html#a7636e0ac59a0d18af45252df7c81bca1" title="Adds QDebug() support for this data type." alt="" coords="577,515,787,542"/>
+<area shape="rect" id="node15" href="$class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6" title="React on a mouse wheel event." alt="" coords="576,567,788,608"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a16bcb9d0eee3536fe4f1034d2b9c3329" title="React on a mouse move event." alt="" coords="277,71,488,112"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#ad8957ee9c3a3ecb73841c00110ee3058" title="React on a mouse press event." alt="" coords="277,136,488,177"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7" title=" " alt="" coords="277,5,488,47"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a7d8f858f515726d5e171b8e150c6ec2b" title="Refresh the wheel and associated data." alt="" coords="277,267,489,308"/>
+<area shape="rect" id="node9" href="$class_perceptual_color_1_1_simple_color_wheel.html#ac454a7cd994298cad632b343c2efe6ba" title="Refresh the wheel ribbon pixmap." alt="" coords="277,201,489,243"/>
+<area shape="rect" id="node10" href="$class_perceptual_color_1_1_simple_color_wheel.html#acec7e14aa3949bb3a1afd03a9d9cc15b" title="Paint the widget." alt="" coords="5,201,217,243"/>
+<area shape="rect" id="node13" href="$class_perceptual_color_1_1_full_color_description.html#a7d27cb4b18ebaf0a3d0374201c2d283a" title="Constructor." alt="" coords="265,449,500,491"/>
 </map>

@@ -1,4 +1,4 @@
 <map id="PerceptualColor::ChromaHueDiagram::areImageCoordinatesWithinDiagramSurface" name="PerceptualColor::ChromaHueDiagram::areImageCoordinatesWithinDiagramSurface">
-<area shape="rect" id="node1" title="Tests if image coordinates are within the diagram surface." alt="" coords="5,5,176,57"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="224,12,352,51"/>
+<area shape="rect" id="node1" title="Tests if image coordinates are within the diagram surface." alt="" coords="5,5,273,61"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="321,13,520,54"/>
 </map>

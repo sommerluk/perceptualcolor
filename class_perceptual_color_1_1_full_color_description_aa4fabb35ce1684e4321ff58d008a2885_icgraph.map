@@ -1,9 +1,9 @@
 <map id="PerceptualColor::FullColorDescription::alpha" name="PerceptualColor::FullColorDescription::alpha">
-<area shape="rect" id="node1" title=" " alt="" coords="565,96,687,135"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_full_color_description.html#aa2dcf30047c54b1c4acb8a1da5dacabf" title="Constructor." alt="" coords="371,5,517,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_gradient_selector.html#a50318272b416bf157164a8c99daa79fc" title=" " alt="" coords="379,68,509,107"/>
-<area shape="rect" id="node6" href="$namespace_perceptual_color.html#a620b7112ca52bb01e49162724d26887f" title="Adds QDebug() support for this data type." alt="" coords="378,131,510,156"/>
-<area shape="rect" id="node7" href="$class_perceptual_color_1_1_full_color_description.html#aba8dbc8e5d45bf610d191157be0c309d" title=" " alt="" coords="383,180,505,219"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_gradient_selector.html#a82a87ec1701c4db18f821c3b35026e90" title=" " alt="" coords="176,68,323,107"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_gradient_selector.html#a749286260e19cc0c9ddd93c431c410da" title=" " alt="" coords="5,68,128,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="799,100,989,141"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_full_color_description.html#aa2dcf30047c54b1c4acb8a1da5dacabf" title="Constructor." alt="" coords="516,5,751,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_gradient_selector.html#a50318272b416bf157164a8c99daa79fc" title=" " alt="" coords="533,71,734,112"/>
+<area shape="rect" id="node6" href="$namespace_perceptual_color.html#a620b7112ca52bb01e49162724d26887f" title="Adds QDebug() support for this data type." alt="" coords="528,137,739,163"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_full_color_description.html#aba8dbc8e5d45bf610d191157be0c309d" title=" " alt="" coords="538,188,729,229"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_gradient_selector.html#a82a87ec1701c4db18f821c3b35026e90" title=" " alt="" coords="243,71,468,112"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_gradient_selector.html#a749286260e19cc0c9ddd93c431c410da" title=" " alt="" coords="5,71,195,112"/>
 </map>

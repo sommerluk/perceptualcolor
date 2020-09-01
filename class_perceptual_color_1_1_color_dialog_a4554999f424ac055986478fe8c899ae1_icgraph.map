@@ -1,5 +1,5 @@
 <map id="PerceptualColor::ColorDialog::readRgbHexValues" name="PerceptualColor::ColorDialog::readRgbHexValues">
-<area shape="rect" id="node1" title="Reads the hexadecimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="368,5,501,44"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="187,5,320,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,5,139,44"/>
+<area shape="rect" id="node1" title="Reads the hexadecimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="520,5,729,47"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="263,5,472,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,5,215,47"/>
 </map>

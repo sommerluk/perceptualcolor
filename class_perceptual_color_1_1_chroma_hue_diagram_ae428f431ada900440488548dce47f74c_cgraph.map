@@ -1,4 +1,4 @@
 <map id="PerceptualColor::ChromaHueDiagram::generateDiagramImage3" name="PerceptualColor::ChromaHueDiagram::generateDiagramImage3">
-<area shape="rect" id="node1" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="5,5,167,44"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="215,5,337,44"/>
+<area shape="rect" id="node1" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="5,5,255,47"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="303,5,495,47"/>
 </map>

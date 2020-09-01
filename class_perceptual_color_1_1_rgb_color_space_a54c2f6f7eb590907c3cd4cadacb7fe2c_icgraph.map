@@ -1,4 +1,4 @@
 <map id="PerceptualColor::RgbColorSpace::getInformationFromProfile" name="PerceptualColor::RgbColorSpace::getInformationFromProfile">
-<area shape="rect" id="node1" title="Get information from an ICC profile via LittleCMS." alt="" coords="176,5,331,44"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#a013f1458308475d288bd260a28a75e10" title="Default constructor." alt="" coords="5,5,128,44"/>
+<area shape="rect" id="node1" title="Get information from an ICC profile via LittleCMS." alt="" coords="245,5,485,47"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#a013f1458308475d288bd260a28a75e10" title="Default constructor." alt="" coords="5,5,197,47"/>
 </map>

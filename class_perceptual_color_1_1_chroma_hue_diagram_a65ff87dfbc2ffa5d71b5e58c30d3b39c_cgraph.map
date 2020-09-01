@@ -1,8 +1,8 @@
 <map id="PerceptualColor::ChromaHueDiagram::setColorFromImageCoordinates" name="PerceptualColor::ChromaHueDiagram::setColorFromImageCoordinates">
-<area shape="rect" id="node1" title="Sets the color property corresponding to given widget coordinates." alt="" coords="5,100,191,139"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a82bab0738efff92bf357584527f85b65" title=" " alt="" coords="239,5,410,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a3a62b8d0b33df74dacd6150865c57382" title=" " alt="" coords="239,68,411,107"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a443db20bc2c25119febcd61ca9299d21" title="Setter for the color() property." alt="" coords="257,131,392,169"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="459,159,580,197"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5" title=" " alt="" coords="459,68,580,107"/>
+<area shape="rect" id="node1" title="Sets the color property corresponding to given widget coordinates." alt="" coords="5,104,297,145"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a82bab0738efff92bf357584527f85b65" title=" " alt="" coords="347,5,615,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a3a62b8d0b33df74dacd6150865c57382" title=" " alt="" coords="345,71,617,112"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a443db20bc2c25119febcd61ca9299d21" title="Setter for the color() property." alt="" coords="376,136,587,177"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="665,165,856,207"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_full_color_description.html#a26e4ea239adaeeb9237e9655b1cab9e5" title=" " alt="" coords="665,71,856,112"/>
 </map>

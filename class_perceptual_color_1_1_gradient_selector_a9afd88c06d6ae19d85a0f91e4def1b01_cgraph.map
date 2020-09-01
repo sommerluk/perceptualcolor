@@ -1,7 +1,7 @@
 <map id="PerceptualColor::GradientSelector::GradientSelector" name="PerceptualColor::GradientSelector::GradientSelector">
-<area shape="rect" id="node1" title=" " alt="" coords="5,68,129,107"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_gradient_selector.html#a4a19e9fef9d31d5e028ff7eeb783d1be" title=" " alt="" coords="177,68,300,107"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_gradient_selector.html#aabfd1c82565fb7c491e3bf1735beca11" title=" " alt="" coords="348,5,471,44"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_gradient_selector.html#af7d0fa1b1ddc7bad5124f66033fd65db" title=" " alt="" coords="348,68,471,107"/>
-<area shape="rect" id="node5" href="$namespace_perceptual_color_1_1_helper.html#a5e5b05b338fc63c8d9a591b1be979ec4" title="Background for semi&#45;transparent colors." alt="" coords="348,131,471,169"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,71,197,112"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_gradient_selector.html#a4a19e9fef9d31d5e028ff7eeb783d1be" title=" " alt="" coords="245,71,435,112"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_gradient_selector.html#aabfd1c82565fb7c491e3bf1735beca11" title=" " alt="" coords="484,5,673,47"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_gradient_selector.html#af7d0fa1b1ddc7bad5124f66033fd65db" title=" " alt="" coords="484,71,673,112"/>
+<area shape="rect" id="node5" href="$namespace_perceptual_color_1_1_helper.html#a5e5b05b338fc63c8d9a591b1be979ec4" title="Background for semi&#45;transparent colors." alt="" coords="483,136,675,177"/>
 </map>

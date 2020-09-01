@@ -1,5 +1,0 @@
-<map id="PerceptualColor::ChromaLightnessDiagram::resetMarkerThickness" name="PerceptualColor::ChromaLightnessDiagram::resetMarkerThickness">
-<area shape="rect" id="node1" title="Reset the markerThickness() property." alt="" coords="5,5,161,44"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a4674e085c634b0b10bf07bae379255ee" title="Setter for the markerThickness() property." alt="" coords="209,5,365,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a8b311dabc050709f083ff5ca4e2bc6a4" title="Updates the border() property." alt="" coords="413,5,569,44"/>
-</map>

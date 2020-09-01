@@ -1,9 +1,9 @@
 <map id="PerceptualColor::ChromaLightnessDiagram::fromImageCoordinatesToChromaLightness" name="PerceptualColor::ChromaLightnessDiagram::fromImageCoordinatesToChromaLightness">
-<area shape="rect" id="node1" title=" " alt="" coords="5,61,197,113"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84" title="Refresh the diagram and associated data." alt="" coords="245,68,401,107"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ae0395993434db2cd0d74b146fed6621c" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="449,36,605,75"/>
-<area shape="rect" id="node7" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="467,99,588,137"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="656,5,779,44"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="653,68,781,107"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="829,68,957,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,63,307,119"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#a7d48f62249ffee09f55edfd3c127eb84" title="Refresh the diagram and associated data." alt="" coords="355,71,601,112"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html#ae0395993434db2cd0d74b146fed6621c" title="Generates an image of a chroma&#45;lightness diagram." alt="" coords="649,37,896,79"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="677,103,868,144"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="947,5,1139,47"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#a9eefd08d3a5ad536232292380f958804" title="Normalizes an angle." alt="" coords="944,71,1143,112"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="1191,71,1389,112"/>
 </map>

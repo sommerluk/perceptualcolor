@@ -1,6 +1,6 @@
 <map id="PerceptualColor::ColorDialog::readHlcNumericValues" name="PerceptualColor::ColorDialog::readHlcNumericValues">
-<area shape="rect" id="node1" title="Reads the HLC numbers in the dialog and updates the dialog accordingly." alt="" coords="549,35,683,73"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a64f6d0e30a627458ccb7bbf4a77ad42b" title="React on focus changes." alt="" coords="368,5,501,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="187,35,320,73"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,35,139,73"/>
+<area shape="rect" id="node1" title="Reads the HLC numbers in the dialog and updates the dialog accordingly." alt="" coords="777,35,987,76"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a64f6d0e30a627458ccb7bbf4a77ad42b" title="React on focus changes." alt="" coords="520,5,729,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="263,35,472,76"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,35,215,76"/>
 </map>

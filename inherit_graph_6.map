@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,44,59,69"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_key_press_eater.html" title=" " alt="" coords="107,5,229,44"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="107,68,229,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,46,80,73"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_key_press_eater.html" title=" " alt="" coords="128,5,320,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="128,71,320,112"/>
 </map>

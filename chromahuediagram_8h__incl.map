@@ -1,14 +1,14 @@
 <map id="include/PerceptualColor/chromahuediagram.h" name="include/PerceptualColor/chromahuediagram.h">
-<area shape="rect" id="node1" title=" " alt="" coords="149,5,265,44"/>
-<area shape="rect" id="node2" title=" " alt="" coords="51,312,105,337"/>
-<area shape="rect" id="node3" href="$circulardiagram_8h.html" title=" " alt="" coords="36,92,192,117"/>
-<area shape="rect" id="node6" href="$fullcolordescription_8h.html" title=" " alt="" coords="216,92,385,117"/>
-<area shape="rect" id="node10" href="$rgbcolorspace_8h.html" title=" " alt="" coords="349,165,500,191"/>
-<area shape="rect" id="node4" href="$abstractdiagram_8h.html" title=" " alt="" coords="35,165,195,191"/>
-<area shape="rect" id="node5" title=" " alt="" coords="87,239,143,264"/>
-<area shape="rect" id="node7" href="$helper_8h.html" title=" " alt="" coords="179,239,299,264"/>
-<area shape="rect" id="node12" title=" " alt="" coords="271,165,325,191"/>
-<area shape="rect" id="node8" title=" " alt="" coords="202,312,277,337"/>
-<area shape="rect" id="node9" title=" " alt="" coords="313,312,365,337"/>
-<area shape="rect" id="node11" title=" " alt="" coords="398,239,451,264"/>
+<area shape="rect" id="node1" title=" " alt="" coords="207,5,383,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="90,319,163,345"/>
+<area shape="rect" id="node3" href="$circulardiagram_8h.html" title=" " alt="" coords="35,95,277,121"/>
+<area shape="rect" id="node6" href="$fullcolordescription_8h.html" title=" " alt="" coords="301,95,568,121"/>
+<area shape="rect" id="node10" href="$rgbcolorspace_8h.html" title=" " alt="" coords="489,169,721,196"/>
+<area shape="rect" id="node4" href="$abstractdiagram_8h.html" title=" " alt="" coords="35,169,283,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="119,244,198,271"/>
+<area shape="rect" id="node7" href="$helper_8h.html" title=" " alt="" coords="272,244,453,271"/>
+<area shape="rect" id="node12" title=" " alt="" coords="391,169,465,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="307,319,418,345"/>
+<area shape="rect" id="node9" title=" " alt="" coords="461,319,534,345"/>
+<area shape="rect" id="node11" title=" " alt="" coords="568,244,643,271"/>
 </map>
