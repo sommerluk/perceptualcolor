@@ -283,7 +283,8 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     );
     paintBuffer.fill(Qt::transparent);
     paintBuffer.setDevicePixelRatio(devicePixelRatioF());
-paintBuffer.fill(Qt::white);
+
+paintBuffer.fill(Qt::white); // TODO Remove this line!
     
     // Other initializations
     QPainter painter(&paintBuffer);
