@@ -56,10 +56,10 @@ namespace Helper {
     QImage transparencyBackground()
     {
         // The width and height of 12 px per square might be a good choise
-        // because 12 is a multiple of 2, 3 and 4, which might make scaling
-        // with better quality easier. But 12 px is also quite big. So we
-        // go on with a smaller square size.
-        constexpr int squareSize = 10;
+        // because 12 is a multiple of 2, 3 and 4, and 12 px can also be
+        // divided twice by 2 and is still an integer. This might make scaling
+        // with better quality easier. But 12 px is also quite big.
+        constexpr int squareSize = 12;
         constexpr int colorValueOne = 210;
         constexpr int colorValueTwo = 240;
         QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);

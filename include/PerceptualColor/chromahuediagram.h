@@ -79,6 +79,17 @@ namespace PerceptualColor {
  * 
  * @todo Automatically scale the thickness of the wheel (and maybe even the
  * marker) with varying widget size?
+ * 
+ * @todo <a href="https://doc.qt.io/qt-5/qpainter.html#performance">Qt’s
+ * documentation about <tt>QImage::Format</tt></a> says: <em> For optimal
+ * performance only use the format types QImage::Format_ARGB32_Premultiplied,
+ * QImage::Format_RGB32 or QImage::Format_RGB16. Any other format, including
+ * QImage::Format_ARGB32, has significantly worse performance.</em> Therefore,
+ * this library should switch to Format_ARGB32_Premultiplied as default
+ * format, and the Continious Integration Script should catch any
+ * non-recommended QImage::Format (or at the very least
+ * QImage::Format_ARGB32).
+        
  * @todo Provide RESET functions for all properties around the library? */
 class ChromaHueDiagram : public CircularDiagram
 {
@@ -122,7 +133,6 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void paintEvent(QPaintEvent* event) override;
-    virtual void paintEventOld(QPaintEvent* event);
     virtual void resizeEvent(QResizeEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
 
@@ -152,7 +162,7 @@ private:
     /** @brief Position of the center of the diagram coordinate system
      * 
      * This value is measured in widget coordinates. */
-    int m_diagramOffset = 0;
+    qreal m_diagramOffset = 0;
     /** @brief Diameter of the widget.
      * 
      * This is different from <tt>size()</tt>. It is the maximum possible
@@ -191,7 +201,8 @@ private:
         const int imageSize,
         const qreal maxChroma,
         const qreal lightness,
-        const int border
+        const qreal border,
+        const QColor backgroundColor
     );
     static QImage generateDiagramImage2(
         const RgbColorSpace *colorSpace,
