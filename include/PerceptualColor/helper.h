@@ -73,9 +73,9 @@ static_assert(
  *   lightness)
  * 
  * The library depends on (and therefore you has to link
- * against) <a href="https://www.qt.io/">Qt</a> 5 (only the modules
- * Qt Core, Qt Gui and Qt Widgets are necessary) and
- * <a href="http://www.littlecms.com/">LittleCMS 2</a>.
+ * against) <a href="https://www.qt.io/">Qt</a> 5.6 or higher (only the
+ * modules Qt Core, Qt Gui and Qt Widgets are necessary)
+ * and <a href="http://www.littlecms.com/">LittleCMS 2</a>.
  * 
  * The library uses in general @c int for integer values, because @c QSize()
  * and @c QPoint() also do. As the library relies heavily on the usage of
@@ -87,7 +87,12 @@ static_assert(
  * errors.
  * 
  * The source code of the library is in UTF8. A static_assert within the
- * header @ref helper.h makes sure your compiler actually treats it as UTF8. */
+ * header @ref helper.h makes sure your compiler actually treats it as UTF8.
+ * 
+ * @todo Is Qt 5.6 actually enough? (5.6 introduces
+ * QPaintDevice::devicePixelRatioF() which we use). Even if so, wouldn’t it
+ * be better to require the last LTS release (5.15), just to be compatible if
+ * in the future we depend on this? */
 
 /** @brief The namespace of this library.
  * 
@@ -109,6 +114,15 @@ static_assert(
  * best would be that our library uses exclusively <em>thread-save</em>
  * APIs of LittleCMS.
  * @todo Qt Designer support for the widgets
+ * @todo It might be useful to support for all widgets grayed out appearance
+ * when they are disabled. Just fade out, maybe with some transparency, and
+ * let colors still be visible, would be a bad idea: It would be highly
+ * confusing seeing colors, but colors that are wrong. So everything would
+ * have to be gray. For @ref ColorPatch and @ref GradientSelector this could
+ * be simply the default background, similir to grayed out spinboxes. And for
+ * the diagram widgets, only the shape would stay visible, with uniform
+ * standard gray colors coming from <tt>QStyle</tt>. The markers might not
+ * even be displayed at all.
  * @todo QPainter: Quote from documentation: For optimal performance only use
  * the format types @c QImage::Format_ARGB32_Premultiplied,
  * @c QImage::Format_RGB32 or @c QImage::Format_RGB16. Any other format,
@@ -243,6 +257,12 @@ namespace Helper {
          *  @sa @ref defaultChroma
          *  @sa @ref maxSrgbChroma */
         static constexpr qreal versatileSrgbChroma = 32;
+        /** @brief Neutral gray color as Lab value.
+         * 
+         * Neutral gray is a good choise for the background, as it is equally
+         * distant from black and white, and also quite distant from any
+         * saturated color. */
+        static constexpr cmsCIELCh neutralGray {50, 0, 0};
     };
 
     qreal standardWheelSteps(QWheelEvent *event);

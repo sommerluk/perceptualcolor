@@ -32,30 +32,34 @@ class TestChromaHueDiagram : public QObject
 {
     Q_OBJECT
 
+public:
+    TestChromaHueDiagram(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private:
     PerceptualColor::RgbColorSpace m_rgbColorSpace;
 
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first testfunction is executed
-    };
+    }
 
     void cleanupTestCase() {
         // Called after the last testfunction was executed
-    };
+    }
 
     void init() {
         // Called before each testfunction is executed
-    };
+    }
 
     void cleanup() {
         // Called after every testfunction
-    };
+    }
 
     void testConstructor() {
         PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
         myDiagram.show();
-    };
+    }
 };
 
 QTEST_MAIN(TestChromaHueDiagram)

@@ -28,21 +28,24 @@
 #include "PerceptualColor/colordialog.h"
 
 class helperClass : public QWidget {
+Q_OBJECT
 void testSnippet05() {
-// Do not actually test the snippet, because it would include user interaction
-return;
 //! [ColorDialog Open]
 PerceptualColor::ColorDialog *m_dialog = new PerceptualColor::ColorDialog;
 m_dialog->open(this, SLOT(mySlot(QColor)));
 //! [ColorDialog Open]
 delete m_dialog;
-};
+}
 };
 
 
 class TestColorDialog : public QObject
 {
     Q_OBJECT
+
+public:
+    TestColorDialog(QObject *parent = nullptr) : QObject(parent) {
+    }
 
 private:
     QPointer<PerceptualColor::ColorDialog> m_perceptualDialog;
@@ -51,6 +54,25 @@ private:
     QPointer<QColorDialog> m_qDialog2;
     QColor m_color;
 
+
+void testSnippet01() {
+//! [ColorDialog Get color with alpha channel]
+QColor myColor = PerceptualColor::ColorDialog::getColor(
+    Qt::green,          // current color at widget startup
+    nullptr,            // parent widget (or nullptr for no parent)
+    tr("Window title"), // window title (or an empty string for default title)
+    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
+);
+//! [ColorDialog Get color with alpha channel]
+Q_UNUSED(myColor);
+}
+
+void testSnippet04() {
+//! [ColorDialog Get color]
+QColor myColor = PerceptualColor::ColorDialog::getColor();
+//! [ColorDialog Get color]
+Q_UNUSED(myColor);
+}
 
     static void voidMessageHandler(
         QtMsgType,
@@ -121,87 +143,87 @@ private:
         QTest::newRow("invalid") << QColor();
 
         // do not supress warning for generating invalid QColor anymore
-        qInstallMessageHandler(0);
+        qInstallMessageHandler(nullptr);
     }
 
     void helperCompareDialog(
-        PerceptualColor::ColorDialog *m_perceptualDialog,
-        QColorDialog *m_qDialog
+        PerceptualColor::ColorDialog *perceptualDialog,
+        QColorDialog *qColorDialog
     ) {
-        // Compare the state of m_perceptualDialog (actual) to m_qDialog (expected)
+        // Compare the state of perceptualDialog (actual) to qColorDialog (expected)
         QCOMPARE(
-            m_perceptualDialog->selectedColor().name(),
-            m_qDialog->selectedColor().name()
+            perceptualDialog->selectedColor().name(),
+            qColorDialog->selectedColor().name()
         );
         QCOMPARE(
-            m_perceptualDialog->selectedColor().alpha(),
-            m_qDialog->selectedColor().alpha()
+            perceptualDialog->selectedColor().alpha(),
+            qColorDialog->selectedColor().alpha()
         );
         QCOMPARE(
-            m_perceptualDialog->selectedColor().spec(),
-            m_qDialog->selectedColor().spec()
+            perceptualDialog->selectedColor().spec(),
+            qColorDialog->selectedColor().spec()
         );
         QCOMPARE(
-            m_perceptualDialog->currentColor().name(),
-            m_qDialog->currentColor().name()
+            perceptualDialog->currentColor().name(),
+            qColorDialog->currentColor().name()
         );
         QCOMPARE(
-            m_perceptualDialog->currentColor().alpha(),
-            m_qDialog->currentColor().alpha()
+            perceptualDialog->currentColor().alpha(),
+            qColorDialog->currentColor().alpha()
         );
         QCOMPARE(
-            m_perceptualDialog->currentColor().spec(),
-            m_qDialog->currentColor().spec()
+            perceptualDialog->currentColor().spec(),
+            qColorDialog->currentColor().spec()
         );
         QCOMPARE(
-            m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons),
-            m_qDialog->testOption(QColorDialog::ColorDialogOption::NoButtons)
+            perceptualDialog->testOption(QColorDialog::ColorDialogOption::NoButtons),
+            qColorDialog->testOption(QColorDialog::ColorDialogOption::NoButtons)
         );
         QCOMPARE(
-            m_perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel),
-            m_qDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel)
+            perceptualDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel),
+            qColorDialog->testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel)
         );
         QCOMPARE(
-            m_perceptualDialog->options().testFlag(QColorDialog::ColorDialogOption::NoButtons),
-            m_qDialog->options().testFlag(QColorDialog::ColorDialogOption::NoButtons)
+            perceptualDialog->options().testFlag(QColorDialog::ColorDialogOption::NoButtons),
+            qColorDialog->options().testFlag(QColorDialog::ColorDialogOption::NoButtons)
         );
         QCOMPARE(
-            m_perceptualDialog->options().testFlag(QColorDialog::ColorDialogOption::ShowAlphaChannel),
-            m_qDialog->options().testFlag(QColorDialog::ColorDialogOption::ShowAlphaChannel)
+            perceptualDialog->options().testFlag(QColorDialog::ColorDialogOption::ShowAlphaChannel),
+            qColorDialog->options().testFlag(QColorDialog::ColorDialogOption::ShowAlphaChannel)
         );
         QCOMPARE(
-            m_perceptualDialog->isVisible(),
-            m_qDialog->isVisible()
+            perceptualDialog->isVisible(),
+            qColorDialog->isVisible()
         );
         QCOMPARE(
-            m_perceptualDialog->isModal(),
-            m_qDialog->isModal()
+            perceptualDialog->isModal(),
+            qColorDialog->isModal()
         );
         QCOMPARE(
-            m_perceptualDialog->result(),
-            m_qDialog->result()
+            perceptualDialog->result(),
+            qColorDialog->result()
         );
         QCOMPARE(
-            m_perceptualDialog->parent(),
-            m_qDialog->parent()
+            perceptualDialog->parent(),
+            qColorDialog->parent()
         );
         QCOMPARE(
-            m_perceptualDialog->parentWidget(),
-            m_qDialog->parentWidget()
+            perceptualDialog->parentWidget(),
+            qColorDialog->parentWidget()
         );
     }
 
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first testfunction is executed
-    };
+    }
     void cleanupTestCase() {
         // Called after the last testfunction was executed
-    };
+    }
 
     void init() {
         // Called before each testfunction is executed
-    };
+    }
 
     void cleanup() {
         // Called after every testfunction
@@ -217,7 +239,7 @@ private Q_SLOTS:
         if (m_qDialog2) {
             delete m_qDialog2;
         }
-    };
+    }
 
     void testConstructorQWidget() {
         // Test the constructor ColorDialog(QWidget * parent = nullptr)
@@ -298,20 +320,40 @@ private Q_SLOTS:
         QTest::addColumn<bool>("showAlphaChannel");
         QTest::addColumn<bool>("noButtons");
 
-        QList<QPair<QString, QColor>> colorList;
+        QVector<QPair<QString, QColor>> colorList;
 
-        colorList.append(QPair<QString, QColor>("redOpaque", QColor(255, 0, 0)));
-        colorList.append(QPair<QString, QColor>("greenHalf", QColor(0, 255, 0, 128)));
-        colorList.append(QPair<QString, QColor>("greenTransparent", QColor(255, 0, 255, 0)));
-        colorList.append(QPair<QString, QColor>("invalid", QColor()));
+        colorList.append(
+            QPair<QString, QColor>(
+                QStringLiteral("redOpaque"),
+                QColor(255, 0, 0)
+            )
+        );
+        colorList.append(
+            QPair<QString, QColor>(
+                QStringLiteral("greenHalf"),
+                QColor(0, 255, 0, 128)
+            )
+        );
+        colorList.append(
+            QPair<QString, QColor>(
+                QStringLiteral("greenTransparent"),
+                QColor(255, 0, 255, 0)
+            )
+        );
+        colorList.append(
+            QPair<QString, QColor>(
+                QStringLiteral("invalid"),
+                QColor()
+            )
+        );
 
         for (int i = 0; i < colorList.size(); ++i) {
             for (int j = 0; j < colorList.size(); ++j) {
                 QTest::newRow(
                     (QString(colorList.at(i).first)
-                        + QString("/")
+                        + QStringLiteral("/")
                         + QString(colorList.at(j).first)
-                        + QString("/ShowAlphaChannel/NoButtons")
+                        + QStringLiteral("/ShowAlphaChannel/NoButtons")
                     ).toLatin1()
                 )
                     << colorList.at(i).second
@@ -320,9 +362,9 @@ private Q_SLOTS:
                     << true;
                 QTest::newRow(
                     (QString(colorList.at(i).first)
-                        + QString("/")
+                        + QStringLiteral("/")
                         + QString(colorList.at(j).first)
-                        + QString("/ShowAlphaChannel")
+                        + QStringLiteral("/ShowAlphaChannel")
                     ).toLatin1()
                 )
                     << colorList.at(i).second
@@ -331,9 +373,9 @@ private Q_SLOTS:
                     << false;
                 QTest::newRow(
                     (QString(colorList.at(i).first)
-                        + QString("/")
+                        + QStringLiteral("/")
                         + QString(colorList.at(j).first)
-                        + QString("/NoButtons")
+                        + QStringLiteral("/NoButtons")
                     ).toLatin1()
                 )
                     << colorList.at(i).second
@@ -342,9 +384,9 @@ private Q_SLOTS:
                     << true;
                 QTest::newRow(
                     (QString(colorList.at(i).first)
-                        + QString("/")
+                        + QStringLiteral("/")
                         + QString(colorList.at(j).first)
-                        + QString("")
+                        + QLatin1String()
                     ).toLatin1()
                 )
                     << colorList.at(i).second
@@ -400,7 +442,7 @@ private Q_SLOTS:
         QTest::keyClick(m_perceptualDialog, Qt::Key_Escape);
         QTest::keyClick(m_qDialog, Qt::Key_Escape);
         helperCompareDialog(m_perceptualDialog, m_qDialog);
-    };
+    }
 
     void testColorSelectedSignal() {
         m_perceptualDialog = new PerceptualColor::ColorDialog();
@@ -447,13 +489,13 @@ private Q_SLOTS:
         int referenceClassIndex = referenceClass.indexOfProperty(propertyName.toLatin1());
         QMetaProperty referenceClassProperty = referenceClass.property(referenceClassIndex);
         QString message;
-        message = QString("Test if property \"")
+        message = QStringLiteral("Test if property \"")
             + referenceClassProperty.name()
-            + "\" of class \""
+            + QStringLiteral("\" of class \"")
             + referenceClass.className()
-            + "\" is also available in \""
+            + QStringLiteral("\" is also available in \"")
             + testClass.className()
-            + "\".";
+            + QStringLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.toLatin1());
         QMetaProperty testClassProperty = testClass.property(testClassIndex);
         QCOMPARE(testClassProperty.hasNotifySignal(), referenceClassProperty.hasNotifySignal());
@@ -521,13 +563,13 @@ private Q_SLOTS:
         int testClassIndex = testClass.indexOfMethod(methodSignature);
         QMetaMethod referenceClassMethod = referenceClass.method(referenceClassIndex);
         QString message;
-        message = QString("Test if method \"")
+        message = QStringLiteral("Test if method \"")
             + referenceClassMethod.methodSignature()
-            + "\" of class \""
+            + QStringLiteral("\" of class \"")
             + referenceClass.className()
-            + "\" is also available in \""
+            + QStringLiteral("\" is also available in \"")
             + testClass.className()
-            + "\".";
+            + QStringLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.toLatin1());
         QMetaMethod testClassMethod = testClass.method(testClassIndex);
         QCOMPARE(testClassMethod.access(), referenceClassMethod.access());
@@ -548,11 +590,11 @@ private Q_SLOTS:
         QMetaObject testClass = PerceptualColor::ColorDialog::staticMetaObject;
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
         QString message;
-        message = QString("Test that \"")
+        message = QStringLiteral("Test that \"")
             + testClass.className()
-            + "\" inherits from \""
+            + QStringLiteral("\" inherits from \"")
             + referenceClass.className()
-            + "\"'s superclass.";
+            + QStringLiteral("\"'s superclass.");
         QVERIFY2(
             testClass.inherits(referenceClass.superClass()),
             message.toLatin1()
@@ -1247,7 +1289,7 @@ private Q_SLOTS:
             throw 0;
         }
         constexpr int myIndex = 1;
-        if (theTabWidget->tabText(myIndex) != "&Lightness first") {
+        if (theTabWidget->tabText(myIndex) != QStringLiteral("&Lightness first")) {
             throw 0;
         }
         theTabWidget->setCurrentIndex(myIndex);
@@ -1274,20 +1316,6 @@ private Q_SLOTS:
             m_qDialog->repaint();
         }
     }
-
-void testSnippet01() {
-// Do not actually test the snippet, because it would include user interaction
-return;
-//! [ColorDialog Get color with alpha channel]
-QColor myColor = PerceptualColor::ColorDialog::getColor(
-    Qt::green,      // current color at widget startup
-    nullptr,        // parent widget (or nullptr for no parent)
-    "Window title", // window title (or an empty string for default title)
-    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
-);
-//! [ColorDialog Get color with alpha channel]
-Q_UNUSED(myColor);
-}
 
 void testSnippet02() {
 //! [ColorDialog Set options with local enum]
@@ -1321,15 +1349,6 @@ QCOMPARE(
     false
 );
 delete myDialog;
-}
-
-void testSnippet04() {
-// Do not actually test the snippet, because it would include user interaction
-return;
-//! [ColorDialog Get color]
-QColor myColor = PerceptualColor::ColorDialog::getColor();
-//! [ColorDialog Get color]
-Q_UNUSED(myColor);
 }
 
 };

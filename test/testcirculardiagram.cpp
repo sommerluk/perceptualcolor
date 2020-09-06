@@ -32,27 +32,31 @@ class TestCircularDiagram : public QObject
 {
     Q_OBJECT
 
+public:
+    TestCircularDiagram(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first testfunction is executed
-    };
+    }
 
     void cleanupTestCase() {
         // Called after the last testfunction was executed
-    };
+    }
 
     void init() {
         // Called before each testfunction is executed
-    };
+    }
 
     void cleanup() {
         // Called after every testfunction
-    };
+    }
 
     void testHasHeighForWidth() {
         PerceptualColor::CircularDiagram myCircularDiagram;
         QCOMPARE(myCircularDiagram.hasHeightForWidth(), true);
-    };
+    }
 
     void testHeighForWidth() {
         PerceptualColor::CircularDiagram myCircularDiagram;
@@ -60,7 +64,23 @@ private Q_SLOTS:
         QCOMPARE(myCircularDiagram.heightForWidth(15), 15);
         QCOMPARE(myCircularDiagram.heightForWidth(100), 100);
         QCOMPARE(myCircularDiagram.heightForWidth(1000), 1000);
-    };
+    }
+
+    void testSizePolicy() {
+        PerceptualColor::CircularDiagram myCircularDiagram;
+        QCOMPARE(
+            myCircularDiagram.sizePolicy().horizontalPolicy(),
+            QSizePolicy::Expanding
+        );
+        QCOMPARE(
+            myCircularDiagram.sizePolicy().verticalPolicy(),
+            QSizePolicy::Expanding
+        );
+        QVERIFY2(
+            myCircularDiagram.sizePolicy().hasHeightForWidth(),
+            "Size policy should have hasHeightForWidth"
+        );
+    }
 };
 
 QTEST_MAIN(TestCircularDiagram)

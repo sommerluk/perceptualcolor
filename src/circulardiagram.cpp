@@ -40,6 +40,22 @@ namespace PerceptualColor {
 CircularDiagram::CircularDiagram(QWidget *parent)
 : AbstractDiagram(parent)
 {
+    // Set size policy
+    QSizePolicy temp = QSizePolicy(
+        QSizePolicy::Expanding,
+        QSizePolicy::Expanding
+    );
+    // Quote from Qt’s documantation for setWidthForHeight():
+    //     “It is not possible to have a layout with both height-for-width
+    //      and width-for-height constraints at the same time.“
+    // As we cannot have both, we choose height-for-width because this is
+    // the one that also exists directly in QWidget, so we can be
+    // consistent.
+    temp.setHeightForWidth(true);
+    setSizePolicy(temp);
+
+    // Set focus policy
+    setFocusPolicy(Qt::FocusPolicy::TabFocus);
 }
 
 /** @brief Indicates that the widget's preferred height depends on its width.
@@ -69,6 +85,22 @@ bool CircularDiagram::hasHeightForWidth() const
 int CircularDiagram::heightForWidth(int w) const
 {
     return w;
+}
+
+/** @brief The diameter of this circular widget, mesured in physical pixels.
+ * @returns The diameter of this circular widget, mesured in physical pixels.
+ * This is the maximum possible diameter for a circular-shaped widget, given
+ * the current @ref physicalPixelSize. */
+int CircularDiagram::physicalPixelWidgetDiameter() const
+{
+    int temp = qMin(
+        physicalPixelSize().width(),
+        physicalPixelSize().height()
+    );
+    if (temp < 0) {
+        temp = 0;
+    }
+    return temp;
 }
 
 }

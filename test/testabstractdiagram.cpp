@@ -32,23 +32,26 @@ class TestAbstractDiagram : public QObject
 {
     Q_OBJECT
 
+public:
+    TestAbstractDiagram(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first testfunction is executed
-    };
+    }
     void cleanupTestCase() {
         // Called after the last testfunction was executed
-    };
+    }
 
     void init() {
         // Called before each testfunction is executed
-    };
+    }
     void cleanup() {
         // Called after every testfunction
-    };
+    }
 
-    void testDef() {
-        // No public functions that would be available for a test.
+    void testBasic() {
         // Just test if instanciation does not crash:
         PerceptualColor::AbstractDiagram myDiagram;
         myDiagram.show();
@@ -56,7 +59,7 @@ private Q_SLOTS:
             myDiagram.isVisible(),
             "Test is diagram was shown correctly."
         );
-    };
+    }
 };
 
 QTEST_MAIN(TestAbstractDiagram)

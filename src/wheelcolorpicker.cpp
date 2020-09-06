@@ -44,7 +44,7 @@ WheelColorPicker::WheelColorPicker(RgbColorSpace *colorSpace, QWidget *parent) :
     resizeChildWidget();
     m_chromaLightnessDiagram->setHue(hue());
     m_chromaLightnessDiagram->show();
-    m_chromaLightnessDiagram->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+    m_chromaLightnessDiagram->setFocusPolicy(Qt::FocusPolicy::ClickFocus); // TODO Why not just inherit TabFocus? But apparently it works! Why?
     m_chromaLightnessDiagram->setFocusProxy(this);
     connect(
         this, &WheelColorPicker::hueChanged,
@@ -91,9 +91,15 @@ QSize WheelColorPicker::scaleRectangleToDiagonal(const QSize oldRectangle, const
     if (oldRectangle.isEmpty()) {
         return QSize();
     }
-    qreal ratioWidthPerHeight = static_cast<qreal>(oldRectangle.width()) / oldRectangle.height();
-    int newHeight = sqrt(pow(newDiagonal, 2) / (1 + pow(ratioWidthPerHeight, 2)));
-    int newWidth = newHeight * ratioWidthPerHeight;
+    qreal ratioWidthPerHeight =
+        static_cast<qreal>(oldRectangle.width()) / oldRectangle.height();
+    // static_cast<int> will round down. This is intentional.
+    int newHeight = static_cast<int>(
+        sqrt(
+            pow(newDiagonal, 2) / (1 + pow(ratioWidthPerHeight, 2))
+        )
+    );
+    int newWidth = static_cast<int>(newHeight * ratioWidthPerHeight);
     return QSize(newWidth, newHeight);
 }
 
@@ -133,7 +139,8 @@ void WheelColorPicker::resizeChildWidget()
         contentDiameter() - 2 * (wheelThickness() + border()),
         0
     );
-    // TODO Why is QSize(140, 100) a good choise? What gamuts exist? Up to where goes chroma there?
+    // TODO Why is QSize(140, 100) a good choise? What gamuts exist? Up to
+    // where goes chroma there?
     QSize newChromaLightnessDiagramSize = scaleRectangleToDiagonal(
         QSize(140, 100),
         diagonal
@@ -141,8 +148,9 @@ void WheelColorPicker::resizeChildWidget()
     m_chromaLightnessDiagram->resize(newChromaLightnessDiagramSize);
     qreal radius = static_cast<qreal>(contentDiameter()) / 2;
     m_chromaLightnessDiagram->move(
-        radius - newChromaLightnessDiagramSize.width() / 2,
-        radius - newChromaLightnessDiagramSize.height() / 2
+        // TODO Does qRound make sense here? Does it the right thing (pixelwise)?
+        qRound(radius - newChromaLightnessDiagramSize.width() / 2.0),
+        qRound(radius - newChromaLightnessDiagramSize.height() / 2.0)
     );
 }
 

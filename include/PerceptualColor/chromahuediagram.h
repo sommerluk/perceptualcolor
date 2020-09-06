@@ -35,30 +35,6 @@
 
 namespace PerceptualColor {
 
-// TODO Remove me!
-  class KeyPressEater : public QObject
-  {
-      Q_OBJECT
-  public:
-      KeyPressEater() = default;
-
-  protected:
-      bool eventFilter(QObject *obj, QEvent *event) override
-        {
-            if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::FocusIn) {
-//                 QFocusEvent *focusEvent = static_cast<QFocusEvent *>(event);
-//                 if (focusEvent->reason() == Qt::FocusReason::MouseFocusReason) {
-                    qDebug("Ate focus");
-                    event->accept();
-                    return true;
-//                 }
-            } else {
-                // standard event processing
-                return QObject::eventFilter(obj, event);
-            }
-        }
-  };
-
 /** @brief A widget for selecting chroma and hue in LCh color space
  * 
  * This widget displays the plan of chroma and hue
@@ -79,10 +55,15 @@ namespace PerceptualColor {
  * 
  * @note This widget <em>always</em> accepts focus by a mouse click within
  * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
- * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
- * value that accepts focus by mouse click, the focus will not only be
- * accepted for clicks within the actuel circle, but also for clicks
- * within the surrounding rectangle.
+ * property:
+ * - If you set the <tt>QWidget::focusPolicy</tt> property to a
+ *   value that does not accept focus by mouse click, the focus
+ *   will nevertheless be accepted for clicks within the actuel circle.
+ *   (This is the default behaviour.)
+ * - If you set the <tt>QWidget::focusPolicy</tt> property to a
+ *   value that accepts focus by mouse click, the focus will not only be
+ *   accepted for clicks within the actuel circle, but also for clicks
+ *   within the surrounding rectangle.
  * 
  * @todo Example code: How to create the widget at a given
  * lightness.
@@ -141,6 +122,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void paintEvent(QPaintEvent* event) override;
+    virtual void paintEventOld(QPaintEvent* event);
     virtual void resizeEvent(QResizeEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
 
@@ -149,10 +131,15 @@ private:
     Q_DISABLE_COPY(ChromaHueDiagram)
 
     // Member variables
-    /** TODO document me! 
-     * @sa @ref markerRadius
+    /** @brief The border around the round diagram.
+     * 
+     * Mesured in Device Independent Pixels: Pixels used by application
+     * (user space), subject to scaling by the operating system or Qt. 
+     * 
+     * The border is the space where the surrounding color wheel and, where
+     * applicable, the focus indicator is painted.
      * @sa @ref markerThickness */
-    static constexpr int border = 8 * markerThickness;
+    static constexpr int diagramBorder = 8 * markerThickness;
     /** @brief Internal storage of the @ref color() property */
     FullColorDescription m_color;
     /** Holds wether or not @ref m_diagramImage() is up-to-date.
@@ -166,8 +153,11 @@ private:
      * 
      * This value is measured in widget coordinates. */
     int m_diagramOffset = 0;
-    /** @brief Diameter of the diagram */
-    int m_diameter = 0;
+    /** @brief Diameter of the widget.
+     * 
+     * This is different from <tt>size()</tt>. It is the maximum possible
+     * diameter that is available within the current <tt>size()</tt>. */
+    int m_widgetDiameter = 0;
     /** @todo This should not be hard-coded sRGB. */
     qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
     /** @brief Holds if currently a mouse event is active or not.

@@ -42,7 +42,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
     // Create an ICC v4 profile object for the Lab color space.
     // NULL means: Default white point (D50)
     // TODO Does this make sense? sRGB white point is D65!
-    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(NULL);
+    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
     m_description = getInformationFromProfile(
@@ -338,7 +338,7 @@ QString RgbColorSpace::getInformationFromProfile(
         countryCode,
         // Do not actually provide the information,
         // just return the required buffer size:
-        NULL,
+        nullptr,
         // Do not actually provide the information,
         // just return the required buffer size:
         0
@@ -350,7 +350,7 @@ QString RgbColorSpace::getInformationFromProfile(
     // Allocate the buffer
     wchar_t *buffer = new wchar_t[bufferLength];
     // Initialize the buffer with NULL
-    for (int i = 0; i < bufferLength - 1; ++i) {
+    for (cmsUInt32Number i = 0; i < bufferLength - 1; ++i) {
         *(buffer + i) = 0;
     }
 

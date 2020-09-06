@@ -35,17 +35,25 @@
 
 namespace PerceptualColor {
 
-GradientSelector::GradientSelector(RgbColorSpace *colorSpace, QWidget *parent) : QWidget(parent)
+GradientSelector::GradientSelector(RgbColorSpace *colorSpace, QWidget *parent)
+: AbstractDiagram(parent)
 {
     initialize(colorSpace, Qt::Orientation::Vertical);
 }
 
-GradientSelector::GradientSelector(RgbColorSpace* colorSpace, Qt::Orientation orientation, QWidget* parent) : QWidget(parent)
+GradientSelector::GradientSelector(
+    RgbColorSpace* colorSpace,
+    Qt::Orientation orientation,
+    QWidget* parent
+) : AbstractDiagram(parent)
 {
     initialize(colorSpace, orientation);
 }
 
-void GradientSelector::initialize(RgbColorSpace* colorSpace, Qt::Orientation orientation)
+void GradientSelector::initialize(
+    RgbColorSpace* colorSpace,
+    Qt::Orientation orientation
+)
 {
     setFocusPolicy(Qt::StrongFocus);
     m_rgbColorSpace = colorSpace;
@@ -60,8 +68,18 @@ void GradientSelector::initialize(RgbColorSpace* colorSpace, Qt::Orientation ori
     two.C = 85;
     two.h = 300;
     setColors(
-        FullColorDescription(m_rgbColorSpace, one, FullColorDescription::outOfGamutBehaviour::preserve, 0),
-        FullColorDescription(m_rgbColorSpace, two, FullColorDescription::outOfGamutBehaviour::preserve, 1)
+        FullColorDescription(
+            m_rgbColorSpace,
+            one,
+            FullColorDescription::outOfGamutBehaviour::preserve,
+            0
+        ),
+        FullColorDescription(
+            m_rgbColorSpace,
+            two,
+            FullColorDescription::outOfGamutBehaviour::preserve,
+            1
+        )
     );
 }
 
@@ -81,7 +99,9 @@ QSize GradientSelector::minimumSizeHint() const
     return temp;
 }
 
-qreal GradientSelector::fromWindowCoordinatesToFraction(QPoint windowCoordinates)
+qreal GradientSelector::fromWindowCoordinatesToFraction(
+    QPoint windowCoordinates
+)
 {
     qreal temp;
     if (m_orientation == Qt::Orientation::Vertical) {
@@ -189,13 +209,14 @@ void GradientSelector::keyPressEvent(QKeyEvent* event)
         default:
             /* Quote from Qt documentation:
              * 
-             * If you reimplement this handler, it is very important that you call the base class
-             * implementation if you do not act upon the key.
+             *     “If you reimplement this handler, it is very important that
+             *      you call the base class implementation if you do not act
+             *      upon the key.
              * 
-             * The default implementation closes popup widgets if the user presses the key sequence
-             * for QKeySequence::Cancel (typically the Escape key). Otherwise the event is ignored,
-             * so that the widget's parent can interpret it.
-             */
+             *      The default implementation closes popup widgets if the
+             *      user presses the key sequence for QKeySequence::Cancel
+             *      (typically the Escape key). Otherwise the event is
+             *      ignored, so that the widget's parent can interpret it.“ */
             QWidget::keyPressEvent(event);
     }
 }
@@ -289,15 +310,15 @@ void GradientSelector::paintEvent(QPaintEvent* event)
         );
         painter.setPen(pen);
         painter.drawLine(
-            cursorPosition + arrowSize + 1,
+            qRound(cursorPosition + arrowSize + 1),
             0,
-            cursorPosition + arrowSize + 1,
+            qRound(cursorPosition + arrowSize + 1),
             m_gradientThickness
         );
         painter.drawLine(
-            cursorPosition - arrowSize,
+            qRound(cursorPosition - arrowSize),
             0,
-            cursorPosition - arrowSize,
+            qRound(cursorPosition - arrowSize),
             m_gradientThickness
         );
     }

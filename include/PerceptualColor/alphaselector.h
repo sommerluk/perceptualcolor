@@ -82,7 +82,7 @@ public:
         one,                    /**< From 0.00 to 1.00 */
         twoHundredAndFiftyFive  /**< From 0 to 255 */
     };
-    Q_ENUM(NumberFormat);
+    Q_ENUM(NumberFormat)
     AlphaSelector::NumberFormat representation() const;
     void registerAsBuddy(QLabel *label);
 

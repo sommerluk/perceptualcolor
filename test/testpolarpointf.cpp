@@ -31,20 +31,24 @@ class TestPolarPointF : public QObject
 {
     Q_OBJECT
 
+public:
+    TestPolarPointF(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first testfunction is executed
-    };
+    }
     void cleanupTestCase() {
         // Called after the last testfunction was executed
-    };
+    }
 
     void init() {
         // Called before each testfunction is executed
-    };
+    }
     void cleanup() {
         // Called after every testfunction
-    };
+    }
 
     void testConstructorRadialAngle() {
         PerceptualColor::PolarPointF temp01;

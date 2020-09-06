@@ -27,6 +27,7 @@
 #ifndef GRADIENTSELECTOR_H
 #define GRADIENTSELECTOR_H
 
+#include <PerceptualColor/abstractdiagram.h>
 #include <PerceptualColor/fullcolordescription.h>
 #include <PerceptualColor/rgbcolorspace.h>
 
@@ -53,7 +54,7 @@ namespace PerceptualColor {
  * in-gamut colors. Out-of-gamut colors are not rendered, so you might see
  * a hole in the gradient.
  */
-class GradientSelector : public QWidget
+class GradientSelector : public AbstractDiagram
 {
     Q_OBJECT
 
@@ -101,9 +102,9 @@ public:
     explicit GradientSelector(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
     explicit GradientSelector(RgbColorSpace *colorSpace, Qt::Orientation orientation, QWidget *parent = nullptr);
 
-    virtual QSize sizeHint() const;
+    virtual QSize sizeHint() const override;
 
-    virtual QSize minimumSizeHint() const;
+    virtual QSize minimumSizeHint() const override;
     Qt::Orientation	orientation() const;
     qreal fraction();
     qreal singleStep();
@@ -124,19 +125,13 @@ public Q_SLOTS:
 
 protected:
 
-    virtual void mousePressEvent(QMouseEvent* event);
-
-    virtual void mouseReleaseEvent(QMouseEvent* event);
-
-    virtual void mouseMoveEvent(QMouseEvent* event);
-
-    virtual void wheelEvent(QWheelEvent* event);
-
-    virtual void keyPressEvent(QKeyEvent* event);
-
-    virtual void paintEvent(QPaintEvent* event);
-
-    virtual void resizeEvent(QResizeEvent *event);
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void wheelEvent(QWheelEvent* event) override;
+    virtual void keyPressEvent(QKeyEvent* event) override;
+    virtual void paintEvent(QPaintEvent* event) override;
+    virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
     Q_DISABLE_COPY(GradientSelector)

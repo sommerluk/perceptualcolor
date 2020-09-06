@@ -75,6 +75,7 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     // Accept focus only by keyboard tabbing and not by mouse click
     // Focus by mouse click is handeled manually by mousePressEvent().
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
+    // Define the size policy of this widget.
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
@@ -277,10 +278,8 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
      * just a line at the bottom of the widget. That does not look good. An
      * alternative approach is that we paint ourself a focus indicator only
      * on the left of the diagram (which is the place of black/grey/white,
-     * so the won't be any problems with non-harmonic colors). We can
-     * get the color from the current style:
-     * QColor hightlightColor = palette().color(QPalette::Highlight);
-     * QBrush highlightBrush = palette().highlight();
+     * so the won't be any problems with non-harmonic colors).
+     * 
      * Then we have to design the line that we want to display. It is better to
      * do that ourself instead of relying on generic QStyle::PE_Frame or similar
      * solutions as their result seems to be quite unpredictible accross various
@@ -291,9 +290,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
      */
     if (hasFocus()) {
         pen.setWidth(markerThickness);
-        pen.setColor(
-            palette().color(QPalette::Highlight)
-        );
+        pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
         painter.drawLine(
             markerThickness / 2, // 0.5 is rounded down to 0.0
@@ -319,8 +316,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint imageCoordinates = currentImageCoordinates();
     pen.setWidth(markerThickness);
-    int markerBackgroundLightness = m_color.toLch().L; // range: 0..100
-    if (markerBackgroundLightness >= 50) {
+    if (m_color.toLch().L >= 50  /* range: 0..100 */) {
         pen.setColor(Qt::black);
     } else {
         pen.setColor(Qt::white);
@@ -762,7 +758,8 @@ QPoint ChromaLightnessDiagram::nearestNeighborSearch(
     const QPoint originalPoint,
     const QImage &image
 ) {
-    // test for special case: originalPoint itself is within the image and non-transparent
+    // Test for special case:
+    // OriginalPoint itself is within the image and non-transparent
     if (image.valid(originalPoint)) {
         if (image.pixelColor(originalPoint).alpha() == 255) {
             return originalPoint;
@@ -772,14 +769,18 @@ QPoint ChromaLightnessDiagram::nearestNeighborSearch(
     // No special case. So we have to actually perfor a nearest-neighbor-search.
     int x;
     int y;
-    int currentBestX;
-    int currentBestY;
+    int currentBestX = 0; // 0 is the fallback value
+    int currentBestY = 0; // 0 is the fallback value
     int currentBestDistanceSquare = std::numeric_limits<int>::max();
+    int x_distance;
+    int y_distance;
     int temp;
     for (x = 0; x < image.width(); x++) {
         for (y = 0; y < image.height(); y++) {
             if (image.pixelColor(x, y).alpha() == 255) {
-                temp = pow(originalPoint.x() - x, 2) + pow(originalPoint.y() - y, 2);
+                x_distance = originalPoint.x() - x;
+                y_distance = originalPoint.y() - y;
+                temp = x_distance * x_distance + y_distance * y_distance;
                 if (temp < currentBestDistanceSquare) {
                     currentBestX = x;
                     currentBestY = y;
@@ -788,11 +789,7 @@ QPoint ChromaLightnessDiagram::nearestNeighborSearch(
             }
         }
     }
-    if (currentBestDistanceSquare == std::numeric_limits<int>::max()) {
-        return QPoint(0, 0);
-    } else {
-        return QPoint(currentBestX, currentBestY);
-    }
+    return QPoint(currentBestX, currentBestY);
 }
 
 }

@@ -47,14 +47,6 @@ SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
     // Setup LittleCMS (must be first thing because other operations rely on working LittleCMS)
     m_rgbColorSpace = colorSpace;
 
-    // Initial default values
-    QSizePolicy temp = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    temp.setHeightForWidth(true); // Does this any real help?
-    setSizePolicy(temp);
-    // Accept focus only by keyboard tabbing and not by mouse click
-    // Focus by mouse click is handeled manually by mousePressEvent().
-    setFocusPolicy(Qt::TabFocus);
-
     // Simple initializations
     // We don't use the reset methods as they would update the image/pixmap
     // each time, and this could crash if done before everything is
@@ -334,13 +326,11 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     // Paint a focus indicator if the widget has the focus
     if (hasFocus()) {
         pen.setWidth(markerThickness);
-        pen.setColor(
-            palette().color(QPalette::Highlight)
-        );
+        pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
         painter.drawEllipse(
-            markerThickness / static_cast<qreal>(2),
-            markerThickness / static_cast<qreal>(2),
+            markerThickness / 2, // Integer division (rounding down)
+            markerThickness / 2, // Integer division (rounding down)
             contentDiameter() - markerThickness,
             contentDiameter() - markerThickness
         );
@@ -591,7 +581,7 @@ myTimer.start();
     qreal maximumRadial = center - border + overlap;
     for (x = 0; x <= maxExtension; ++x) {
         for (y = 0; y <= maxExtension; ++y) {
-            polarCoordinates = PolarPointF(QPoint(x - center, center - y));
+            polarCoordinates = PolarPointF(QPointF(x - center, center - y));
             if (Helper::inRange<qreal>(minimumRadial, polarCoordinates.radial(), maximumRadial)) {
                 // We are within the wheel
                 LCh.h = polarCoordinates.angleDegree();

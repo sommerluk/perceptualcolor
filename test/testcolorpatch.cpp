@@ -32,6 +32,10 @@ class TestColorPatch : public QObject
 {
     Q_OBJECT
 
+public:
+    TestColorPatch(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private:
 
     static void voidMessageHandler(
@@ -103,7 +107,7 @@ private:
         QTest::newRow("invalid") << QColor();
 
         // do not supress warning for generating invalid QColor anymore
-        qInstallMessageHandler(0);
+        qInstallMessageHandler(nullptr);
     }
     
     QColor m_color;
@@ -111,30 +115,29 @@ private:
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first testfunction is executed
-    };
+    }
     void cleanupTestCase() {
         // Called after the last testfunction was executed
-    };
+    }
 
     void init() {
         // Called before each testfunction is executed
-    };
+    }
     void cleanup() {
         // Called after every testfunction
-    };
+    }
 
     void testInitialazation() {
         PerceptualColor::ColorPatch thePatch;
         // Test initial value (an invalid color following the documentation)
         QCOMPARE(thePatch.color(), QColor());
-    };
+    }
 
     void testApplyColors() {
         PerceptualColor::ColorPatch thePatch;
         // Test initial value (an invalid color following the documentation)
         QCOMPARE(thePatch.color(), QColor());
-    };
-
+    }
 
     void testColorProperty_data() {
         helperProvideQColors();

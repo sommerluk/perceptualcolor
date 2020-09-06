@@ -270,7 +270,8 @@ public:
     typedef QColorDialog::ColorDialogOptions ColorDialogOptions;
     /** @brief Layout dimensions
      * 
-     * @sa @ref Q_ENUM(DialogLayoutDimensions) */
+     * This enum is declared to the meta-object system. This happens
+     * automatically. You do not need to make any manual calls. */
     enum class DialogLayoutDimensions {
         automatic,  /**< Decide automatically between @c collapsed and
                          @c expanded layout based on evaluating the screen
@@ -281,14 +282,7 @@ public:
         collapsed,  /**< Use the small, “collapsed“ layout of this dialog. */
         expanded    /**< Use the large, “expanded” layout of this dialog.  */
     };
-    /** @brief @ref DialogLayoutDimensions is declared to the
-     * meta-object system
-     * 
-     * This macro in the header makes sure that the enum
-     * @ref DialogLayoutDimensions is available to the meta-object
-     * system. This happens automatically. You do not need to make any
-     * manual calls. */
-    Q_ENUM(DialogLayoutDimensions);
+    Q_ENUM(DialogLayoutDimensions)
     explicit ColorDialog(QWidget *parent = nullptr);
     explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
     virtual ~ColorDialog() override;

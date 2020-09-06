@@ -33,6 +33,10 @@ class TestHelper : public QObject
 {
     Q_OBJECT
 
+public:
+    TestHelper(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private Q_SLOTS:
 
     void initTestCase() {
@@ -41,17 +45,17 @@ private Q_SLOTS:
 
     void cleanupTestCase() {
         // Called after the last testfunction was executed
-    };
+    }
 
     void init() {
         // Called before each testfunction is executed
-    };
+    }
     void cleanup() {
         // Called after every testfunction
-    };
+    }
 
     void testCmsRgb() {
-        cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(NULL);
+        cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
         cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
         cmsHTRANSFORM m_transformLabToRgbHandle = cmsCreateTransform(
             labProfileHandle,             // input profile handle
@@ -331,7 +335,7 @@ private Q_SLOTS:
     }
 
 void testSnippet01() {
-cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(NULL);
+cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
 cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
 cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(
     rgbProfileHandle,             // input profile handle

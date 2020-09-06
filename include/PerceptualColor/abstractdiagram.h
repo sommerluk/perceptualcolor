@@ -45,6 +45,8 @@ public:
 
 protected:
 
+    // constexpr
+    
     /** @brief The radius for circular markers.
      * 
      * Mesured in Device Independent Pixels: Pixels used by application (user
@@ -112,6 +114,10 @@ protected:
      * corresponds to QAbstractSlider, who’s page step is also 10  bigger than
      * its single step. */
     static constexpr qreal pageStepHue = 10 * singleStepHue;
+
+    // methods
+    QColor focusIndicatorColor() const;
+    QSize physicalPixelSize() const;
 
 private:
 

@@ -65,7 +65,7 @@ class WheelColorPicker : public SimpleColorWheel
 
 public:
     explicit WheelColorPicker(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
-    virtual ~WheelColorPicker() = default;
+    virtual ~WheelColorPicker() override = default;
     FullColorDescription currentColor();
     void setCurrentColor(const FullColorDescription &newCurrentColorRgb);
 

@@ -79,11 +79,10 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const Help
  */
 FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor color)
 {
-    if (!color.isValid()) {
-        m_valid = false;
-        return;
-    }
     switch (color.spec()) {
+        case QColor::Spec::Invalid:
+            m_valid = false;
+            return;
         case QColor::Spec::Hsv:
             m_hsvQColor = color;
             m_rgbQColor = color.toRgb();
@@ -92,6 +91,8 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor col
             m_rgbQColor = color;
             m_hsvQColor = color.toHsv();
             break;
+        case QColor::Spec::Cmyk:
+        case QColor::Spec::Hsl:
         default:
             m_rgbQColor = color.toRgb();
             m_hsvQColor = color.toHsv();

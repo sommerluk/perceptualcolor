@@ -62,7 +62,8 @@ static_assert(
         (static_cast<quint8>(*(("🖌")+2)) == 0x96) &&
         (static_cast<quint8>(*(("🖌")+3)) == 0x8C) &&
         (static_cast<quint8>(*(("🖌")+4)) == 0x00),
-    "Compiler must treat string litterals as UTF8. Example: gcc -fexec-charset=UTF-8"
+    "Compiler must treat string litterals as UTF8. "
+    "Example: gcc -fexec-charset=UTF-8"
 );
  */
 
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
     app.setApplicationName(
         QObject::tr(u8"Perceptual color picker")
     );
-//     app.setLayoutDirection(Qt::RightToLeft);
+    app.setLayoutDirection(Qt::RightToLeft);
 
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
@@ -88,7 +89,6 @@ int main(int argc, char *argv[])
         true
     );
     m_colorDialog.show();
-
     // Run
     return app.exec();
 }

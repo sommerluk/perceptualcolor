@@ -787,7 +787,7 @@ void ColorDialog::done(int result)
             m_receiverToBeDisconnected,
             m_memberToBeDisconnected
         );
-        m_receiverToBeDisconnected = 0;
+        m_receiverToBeDisconnected = nullptr;
     }
 }
 
@@ -854,8 +854,7 @@ void ColorDialog::applyLayoutDimensions()
             );
             break;
         default:
-            throw 0;
-            break;
+            throw;
     }
 
     if (collapsedLayout) {
