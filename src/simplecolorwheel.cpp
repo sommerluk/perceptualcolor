@@ -119,7 +119,7 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
         setHue(myPolarPoint.angleDegree());
     } else {
         // Make sure default behaviour like drag-window in KDE's Breeze widget style works
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -142,7 +142,7 @@ void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
         );
     } else {
         // Make sure default behaviour like drag-window in KDE's Breeze widget style works
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -161,7 +161,7 @@ void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
         );
     } else {
         // Make sure default behaviour like drag-window in KDE's Breeze widget style works
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -289,7 +289,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     //       the platform independent QImage as paint device; i.e. using QImage
     //       will ensure that the result has an identical pixel representation
     //       on any platform.”
-    QImage paintBuffer(size(), QImage::Format_ARGB32);
+    QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
 
@@ -566,7 +566,7 @@ myTimer.start();
     qreal center = maxExtension / static_cast<qreal>(2);
     QImage rawWheel = QImage(
         QSize(outerDiameter, outerDiameter),
-        QImage::Format_ARGB32
+        QImage::Format_ARGB32_Premultiplied
     );
     // Because there may be out-of-gamut colors for some hue (depending on the
     // given lightness and chroma value) which are drawn transparent, it is
@@ -601,7 +601,7 @@ myTimer.start();
     // construct our final QImage with transparent background
     QImage finalWheel = QImage(
         QSize(outerDiameter, outerDiameter),
-        QImage::Format_ARGB32
+        QImage::Format_ARGB32_Premultiplied
     );
     finalWheel.fill(Qt::transparent);
     

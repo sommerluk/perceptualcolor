@@ -39,50 +39,6 @@ namespace PerceptualColor {
 
 namespace Helper {
 
-    /** @brief Background for semi-transparent colors.
-     * 
-     * When showing a semi-transparent color, there has to be a background
-     * on which it is shown.
-     * 
-     * @returns An image of a mosaik of neutral gray rectangles of different
-     * lightnesses. You can use this as tiles to paint a background.
-     * 
-     * Example:
-     * @snippet test/testhelper.cpp Helper Use transparencyBackground
-     * 
-     * @todo Provide color management support? Thought we use the same value
-     * for red, green and blue, this might @em not be perfectly neutral gray
-     * depending on the color profile of the monitor… */
-    QImage transparencyBackground()
-    {
-        // The width and height of 12 px per square might be a good choise
-        // because 12 is a multiple of 2, 3 and 4, and 12 px can also be
-        // divided twice by 2 and is still an integer. This might make scaling
-        // with better quality easier. But 12 px is also quite big.
-        constexpr int squareSize = 12;
-        constexpr int colorValueOne = 210;
-        constexpr int colorValueTwo = 240;
-        QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
-        temp.fill(QColor(colorValueOne, colorValueOne, colorValueOne));
-        QPainter painter(&temp);
-        QColor foregroundColor(colorValueTwo, colorValueTwo, colorValueTwo);
-        painter.fillRect(
-            0,
-            0,
-            squareSize,
-            squareSize,
-            foregroundColor
-        );
-        painter.fillRect(
-            squareSize,
-            squareSize,
-            squareSize,
-            squareSize,
-            foregroundColor
-        );
-        return temp;
-    }
-
     /** @brief Number of vertical @em standard wheel steps done by a
      *  wheel event
      * 

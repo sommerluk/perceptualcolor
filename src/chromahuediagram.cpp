@@ -129,6 +129,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
     // TODO Also accept out-of-gamut clicks when they are covered by the
     // current marker.
     if (areImageCoordinatesWithinDiagramSurface(event->pos())) {
+        event->accept();
         // Mouse focus is handeled manually because so we can accept
         // focus only on mouse clicks within the displayed gamut, while
         // rejecting focus otherwise. In the constructor, therefore
@@ -153,7 +154,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         // Make sure default behaviour like drag-window in KDE’s
         // “Breeze” widget style works if this widget does not
         // actually react itself on a mouse event.
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -176,6 +177,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_isMouseEventActive) {
+        event->accept();
         cmsCIELab lab;
         QPointF aB = fromImageCoordinatesToAB(event->pos());
         lab.L = m_color.toLch().L;
@@ -194,7 +196,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
     } else {
         // Make sure default behaviour like drag-window in KDE’s
         // Breeze widget style works.
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -223,6 +225,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
     if (m_isMouseEventActive) {
+        event->accept();
         unsetCursor();
         m_isMouseEventActive = false;
         setColorFromImageCoordinates(event->pos());
@@ -235,221 +238,37 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
     } else {
         // Make sure default behaviour like drag-window in KDE's
         // Breeze widget style works
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
-// TODO xxx
-
-/** @brief Paint the widget.
- * 
- * Reimplemented from base class.
+/** @brief React on a mouse wheel event.
  *
- * - Paints the widget. Takes the existing @ref m_diagramImage and
- *   @ref m_wheelImage and paints them on the widget.
- * - Paints the marker.
- * - If the widget has focus, it also paints the focus indicator.
+ * Reimplemented from base class.
  * 
- * @param event the paint event
+ * Scrolling up raises the hue value, scrolling down lowers the hue value.
+ * Of course, at the point at 0°/360° wrapping applies.
  * 
- * @todo What when @ref m_color has a valid in-gamut color, but this color is
- * out of the <em>displayed</em> diagram? How to handle that?
- * 
- * @todo Better design on small widget sizes */
-void ChromaHueDiagram::paintEvent(QPaintEvent* event)
-{
-    Q_UNUSED(event);
-
-    // We do not paint directly on the widget, but on a QImage buffer first:
-    // Render anti-aliased looks better. But as Qt documentation says:
-    //
-    //      “Renderhints are used to specify flags to QPainter that may or
-    //       may not be respected by any given engine.”
-    //
-    // Painting here directly on the widget might lead to different
-    // anti-aliasing results depending on the underlying window system. This
-    // is especially problematic as anti-aliasing might shift or not a pixel
-    // to the left or to the right. So we paint on a QImage first. As QImage
-    // (at difference to QPixmap and a QWidget) is independant of native
-    // platform rendering, it guarantees identical anti-aliasing results on
-    // all platforms. Here the quote from QPainter class documentation:
-    //
-    //      “To get the optimal rendering result using QPainter, you should
-    //       use the platform independent QImage as paint device; i.e. using
-    //       QImage will ensure that the result has an identical pixel
-    //       representation on any platform.”
-    QImage paintBuffer(
-        physicalPixelWidgetDiameter(),
-        physicalPixelWidgetDiameter(),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    paintBuffer.fill(Qt::transparent);
-    paintBuffer.fill(Qt::white); // TODO Remove this line!
-    paintBuffer.setDevicePixelRatio(devicePixelRatioF());
-
-    
-    // Other initializations
-    QPainter painter(&paintBuffer);
-    QPen pen;
-    QBrush brush;
-
-    // Paint the gamut itself as available in the cache.
-    updateDiagramCache();
-    painter.setRenderHint(QPainter::Antialiasing, false);
-    painter.drawImage(
-        QPoint(0, 0),   // position of the image
-        m_diagramImage  // image
-    );
-
-    // Paint a color wheel around
-    updateWheelCache();
-    painter.setRenderHint(QPainter::Antialiasing, false);
-    painter.drawImage(
-        QPoint(0, 0),   // position of the image
-        m_wheelImage    // image
-    );
-
-    // Paint a marker on the color wheel
-    // only if a mouse event is currently active.
-    if (m_isMouseEventActive) {
-        // TODO Apparently the position is not exact.
-        qreal radius =
-            m_widgetDiameter / static_cast<qreal>(2) - 2 * markerThickness;
-        // Get widget coordinates for our marker
-        QPointF myMarkerInner = PolarPointF(
-            radius - 4 * markerThickness,
-            m_color.toLch().h
-        ).toCartesian();
-        QPointF myMarkerOuter = PolarPointF(
-            radius,
-            m_color.toLch().h
-        ).toCartesian();
-        myMarkerInner.ry() *= -1;
-        myMarkerOuter.ry() *= -1;
-        myMarkerInner += QPointF(m_diagramOffset, m_diagramOffset);
-        myMarkerOuter += QPointF(m_diagramOffset, m_diagramOffset);
-        // Draw the line
-        pen = QPen();
-        pen.setWidth(markerThickness);
-        pen.setCapStyle(Qt::FlatCap);
-        pen.setColor(Qt::black);
-        painter.setPen(pen);
-        painter.setRenderHint(QPainter::Antialiasing, true);
-        painter.drawLine(myMarkerInner, myMarkerOuter);
-    }
-  
-    /* Paint a focus indicator.
-     * 
-     * We could paint a focus indicator (round or rectangular) around the
-     * marker. Depending on the currently selected hue for the diagram, it
-     * looks ugly because the colors of focus indicator and diagram do not
-     * harmonize, or it is mostly invisible the the colors are similar. So
-     * this apporach does not work well.
-     * 
-     * It seems better to paint a focus indicator for the whole widget.
-     * We could use the style primitives to paint a rectangular focus
-     * indicator around the whole widget:
-     * style()->drawPrimitive(QStyle::PE_FrameFocusRect, &option, &painter, this);
-     * However, this does not work well because this widget does not have a
-     * rectangular form.
-     * 
-     * Then we have to design the line that we want to display. It is better
-     * to do that ourself instead of relying on generic QStyle::PE_Frame or
-     * similar solutions as their result seems to be quite unpredictible
-     * accross various styles. So we use markerThickness as line width and
-     * paint it at the left-most possible position. As the diagramBorder
-     * accomodates also to markerRadius, the distance of the focus line to
-     * the real diagram also does, which looks nice. */
-    if (hasFocus()) {
-        painter.setRenderHint(QPainter::Antialiasing, true);
-        pen = QPen();
-        pen.setWidth(markerThickness);
-        pen.setColor(focusIndicatorColor());
-        painter.setPen(pen);
-        brush = QBrush(Qt::transparent);
-        painter.setBrush(brush);
-        painter.drawEllipse(
-            QPointF(m_diagramOffset + 1, m_diagramOffset + 1),   // center
-            (m_widgetDiameter - markerThickness) / 2,   // x radius
-            (m_widgetDiameter - markerThickness) / 2    // y radius
-        );
-    }
-
-    // Paint the marker on-the-fly.
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    QPoint imageCoordinates = imageCoordinatesFromColor();
-    pen = QPen();
-    pen.setWidth(markerThickness);
-    // Set color of the marker: Black or white, depending on the lightness of
-    // the currently selected color.
-    if (m_color.toLch().L >= 50) { // range: 0..100
-        pen.setColor(Qt::black);
-    } else {
-        pen.setColor(Qt::white);
-    }
-    painter.setPen(pen);
-    brush = QBrush(Qt::transparent);
-    painter.setBrush(brush);
-    painter.drawEllipse( // TODO Switch to floating point!
-        imageCoordinates.x() - markerRadius,
-        imageCoordinates.y() - markerRadius,
-        2 * markerRadius + 1,
-        2 * markerRadius + 1
-    );
-    PolarPointF lineEndPolar = PolarPointF(
-        QPointF(
-            imageCoordinates.x() - m_diagramOffset,
-            (imageCoordinates.y() - m_diagramOffset) * (-1)
-        )
-    );
-    qreal newRadial = lineEndPolar.radial() - markerRadius - 1.5;
-    QPointF lineEndCartesian;
-    if (newRadial > 0) {
-        lineEndCartesian = PolarPointF(
-            newRadial,
-            lineEndPolar.angleDegree()
-        ).toCartesian();
-        lineEndCartesian.setY(lineEndCartesian.y() * (-1));
-        lineEndCartesian += QPointF(m_diagramOffset, m_diagramOffset);
-        painter.drawLine(
-            QPointF(m_diagramOffset, m_diagramOffset),
-            lineEndCartesian
-        );
-    }
-
-    // Paint the buffer to the actual widget
-    QPainter widgetPainter(this);
-    widgetPainter.setRenderHint(
-        QPainter::Antialiasing,
-        false
-    );
-    widgetPainter.drawImage(
-        QPoint(0, 0),
-        paintBuffer
-    );
-    qDebug()
-        << size()
-        << "×"
-        << devicePixelRatioF()
-        << "="
-        << size().width() * devicePixelRatioF()
-        << ","
-        << size().height() * devicePixelRatioF();
-}
-
+ * @param event The corresponding mouse event */
 void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
 {
     if (
-        // Do nothing while mouse mouvement is tracked anyway.
-        // This would be confusing.
+        // Do nothing while a the mouse is clicked and the mouse mouvement is
+        // tracked anyway because this would be confusing for the user.
         (!m_isMouseEventActive) &&
-        // Only react on wheel events when its in the appropriate place
-        areImageCoordinatesWithinDiagramSurface(event->pos()) &&
         // Only react on good old vertical wheels,
         // and not on horizontal wheels.
-        (event->angleDelta().y() != 0)
+        (event->angleDelta().y() != 0) &&
+        // Only react on wheel events when then happen in the appropriate
+        // area.a
+        areImageCoordinatesWithinDiagramSurface(event->pos())
     ) {
+        event->accept();
         cmsCIELCh lch = m_color.toLch();
+        // Calculate the new hue.
+        // This may result in a hue smaller then 0° or bigger then 360°.
+        // This is no problem because the constructor of FullColorDescription
+        // will normalize the hue.
         lch.h += Helper::standardWheelSteps(event) * singleStepHue;
         setColor(
             FullColorDescription(
@@ -463,25 +282,37 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
     }
 }
 
-// TODO xxx What happens when maxChroma is low and parts of the gamut are out-of-display?
-// TODO xxx Melt together the displayed gamut and the gray circle to avoid strange alpha-blending
-// at the anti-aliased parts
-
 /** @brief React on key press events.
  * 
  * Reimplemented from base class.
  * 
- * Reacts on key press events. When the arrow keys are pressed, it moves the
- * marker by one pixel into the desired direction if this is still within
- * gamut. When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
- * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
- * marker as much as possible into the desired direction as long as this is
- * still in the gamut.
+ * The keys do not react in form of up, down, left and right like in
+ * cartesian coordinate systems. The keys change radial and angel like
+ * in polar coordinate systems, because our color model is also based
+ * on a polar coordinate system.
  * 
- * @param event the paint event */
+ * For chroma changes: Moves the marker as much as possible into the
+ * desired direction as long as this is still in the gamut.
+ * - Qt::Key_Up increments chroma a small step
+ * - Qt::Key_Down decrements chroma a small step
+ * - Qt::Key_PageUp increments chroma a big step
+ * - Qt::Key_PageDown decrements chroma a big step
+ * 
+ * For hue changes: If necessary, the chroma value is reduced to get an
+ * in-gamut color with the new hue.
+ * - Qt::Key_Left increments hue a small step
+ * - Qt::Key_Right decrements hue a small step
+ * - Qt::Key_Home increments hue a big step
+ * - Qt::Key_End decrements hue a big step
+ * 
+ * @param event the paint event
+ * 
+ * @todo Is this behaviour really a good user experience? Or is it confusing
+ * that left, right, up and down don’t do what was expected? What could be
+ * more intuitive keys for changing radial and angle? At least the arrow keys
+ * are likely that the user tries them out by trial-and-error. */
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
-    // TODO The choise of keys does not seem to be very intuitive
     cmsCIELCh lch = m_color.toLch();
     switch (event->key()) {
         case Qt::Key_Up:
@@ -526,6 +357,8 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     // default branch of the switch statement, we would have passed the
     // keyPressEvent yet to the parent and returned.
     if (lch.C < 0) {
+        // Do not allow negative chroma values.
+        // (Doing so would be counter-intuitive.)
         lch.C = 0;
     }
     setColor(
@@ -537,66 +370,49 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     );
 }
 
-/**
- * @param imageCoordinates the image coordiantes
- * @returns the diagram (a-b) value for given image coordinates
- */
-QPointF ChromaHueDiagram::fromImageCoordinatesToAB(
-    const QPoint imageCoordinates
-)
-{
-    const qreal scaleFactor =
-        static_cast<qreal>(2 * m_maxChroma) / (m_widgetDiameter - 2 * diagramBorder);
-    return QPointF(
-        (imageCoordinates.x() - m_diagramOffset) * scaleFactor,
-        (imageCoordinates.y() - m_diagramOffset) * scaleFactor * (-1)
-    );
-}
-
-/**
- * @returns the coordinates for m_color()
- */
-QPoint ChromaHueDiagram::imageCoordinatesFromColor()
-{
-    const qreal scaleFactor =
-        (m_widgetDiameter - 2 * diagramBorder) / static_cast<qreal>(2 * m_maxChroma);
-    return QPoint(
-        qRound((m_color.toLab().a * scaleFactor + m_diagramOffset)),
-        qRound(
-            (m_color.toLab().b * scaleFactor + m_diagramOffset) * (-1)
-                + 2 * m_diagramOffset
-        )
-    );
-}
-
-/** @brief Tests if image coordinates are within the diagram surface.
+/** @brief Provide the size hint.
+ *
+ * Reimplemented from base class.
  * 
- * The diagram surface is the gray circle on which the gamut diagram is
- * painted.
- * @param imageCoordinates the image coordiantes to test
- * @returns <tt>true</tt> if the given image coordiantes are within this
- * circle, <tt>false</tt> otherwise. */
-bool ChromaHueDiagram::areImageCoordinatesWithinDiagramSurface(
-    const QPoint imageCoordinates
-)
+ * @returns the size hint
+ * 
+ * @sa @ref minimumSizeHint() */
+QSize ChromaHueDiagram::sizeHint() const
 {
-    const qreal radialPixel = PerceptualColor::PolarPointF(
-        imageCoordinates - QPointF(m_diagramOffset, m_diagramOffset)
-    ).radial();
-    return (
-        radialPixel <= ( (m_widgetDiameter - 1) / static_cast<qreal>(2) )
-    );
+    return QSize(300, 300);
 }
 
-/** @brief Setter for the color() property */
-void ChromaHueDiagram::setColor(const FullColorDescription &newColor)
+/** @brief Provide the minimum size hint.
+ *
+ * Reimplemented from base class.
+ * 
+ * @returns the minimum size hint
+ * 
+ * @sa @ref sizeHint() */
+QSize ChromaHueDiagram::minimumSizeHint() const
 {
-    if (newColor == m_color) {
+    return QSize(100, 100);
+}
+
+// No documentation here (documentation of properties
+// and its getters are in the header)
+FullColorDescription ChromaHueDiagram::color() const
+{
+    return m_color;
+}
+
+/** @brief Setter for the @ref color() property.
+ * 
+ * @param color the new color */
+void ChromaHueDiagram::setColor(const FullColorDescription &color)
+{
+    if (color == m_color) {
         return;
     }
 
     FullColorDescription oldColor = m_color;
-    m_color = newColor;
+
+    m_color = color;
 
     // Update, if necessary, the diagram.
     if (m_color.toLch().L != oldColor.toLch().L) {
@@ -605,8 +421,13 @@ void ChromaHueDiagram::setColor(const FullColorDescription &newColor)
 
     // Schedule a paint event:
     update();
-    Q_EMIT colorChanged(newColor);
+
+    // Emit notify signal
+    Q_EMIT colorChanged(color);
 }
+
+// TODO xxx Revision starting here
+
 
 /** @brief React on a resive event.
  *
@@ -645,46 +466,62 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
     }
 }
 
+// TODO xxx What happens when maxChroma is low and parts of the gamut are out-of-display?
+
+/**
+ * @param imageCoordinates the image coordiantes
+ * @returns the diagram (a-b) value for given image coordinates
+ */
+QPointF ChromaHueDiagram::fromImageCoordinatesToAB(
+    const QPoint imageCoordinates
+)
+{
+    const qreal scaleFactor =
+        static_cast<qreal>(2 * m_maxChroma) / (m_widgetDiameter - 2 * diagramBorder);
+    return QPointF(
+        (imageCoordinates.x() - m_diagramOffset) * scaleFactor,
+        (imageCoordinates.y() - m_diagramOffset) * scaleFactor * (-1)
+    );
+}
+
+/**
+ * @returns the logical coordinates that correspond to @ref m_color()
+ */
+QPoint ChromaHueDiagram::imageCoordinatesFromColor()
+{
+    const qreal scaleFactor =
+        (m_widgetDiameter - 2 * diagramBorder) / static_cast<qreal>(2 * m_maxChroma);
+    return QPoint(
+        qRound((m_color.toLab().a * scaleFactor + m_diagramOffset)),
+        qRound(
+            (m_color.toLab().b * scaleFactor + m_diagramOffset) * (-1)
+                + 2 * m_diagramOffset
+        )
+    );
+}
+
+/** @brief Tests if image coordinates are within the diagram surface.
+ * 
+ * The diagram surface is the gray circle on which the gamut diagram is
+ * painted.
+ * @param imageCoordinates the image coordiantes to test
+ * @returns <tt>true</tt> if the given image coordiantes are within this
+ * circle, <tt>false</tt> otherwise. */
+bool ChromaHueDiagram::areImageCoordinatesWithinDiagramSurface(
+    const QPoint imageCoordinates
+)
+{
+    const qreal radialPixel = PerceptualColor::PolarPointF(
+        imageCoordinates - QPointF(m_diagramOffset, m_diagramOffset)
+    ).radial();
+    return (
+        radialPixel <= ( (m_widgetDiameter - 1) / static_cast<qreal>(2) )
+    );
+}
+
 // TODO how to treat empty images because the color profile does not work or the resolution is too small?
 
-/** @brief Provide the size hint.
- *
- * Reimplemented from base class.
- * 
- * @returns the size hint
- * 
- * @sa minimumSizeHint()
- */
-QSize ChromaHueDiagram::sizeHint() const
-{
-    return QSize(300, 300);
-}
-
-/** @brief Provide the minimum size hint.
- *
- * Reimplemented from base class.
- * 
- * @returns the minimum size hint
- * 
- * @sa sizeHint()
- */
-QSize ChromaHueDiagram::minimumSizeHint() const
-{
-    return QSize(100, 100);
-}
-
-// TODO rework all "throw" statements (also these in comments) and the qDebug() statements
-
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
-
-// TODO allow imaginary colors?
-
-// No documentation here (documentation of properties
-// and its getters are in the header)
-FullColorDescription ChromaHueDiagram::color() const
-{
-    return m_color;
-}
 
 /** @brief Beta implementation based on LittleCMS Gamut Boundary Description.
  * 
@@ -939,6 +776,203 @@ void ChromaHueDiagram::updateWheelCache()
 
     // Mark cache as ready
     m_isWheelCacheReady = true;
+}
+
+
+/** @brief Paint the widget.
+ * 
+ * Reimplemented from base class.
+ *
+ * - Paints the widget. Takes the existing @ref m_diagramImage and
+ *   @ref m_wheelImage and paints them on the widget.
+ * - Paints the markers.
+ * - If the widget has focus, it also paints the focus indicator.
+ * 
+ * @param event the paint event
+ * 
+ * @todo What when @ref m_color has a valid in-gamut color, but this color is
+ * out of the <em>displayed</em> diagram? How to handle that?
+ * 
+ * @todo Better design on small widget sizes for the whole library. */
+void ChromaHueDiagram::paintEvent(QPaintEvent* event)
+{
+    Q_UNUSED(event);
+
+    // We do not paint directly on the widget, but on a QImage buffer first:
+    // Render anti-aliased looks better. But as Qt documentation says:
+    //
+    //      “Renderhints are used to specify flags to QPainter that may or
+    //       may not be respected by any given engine.”
+    //
+    // Painting here directly on the widget might lead to different
+    // anti-aliasing results depending on the underlying window system. This
+    // is especially problematic as anti-aliasing might shift or not a pixel
+    // to the left or to the right. So we paint on a QImage first. As QImage
+    // (at difference to QPixmap and a QWidget) is independant of native
+    // platform rendering, it guarantees identical anti-aliasing results on
+    // all platforms. Here the quote from QPainter class documentation:
+    //
+    //      “To get the optimal rendering result using QPainter, you should
+    //       use the platform independent QImage as paint device; i.e. using
+    //       QImage will ensure that the result has an identical pixel
+    //       representation on any platform.”
+    QImage paintBuffer(
+        physicalPixelWidgetDiameter(),
+        physicalPixelWidgetDiameter(),
+        QImage::Format_ARGB32_Premultiplied
+    );
+    paintBuffer.fill(Qt::transparent);
+    paintBuffer.fill(Qt::white); // TODO Remove this line!
+    paintBuffer.setDevicePixelRatio(devicePixelRatioF());
+
+    
+    // Other initializations
+    QPainter painter(&paintBuffer);
+    QPen pen;
+    QBrush brush;
+
+    // Paint the gamut itself as available in the cache.
+    updateDiagramCache();
+    painter.setRenderHint(QPainter::Antialiasing, false);
+    painter.drawImage(
+        QPoint(0, 0),   // position of the image
+        m_diagramImage  // image
+    );
+
+    // Paint a color wheel around
+    updateWheelCache();
+    painter.setRenderHint(QPainter::Antialiasing, false);
+    painter.drawImage(
+        QPoint(0, 0),   // position of the image
+        m_wheelImage    // image
+    );
+
+    // Paint a marker on the color wheel
+    // only if a mouse event is currently active.
+    if (m_isMouseEventActive) {
+        // TODO Apparently the position is not exact.
+        qreal radius =
+            m_widgetDiameter / static_cast<qreal>(2) - 2 * markerThickness;
+        // Get widget coordinates for our marker
+        QPointF myMarkerInner = PolarPointF(
+            radius - 4 * markerThickness,
+            m_color.toLch().h
+        ).toCartesian();
+        QPointF myMarkerOuter = PolarPointF(
+            radius,
+            m_color.toLch().h
+        ).toCartesian();
+        myMarkerInner.ry() *= -1;
+        myMarkerOuter.ry() *= -1;
+        myMarkerInner += QPointF(m_diagramOffset, m_diagramOffset);
+        myMarkerOuter += QPointF(m_diagramOffset, m_diagramOffset);
+        // Draw the line
+        pen = QPen();
+        pen.setWidth(markerThickness);
+        pen.setCapStyle(Qt::FlatCap);
+        pen.setColor(Qt::black);
+        painter.setPen(pen);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.drawLine(myMarkerInner, myMarkerOuter);
+    }
+  
+    /* Paint a focus indicator.
+     * 
+     * We could paint a focus indicator (round or rectangular) around the
+     * marker. Depending on the currently selected hue for the diagram, it
+     * looks ugly because the colors of focus indicator and diagram do not
+     * harmonize, or it is mostly invisible the the colors are similar. So
+     * this apporach does not work well.
+     * 
+     * It seems better to paint a focus indicator for the whole widget.
+     * We could use the style primitives to paint a rectangular focus
+     * indicator around the whole widget:
+     * style()->drawPrimitive(QStyle::PE_FrameFocusRect, &option, &painter, this);
+     * However, this does not work well because this widget does not have a
+     * rectangular form.
+     * 
+     * Then we have to design the line that we want to display. It is better
+     * to do that ourself instead of relying on generic QStyle::PE_Frame or
+     * similar solutions as their result seems to be quite unpredictible
+     * accross various styles. So we use markerThickness as line width and
+     * paint it at the left-most possible position. As the diagramBorder
+     * accomodates also to markerRadius, the distance of the focus line to
+     * the real diagram also does, which looks nice. */
+    if (hasFocus()) {
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        pen = QPen();
+        pen.setWidth(markerThickness);
+        pen.setColor(focusIndicatorColor());
+        painter.setPen(pen);
+        brush = QBrush(Qt::transparent);
+        painter.setBrush(brush);
+        painter.drawEllipse(
+            QPointF(m_diagramOffset + 1, m_diagramOffset + 1),   // center
+            (m_widgetDiameter - markerThickness) / 2,   // x radius
+            (m_widgetDiameter - markerThickness) / 2    // y radius
+        );
+    }
+
+    // Paint the marker on-the-fly.
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    QPoint imageCoordinates = imageCoordinatesFromColor();
+    pen = QPen();
+    pen.setWidth(markerThickness);
+    // Set color of the marker: Black or white, depending on the lightness of
+    // the currently selected color.
+    if (m_color.toLch().L >= 50) { // range: 0..100
+        pen.setColor(Qt::black);
+    } else {
+        pen.setColor(Qt::white);
+    }
+    painter.setPen(pen);
+    brush = QBrush(Qt::transparent);
+    painter.setBrush(brush);
+    painter.drawEllipse( // TODO Switch to floating point!
+        imageCoordinates.x() - markerRadius,
+        imageCoordinates.y() - markerRadius,
+        2 * markerRadius + 1,
+        2 * markerRadius + 1
+    );
+    PolarPointF lineEndPolar = PolarPointF(
+        QPointF(
+            imageCoordinates.x() - m_diagramOffset,
+            (imageCoordinates.y() - m_diagramOffset) * (-1)
+        )
+    );
+    qreal newRadial = lineEndPolar.radial() - markerRadius - 1.5;
+    QPointF lineEndCartesian;
+    if (newRadial > 0) {
+        lineEndCartesian = PolarPointF(
+            newRadial,
+            lineEndPolar.angleDegree()
+        ).toCartesian();
+        lineEndCartesian.setY(lineEndCartesian.y() * (-1));
+        lineEndCartesian += QPointF(m_diagramOffset, m_diagramOffset);
+        painter.drawLine(
+            QPointF(m_diagramOffset, m_diagramOffset),
+            lineEndCartesian
+        );
+    }
+
+    // Paint the buffer to the actual widget
+    QPainter widgetPainter(this);
+    widgetPainter.setRenderHint(
+        QPainter::Antialiasing,
+        false
+    );
+    widgetPainter.drawImage(
+        QPoint(0, 0),
+        paintBuffer
+    );
+    qDebug() // TODO Remove me!
+        << size()
+        << "×"
+        << devicePixelRatioF()
+        << "="
+        << size().width() * devicePixelRatioF()
+        << ","
+        << size().height() * devicePixelRatioF();
 }
 
 }

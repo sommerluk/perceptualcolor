@@ -25,5 +25,6 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
+# pip3 install --user reuse
 export PATH="$HOME/.local/bin:$PATH"
 reuse lint

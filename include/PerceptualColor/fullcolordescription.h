@@ -54,6 +54,10 @@ namespace PerceptualColor {
  * 
  * This data type can be passed to QDebug thanks to
  * operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value)
+ * 
+ * @todo TODO What if an API user sets a FullColorDescription property
+ * within a widget, but widget and FullColorDescription are
+ * based on different color spaces? Display would be wrong! Or not?
  */
 class FullColorDescription
 {

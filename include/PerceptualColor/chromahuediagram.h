@@ -79,17 +79,7 @@ namespace PerceptualColor {
  * 
  * @todo Automatically scale the thickness of the wheel (and maybe even the
  * marker) with varying widget size?
- * 
- * @todo <a href="https://doc.qt.io/qt-5/qpainter.html#performance">Qt’s
- * documentation about <tt>QImage::Format</tt></a> says: <em> For optimal
- * performance only use the format types QImage::Format_ARGB32_Premultiplied,
- * QImage::Format_RGB32 or QImage::Format_RGB16. Any other format, including
- * QImage::Format_ARGB32, has significantly worse performance.</em> Therefore,
- * this library should switch to Format_ARGB32_Premultiplied as default
- * format, and the Continious Integration Script should catch any
- * non-recommended QImage::Format (or at the very least
- * QImage::Format_ARGB32).
-        
+ *         
  * @todo Provide RESET functions for all properties around the library? */
 class ChromaHueDiagram : public CircularDiagram
 {
@@ -120,7 +110,7 @@ public:
     virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setColor(const PerceptualColor::FullColorDescription &newColor);
+    void setColor(const PerceptualColor::FullColorDescription &color);
 
 Q_SIGNALS:
     /** @brief Notify signal for property @ref color().
@@ -143,7 +133,7 @@ private:
     // Member variables
     /** @brief The border around the round diagram.
      * 
-     * Mesured in Device Independent Pixels: Pixels used by application
+     * Measured in Device Independent Pixels: Pixels used by application
      * (user space), subject to scaling by the operating system or Qt. 
      * 
      * The border is the space where the surrounding color wheel and, where

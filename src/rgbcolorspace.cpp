@@ -39,6 +39,9 @@ namespace PerceptualColor {
  */
 RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
 {
+    // TODO The creation of profiles and transforms might fail!
+    // TODO How to handle that?
+    
     // Create an ICC v4 profile object for the Lab color space.
     // NULL means: Default white point (D50)
     // TODO Does this make sense? sRGB white point is D65!

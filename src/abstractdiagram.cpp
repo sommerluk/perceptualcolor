@@ -27,13 +27,15 @@
 // Own header
 #include "PerceptualColor/abstractdiagram.h"
 
+#include <QPainter>
+
 namespace PerceptualColor {
 
 /** @brief The constructor.
- * @param parent The widget’s parent widget. This paramenter will be passed
+ * @param parent The widget’s parent widget. This parameter will be passed
  * to the QWidget base class constructor. */
 AbstractDiagram::AbstractDiagram(QWidget *parent)
-: QWidget(parent)
+: QFrame(parent)
 {
 }
 
@@ -47,11 +49,11 @@ QColor AbstractDiagram::focusIndicatorColor() const
     return palette().color(QPalette::Highlight);
 }
 
-/** @brief The rounded size of the widget mesured in <em>physical</em>
+/** @brief The rounded size of the widget measured in <em>physical</em>
  * pixels.
  * 
  * The function <tt>QWidget::size()</tt> returns the size of the widget
- * mesured in logical pixels. On low-dpi devices, this is identical to the
+ * measured in logical pixels. On low-dpi devices, this is identical to the
  * physical pixels, but on high-dpi devices it is not. To paint high-dpi
  * widgets, you have to
  * 
@@ -66,15 +68,20 @@ QColor AbstractDiagram::focusIndicatorColor() const
  * 
  * If you want know the pixel size of the image you have to prepare in a
  * paint event, this function provides the size conveniently, based on
- * <tt>QImage::setDevicePixelRatio()</tt>. Non-integer results
- * are always rounded <em>down</em> to the next integer. As we cannot be
- * sure that pixel alignment is identical on all platforms, it’s saver to
- * always round down. Maybe in some situations, there will be an
- * unused pixel at the right or at the botton. So, a length of
- * 101 logical pixels at a device pixel ratio of 1.5 will result in
- * 151 physical pixels.
+ * <tt>QPaintDevice::devicePixelRatioF()</tt>.
  * 
- * @returns The rounded size of the widget mesured in <em>physical</em>
+ * @note If <tt>QPaintDevice::devicePixelRatioF()</tt> is not an integer,
+ * the result of this function is rounded. Qt’s widget geometry code seems
+ * to round up starting with 0.5, at least on Linux/X11. As this behaviour is
+ * not documentated and might be different on other platforms, it’s however
+ * not save to rely on this assumption. Therefore, in this function, 
+ * non-integer values are always rounded <em>down</em> to the next lower
+ * integer. In some situations, depending on rounding, there will be an
+ * unused pixel column or row at the right or at the bottom of the widget.
+ * Example: A length of 101 logical pixels at a device pixel ratio of 1.5
+ * will result in 151 physical pixels.
+ * 
+ * @returns The rounded size of the widget measured in <em>physical</em>
  * pixels, as recommended for paint events. */
 QSize AbstractDiagram::physicalPixelSize() const
 {
@@ -93,6 +100,56 @@ QSize AbstractDiagram::physicalPixelSize() const
         static_cast<int>(size().width() * devicePixelRatioF()),
         static_cast<int>(size().height() * devicePixelRatioF())
     );
+}
+
+/** @brief Background for semi-transparent colors.
+** 
+** When showing a semi-transparent color, there has to be a background
+** on which it is shown. This function provides a suitable background
+** for showcasing a color.
+** 
+** @param devicePixelRatioF the QWidget::devicePixelRatioF() for which
+** you want to have the background image
+** @returns An image of a mosaic of neutral gray rectangles of different
+** lightness. You can use this as tiles to paint a background.
+** 
+** @note The function does not use floating point drawing, but rounds
+** to full integers. Therefor, the result is always a sharp image.
+** This function takes care that each square has the same pixel size,
+** without scaling errors or anti-aliasing errors.
+** 
+** Example:
+** @snippet test/testabstractdiagram.cpp AbstractDiagram Use transparency background
+** 
+** @todo Provide color management support? Currently, we use the same
+** value for red, green and blue, this might @em not be perfectly
+** neutral gray depending on the color profile of the monitor… */
+QImage AbstractDiagram::transparencyBackground(const qreal devicePixelRatioF)
+{
+    constexpr int colorValueOne = 210;
+    constexpr int colorValueTwo = 240;
+    const int squareSize = qRound(10 * devicePixelRatioF);
+
+    QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
+    temp.fill(QColor(colorValueOne, colorValueOne, colorValueOne));
+    QPainter painter(&temp);
+    QColor foregroundColor(colorValueTwo, colorValueTwo, colorValueTwo);
+    painter.fillRect(
+        0,
+        0,
+        squareSize,
+        squareSize,
+        foregroundColor
+    );
+    painter.fillRect(
+        squareSize,
+        squareSize,
+        squareSize,
+        squareSize,
+        foregroundColor
+    );
+    temp.setDevicePixelRatio(devicePixelRatioF);
+    return temp;
 }
 
 }

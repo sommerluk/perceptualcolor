@@ -139,7 +139,6 @@ private:
     int m_gradientMinimumLength = 84;
     Qt::Orientation m_orientation;
     void initialize(RgbColorSpace* colorSpace, Qt::Orientation orientation);
-    QBrush m_brush;
     FullColorDescription m_firstColor;
     FullColorDescription m_secondColor;
     RgbColorSpace *m_rgbColorSpace;

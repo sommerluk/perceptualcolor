@@ -27,6 +27,7 @@
 #ifndef HELPER_H
 #define HELPER_H
 
+#include <QDebug> // TODO Remove me!
 #include <QImage>
 #include <QWheelEvent>
 
@@ -123,10 +124,6 @@ static_assert(
  * the diagram widgets, only the shape would stay visible, with uniform
  * standard gray colors coming from <tt>QStyle</tt>. The markers might not
  * even be displayed at all.
- * @todo QPainter: Quote from documentation: For optimal performance only use
- * the format types @c QImage::Format_ARGB32_Premultiplied,
- * @c QImage::Format_RGB32 or @c QImage::Format_RGB16. Any other format,
- * including @c QImage::Format_ARGB32, has significantly worse performance.
  * @todo Follow KDE's <b><a href="https://hig.kde.org/index.html">HIG</a></b>
  * @todo Add screenshots of widgets to the documentation
  * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
@@ -266,8 +263,6 @@ namespace Helper {
     };
 
     qreal standardWheelSteps(QWheelEvent *event);
-
-    QImage transparencyBackground();
 
 }
 

@@ -27,7 +27,7 @@
 #include <QtTest/QtTest>
 #include "PerceptualColor/colordialog.h"
 
-class helperClass : public QWidget {
+class TestColorDialogHelperClass : public QWidget {
 Q_OBJECT
 void testSnippet05() {
 //! [ColorDialog Open]

@@ -26,7 +26,50 @@
 
 #include <QtTest/QtTest>
 
+#include <QPainter>
+
 #include <PerceptualColor/abstractdiagram.h>
+
+class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram
+{
+Q_OBJECT
+public:
+void testSnippet01() {
+//! [AbstractDiagram Use transparency background]
+QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
+
+constexpr qreal myDevicePixelRatioF = 1.25;
+
+QPainter myPainter(&myImage);
+
+// Fill the hole image with tiles made of transparencyBackground()
+myPainter.fillRect(
+    0,
+    0,
+    150,
+    200,
+    // During painting, QBrush will ignore the device pixel ratio
+    // of the underlying transparencyBackground image!
+    QBrush(
+        transparencyBackground(myDevicePixelRatioF)
+    )
+);
+
+// Paint semi-transparent red color above
+myPainter.fillRect(
+    0,
+    0,
+    150,
+    200,
+    QBrush(
+        QColor(255, 0, 0, 128)
+    )
+);
+
+myImage.setDevicePixelRatio(myDevicePixelRatioF);
+//! [AbstractDiagram Use transparency background]
+}
+};
 
 class TestAbstractDiagram : public QObject
 {
@@ -59,6 +102,11 @@ private Q_SLOTS:
             myDiagram.isVisible(),
             "Test is diagram was shown correctly."
         );
+    }
+
+    void testSnippet01() {
+        TestAbstractDiagramHelperClass helper;
+        helper.testSnippet01();
     }
 };
 

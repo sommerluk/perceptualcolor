@@ -57,7 +57,6 @@ void GradientSelector::initialize(
 {
     setFocusPolicy(Qt::StrongFocus);
     m_rgbColorSpace = colorSpace;
-    m_brush = QBrush(Helper::transparencyBackground());
     setOrientation(orientation); // also updates the size policy
     cmsCIELCh one;
     one.L = 50;
@@ -244,7 +243,7 @@ void GradientSelector::setPageStep(qreal newPageStep)
 // TODO It would be better to have an arrow outside the slider. This
 // could be conformant with the current QStyle, and would guarantee
 // a consistent contrast between the arrow and its background.
-
+// TODO When zoom factor is 1,25, then background scaling is 1,25².
 void GradientSelector::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
@@ -266,7 +265,7 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     //       the platform independent QImage as paint device; i.e. using QImage
     //       will ensure that the result has an identical pixel representation
     //       on any platform.”
-    QImage paintBuffer(size(), QImage::Format_ARGB32);
+    QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
 
@@ -401,7 +400,7 @@ void GradientSelector::updateGradientImage()
     } else {
         actualLength = size().width();
     }
-    QImage temp(actualLength, 1, QImage::Format_ARGB32);
+    QImage temp(actualLength, 1, QImage::Format_ARGB32_Premultiplied);
     temp.fill(Qt::transparent); // Initialize the image with transparency.
     cmsCIELCh firstColor = m_firstColor.toLch();
     cmsCIELCh secondColor = m_secondColor.toLch();
@@ -415,8 +414,15 @@ void GradientSelector::updateGradientImage()
     QPair<cmsCIELCh, qreal> color;
     FullColorDescription fullColor;
     for (i = 0; i < actualLength; ++i) {
-        color = intermediateColor(firstColor, secondColor, i / static_cast<qreal>(actualLength));
-        // TODO the in-gamut test fails because of rounding errors for full-chroma-colors. How can we support ignore out-of-gamut colors? How should they be rendered? Not identical to transparent, right?
+        color = intermediateColor(
+            firstColor,
+            secondColor,
+            i / static_cast<qreal>(actualLength)
+        );
+        // TODO the in-gamut test fails because of rounding errors for
+        // full-chroma-colors. How can we support ignore out-of-gamut
+        // colors? How should they be rendered? Not identical to transparent,
+        // right?
         fullColor = FullColorDescription(
             m_rgbColorSpace,
             color.first,
@@ -425,9 +431,19 @@ void GradientSelector::updateGradientImage()
         );
         temp.setPixelColor(i, 0, fullColor.toRgbQColor());
     }
-    QImage result = QImage(actualLength, m_gradientThickness, QImage::Format_ARGB32);
+    QImage result = QImage(
+        actualLength,
+        m_gradientThickness,
+        QImage::Format_ARGB32_Premultiplied
+    );
     QPainter painter(&result);
-    painter.fillRect(0, 0, actualLength, m_gradientThickness, m_brush);
+    painter.fillRect(
+        0,
+        0,
+        actualLength,
+        m_gradientThickness,
+        QBrush(transparencyBackground(devicePixelRatioF()))
+    );
     for (i = 0; i < m_gradientThickness; ++i) {
         painter.drawImage(0, i, temp);
     }

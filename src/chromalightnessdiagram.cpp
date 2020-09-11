@@ -159,7 +159,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         setImageCoordinates(imageCoordinates);
     } else {
         // Make sure default behaviour like drag-window in KDE's Breeze widget style works
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -191,7 +191,7 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
         setImageCoordinates(imageCoordinates);
     } else {
         // Make sure default behaviour like drag-window in KDE's Breeze widget style works
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -214,7 +214,7 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
         m_mouseEventActive = false;
     } else {
         // Make sure default behaviour like drag-window in KDE's Breeze widget style works
-        QWidget::mousePressEvent(event);
+        event->ignore();
     }
 }
 
@@ -251,7 +251,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     //       the platform independent QImage as paint device; i.e. using QImage
     //       will ensure that the result has an identical pixel representation
     //       on any platform.”
-    QImage paintBuffer(size(), QImage::Format_ARGB32);
+    QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
 
@@ -657,7 +657,7 @@ myTimer.start();
     QColor rgbColor;
     int x;
     int y;
-    QImage temp_image = QImage(imageSize, QImage::Format_ARGB32);
+    QImage temp_image = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
     const int maxHeight = imageSize.height() - 1;
     const int maxWidth = imageSize.width() - 1;
     

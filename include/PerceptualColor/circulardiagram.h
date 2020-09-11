@@ -37,13 +37,13 @@ namespace PerceptualColor {
  * library. 
  * 
  * As the natural interaction space of these diagrams is a circle, it’s best
- * to have equal <tt>width()</tt> and <tt>hight()</tt> for the widget. This
+ * to have equal <tt>width()</tt> and <tt>height()</tt> for the widget. This
  * class provides the corresponding implementations to notify the layout
  * manager about that. See @ref hasHeightForWidth and @ref heightForWidth for
  * details.
  *
  * The default size policy is <tt>QSizePolicy::Expanding</tt>, both
- * horizontially and vertically.
+ * horizontally and vertically.
  * 
  * In Qt, usually focus (<tt>QWidget::hasFocus()</tt>) by mouse click is
  * either not accepted at all or accepted always for the hole rectangular
@@ -51,7 +51,7 @@ namespace PerceptualColor {
  * convenient and intuitive for big, circular-shaped widgets like this one.
  * It would be nicer if the focus would only be accepted by mouse clicks
  * <em>within the circle itself</em>. Qt does not provide a build-in way to
- * do this. But a workround to implement this behaviour is possible: Set
+ * do this. But a workaround to implement this behaviour is possible: Set
  * <tt>QWidget::focusPolicy()</tt> to <em>not</em> accept focus by mouse
  * click. Then, reimplement <tt>mousePressEvent()</tt> and call
  * <tt>setFocus(Qt::MouseFocusReason)</tt> if the mouse click is within the

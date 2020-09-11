@@ -27,9 +27,9 @@
 #ifndef PERCEPTUALCOLOR_ALPHASELECTOR_H
 #define PERCEPTUALCOLOR_ALPHASELECTOR_H
 
+#include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/gradientselector.h"
 #include "PerceptualColor/rgbcolorspace.h"
-#include "PerceptualColor/fullcolordescription.h"
 
 #include <QDoubleSpinBox>
 #include <QLabel>
@@ -37,15 +37,15 @@
 
 namespace PerceptualColor {
 
-/** @brief Combined widget with a gradient slider and a spin box; for selecting alpha channel
+/** @brief Widget for selecting an alpha value.
  *
- * Convenience widget to display and select an alpha channel value. 
- */
-// TODO The API should be similar to QSlider or at lest QAbstractSlider
+ * This is a widget to display and select an alpha channel value. It combines
+ * a @ref GradientSelector with a <tt>QDoubleSpinBox</tt>.
+ *
+ * @todo The API should be similar to QSlider or at lest QAbstractSlider. */
 class AlphaSelector : public QWidget
 {
     Q_OBJECT
-
 
     /** @brief Alpha value.
      * 
@@ -58,7 +58,7 @@ class AlphaSelector : public QWidget
     /** @brief Color.
      * 
      * The alpha channel of this property is ignored. See
-     * alpha() for the actually used alpha channed.
+     * alpha() for the actually used alpha channel.
      * 
      * @sa setColor()
      */
@@ -89,19 +89,23 @@ public:
 public Q_SLOTS:
     void setColor(const PerceptualColor::FullColorDescription &newColor);
     void setAlpha(const qreal newAlpha);
-    void setRepresentation(const AlphaSelector::NumberFormat newRepresentation);
+    void setRepresentation(
+        const AlphaSelector::NumberFormat newRepresentation
+    );
 
 Q_SIGNALS:
     void alphaChanged(qreal alpha);
 
 private:
     Q_DISABLE_COPY(AlphaSelector)
+
     GradientSelector *m_gradientSelector;
     QDoubleSpinBox *m_doubleSpinBox;
     RgbColorSpace *m_rgbColorSpace;
     FullColorDescription m_color;
     qreal m_alpha;
     NumberFormat m_representation;
+
 private Q_SLOTS:
     void setAlphaFromRepresentationFormat(qreal newAlphaRepresentation);
 };

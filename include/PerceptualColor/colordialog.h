@@ -65,7 +65,7 @@ namespace PerceptualColor {
  * At difference to QColorDialog, this
  * dialog's graphical components are perceptually uniform and therefore more
  * intuitive. It's internally based on the LCh color model, which does reflect
- * the human perceptuan much better than RGB or its transforms like HSV. At
+ * the human perception much better than RGB or its transforms like HSV. At
  * the same time, this dialog does not require the user itself to know
  * anything about LCh at all, because the graphical representations tend to be
  * intuitive enough.
@@ -129,7 +129,7 @@ namespace PerceptualColor {
  * letters on-the-fly (as-you-type) to upper-case letters.
  * 
  * @todo Provide <tt>setWhatsThis()</tt> help for widgets. Or tooltips? Or
- * both? What is more appropritate? Or use both? For @ref WheelColorPicker and
+ * both? What is more appropriate? Or use both? For @ref WheelColorPicker and
  * @ref ChromaLightnessDiagram, this help text could describe the keyboard
  * controls and be integrated as default value in the class itself. For the
  * other widgets, a help text could be defined here within \em this class,
@@ -139,7 +139,7 @@ namespace PerceptualColor {
  * central pixel an in-gamut color. Solution: Limit the range of the lightness
  * selector? Or a better algorithm in @ref ChromaHueDiagram?
  * 
- * @todo Develop a new wiget inherited from QAbstractSpinbox() that allows
+ * @todo Develop a new widget inherited from QAbstractSpinbox() that allows
  * input of various numeric values in the same widget, similar to
  * QDateTimeEdit(), but more flexible and appropriate for the different
  * possible color representations. Maybe: Allow entering
@@ -152,8 +152,8 @@ namespace PerceptualColor {
  * current behaviour for pageStep‌ = 10 is 356 → 360 → 0 → 10. The expected
  * behaviour would be 356 → 6 for a continuous experience. A solution will
  * likely require a new class inherited from QDoubleSpinBox or maybe
- * QAbstractSpinbox. Prodide directly a widget that would also do the
- * work for HLC etc (calender-widget-like with various values within
+ * QAbstractSpinbox. Provide directly a widget that would also do the
+ * work for HLC etc (calendar-widget-like with various values within
  * a single spinbox).
  * 
  * @todo Background color (or text color) for RGB could be red, green and
@@ -185,7 +185,7 @@ namespace PerceptualColor {
  * to be currently only apply to <tt>QRgb QColorDialog::getRgba(QRgb
  * initial = 0xffffffff, bool *ok = nullptr, QWidget *parent = nullptr)</tt>,
  * which was deprecated somewhere at 5.12 following the source code from
- * Wobq, but much earlier following the online documentation.
+ * Woboq, but much earlier following the online documentation.
  * Support them? Or document that we do not support them? */
 class ColorDialog : public QDialog
 {
@@ -255,7 +255,7 @@ class ColorDialog : public QDialog
      * 
      * Default value: PerceptualColor::DialogLayoutDimensions::automatic
      * 
-     * When the layout dimension effectifly changes, also the dialog size
+     * When the layout dimension effectively changes, also the dialog size
      * is adapted.
      * 
      * @sa @ref DialogLayoutDimensions

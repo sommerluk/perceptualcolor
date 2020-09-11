@@ -55,8 +55,7 @@ FullColorDescription::FullColorDescription()
  * @param colorSpace The color space in which the color description is created.
  * Only needed during constructor call. Can be deleted afterwards.
  * @param rgb color (in RGB mode)
- * @param alpha the alpha channel for color
- */
+ * @param alpha the alpha channel for color */
 FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const Helper::cmsRGB &rgb, qreal alpha)
 {
     m_rgb = rgb;

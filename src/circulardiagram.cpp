@@ -35,7 +35,7 @@
 namespace PerceptualColor {
 
 /** @brief The constructor.
- * @param parent The widget’s parent widget. This paramenter will be passed
+ * @param parent The widget’s parent widget. This parameter will be passed
  * to the QWidget base class constructor. */
 CircularDiagram::CircularDiagram(QWidget *parent)
 : AbstractDiagram(parent)
@@ -45,7 +45,7 @@ CircularDiagram::CircularDiagram(QWidget *parent)
         QSizePolicy::Expanding,
         QSizePolicy::Expanding
     );
-    // Quote from Qt’s documantation for setWidthForHeight():
+    // Quote from Qt’s documentation for setWidthForHeight():
     //     “It is not possible to have a layout with both height-for-width
     //      and width-for-height constraints at the same time.“
     // As we cannot have both, we choose height-for-width because this is
@@ -71,9 +71,9 @@ bool CircularDiagram::hasHeightForWidth() const
 }
 
 /** @brief Returns the preferred height for this widget, given the
- * width <tt>w</tt>.
+ * width <tt>w</tt>.
  * 
- * The widget preferres a circular form, so same height as width.
+ * The widget prefers a circular form, so same height as width.
  * 
  * Reimplemented from base class.
  * 
@@ -87,8 +87,8 @@ int CircularDiagram::heightForWidth(int w) const
     return w;
 }
 
-/** @brief The diameter of this circular widget, mesured in physical pixels.
- * @returns The diameter of this circular widget, mesured in physical pixels.
+/** @brief The diameter of this circular widget, measured in physical pixels.
+ * @returns The diameter of this circular widget, measured in physical pixels.
  * This is the maximum possible diameter for a circular-shaped widget, given
  * the current @ref physicalPixelSize. */
 int CircularDiagram::physicalPixelWidgetDiameter() const

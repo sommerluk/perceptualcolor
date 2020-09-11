@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     app.setApplicationName(
         QObject::tr(u8"Perceptual color picker")
     );
-    app.setLayoutDirection(Qt::RightToLeft);
+//     app.setLayoutDirection(Qt::RightToLeft);
 
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;

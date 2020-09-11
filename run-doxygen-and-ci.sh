@@ -47,3 +47,11 @@ grep --fixed-strings --recursive "@endcode" $CODEDIRECTORIES
 #    devicePixelRatioF() is an alternative that provides
 #    a qreal return value.
 grep --perl-regexp --recursive "devicePixelRatio(?!F)" $CODEDIRECTORIES
+
+# Qt’s documentation about QImage::Format says: For optimal performance only
+# use the format types QImage::Format_ARGB32_Premultiplied,
+# QImage::Format_RGB32 or QImage::Format_RGB16. Any other format, including
+# QImage::Format_ARGB32, has significantly worse performance.
+grep --perl-regexp --recursive "QImage::Format_(?!(ARGB32_Premultiplied|RGB32|RGB16))" $CODEDIRECTORIES
+
+echo && echo && echo && echo "Run unit tests…" && cd build && cmake ../ > /dev/null && make > /dev/null && make test

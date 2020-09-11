@@ -314,10 +314,32 @@ private Q_SLOTS:
     }
 
     void testTransparencyBackground() {
-        QImage temp = PerceptualColor::Helper::transparencyBackground();
-        QVERIFY2(temp.size().width() > 0, "Width is bigger than 0.");
-        QVERIFY2(temp.size().height() > 0, "Height is bigger than 0.");
-        QVERIFY2(temp.allGray(), "Image is neutral gray.");
+        QImage temp = PerceptualColor::Helper::transparencyBackground(1);
+        QVERIFY2(
+            temp.size().width() > 0,
+            "Width of unscaled image is bigger than 0."
+        );
+        QVERIFY2(
+            temp.size().height() > 0,
+            "Height of unscaled image is bigger than 0."
+        );
+        QVERIFY2(
+            temp.allGray(),
+            "Unscaled image is neutral gray."
+        );
+        QImage temp2 = PerceptualColor::Helper::transparencyBackground(1.25);
+        QVERIFY2(
+            temp2.size().width() > temp.size().width(),
+            "Width of upscaled image is biggen than unscaled image."
+        );
+        QVERIFY2(
+            temp2.size().height() > temp.size().height(),
+            "Height of upscaled image is bigger than unscaled image."
+        );
+        QVERIFY2(
+            temp.allGray(),
+            "Upscaled image is neutral gray."
+        );
     }
 
     void testStandardWheelSteps() {
@@ -357,32 +379,6 @@ cmsCIELab lab;
 cmsDoTransform(m_transformRgbToLabHandle, &rgb, &lab, 1);
 //! [Helper Use cmsRGB]
 cmsDeleteTransform(m_transformRgbToLabHandle);
-}
-
-void testSnippet02() {
-//! [Helper Use transparencyBackground]
-QImage myImage(150, 200, QImage::Format_ARGB32);
-
-QPainter myPainter(&myImage);
-
-// Fill the hole image with tiles made of transparencyBackground()
-myPainter.fillRect(
-    0,
-    0,
-    150,
-    200,
-    QBrush(PerceptualColor::Helper::transparencyBackground())
-);
-
-// Paint semi-transparent red color above
-myPainter.fillRect(
-    0,
-    0,
-    150,
-    200,
-    QBrush(QColor(255, 0, 0, 128))
-);
-//! [Helper Use transparencyBackground]
 }
 
 };

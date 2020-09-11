@@ -38,7 +38,7 @@
 namespace PerceptualColor {
 
 /** @brief Constructor */
-ColorPatch::ColorPatch(QWidget *parent) : QFrame(parent)
+ColorPatch::ColorPatch(QWidget *parent) : AbstractDiagram(parent)
 {
     setFrameShape(QFrame::StyledPanel);
     setFrameShadow(QFrame::Sunken);
@@ -90,31 +90,72 @@ void ColorPatch::setColor(const QColor &newColor)
  * the current color above. */
 void ColorPatch::paintEvent(QPaintEvent *event)
 {
-    // Paint the frame, as provided by the base class
-    QFrame::paintEvent(event);
+    
+    if (!m_color.isValid()) {
+        // Paint the frame, as provided by the base class
+        QFrame::paintEvent(event);
+        return;
+    }
 
-    // We do not paint directly on the widget, but on a QImage buffer first:
-    // As Qt documentation says:
-    //
-    //      “To get the optimal rendering result using QPainter, you should
-    //       use the platform independent QImage as paint device; i.e. using
-    //       QImage will ensure that the result has an identical pixel
-    //       representation on any platform.”
-    if (m_color.isValid()) {
-        QImage paintBuffer(size(), QImage::Format_ARGB32);
-        paintBuffer.fill(Qt::transparent);
-        QPainter painter(&paintBuffer);
-        if (m_color.alphaF() < 1) {
+    // Create an image to paint on
+    QImage tempImage = QImage(
+        qRound(contentsRect().width() * devicePixelRatioF()),
+        qRound(contentsRect().height() * devicePixelRatioF()),
+        QImage::Format_RGB32
+    );
+    if (m_color.alphaF() < 1) {
+        // Prepare the image with (semi-)transparent color
+        QImage tempBackground;
             // Background for colors that are not fully opaque
-            painter.fillRect(
-                contentsRect(),
-                QBrush(Helper::transparencyBackground())
+            tempBackground = transparencyBackground(
+                devicePixelRatioF()
+            );
+        // Paint the color above
+        QPainter(&tempBackground).fillRect(
+            0,
+            0,
+            size().width(),
+            size().height(),
+            m_color
+        );
+        // Fill the image with tiles. (QBrush will ignore
+        // the devicePixelRatioF.)
+        QPainter(&tempImage).fillRect(
+            0,
+            0,
+            tempImage.width(),
+            tempImage.height(),
+            QBrush(tempBackground)
+        );
+        if (layoutDirection() == Qt::RightToLeft) {
+            // Horizontally mirrored image for right-to-left layout,
+            // so that the “nice” part is the first you see in reading
+            // direction.
+            tempImage = tempImage.mirrored(
+                true,   // horizontally mirrored 
+                false   // vertically mirrored
             );
         }
-        painter.fillRect(contentsRect(), m_color);
-        // Paint the buffer to the actual widget
-        QPainter(this).drawImage(0, 0, paintBuffer);
+    } else {
+        // Prepare the image with plain color
+        QPainter(&tempImage).fillRect(
+            0,
+            0,
+            tempImage.width(),
+            tempImage.height(),
+            m_color
+        );
     }
+    // Set correct devicePixelRatioF for image
+    tempImage.setDevicePixelRatio(devicePixelRatioF());
+    // Paint the image on the widget
+    QPainter(this).drawImage(
+        contentsRect().x(),
+        contentsRect().y(),
+        tempImage
+    );
+    // Paint the frame, as provided by the base class
+    QFrame::paintEvent(event);
 }
 
 }

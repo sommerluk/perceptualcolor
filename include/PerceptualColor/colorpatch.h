@@ -32,7 +32,7 @@
  * Declaration of the @ref PerceptualColor::ColorPatch class and its
  * members. */
 
-#include <QFrame>
+#include "PerceptualColor/abstractdiagram.h"
 
 namespace PerceptualColor {
 
@@ -51,7 +51,7 @@ namespace PerceptualColor {
  * drag-and-drop, which is not desirable for our use case. Therefore, with
  * @ref ColorPatch there is a lightwise alternative (that, by the way,
  * implements the full  API of KColorPatch). */
-class ColorPatch : public QFrame
+class ColorPatch : public AbstractDiagram
 {
     Q_OBJECT
 
@@ -92,12 +92,13 @@ Q_SIGNALS:
      * 
      * @param color the new color */
     void colorChanged (const QColor &color);
-    
+
 protected:
     virtual void paintEvent(QPaintEvent* event) override;
 
 private:
     Q_DISABLE_COPY(ColorPatch)
+
     /** @brief Internal storage for property @ref color
      * 
      * QColor automatically initializes with an invalid color, just like it
