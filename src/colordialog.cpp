@@ -119,7 +119,7 @@ void ColorDialog::setCurrentColor(const QColor& color)
         // QColorDialog would instead call QColor.rgb() which
         // rounds to 8 bit per channel.
     } else {
-        // For invalid colors same behaviour as QColorDialog
+        // For invalid colors same behavior as QColorDialog
         temp = QColor(Qt::black);
     }
     if (testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel)) {
@@ -190,7 +190,7 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     // If we have really work to do, block recursive calls of this function
     m_isColorChangeInProgress = true;
 
-    // Save currentColor() for later comparision
+    // Save currentColor() for later comparison
     // Using currentColor() makes sure correct alpha treatment!
     QColor oldQColor = currentColor();
 
@@ -485,7 +485,7 @@ QString ColorDialog::textForHlcLineEdit() const
  * This function tests if the focus is leaving @ref m_hlcLineEdit(). If so, it
  * will update the other widgets if necessary. We have to to this because
  * @ref m_hlcLineEdit is a QLineEdit and its editingFinished() will not be
- * emited if the current value is not conform to the input mask and the
+ * emitted if the current value is not conform to the input mask and the
  * validator. So we might miss (invalid) value changes. It is nevertheless
  * important to catch these cases, because the widget must be reset to a valid
  * value. */
@@ -703,7 +703,7 @@ bool ColorDialog::testOption(QColorDialog::ColorDialogOption option) const
  * @param parent  parent widget of the dialog (or 0 for no parent)
  * @param title   window title (or an empty string for the default window
  *                title)
- * @param options the options() for custumizing the look and feel of the
+ * @param options the options() for customizing the look and feel of the
  *                dialog
  * @returns       selectedColor(): The color the user has selected; or an
  *                invalid color if the user has canceled the dialog. */
@@ -719,7 +719,7 @@ QColor ColorDialog::getColor(
         temp.setWindowTitle(title);
     }
     temp.setOptions(options);
-    // setCurrentColor() must be after setOptions
+    // setCurrentColor() must be after setOptions()
     // to allow alpha channel support
     temp.setCurrentColor(initial);
     temp.exec();
@@ -755,7 +755,7 @@ QColor ColorDialog::selectedColor() const
  * When a dialog, that wasn't formerly visible, gets visible,
  * it's @ref m_selectedColor is cleared.
  * 
- * @param visible holds wether or not the dialog should be visible */
+ * @param visible holds whether or not the dialog should be visible */
 void ColorDialog::setVisible(bool visible)
 {
     if (visible && (!isVisible())) {

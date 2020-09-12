@@ -29,6 +29,8 @@
 #include <PerceptualColor/helper.h>
 #include <PerceptualColor/rgbcolorspace.h>
 
+namespace PerceptualColor {
+
 class TestHelper : public QObject
 {
     Q_OBJECT
@@ -313,35 +315,6 @@ private Q_SLOTS:
 
     }
 
-    void testTransparencyBackground() {
-        QImage temp = PerceptualColor::Helper::transparencyBackground(1);
-        QVERIFY2(
-            temp.size().width() > 0,
-            "Width of unscaled image is bigger than 0."
-        );
-        QVERIFY2(
-            temp.size().height() > 0,
-            "Height of unscaled image is bigger than 0."
-        );
-        QVERIFY2(
-            temp.allGray(),
-            "Unscaled image is neutral gray."
-        );
-        QImage temp2 = PerceptualColor::Helper::transparencyBackground(1.25);
-        QVERIFY2(
-            temp2.size().width() > temp.size().width(),
-            "Width of upscaled image is biggen than unscaled image."
-        );
-        QVERIFY2(
-            temp2.size().height() > temp.size().height(),
-            "Height of upscaled image is bigger than unscaled image."
-        );
-        QVERIFY2(
-            temp.allGray(),
-            "Upscaled image is neutral gray."
-        );
-    }
-
     void testStandardWheelSteps() {
         QWheelEvent temp(
             QPointF(),
@@ -383,5 +356,7 @@ cmsDeleteTransform(m_transformRgbToLabHandle);
 
 };
 
-QTEST_MAIN(TestHelper)
+}
+
+QTEST_MAIN(PerceptualColor::TestHelper)
 #include "testhelper.moc" // necessary because we do not use a header file

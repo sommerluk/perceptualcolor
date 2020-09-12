@@ -45,7 +45,7 @@ namespace PerceptualColor {
 
 /** @brief The constructor.
  * @param colorSpace The color spaces within this widget should operate.
- * @param parent The widget’s parent widget. This paramenter will be passed
+ * @param parent The widget’s parent widget. This parameter will be passed
  * to the QWidget base class constructor. */
 ChromaHueDiagram::ChromaHueDiagram(
     RgbColorSpace *colorSpace,
@@ -73,12 +73,12 @@ ChromaHueDiagram::ChromaHueDiagram(
 /** @brief Sets the @ref color property corresponding to given widget
  * coordinates.
  * 
- * @param imageCoordinates A coordinte pair within the widget’s coordinate
+ * @param imageCoordinates A coordinate pair within the widget’s coordinate
  * system. This does not necessarily need to be within the actual displayed
  * diagram or even the gamut itself. It might even be negative.
  * 
  * @post If the widget coordinates are within the represented gamut, then
- * the @ref color property is set correcpondingly. If the coordinates are
+ * the @ref color property is set correspondingly. If the coordinates are
  * outside the gamut, then the chroma value is reduced (while the hue is
  * maintained) until arriving at the outer shell of the gamut; this adapted
  * color is than used for the @ref color property.
@@ -118,7 +118,7 @@ void ChromaHueDiagram::setColorFromImageCoordinates(
  *   movements from now on. Reacts on all clicks (left, middle, right). If the
  *   mouse was within the gamut, the diagram’s marker is displaced there. If
  *   the mouse was outside the gamut, the diagram’s marker always stays
- *   within the gamut: The chroma value is sacrified while the hue value is
+ *   within the gamut: The chroma value is scarified while the hue value is
  *   retained.
  * - Any other type of mouse event is handled with the default QWidget
  *   implementation of this function.
@@ -130,7 +130,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
     // current marker.
     if (areImageCoordinatesWithinDiagramSurface(event->pos())) {
         event->accept();
-        // Mouse focus is handeled manually because so we can accept
+        // Mouse focus is handled manually because so we can accept
         // focus only on mouse clicks within the displayed gamut, while
         // rejecting focus otherwise. In the constructor, therefore
         // Qt::FocusPolicy::TabFocus is specified, so that manual handling
@@ -151,7 +151,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         // current color marker.
         update();
     } else {
-        // Make sure default behaviour like drag-window in KDE’s
+        // Make sure default behavior like drag-window in KDE’s
         // “Breeze” widget style works if this widget does not
         // actually react itself on a mouse event.
         event->ignore();
@@ -166,7 +166,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
  * - If the mouse moves within the gamut, the diagram’s marker is displaced
  *   there. The mouse cursor is invisible; only the diagram’ marker is visible.
  * - If the mouse moves outside the gamut, the diagram’s marker always stays
- *   within the gamut: The chroma value is sacrified while the hue value is
+ *   within the gamut: The chroma value is scarified while the hue value is
  *   retained. Both, the diagram’s marker <em>and</em> the mouse cursor are
  *   visible.
  * 
@@ -194,7 +194,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
         }
         setColorFromImageCoordinates(event->pos());
     } else {
-        // Make sure default behaviour like drag-window in KDE’s
+        // Make sure default behavior like drag-window in KDE’s
         // Breeze widget style works.
         event->ignore();
     }
@@ -208,16 +208,16 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
  * - If the mouse is within the gamut, the diagram’s marker is displaced
  *   there.
  * - If the mouse moves outside the gamut, the diagram’s marker always stays
- *   within the gamut: The chroma value is sacrified while the hue value is
+ *   within the gamut: The chroma value is scarified while the hue value is
  *   retained.
- * - The mouse curser is made visible (if he wasn’t yet visible anyway).
+ * - The mouse cursor is made visible (if he wasn’t yet visible anyway).
  * - @ref m_isMouseEventActive is set to <tt>false</tt>.
  * 
  * If @ref m_isMouseEventActive is <tt>false</tt>, it simply falls back to
  * QWidget’s default implementation.
  * 
  * @todo What if the widget displays a gamut that has no L*=0.1 because its
- * blackpoint is lighter.? Sacrifying chroma alone does not help? How to
+ * blackpoint is lighter.? Scarifying chroma alone does not help? How to
  * react (for mouse input, keyboard input, but also API functions like
  * setColor()?
  * 
@@ -236,7 +236,7 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
         // current color marker.
         update();
     } else {
-        // Make sure default behaviour like drag-window in KDE's
+        // Make sure default behavior like drag-window in KDE's
         // Breeze widget style works
         event->ignore();
     }
@@ -253,7 +253,7 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
 void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
 {
     if (
-        // Do nothing while a the mouse is clicked and the mouse mouvement is
+        // Do nothing while a the mouse is clicked and the mouse movement is
         // tracked anyway because this would be confusing for the user.
         (!m_isMouseEventActive) &&
         // Only react on good old vertical wheels,
@@ -287,7 +287,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
  * Reimplemented from base class.
  * 
  * The keys do not react in form of up, down, left and right like in
- * cartesian coordinate systems. The keys change radial and angel like
+ * Cartesian coordinate systems. The keys change radial and angel like
  * in polar coordinate systems, because our color model is also based
  * on a polar coordinate system.
  * 
@@ -307,7 +307,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
  * 
  * @param event the paint event
  * 
- * @todo Is this behaviour really a good user experience? Or is it confusing
+ * @todo Is this behavior really a good user experience? Or is it confusing
  * that left, right, up and down don’t do what was expected? What could be
  * more intuitive keys for changing radial and angle? At least the arrow keys
  * are likely that the user tries them out by trial-and-error. */
@@ -429,7 +429,7 @@ void ChromaHueDiagram::setColor(const FullColorDescription &color)
 // TODO xxx Revision starting here
 
 
-/** @brief React on a resive event.
+/** @brief React on a resize event.
  *
  * Reimplemented from base class.
  * 
@@ -439,7 +439,7 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
 {
     Q_UNUSED(event);
 
-    // As Qt’s documentatin says: 
+    // As Qt’s documentation says: 
     //
     //     “When resizeEvent() is called, the widget already has its new
     //      geometry.”
@@ -469,7 +469,7 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
 // TODO xxx What happens when maxChroma is low and parts of the gamut are out-of-display?
 
 /**
- * @param imageCoordinates the image coordiantes
+ * @param imageCoordinates the image coordinates
  * @returns the diagram (a-b) value for given image coordinates
  */
 QPointF ChromaHueDiagram::fromImageCoordinatesToAB(
@@ -504,8 +504,8 @@ QPoint ChromaHueDiagram::imageCoordinatesFromColor()
  * 
  * The diagram surface is the gray circle on which the gamut diagram is
  * painted.
- * @param imageCoordinates the image coordiantes to test
- * @returns <tt>true</tt> if the given image coordiantes are within this
+ * @param imageCoordinates the image coordinates to test
+ * @returns <tt>true</tt> if the given image coordinates are within this
  * circle, <tt>false</tt> otherwise. */
 bool ChromaHueDiagram::areImageCoordinatesWithinDiagramSurface(
     const QPoint imageCoordinates
@@ -808,7 +808,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     // anti-aliasing results depending on the underlying window system. This
     // is especially problematic as anti-aliasing might shift or not a pixel
     // to the left or to the right. So we paint on a QImage first. As QImage
-    // (at difference to QPixmap and a QWidget) is independant of native
+    // (at difference to QPixmap and a QWidget) is independent of native
     // platform rendering, it guarantees identical anti-aliasing results on
     // all platforms. Here the quote from QPainter class documentation:
     //
@@ -826,7 +826,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     paintBuffer.setDevicePixelRatio(devicePixelRatioF());
 
     
-    // Other initializations
+    // Other initialization
     QPainter painter(&paintBuffer);
     QPen pen;
     QBrush brush;
@@ -882,7 +882,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
      * marker. Depending on the currently selected hue for the diagram, it
      * looks ugly because the colors of focus indicator and diagram do not
      * harmonize, or it is mostly invisible the the colors are similar. So
-     * this apporach does not work well.
+     * this approach does not work well.
      * 
      * It seems better to paint a focus indicator for the whole widget.
      * We could use the style primitives to paint a rectangular focus
@@ -892,11 +892,11 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
      * rectangular form.
      * 
      * Then we have to design the line that we want to display. It is better
-     * to do that ourself instead of relying on generic QStyle::PE_Frame or
-     * similar solutions as their result seems to be quite unpredictible
-     * accross various styles. So we use markerThickness as line width and
+     * to do that ourselves instead of relying on generic QStyle::PE_Frame or
+     * similar solutions as their result seems to be quite unpredictable
+     * across various styles. So we use markerThickness as line width and
      * paint it at the left-most possible position. As the diagramBorder
-     * accomodates also to markerRadius, the distance of the focus line to
+     * accommodates also to markerRadius, the distance of the focus line to
      * the real diagram also does, which looks nice. */
     if (hasFocus()) {
         painter.setRenderHint(QPainter::Antialiasing, true);

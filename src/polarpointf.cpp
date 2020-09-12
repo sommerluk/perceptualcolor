@@ -67,12 +67,12 @@ PolarPointF::PolarPointF(const qreal newRadial, const qreal newAngleDegree)
 
 /** @brief Constructor
  * 
- * Constructs an object converting from the given cartesian coordinates.
+ * Constructs an object converting from the given Cartesian coordinates.
  * 
- * If the cartesian coordinates are (0, 0) than the @ref angleDegree (which is
+ * If the Cartesian coordinates are (0, 0) than the @ref angleDegree (which is
  * meaningless for a @ref radial of 0) is set to 0°.
  * 
- * @param cartesianCoordiantes the cartesian coordinates */
+ * @param cartesianCoordiantes the Cartesian coordinates */
 PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 {
     m_radial = sqrt(
@@ -87,8 +87,8 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
             acos(cartesianCoordiantes.x() / m_radial)
         );
     } else {
-        // M_PI is defined by QtMath (also on platforms that don't
-        // support it natively)
+        // M_PI is defined by QtMath (also on platforms that don’t
+        // support it native)
         m_angleDegree = qRadiansToDegrees(
             2 * (M_PI) - acos(cartesianCoordiantes.x() / m_radial)
         );
@@ -116,7 +116,7 @@ bool PolarPointF::operator==(const PolarPointF other) const
 
 /** @brief Unequal operator
  * 
- * Inverse behaviour to @ref operator==()
+ * Inverse coordinates to @ref operator==()
  * 
  * @param other the polar coordinates to compare with
  * @returns @c true if unequal, @c false otherwise */
@@ -135,7 +135,7 @@ qreal PolarPointF::radial() const
 
 /** @brief Normalized angle
  *
- * @returns the normalized angle value (mesured in degree), guaranteed to
+ * @returns the normalized angle value (coordinates in degree), guaranteed to
  * be 0° ≤ value < 360° */
 qreal PolarPointF::angleDegree() const
 {
@@ -154,7 +154,7 @@ qreal PolarPointF::angleDegree() const
  * | <tt> −1°  </tt> | <tt>359°  </tt>  |
  * | <tt> −1.3°</tt> | <tt>358.7°</tt>  |
  * 
- * @param angleDegree an angle (mesured in degree)
+ * @param angleDegree an angle (coordinates in degree)
  * @returns the angle, normalized to the range 0° ≤ value < 360° */
 qreal PolarPointF::normalizedAngleDegree(const qreal angleDegree)
 {
@@ -165,9 +165,9 @@ qreal PolarPointF::normalizedAngleDegree(const qreal angleDegree)
     return temp;
 }
 
-/** @brief Convert to cartesion coordinates
+/** @brief Convert to Cartesian coordinates
  * 
- * @returns the corresponding cartesian coordinates */
+ * @returns the corresponding Cartesian coordinates */
 QPointF PolarPointF::toCartesian() const
 {
     return QPointF(

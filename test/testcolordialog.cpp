@@ -27,6 +27,8 @@
 #include <QtTest/QtTest>
 #include "PerceptualColor/colordialog.h"
 
+namespace PerceptualColor {
+
 class TestColorDialogHelperClass : public QWidget {
 Q_OBJECT
 void testSnippet05() {
@@ -258,7 +260,7 @@ private Q_SLOTS:
         m_perceptualDialog = new PerceptualColor::ColorDialog();
         QWidget *tempWidget = new QWidget();
         m_perceptualDialog2 = new PerceptualColor::ColorDialog(tempWidget);
-        // Test if this behaviour is conformant to QColorDialog
+        // Test if this coordinates is conformant to QColorDialog
         m_qDialog = new QColorDialog();
         m_qDialog2 = new QColorDialog(tempWidget);
         helperCompareDialog(m_perceptualDialog, m_qDialog);
@@ -306,7 +308,7 @@ private Q_SLOTS:
         m_perceptualDialog = new PerceptualColor::ColorDialog(color);
         QWidget *tempWidget = new QWidget();
         m_perceptualDialog2 = new PerceptualColor::ColorDialog(color, tempWidget);
-        // Test if this behaviour is conformant to QColorDialog
+        // Test if this coordinates is conformant to QColorDialog
         m_qDialog = new QColorDialog(color);
         m_qDialog2 = new QColorDialog(color, tempWidget);
         helperCompareDialog(m_perceptualDialog, m_qDialog);
@@ -1353,5 +1355,7 @@ delete myDialog;
 
 };
 
-QTEST_MAIN(TestColorDialog)
+}
+
+QTEST_MAIN(PerceptualColor::TestColorDialog)
 #include "testcolordialog.moc" // necessary because we do not use a header file

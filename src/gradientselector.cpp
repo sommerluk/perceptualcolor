@@ -241,7 +241,7 @@ void GradientSelector::setPageStep(qreal newPageStep)
 }
 
 // TODO It would be better to have an arrow outside the slider. This
-// could be conformant with the current QStyle, and would guarantee
+// could be conform with the current QStyle, and would guarantee
 // a consistent contrast between the arrow and its background.
 // TODO When zoom factor is 1,25, then background scaling is 1,25².
 void GradientSelector::paintEvent(QPaintEvent* event)
@@ -257,7 +257,7 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     // anti-aliasing results depending on the underlying window system. This is
     // especially problematic as anti-aliasing might shift or not a pixel to the
     // left or to the right. So we paint on a QImage first. As QImage (at
-    // difference to QPixmap and a QWidget) is independant of native platform
+    // difference to QPixmap and a QWidget) is independent of native platform
     // rendering, it guarantees identical anti-aliasing results on all
     // platforms. Here the quote from QPainter class documentation:
     //

@@ -46,7 +46,7 @@ namespace PerceptualColor {
  * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
  * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
  * value that accepts focus by mouse click, the focus will not only be
- * accepted for clicks within the actuel circle, but also for clicks
+ * accepted for clicks within the actual circle, but also for clicks
  * within the surrounding rectangle.
  */
 class SimpleColorWheel : public CircularDiagram
@@ -58,7 +58,7 @@ class SimpleColorWheel : public CircularDiagram
      * border of the widget.
      * 
      * The diagram is not painted on the whole extend of the widget. A border is
-     * left to allow that the focus indicatorcan be painted completly even when
+     * left to allow that the focus indicator can be painted completely even when
      * the widget has the focus. The border is determined automatically, its
      * value depends on markerThickness().
      * 
@@ -153,7 +153,7 @@ private:
      *  @sa updateWheelImage() 
      *  @sa m_wheelImageReady() */
     QImage m_wheelImage;
-    /** Holds wether or not m_wheelImage is up-to-date.
+    /** Holds whether or not m_wheelImage is up-to-date.
      *  @sa refreshWheelImage()
      *  @sa updateWheelImage
      * @todo It might be better to erase m_wheelImageReady when it gets

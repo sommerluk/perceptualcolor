@@ -28,6 +28,8 @@
 
 #include "PerceptualColor/colorpatch.h"
 
+namespace PerceptualColor {
+
 class TestColorPatch : public QObject
 {
     Q_OBJECT
@@ -196,5 +198,7 @@ delete m_patch;
 
 };
 
-QTEST_MAIN(TestColorPatch)
+}
+
+QTEST_MAIN(PerceptualColor::TestColorPatch)
 #include "testcolorpatch.moc" // necessary because we do not use a header file

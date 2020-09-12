@@ -44,7 +44,7 @@
 namespace PerceptualColor {
 
 /** @brief The constructor.
- * @param colorSpace The colorspace within the widget should operate
+ * @param colorSpace The color space within the widget should operate
  * @param parent Passed to the QWidget base class constructor
  */
 ChromaLightnessDiagram::ChromaLightnessDiagram(
@@ -56,8 +56,8 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     // rely on working LittleCMS)
     m_rgbColorSpace = colorSpace;
 
-    // Simple initializations
-    // We don't use the reset methods as they rely on refreshDiagram
+    // Simple initialization
+    // We don't use the reset methods as they rely on refreshDiagram()
     // (and refreshDiagram relies itself on m_hue, markerRadius and
     // markerThickness)
     cmsCIELCh temp;
@@ -71,9 +71,9 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     );
     updateBorder();
 
-    // Other initializations
+    // Other initialization
     // Accept focus only by keyboard tabbing and not by mouse click
-    // Focus by mouse click is handeled manually by mousePressEvent().
+    // Focus by mouse click is handled manually by mousePressEvent().
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
     // Define the size policy of this widget.
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -96,14 +96,14 @@ void ChromaLightnessDiagram::updateBorder()
 
 /** Sets the color values corresponding to image coordinates.
  * 
- * @param newImageCoordinates A coordinte pair within the image's coordinate
+ * @param newImageCoordinates A coordinate pair within the image's coordinate
  * system. This does not necessarily need to intersect with the actual
  * displayed diagram or the gamut. It might even be negative or outside the
  * image or even outside widget.
  * 
  * \post If the coordinates are within the gamut diagram, then
  * the corresponding values are set. If the coordinates
- * are outside the gamut diagram, then a nearest-neigbbour-search is done,
+ * are outside the gamut diagram, then a nearest-neighbor-search is done,
  * searching for the pixel that is less far from the cursor.
  */
 void ChromaLightnessDiagram::setImageCoordinates(const QPoint newImageCoordinates)
@@ -127,13 +127,13 @@ void ChromaLightnessDiagram::setImageCoordinates(const QPoint newImageCoordinate
     }
 }
 
-// TODO Do not use nearest neigbour or other pixel based search algorithms, but work directly with LittleCMS, maybe with a limited, but well-defined, precision.
+// TODO Do not use nearest neighbor or other pixel based search algorithms, but work directly with LittleCMS, maybe with a limited, but well-defined, precision.
 
 /** @brief React on a mouse press event.
  * 
  * Reimplemented from base class.
  *
- * Does not differenciate between left, middle and right mouse click.
+ * Does not differentiate between left, middle and right mouse click.
  * If the mouse is clicked within the \em displayed gamut, than the marker is placed here and further
  * mouse movements are tracked.
  * 
@@ -145,7 +145,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         event->pos()
     );
     if (imageCoordinatesInGamut(imageCoordinates)) { // TODO also accept out-of-gamut clicks when they are covered by the current marker.
-        // Mouse focus is handeled manually because so we can accept focus only
+        // Mouse focus is handled manually because so we can accept focus only
         // on mouse clicks within the displayed gamut, while rejecting focus
         // otherwise. In the constructor, therefore Qt::FocusPolicy::TabFocus
         // is specified, so that manual handling of mouse focus is up to
@@ -158,7 +158,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         setCursor(Qt::BlankCursor);
         setImageCoordinates(imageCoordinates);
     } else {
-        // Make sure default behaviour like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
     }
 }
@@ -170,7 +170,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  * Reacts only on mouse move events if previously there had been a mouse press
  * event within the displayed gamut. If the mouse moves inside the \em displayed
  * gamut, the marker is displaced there. If the mouse moves outside the
- * \em display gamut, the marker is displaced to the nearest neigbbour pixel
+ * \em display gamut, the marker is displaced to the nearest neighbor pixel
  * within gamut.
  * 
  * If previously there had not been a mouse press event, the mouse move event is ignored.
@@ -190,17 +190,17 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
         }
         setImageCoordinates(imageCoordinates);
     } else {
-        // Make sure default behaviour like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
     }
 }
 
 /** @brief React on a mouse release event.
  *
- * Reimplemented from base class. Does not differenciate between left, middle and right mouse click.
+ * Reimplemented from base class. Does not differentiate between left, middle and right mouse click.
  *
  * If the mouse is inside the \em displayed gamut, the marker is displaced there. If the mouse is
- * outside the \em display gamut, the marker is displaced to the nearest neigbbour pixel within gamut.
+ * outside the \em display gamut, the marker is displaced to the nearest neighbor pixel within gamut.
  * 
  * @param event The corresponding mouse event
  */
@@ -213,7 +213,7 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
         unsetCursor();
         m_mouseEventActive = false;
     } else {
-        // Make sure default behaviour like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
     }
 }
@@ -225,7 +225,7 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
  * Reimplemented from base class.
  * 
  * Paints the widget. Takes the existing m_diagramImage and m_diagramPixmap and paints
- * them on the widget. Paints, if approperiate, the focus indicator. Paints the marker.
+ * them on the widget. Paints, if appropriate, the focus indicator. Paints the marker.
  * Relies on that m_diagramImage and m_diagramPixmap are up to date.
  * 
  * @param event the paint event
@@ -243,7 +243,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     // anti-aliasing results depending on the underlying window system. This is
     // especially problematic as anti-aliasing might shift or not a pixel to the
     // left or to the right. So we paint on a QImage first. As QImage (at
-    // difference to QPixmap and a QWidget) is independant of native platform
+    // difference to QPixmap and a QWidget) is independent of native platform
     // rendering, it guarantees identical anti-aliasing results on all
     // platforms. Here the quote from QPainter class documentation:
     //
@@ -266,7 +266,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
      * We could paint a focus indicator (round or rectangular) around the marker.
      * Depending on the currently selected hue for the diagram, it looks ugly
      * because the colors of focus indicator and diagram do not harmonize, or
-     * it is mostly invisible the the colors are similar. So this apporach does
+     * it is mostly invisible the the colors are similar. So this approach does
      * not work well.
      * 
      * It seems better to paint a focus indicator for the whole widget.
@@ -276,15 +276,15 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
      * However, this does not work well because the chroma-lightness diagram has
      * usually a triangular shape. The style primitive, however, often paints
      * just a line at the bottom of the widget. That does not look good. An
-     * alternative approach is that we paint ourself a focus indicator only
-     * on the left of the diagram (which is the place of black/grey/white,
+     * alternative approach is that we paint ourselves a focus indicator only
+     * on the left of the diagram (which is the place of black/gray/white,
      * so the won't be any problems with non-harmonic colors).
      * 
      * Then we have to design the line that we want to display. It is better to
-     * do that ourself instead of relying on generic QStyle::PE_Frame or similar
-     * solutions as their result seems to be quite unpredictible accross various
+     * do that ourselves instead of relying on generic QStyle::PE_Frame or similar
+     * solutions as their result seems to be quite unpredictable across various
      * styles. So we use markerThickness as line width and paint it at the
-     * left-most possible position. As the border() property accomodates also to
+     * left-most possible position. As the border() property accommodates also to
      * markerRadius, the distance of the focus line to the real diagram also
      * does, which looks nice.
      */
@@ -306,8 +306,8 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     // are painting here directly on the widget, which might lead to different anti-aliasing
     // results depending on the underlying window system. An alternative approach might be to
     // do the rendering on a QImage first. As QImage (at difference to QPixmap and widgets) is
-    // independant of native platform rendering, it would garantee identical results on all
-    // platforms. But it seems a litte overkill, so we don't do that here. Anyway here the
+    // independent of native platform rendering, it would guarantee identical results on all
+    // platforms. But it seems a little overkill, so we don't do that here. Anyway here the
     // quote from QPainter class documentation:
     //
     // To get the optimal rendering result using QPainter, you should use the platform independent
@@ -362,7 +362,7 @@ QPoint ChromaLightnessDiagram::fromWidgetCoordinatesToImageCoordinates(
  * 
  * @warning This function might have an infinite loop if called when the
  * currently selected color has no non-transparent pixel on its row or line.
- * @todo This is a problem because it is well possibe this will arrive because
+ * @todo This is a problem because it is well possible this will arrive because
  * of possible rounding errors!
  * 
  * @todo Still the darkest color is far from RGB zero on usual widget size.
@@ -440,7 +440,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 }
 
 /**
- * @param imageCoordinates the image coordiantes
+ * @param imageCoordinates the image coordinates
  * @returns the chroma-lightness value for given image coordinates
  */
 QPointF ChromaLightnessDiagram::fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates)
@@ -532,7 +532,7 @@ void ChromaLightnessDiagram::setColor(const FullColorDescription &newColor)
     Q_EMIT colorChanged(newColor);
 }
 
-/** @brief React on a resive event.
+/** @brief React on a resize event.
  *
  * Reimplemented from base class.
  * 
@@ -577,7 +577,7 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
 
-// TODO what if a part of the gammut at the right is not displayed?
+// TODO what if a part of the gamut at the right is not displayed?
 
 int ChromaLightnessDiagram::border() const
 {
@@ -595,19 +595,19 @@ FullColorDescription ChromaLightnessDiagram::color() const
 
 /** @brief Generates an image of a chroma-lightness diagram.
  * 
- * This function generates images of chroma-lightness diagrams in the Lch color space.
+ * This function generates images of chroma-lightness diagrams in the LCh color space.
  * This function should be thread-save as long as you do not use the same LittleCMS
  * transform from different threads. (Also, out of the Qt library, it uses only QImage,
  * and not QPixmap, to make sure the result can be passed around between threads.)
  * 
- * @param imageHue the (Lch) hue of the image
+ * @param imageHue the (LCh) hue of the image
  * @param imageSize the size of the requested image
- * @returns A chroma-lightness diagram for the given hue. For the y axis, its heigth covers
+ * @returns A chroma-lightness diagram for the given hue. For the y axis, its height covers
  * the lightness range 0..100. [Pixel (0) corresponds to value 100. Pixel (height-1) corresponds
  * to value 0.] Its x axis uses always the same scale as the y axis. So if the size
  * is a square, both @c x range and @c y range are from @c 0 to @c 100. If the 
  * width is larger than the height, the @c x range goes beyond @c 100. The image paints all
- * the Lch values that are within the gamut of the RGB profile. All other values are
+ * the LCh values that are within the gamut of the RGB profile. All other values are
  * Qt::transparent. Intentionally there is no anti-aliasing.
  * 
  * @todo Would anti-aliasing be possible? As there is no mathematical
@@ -619,7 +619,7 @@ FullColorDescription ChromaLightnessDiagram::color() const
  * loss?
  * 
  * @todo Should this function be made static? Or the opposite: Stay a normal
- * function (but maybe even remove all agruments like imageHue and imageSize
+ * function (but maybe even remove all arguments like imageHue and imageSize
  * because we can get them directly from underlying object data)?
  * 
  * @todo Possible unit test for this function:
@@ -627,7 +627,7 @@ FullColorDescription ChromaLightnessDiagram::color() const
 void testChromaLightnessDiagramm() {
     QImage mImage;
 
-    // Testing extremly small images
+    // Testing extremely small images
     mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(0, 0));
     QCOMPARE(mImage.size(), QSize(0, 0));
     mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(1, 1));
@@ -737,21 +737,21 @@ void ChromaLightnessDiagram::updateDiagramCache()
 /** @brief Search the nearest non-transparent neighbor pixel
 * 
 * @note This code is a terribly inefficient
-* implementation of a “nearest neigbor search”. See
+* implementation of a “nearest neighbor search”. See
 * https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast
 * for a better approach.
 * 
-* @param originalPoint The point for which you search the nearest neigbor,
+* @param originalPoint The point for which you search the nearest neighbor,
 * expressed in the coordinate system of the image. This point may be within
 * or outside the image.
-* @param image The image in which the nearest neigbor is searched.
+* @param image The image in which the nearest neighbor is searched.
 * Must contain at least one pixel with an alpha value that is fully opaque.
 * @returns
 * \li If originalPoint itself is within the image and a
 *     non-transparent pixel, it returns originalPoint.
 * \li Else, if there is are non-transparent pixels in the image, the nearest
 *     non-transparent pixel is returned. (If there are various nearest
-*     neigbors at the same distance, it is undefined which one is returned.)
+*     neighbors at the same distance, it is undefined which one is returned.)
 * \li Else there are no non-transparent pixels, and simply the point
 *     <tt>0, 0</tt> is returned, but this is a very slow case. */
 QPoint ChromaLightnessDiagram::nearestNeighborSearch(
@@ -759,14 +759,14 @@ QPoint ChromaLightnessDiagram::nearestNeighborSearch(
     const QImage &image
 ) {
     // Test for special case:
-    // OriginalPoint itself is within the image and non-transparent
+    // originalPoint itself is within the image and non-transparent
     if (image.valid(originalPoint)) {
         if (image.pixelColor(originalPoint).alpha() == 255) {
             return originalPoint;
         }
     }
 
-    // No special case. So we have to actually perfor a nearest-neighbor-search.
+    // No special case. So we have to actually perform a nearest-neighbor-search.
     int x;
     int y;
     int currentBestX = 0; // 0 is the fallback value

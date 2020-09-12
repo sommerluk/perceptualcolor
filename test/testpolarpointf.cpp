@@ -27,6 +27,8 @@
 #include "PerceptualColor/polarpointf.h"
 #include <QtTest/QtTest>
 
+namespace PerceptualColor {
+
 class TestPolarPointF : public QObject
 {
     Q_OBJECT
@@ -228,5 +230,7 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(TestPolarPointF)
+}
+
+QTEST_MAIN(PerceptualColor::TestPolarPointF)
 #include "testpolarpointf.moc" // necessary because we do not use a header file

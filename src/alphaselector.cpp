@@ -66,7 +66,7 @@ AlphaSelector::AlphaSelector(RgbColorSpace *colorSpace, QWidget *parent) : QWidg
         FullColorDescription::outOfGamutBehaviour::preserve
     );
     /* setRepresentation does only do something if the new value is different from the old one.
-     * As we rely on it for initiailzation, we set it first to some other value, and second
+     * As we rely on it for initialization, we set it first to some other value, and second
      * to the really desired default value. */
     setRepresentation(NumberFormat::one); // first set to an unwanted value
     setRepresentation(NumberFormat::percent); // second set to the really wanted value
@@ -170,9 +170,9 @@ void AlphaSelector::setColor(const FullColorDescription &newColor)
  * 
  * This function registers this widget as the focus buddy of a QLabel. It's
  * better using this function than calling directly QLabel::setBuddy(). This
- * function does not set this entire widget as focus buddy, but only the spinbox
+ * function does not set this entire widget as focus buddy, but only the spin box
  * part, which seems reasonable as focus buddies react on keyboard events and
- * the spinbox is better adapted to keyboard input than the slider.
+ * the spin box is better adapted to keyboard input than the slider.
  */
 void AlphaSelector::registerAsBuddy(QLabel *label)
 {

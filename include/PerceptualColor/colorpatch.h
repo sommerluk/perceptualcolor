@@ -49,7 +49,7 @@ namespace PerceptualColor {
  * code, but only for legacy code. Also, depending on KDELibs4Support would
  * pull-in another dependency. Furthermore, KColorPatch has support for
  * drag-and-drop, which is not desirable for our use case. Therefore, with
- * @ref ColorPatch there is a lightwise alternative (that, by the way,
+ * @ref ColorPatch there is a lightweight alternative (that, by the way,
  * implements the full  API of KColorPatch). */
 class ColorPatch : public AbstractDiagram
 {

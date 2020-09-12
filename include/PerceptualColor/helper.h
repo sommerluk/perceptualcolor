@@ -58,7 +58,7 @@ static_assert(
  * This library provides various Qt GUI components for choosing colors, with
  * focus on an intuitive and perceptually uniform presentation. The GUI
  * widgets are based internally on the LCh color model, which does reflect
- * the human perceptuan much better than RGB or its transforms like HSV.
+ * the human perception much better than RGB or its transforms like HSV.
  * However, the widgets do not require the user itself to know anything
  * about LCh at all, because the graphical representations is
  * intuitive enough. This library lives in the namespace #PerceptualColor.
@@ -68,7 +68,7 @@ static_assert(
  * @snippet test/testcolordialog.cpp ColorDialog Get color
  * 
  * And there are also individual widgets available. Among others:
- * - @ref PerceptualColor::WheelColorPicker (a full-featureed color wheel)
+ * - @ref PerceptualColor::WheelColorPicker (a full-featured color wheel)
  * - @ref PerceptualColor::ColorPatch (to show a particular color)
  * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a given
  *   lightness)
@@ -104,9 +104,9 @@ static_assert(
  * @todo Provide more than 8 bit per channel for more precision? 10 bit? 12 bit?
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
- * @todo Switch to the pimpl ideom? Export symbols like in
+ * @todo Switch to the pimpl idiom? Export symbols like in
  * https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
- * Seel also http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
+ * See also http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
  * and https://labjack.com/news/simple-cpp-symbol-visibility-demo
  * @todo A program that uses our library could also use LittleCMS itself. If
  * it would use LittleCMS without thread-save API, but using it always in
@@ -120,7 +120,7 @@ static_assert(
  * let colors still be visible, would be a bad idea: It would be highly
  * confusing seeing colors, but colors that are wrong. So everything would
  * have to be gray. For @ref ColorPatch and @ref GradientSelector this could
- * be simply the default background, similir to grayed out spinboxes. And for
+ * be simply the default background, similar to grayed out spin boxes. And for
  * the diagram widgets, only the shape would stay visible, with uniform
  * standard gray colors coming from <tt>QStyle</tt>. The markers might not
  * even be displayed at all.
@@ -134,7 +134,7 @@ namespace PerceptualColor {
 /** @brief Various smaller help elements.
  * 
  * This namespace groups together various smaller elements that are used
- * across the library but do not belong stricly to one of the classes.
+ * across the library but do not belong strictly to one of the classes.
  * 
  * @todo Decide for each member of this namespace if it can be moved into
  * a class because it’s only used in this single class. */
@@ -213,7 +213,7 @@ namespace Helper {
         /** @brief Default chroma value
          * 
          *  For chroma, a default value of 0 might be a good
-         *  choise because it is less likely to make  out-of-gamut problems on
+         *  choice because it is less likely to make  out-of-gamut problems on
          *  any lightness (except maybe extreme white or extreme black). And
          *  it results in an achromatic color and is therefore perceived as
          *  neutral.
@@ -226,7 +226,7 @@ namespace Helper {
         static constexpr qreal defaultHue = 0;
         /** @brief Default lightness value
          * 
-         *  For the lightness, a default value of 50 seems a good choise as it
+         *  For the lightness, a default value of 50 seems a good choice as it
          *  is half the way in the defined lightness range of 0‥100 (thought
          *  not all gamuts offer the hole range from 0 to 100). As it is quite
          *  in the middle of the gamut solid, it allows for quite big values
@@ -256,7 +256,7 @@ namespace Helper {
         static constexpr qreal versatileSrgbChroma = 32;
         /** @brief Neutral gray color as Lab value.
          * 
-         * Neutral gray is a good choise for the background, as it is equally
+         * Neutral gray is a good choice for the background, as it is equally
          * distant from black and white, and also quite distant from any
          * saturated color. */
         static constexpr cmsCIELCh neutralGray {50, 0, 0};

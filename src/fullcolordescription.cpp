@@ -43,7 +43,7 @@ FullColorDescription::FullColorDescription()
 // when changing RGB-based values (also HSV) when entering and leaving the gray
 // axis, due to lack of hue information. Would it be an option to accept an
 // old/previous FullColorDescription (for the last selected value before
-// entering the gray axis) as additional parameter to get meaningfull hue?
+// entering the gray axis) as additional parameter to get meaningful hue?
 // Should it be only really for the gray axis, or allow a certain tolerance
 // around the gray axis is necessary to make this work well - and if so,
 // how much tolerance? Would it be useful to define a certain hue, for
@@ -73,7 +73,7 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const Help
  *
  * @param colorSpace The color space in which the color description is created.
  * Only needed during constructor call. Can be deleted afterwards.
- * @param color either an rgb color, a hsv color or an invalid color. (If it is
+ * @param color either an RGB color, a HSV color or an invalid color. (If it is
  * another type, it will be converted.)
  */
 FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor color)
@@ -112,14 +112,14 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor col
  * Only needed during constructor call. Can be deleted afterwards.
  * @param lab lab color (if out-of-gamut, it will be maintained as-is, but the
  * RGB value will be forced into the gamut.
- * @param behaviour how to treat out-of-gamut values
+ * @param coordinates how to treat out-of-gamut values
  * @param alpha the alpha channel of the color
  */
-FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour behaviour, qreal alpha)
+FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour coordinates, qreal alpha)
 {
     m_lch = toLch(lab);
     normalizeLch();
-    if (behaviour == outOfGamutBehaviour::sacrifyChroma) {
+    if (coordinates == outOfGamutBehaviour::sacrifyChroma) {
         moveChromaIntoGamut(colorSpace);
     }
     m_lab = toLab(m_lch);
@@ -136,19 +136,19 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const cmsC
  * Only needed during constructor call. Can be deleted afterwards.
  * @param lch lch color (if out-of-gamut, it will be maintained as-is, but the
  * RGB value will be forced into the gamut.
- * @param behaviour how to tread out-of-gamut values
+ * @param coordinates how to tread out-of-gamut values
  * @param alpha the alpha channel
  */
 FullColorDescription::FullColorDescription(
     RgbColorSpace *colorSpace,
     const cmsCIELCh &lch,
-    outOfGamutBehaviour behaviour,
+    outOfGamutBehaviour coordinates,
     qreal alpha
 )
 {
     m_lch = lch;
     normalizeLch();
-    if (behaviour == outOfGamutBehaviour::sacrifyChroma) {
+    if (coordinates == outOfGamutBehaviour::sacrifyChroma) {
         moveChromaIntoGamut(colorSpace);
     }
     m_lab = toLab(m_lch);
@@ -259,7 +259,7 @@ QColor FullColorDescription::toRgbQColor() const
 
 
 /**
- * @returns QColor object corresponding at hsv
+ * @returns QColor object corresponding at HSV
  */
 QColor FullColorDescription::toHsvQColor() const
 {
@@ -331,7 +331,7 @@ QString FullColorDescription::toRgbHexString() const
 {
     // Format of the numbers:
     // - Minimal field width:                   2
-    // - The base of the number represenation:  16 (hexadecimal)
+    // - The base of the number representation:  16 (hexadecimal)
     // - The fill character (leading zero):     QLatin1Char('0')
     return QStringLiteral(u"#%1%2%3")
         .arg(qRound(m_rgb.red   * 255), 2, 16, QLatin1Char('0'))
@@ -362,6 +362,6 @@ cmsCIELab FullColorDescription::toLab(const cmsCIELCh &lch)
     return temp;
 }
 
-// TODO Isn't it inconsistent if toRgbHexString is gererated on-the-fly while all others are generated previously?
+// TODO Isn't it inconsistent if toRgbHexString is generated on-the-fly while all others are generated previously?
 
 } // namespace PerceptualColor

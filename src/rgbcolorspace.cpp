@@ -159,8 +159,8 @@ cmsCIELab RgbColorSpace::colorLab(const Helper::cmsRGB &rgb) const
 /** @brief Calculates the RGB value
  * 
  * @param Lab a L*a*b* color
- * @returns If the color is within the RGB gammut, a QColor with the RGB values.
- * An invald QColor otherwise.
+ * @returns If the color is within the RGB gamut, a QColor with the RGB values.
+ * An invalid QColor otherwise.
  */
 QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 {
@@ -179,8 +179,8 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 /** @brief Calculates the RGB value
  * 
  * @param LCh an LCh color
- * @returns If the color is within the RGB gammut, a QColor with the RGB values.
- * An invald QColor otherwise.
+ * @returns If the color is within the RGB gamut, a QColor with the RGB values.
+ * An invalid QColor otherwise.
  */
 QColor RgbColorSpace::colorRgb(const cmsCIELCh &LCh) const
 {
@@ -204,7 +204,7 @@ Helper::cmsRGB RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
 /** @brief Calculates the RGB value
  * 
  * @param Lab a L*a*b* color
- * @returns If the color is within the RGB gammut, a QColor with the RGB values.
+ * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
  */
 QColor RgbColorSpace::colorRgbBound(const cmsCIELab &Lab) const
@@ -216,7 +216,7 @@ QColor RgbColorSpace::colorRgbBound(const cmsCIELab &Lab) const
 /** @brief Calculates the RGB value
  * 
  * @param LCh an LCh color
- * @returns If the color is within the RGB gammut, a QColor with the RGB values.
+ * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
  */
 QColor RgbColorSpace::colorRgbBound(const cmsCIELCh &LCh) const
@@ -227,7 +227,7 @@ QColor RgbColorSpace::colorRgbBound(const cmsCIELCh &LCh) const
     return colorRgbBound(Lab);
 }
 
-// TODO What to do with in-gamut tests if little cms has fallen back to bounded mode because of too complicate profiles? Out in-gamut detection would not work anymore!
+// TODO What to do with in-gamut tests if LittleCMS has fallen back to bounded mode because of too complicate profiles? Out in-gamut detection would not work anymore!
 
 /** @brief check if an LCh value is within a specific RGB gamut
  * @param lightness The lightness value
@@ -292,7 +292,7 @@ QString RgbColorSpace::description() const
  * 
  * @param profileHandle handle to the ICC profile in which will be searched
  * @param infoType the type of information that is searched
- * @returns A QString with the information. First, it searchs the information
+ * @returns A QString with the information. First, it searches the information
  * in the current locale (language code and country code as provided currently
  * by @c QLocale). If the information is not available in this locale, it
  * silently falls back to another available localization. Note that the

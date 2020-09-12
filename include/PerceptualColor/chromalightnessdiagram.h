@@ -41,7 +41,7 @@ namespace PerceptualColor {
 /** @brief A widget that displays a chroma-lightness diagram.
  *
  * This widget displays a chroma-lightness diagram in the LCh color model for a given hue, in a
- * carthesian coordinate system.
+ * Cartesian coordinate system.
  * 
  * The widget shows the chroma-lightness diagram at the whole widget extend. At the
  * y axis the diagram always shows the lightness values of @c 0 at the bottom pixel
@@ -56,7 +56,7 @@ namespace PerceptualColor {
  * the displayed gamut. This happens regardless of the <tt>QWidget::focusPolicy</tt>
  * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
  * value that accepts focus by mouse click, the focus will not only be
- * accepted for clicks within the actuel display gamut, but also for clicks
+ * accepted for clicks within the actual display gamut, but also for clicks
  * within the surrounding rectangle.
  */
 class ChromaLightnessDiagram : public AbstractDiagram
@@ -66,7 +66,7 @@ class ChromaLightnessDiagram : public AbstractDiagram
     /** @brief The border between the widget outer border and the diagram itself.
      * 
      * The diagram is not painted on the whole extend of the widget. A border is
-     * left to allow that the selection marker can be painted completly even when
+     * left to allow that the selection marker can be painted completely even when
      * a pixel on the border of the diagram is selected. The border is
      * determined automatically, its value depends on @ref markerRadius and
      * @ref markerThickness.

@@ -72,8 +72,8 @@ QColor AbstractDiagram::focusIndicatorColor() const
  * 
  * @note If <tt>QPaintDevice::devicePixelRatioF()</tt> is not an integer,
  * the result of this function is rounded. Qt’s widget geometry code seems
- * to round up starting with 0.5, at least on Linux/X11. As this behaviour is
- * not documentated and might be different on other platforms, it’s however
+ * to round up starting with 0.5, at least on Linux/X11. As this behavior is
+ * not documented and might be different on other platforms, it’s however
  * not save to rely on this assumption. Therefore, in this function, 
  * non-integer values are always rounded <em>down</em> to the next lower
  * integer. In some situations, depending on rounding, there will be an

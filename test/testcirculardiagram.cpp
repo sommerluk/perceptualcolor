@@ -28,6 +28,8 @@
 
 #include <PerceptualColor/circulardiagram.h>
 
+namespace PerceptualColor {
+
 class TestCircularDiagram : public QObject
 {
     Q_OBJECT
@@ -38,19 +40,19 @@ public:
 
 private Q_SLOTS:
     void initTestCase() {
-        // Called before the first testfunction is executed
+        // Called before the first test function is executed
     }
 
     void cleanupTestCase() {
-        // Called after the last testfunction was executed
+        // Called after the last test function was executed
     }
 
     void init() {
-        // Called before each testfunction is executed
+        // Called before each test function is executed
     }
 
     void cleanup() {
-        // Called after every testfunction
+        // Called after every test function
     }
 
     void testHasHeighForWidth() {
@@ -83,5 +85,8 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(TestCircularDiagram)
+}
+
+QTEST_MAIN(PerceptualColor::TestCircularDiagram)
+
 #include "testcirculardiagram.moc" // necessary because we do not use a header file

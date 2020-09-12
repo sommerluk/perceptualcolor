@@ -56,9 +56,9 @@ WheelColorPicker::WheelColorPicker(RgbColorSpace *colorSpace, QWidget *parent) :
     );
 }
 
-// TODO This widget and its child should be a unit: Only one focus, and all keyboard and mouse events apply to both widgets. But not two focus indicators! The current solution has a focusInEvent and focusOutEvent reimplementation and a focusChanged() signal which does not connect to update() and reqieres scheduleUpdate() and still shows two focus indicators. Quite a hack. Find a better solution!
+// TODO This widget and its child should be a unit: Only one focus, and all keyboard and mouse events apply to both widgets. But not two focus indicators! The current solution has a focusInEvent and focusOutEvent reimplementation and a focusChanged() signal which does not connect to update() and requires scheduleUpdate() and still shows two focus indicators. Quite a hack. Find a better solution!
 
-/** @brief React on a resive event.
+/** @brief React on a resize event.
  *
  * Reimplemented from base class.
  * 
@@ -114,10 +114,10 @@ void WheelColorPicker::keyPressEvent(QKeyEvent *event)
         case Qt::Key_PageDown:
         case Qt::Key_Home:
         case Qt::Key_End:
-            /** These keys are guaranted to be handeled by ChromaLightnessDiagram().
+            /** These keys are guaranteed to be handled by ChromaLightnessDiagram().
              * This guarantee is important. If we would pass a key that is _not_
-             * handeled by ChromaLightnessDiagram(), this event would return here
-             * because ChromaLightnessDiagram() leaves treatment of non-handeled
+             * handled by ChromaLightnessDiagram(), this event would return here
+             * because ChromaLightnessDiagram() leaves treatment of non-handled
              * keys up to the parent widget, which is _this_ widget. This would
              * make an infinite recursion. */
             QCoreApplication::sendEvent(m_chromaLightnessDiagram, event);
@@ -139,7 +139,7 @@ void WheelColorPicker::resizeChildWidget()
         contentDiameter() - 2 * (wheelThickness() + border()),
         0
     );
-    // TODO Why is QSize(140, 100) a good choise? What gamuts exist? Up to
+    // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to
     // where goes chroma there?
     QSize newChromaLightnessDiagramSize = scaleRectangleToDiagonal(
         QSize(140, 100),
@@ -148,7 +148,7 @@ void WheelColorPicker::resizeChildWidget()
     m_chromaLightnessDiagram->resize(newChromaLightnessDiagramSize);
     qreal radius = static_cast<qreal>(contentDiameter()) / 2;
     m_chromaLightnessDiagram->move(
-        // TODO Does qRound make sense here? Does it the right thing (pixelwise)?
+        // TODO Does qRound make sense here? Does it the right thing (pixel-wise)?
         qRound(radius - newChromaLightnessDiagramSize.width() / 2.0),
         qRound(radius - newChromaLightnessDiagramSize.height() / 2.0)
     );

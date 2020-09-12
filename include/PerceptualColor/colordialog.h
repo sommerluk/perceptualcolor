@@ -114,7 +114,7 @@ namespace PerceptualColor {
  * 
  * @warning The graphical display in @ref WheelColorPicker jumps when you
  * choose a gray color like HSV 20 0 125 and then increment or decrement the
- * V component in the spinbox by 1. This is because @ref WheelColorPicker is
+ * V component in the QSpinBox by 1. This is because @ref WheelColorPicker is
  * based on the LCh model and LCh’s hue component is different from HSV’s hue
  * component, and the jump is a consequence of rounding errors. There is no
  * jump when using the LCh input widget because the old hue is guarded. How
@@ -128,7 +128,7 @@ namespace PerceptualColor {
  * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
  * letters on-the-fly (as-you-type) to upper-case letters.
  * 
- * @todo Provide <tt>setWhatsThis()</tt> help for widgets. Or tooltips? Or
+ * @todo Provide <tt>setWhatsThis()</tt> help for widgets. Or tool tips? Or
  * both? What is more appropriate? Or use both? For @ref WheelColorPicker and
  * @ref ChromaLightnessDiagram, this help text could describe the keyboard
  * controls and be integrated as default value in the class itself. For the
@@ -149,12 +149,12 @@ namespace PerceptualColor {
  * and less comfortable?
  * 
  * @todo The child widget @ref m_hsvHueSpinbox() is a QDoubleSpinBox. The
- * current behaviour for pageStep‌ = 10 is 356 → 360 → 0 → 10. The expected
- * behaviour would be 356 → 6 for a continuous experience. A solution will
+ * current behavior for pageStep‌ = 10 is 356 → 360 → 0 → 10. The expected
+ * behavior would be 356 → 6 for a continuous experience. A solution will
  * likely require a new class inherited from QDoubleSpinBox or maybe
  * QAbstractSpinbox. Provide directly a widget that would also do the
  * work for HLC etc (calendar-widget-like with various values within
- * a single spinbox).
+ * a single spin box).
  * 
  * @todo Background color (or text color) for RGB could be red, green and
  * blue, corresponding to each component?
@@ -164,7 +164,7 @@ namespace PerceptualColor {
  * 
  * @todo Provide (on demand) two patches, like Scribus also does: One for the
  * old color (cannot be modified by the user) and another one for the new
- * color (same behaviour as the yet existing color patch). One could be
+ * color (same behavior as the yet existing color patch). One could be
  * named “before” and the other “after”. Or maybe make this configurable?
  * And put an arrow between the patches, from “before” to “after”. (Be aware:
  * RTL support necessary!)
@@ -172,7 +172,7 @@ namespace PerceptualColor {
  * @todo For the tab widget, use rather icons instead of the text “hue first”
  * and “lightness first”!?
  * 
- * @todo Provide palettes? Include there a palette with QColorDialog's
+ * @todo Provide palettes? Include there a palette with QColorDialog’s
  * standard colors as RGB values without a specific color space, with the 
  * name “Default”? Add
  * <a href="https://www.w3.org/TR/css-color-4/#named-colors">CSS colors</a> as
@@ -218,7 +218,7 @@ class ColorDialog : public QDialog
      * | :------------------ | :------------ | :----------
      * | ShowAlphaChannel    | false         | Allow the user to select the alpha component of a color.
      * | NoButtons           | false         | Don't display OK and Cancel buttons. (Useful for “live dialogs”.)
-     * | DontUseNativeDialog | true          | Use Qt's standard color dialog instead of the operating system native color dialog.
+     * | DontUseNativeDialog | true          | Use Qt’s standard color dialog instead of the operating system native color dialog.
      * 
      *   @invariant The option
      *   <tt>ColorDialogOption::DontUseNativeDialog</tt> will
@@ -360,13 +360,13 @@ private:
     GradientSelector *m_lchLightnessSelector;
     /** @brief Pointer to the QLineEdit that represents the HLC value. */
     QLineEdit *m_hlcLineEdit;
-    /** @brief Pointer to the QSpinbox for HSV hue. */
+    /** @brief Pointer to the QSpinBox for HSV hue. */
     QDoubleSpinBox *m_hsvHueSpinbox;
-    /** @brief Pointer to the QSpinbox for HSV saturation. */
+    /** @brief Pointer to the QSpinBox for HSV saturation. */
     QDoubleSpinBox *m_hsvSaturationSpinbox;
-    /** @brief Pointer to the QSpinbox for HSV value. */
+    /** @brief Pointer to the QSpinBox for HSV value. */
     QDoubleSpinBox *m_hsvValueSpinbox;
-    /** @brief Holds wether currently a color change is ongoing, or not.
+    /** @brief Holds whether currently a color change is ongoing, or not.
      * 
      * Used to avoid infinite recursions when updating the different widgets
      * within this dialog.
@@ -381,7 +381,7 @@ private:
     /** @brief Holds the receiver slot (if any) to be disconnected
      *  automatically after closing the dialog.
      * 
-     * Its value is only meaningfull if
+     * Its value is only meaningful if
      * @ref m_receiverToBeDisconnected is not null.
      * @sa @ref m_receiverToBeDisconnected
      * @sa @ref open() */
@@ -397,16 +397,16 @@ private:
     QPointer<QObject> m_receiverToBeDisconnected;
     /** @brief Internal storage for property @ref options */
     ColorDialogOptions m_options;
-    /** @brief Pointer to the QSpinbox for RGB blue. */
+    /** @brief Pointer to the QSpinBox for RGB blue. */
     QDoubleSpinBox *m_rgbBlueSpinbox;
     /** @brief Pointer to the RgbColorSpace object. */
     RgbColorSpace *m_rgbColorSpace;
-    /** @brief Pointer to the QSpinbox for RGB green. */
+    /** @brief Pointer to the QSpinBox for RGB green. */
     QDoubleSpinBox *m_rgbGreenSpinbox;
     /** @brief Pointer to the QLineEdit that represents the hexadecimal
      *  RGB value. */
     QLineEdit *m_rgbLineEdit;
-    /** @brief Pointer to the QSpinbox for RGB red. */
+    /** @brief Pointer to the QSpinBox for RGB red. */
     QDoubleSpinBox *m_rgbRedSpinbox;
     /** @brief Internal storage for selectedColor(). */
     QColor m_selectedColor;

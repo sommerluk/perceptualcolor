@@ -58,17 +58,17 @@ namespace PerceptualColor {
  * property:
  * - If you set the <tt>QWidget::focusPolicy</tt> property to a
  *   value that does not accept focus by mouse click, the focus
- *   will nevertheless be accepted for clicks within the actuel circle.
- *   (This is the default behaviour.)
+ *   will nevertheless be accepted for clicks within the actual circle.
+ *   (This is the default behavior.)
  * - If you set the <tt>QWidget::focusPolicy</tt> property to a
  *   value that accepts focus by mouse click, the focus will not only be
- *   accepted for clicks within the actuel circle, but also for clicks
+ *   accepted for clicks within the actual circle, but also for clicks
  *   within the surrounding rectangle.
  * 
  * @todo Example code: How to create the widget at a given
  * lightness.
  * 
- * @todo The image cache should be updated asynchroniasly (in its own thread
+ * @todo The image cache should be updated asynchronously (in its own thread
  * or even various own threads in parallel), but this should only be
  * triggered when the widget is visible, and not while the widget is
  * hidden. While waiting for the result, an empty image could be used.
@@ -142,7 +142,7 @@ private:
     static constexpr int diagramBorder = 8 * markerThickness;
     /** @brief Internal storage of the @ref color() property */
     FullColorDescription m_color;
-    /** Holds wether or not @ref m_diagramImage() is up-to-date.
+    /** Holds whether or not @ref m_diagramImage() is up-to-date.
      *  @sa @ref updateDiagramCache() */
     bool m_diagramCacheReady = false;
     /** @brief A cache for the diagram as QImage. Might be outdated.
@@ -163,7 +163,7 @@ private:
     /** @brief Holds if currently a mouse event is active or not.
      * 
      * Default value is @c false.
-     * - A mouse event gets typically actived on a @ref mousePressEvent()
+     * - A mouse event gets typically activated on a @ref mousePressEvent()
      *   done within the gamut diagram. The value is set to @c true.
      * - While active, all @ref mouseMoveEvent() will move the diagram’s color
      *   marker.
@@ -172,7 +172,7 @@ private:
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
     RgbColorSpace *m_rgbColorSpace;
-    /** Holds wether or not @ref m_wheelImage() is up-to-date.
+    /** Holds whether or not @ref m_wheelImage() is up-to-date.
      *  @sa @ref updateWheelCache() */
     bool m_isWheelCacheReady = false;
     /** @brief A cache for the wheel as QImage. Might be outdated.

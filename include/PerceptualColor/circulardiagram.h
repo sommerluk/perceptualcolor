@@ -51,7 +51,7 @@ namespace PerceptualColor {
  * convenient and intuitive for big, circular-shaped widgets like this one.
  * It would be nicer if the focus would only be accepted by mouse clicks
  * <em>within the circle itself</em>. Qt does not provide a build-in way to
- * do this. But a workaround to implement this behaviour is possible: Set
+ * do this. But a workaround to implement this behavior is possible: Set
  * <tt>QWidget::focusPolicy()</tt> to <em>not</em> accept focus by mouse
  * click. Then, reimplement <tt>mousePressEvent()</tt> and call
  * <tt>setFocus(Qt::MouseFocusReason)</tt> if the mouse click is within the

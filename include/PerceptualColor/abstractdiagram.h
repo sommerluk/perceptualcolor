@@ -123,8 +123,8 @@ protected:
     static QImage transparencyBackground(const qreal devicePixelRatioF);
 
 private:
-
     Q_DISABLE_COPY(AbstractDiagram)
+    friend class TestAbstractDiagram;
 
 };
 

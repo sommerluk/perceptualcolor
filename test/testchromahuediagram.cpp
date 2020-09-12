@@ -28,6 +28,8 @@
 
 #include "include/PerceptualColor/chromahuediagram.h"
 
+namespace PerceptualColor {
+
 class TestChromaHueDiagram : public QObject
 {
     Q_OBJECT
@@ -62,7 +64,9 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(TestChromaHueDiagram)
+}
+
+QTEST_MAIN(PerceptualColor::TestChromaHueDiagram)
 
 // The following “include” is necessary because we do not use a header file:
 #include "testchromahuediagram.moc" 

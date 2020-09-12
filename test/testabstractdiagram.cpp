@@ -30,6 +30,8 @@
 
 #include <PerceptualColor/abstractdiagram.h>
 
+namespace PerceptualColor {
+
 class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram
 {
 Q_OBJECT
@@ -81,17 +83,17 @@ public:
 
 private Q_SLOTS:
     void initTestCase() {
-        // Called before the first testfunction is executed
+        // Called before the first test function is executed
     }
     void cleanupTestCase() {
-        // Called after the last testfunction was executed
+        // Called after the last test function was executed
     }
 
     void init() {
-        // Called before each testfunction is executed
+        // Called before each test function is executed
     }
     void cleanup() {
-        // Called after every testfunction
+        // Called after every test function
     }
 
     void testBasic() {
@@ -108,7 +110,40 @@ private Q_SLOTS:
         TestAbstractDiagramHelperClass helper;
         helper.testSnippet01();
     }
+
+    void testTransparencyBackground() {
+        QImage temp = PerceptualColor::AbstractDiagram::transparencyBackground(1);
+        QVERIFY2(
+            temp.size().width() > 0,
+            "Width of unscaled image is bigger than 0."
+        );
+        QVERIFY2(
+            temp.size().height() > 0,
+            "Height of unscaled image is bigger than 0."
+        );
+        QVERIFY2(
+            temp.allGray(),
+            "Unscaled image is neutral gray."
+        );
+        QImage temp2 = PerceptualColor::AbstractDiagram::transparencyBackground(1.25);
+        QVERIFY2(
+            temp2.size().width() > temp.size().width(),
+            "Width of upscaled image is biggen than unscaled image."
+        );
+        QVERIFY2(
+            temp2.size().height() > temp.size().height(),
+            "Height of upscaled image is bigger than unscaled image."
+        );
+        QVERIFY2(
+            temp.allGray(),
+            "Upscaled image is neutral gray."
+        );
+    }
+
 };
 
-QTEST_MAIN(TestAbstractDiagram)
+}
+
+QTEST_MAIN(PerceptualColor::TestAbstractDiagram)
+
 #include "testabstractdiagram.moc" // necessary because we do not use a header file

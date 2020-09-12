@@ -62,7 +62,7 @@ static_assert(
         (static_cast<quint8>(*(("🖌")+2)) == 0x96) &&
         (static_cast<quint8>(*(("🖌")+3)) == 0x8C) &&
         (static_cast<quint8>(*(("🖌")+4)) == 0x00),
-    "Compiler must treat string litterals as UTF8. "
+    "Compiler must treat string literals as UTF8. "
     "Example: gcc -fexec-charset=UTF-8"
 );
  */

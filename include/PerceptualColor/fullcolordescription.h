@@ -76,8 +76,8 @@ public:
     FullColorDescription();
     FullColorDescription(RgbColorSpace *colorSpace, const Helper::cmsRGB &rgb, qreal alpha = 1);
     FullColorDescription(RgbColorSpace *colorSpace, QColor rgb);
-    FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour behaviour, qreal alpha = 1);
-    FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELCh &lch, outOfGamutBehaviour behaviour, qreal alpha = 1);
+    FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour coordinates, qreal alpha = 1);
+    FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELCh &lch, outOfGamutBehaviour coordinates, qreal alpha = 1);
 
     /** @brief Default copy constructor
      *

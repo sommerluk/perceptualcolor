@@ -47,7 +47,7 @@ SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
     // Setup LittleCMS (must be first thing because other operations rely on working LittleCMS)
     m_rgbColorSpace = colorSpace;
 
-    // Simple initializations
+    // Simple initialization
     // We don't use the reset methods as they would update the image/pixmap
     // each time, and this could crash if done before everything is
     // initialized.
@@ -59,7 +59,7 @@ SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
 
 /** @brief The diameter of the widget content
  * 
- * @returns the diameter of the content of this widget, mesured in pixel.
+ * @returns the diameter of the content of this widget, coordinates in pixel.
  * The content is always in form of a circle. This value includes the space
  * for the focus indicator, independently if currently the focus indicator
  * is actually displayed or not. This value corresponds to the smaller one
@@ -103,7 +103,7 @@ QPointF SimpleColorWheel::fromWheelCoordinatesToWidgetCoordinates(const PolarPoi
  * 
  * Reimplemented from base class.
  *
- * Does not differenciate between left, middle and right mouse click.
+ * Does not differentiate between left, middle and right mouse click.
  * If the mouse is clicked within the wheel ribbon, than the marker is placed here and further
  * mouse movements are tracked.
  * 
@@ -118,7 +118,7 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
         m_mouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
     } else {
-        // Make sure default behaviour like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
     }
 }
@@ -141,14 +141,14 @@ void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
             fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree()
         );
     } else {
-        // Make sure default behaviour like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
     }
 }
 
 /** @brief React on a mouse release event.
  *
- * Reimplemented from base class. Does not differenciate between left, middle and right mouse click.
+ * Reimplemented from base class. Does not differentiate between left, middle and right mouse click.
  * 
  * @param event The corresponding mouse event
  */
@@ -160,7 +160,7 @@ void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
             fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree()
         );
     } else {
-        // Make sure default behaviour like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
     }
 }
@@ -176,14 +176,14 @@ void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
  */
 void SimpleColorWheel::wheelEvent(QWheelEvent *event)
 {
-    // The step (mesured in degree) that the hue angle is changed when
-    // a mouse wheel event occures.
+    // The step (coordinates in degree) that the hue angle is changed when
+    // a mouse wheel event occurs.
     // TODO What is a reasonable value for this?
     static constexpr qreal wheelStep = 5;
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
     PolarPointF myPolarPoint = fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
-        /* Do nothing while mouse mouvement is tracked anyway. This would be confusing. */
+        /* Do nothing while mouse movement is tracked anyway. This would be confusing. */
         (!m_mouseEventActive) &&
         /* Only react on wheel events when its in the wheel ribbon or in the inner hole. */
         (myPolarPoint.radial() <= radius) &&
@@ -259,7 +259,7 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  * Reimplemented from base class.
  * 
  * Paints the widget. Takes the existing m_wheelPixmap and paints
- * them on the widget. Paints, if approperiate, the focus indicator. Paints the marker.
+ * them on the widget. Paints, if appropriate, the focus indicator. Paints the marker.
  * Relies on that m_wheelPixmap are up to date.
  * 
  * @param event the paint event
@@ -281,7 +281,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     // anti-aliasing results depending on the underlying window system. This is
     // especially problematic as anti-aliasing might shift or not a pixel to the
     // left or to the right. So we paint on a QImage first. As QImage (at
-    // difference to QPixmap and a QWidget) is independant of native platform
+    // difference to QPixmap and a QWidget) is independent of native platform
     // rendering, it guarantees identical anti-aliasing results on all
     // platforms. Here the quote from QPainter class documentation:
     //
@@ -340,7 +340,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     QPainter(this).drawImage(0, 0, paintBuffer);
 }
 
-/** @brief React on a resive event.
+/** @brief React on a resize event.
  *
  * Reimplemented from base class.
  * 
@@ -351,9 +351,9 @@ void SimpleColorWheel::resizeEvent(QResizeEvent* event)
     Q_UNUSED(event);
     // TODO The image cache is not necessarily invalid now. Thought the widget
     // was resized, the image itself might stay in the same size. See also
-    // same problem for chromahuediagram and for chromalightnessdiagram and
-    // chromalightnessdiagram's resize() call done here within the child class
-    // wheelcolorpicker. This situation is relevant for the real-world usage,
+    // same problem for ChromaHueDiagram and for ChromaLightnessDiagram
+    // ChromaLightnessDiagram’s resize() call done here within the child class
+    // WheelColorPicker. This situation is relevant for the real-world usage,
     // when the user scales the window only horizontally or only vertically.
     m_wheelImageReady = false;
     /* As by Qt documentation:
@@ -550,11 +550,11 @@ myTimer.start();
         return QImage();
     }
 
-    // Firsts of all, generate a non-antialised, intermediate, color wheel,
+    // Firsts of all, generate a non-anti-aliased, intermediate, color wheel,
     // but with some pixels extra at the inner and outer side. The overlap
     // defines an overlap for the wheel, so there are some more pixels that
     // are drawn at the outer and at the inner border of the wheel, to allow
-    // later clipping with antialising
+    // later clipping with anti-aliasing
     constexpr int overlap = 1;
     PolarPointF polarCoordinates;
     int x;
@@ -574,9 +574,9 @@ myTimer.start();
     rawWheel.fill(Qt::transparent);
     LCh.L = lightness;
     LCh.C = chroma;
-    // minimalRadial: Adding "+ 1" would reduce thw workload (less pixel to
-    // process) and still work mostly, but not completly. It creates sometimes
-    // artefacts in the antialiasing process. So we don't do that.
+    // minimalRadial: Adding "+ 1" would reduce the workload (less pixel to
+    // process) and still work mostly, but not completely. It creates sometimes
+    // artifacts in the anti-aliasing process. So we don't do that.
     qreal minimumRadial = center - thickness - border - overlap;
     qreal maximumRadial = center - border + overlap;
     for (x = 0; x <= maxExtension; ++x) {
@@ -605,7 +605,7 @@ myTimer.start();
     );
     finalWheel.fill(Qt::transparent);
     
-    // paint an anti-alised circle with the raw (non-antialiased)
+    // paint an anti-aliased circle with the raw (non-anti-aliased)
     // color wheel as brush
     QPainter myPainter(&finalWheel);
     myPainter.setRenderHint(QPainter::Antialiasing, true);
@@ -618,7 +618,7 @@ myTimer.start();
         outerDiameter - 2 * border
     );
     
-    // set the inner circle of the wheel to antialised transparency
+    // set the inner circle of the wheel to anti-aliased transparency
     myPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
     myPainter.setRenderHint(QPainter::Antialiasing, true);
     myPainter.setPen(QPen(Qt::NoPen));

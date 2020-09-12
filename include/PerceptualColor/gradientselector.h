@@ -40,7 +40,7 @@ namespace PerceptualColor {
  * A slider that displays a gradient between two LCh colors. The gradient
  * is calculated by equal steps in the LCh color space. Concerning the h
  * value (hue), which is circular, always the shorter side of the circle
- * is choosen. Examples:
+ * is chosen. Examples:
  * @li If the first hue is 182° and the second hue is 1°, than
  *     the hue will increase from 182° to 360° than 1°.
  * @li If the first hue is 169° and the second hue is 359°, than
@@ -147,7 +147,7 @@ private:
     /** @brief Cache for the gradient image
      * 
      * Holds the current gradient image (without the selection cursor). Always
-     * at the left is the first calor, always at the right is the second color.
+     * at the left is the first color, always at the right is the second color.
      * So when painting, it might be necessary to rotate the image.
      * 
      * This is a cache. Before using it, check if it's up-to-date with
