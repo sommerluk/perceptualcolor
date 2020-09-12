@@ -39,17 +39,17 @@ public:
 
 private Q_SLOTS:
     void initTestCase() {
-        // Called before the first testfunction is executed
+        // Called before the first test function is executed
     }
     void cleanupTestCase() {
-        // Called after the last testfunction was executed
+        // Called after the last test function was executed
     }
 
     void init() {
-        // Called before each testfunction is executed
+        // Called before each test function is executed
     }
     void cleanup() {
-        // Called after every testfunction
+        // Called after every test function
     }
 
     void testConstructorRadialAngle() {

@@ -42,18 +42,18 @@ public:
 private Q_SLOTS:
 
     void initTestCase() {
-        // Called before the first testfunction is executed
+        // Called before the first test function is executed
     }
 
     void cleanupTestCase() {
-        // Called after the last testfunction was executed
+        // Called after the last test function was executed
     }
 
     void init() {
-        // Called before each testfunction is executed
+        // Called before each test function is executed
     }
     void cleanup() {
-        // Called after every testfunction
+        // Called after every test function
     }
 
     void testCmsRgb() {
@@ -82,25 +82,25 @@ private Q_SLOTS:
         // green and blue should be roughly the same)
         QCOMPARE(qRound(rgb.red * 255), qRound(rgb.blue * 255));
         QCOMPARE(qRound(rgb.green * 255), qRound(rgb.blue * 255));
-        // Test if Red, Green, Blue are at the correcpt position in memory
+        // Test if Red, Green, Blue are at the correct position in memory
         lab.L = 53;
         lab.a = 80;
         lab.b = 67;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(rgb.red > 0.8, "Test if Red is at the correcpt position in memory");
+        QVERIFY2(rgb.red > 0.8, "Test if Red is at the correct position in memory");
         lab.L = 87;
         lab.a = -86;
         lab.b = 83;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(rgb.green > 0.8, "Test if Green is at the correcpt position in memory");
+        QVERIFY2(rgb.green > 0.8, "Test if Green is at the correct position in memory");
         lab.L = 32;
         lab.a = 79;
         lab.b = -107;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(rgb.blue > 0.8, "Test if Blue is at the correcpt position in memory");
+        QVERIFY2(rgb.blue > 0.8, "Test if Blue is at the correct position in memory");
         
         // Clean up
         cmsDeleteTransform(m_transformLabToRgbHandle);
@@ -183,26 +183,26 @@ private Q_SLOTS:
         // Make sure that at least it is not too high.
         QVERIFY2(
             PerceptualColor::Helper::gamutPrecision < 1,
-            "Verify that gamut precison value is not too high"
+            "Verify that gamut precision value is not too high"
         );
     }
 
     void testLchDefaults() {
-        // Is the value as documentated?
+        // Is the value as documented?
         QCOMPARE(
             static_cast<qreal>(
                 PerceptualColor::Helper::LchDefaults::defaultChroma
             ),
             0
         );
-        // Is the value as documentated?
+        // Is the value as documented?
         QCOMPARE(
             static_cast<qreal>(
                 PerceptualColor::Helper::LchDefaults::defaultHue
             ),
             0
         );
-        // Is the value as documentated?
+        // Is the value as documented?
         QCOMPARE(
             static_cast<qreal>(
                 PerceptualColor::Helper::LchDefaults::defaultLightness
