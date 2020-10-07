@@ -63,8 +63,8 @@ class ColorPatch : public AbstractDiagram
      *   Only the default widget background is visible within the frame.
      * - If the color is valid, the widget frame is filled with this color.
      *   If this color is not fully opaque, the background behind the color
-     *   will be a special background pattern (and @em not the default widget
-     *   background).
+     *   will be a special background pattern (and <em>not</em> the default
+     *   widget background).
      * 
      * @note No color management is applied. The color is used as-is to
      * paint on the canvas provided by the operation system.
@@ -98,12 +98,15 @@ protected:
 
 private:
     Q_DISABLE_COPY(ColorPatch)
+    
+    /** @brief Only for unit tests. */
+    friend class TestColorPatch;
 
     /** @brief Internal storage for property @ref color
      * 
      * QColor automatically initializes with an invalid color, just like it
      * should be for the property @ref color, so no need to initialize here
-     * manually. */
+     * explicitly. */
     QColor m_color;
 };
 

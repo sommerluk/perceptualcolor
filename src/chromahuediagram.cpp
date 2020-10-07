@@ -403,7 +403,13 @@ FullColorDescription ChromaHueDiagram::color() const
 
 /** @brief Setter for the @ref color() property.
  * 
- * @param color the new color */
+ * @param color the new color
+ * @post If <em>color</em> is valid, it is set. Otherwise, it is ignored.
+ * @todo ColorDialog (like QColorDialog) sets the color to black when an
+ * invalid value is set. On the one hand, it might be better if this
+ * function does the same and so get consistent behavior all over the
+ * library; on the other hand substituting by black feels strange and
+ * wrong… */
 void ChromaHueDiagram::setColor(const FullColorDescription &color)
 {
     if (color == m_color) {
@@ -965,14 +971,6 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
         QPoint(0, 0),
         paintBuffer
     );
-    qDebug() // TODO Remove me!
-        << size()
-        << "×"
-        << devicePixelRatioF()
-        << "="
-        << size().width() * devicePixelRatioF()
-        << ","
-        << size().height() * devicePixelRatioF();
 }
 
 }

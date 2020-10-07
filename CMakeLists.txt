@@ -37,7 +37,7 @@ set(PROJECT_PATCH_VERSION "1")
 set(PROJECT_VERSION
     "${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION}"
 )
-# # Substitutes all occurences of @PROJECT_VERSION@ in the source code file
+# # Substitutes all occurrences of @PROJECT_VERSION@ in the source code file
 # # by the actual value in CMake
 # configure_file( version_config.h.in ${CMAKE_BINARY_DIR}/generated/version_config.h )
 # # Make sure the generated file can be included:
@@ -56,9 +56,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
     ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
 
-    # Qt requieres C++11 since Qt 5.7. Source:
+    # Qt requires C++11 since Qt 5.7. Source:
     # https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
-    # Also our library requieres C++11. Therefore, we set -std=c++11 and
+    # Also our library requires C++11. Therefore, we set -std=c++11 and
     # -Wpedantic and -pedantic-errors
 
     # The flag -Werror (treat all warnings as errors) is intentionally not
@@ -137,6 +137,7 @@ set(perceptualcolor_SRC
   src/fullcolordescription.cpp
   src/gradientselector.cpp
   src/helper.cpp
+  src/multispinbox.cpp
   src/polarpointf.cpp
   src/rgbcolorspace.cpp
   src/simplecolorwheel.cpp
@@ -155,6 +156,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientselector.h
   include/PerceptualColor/helper.h
+  include/PerceptualColor/multispinbox.h
   include/PerceptualColor/polarpointf.h
   include/PerceptualColor/rgbcolorspace.h
   include/PerceptualColor/simplecolorwheel.h
@@ -168,7 +170,7 @@ include_directories("${CMAKE_SOURCE_DIR}/include/")
 # Create our library
 # The headers have to be added here explicitly because otherwise Qt's MOC
 # would not find them because they are not in the same directory as the
-# correponding .cpp files
+# corresponding .cpp files
 add_library(perceptualcolor SHARED
     ${perceptualcolor_SRC}
     ${perceptualcolor_HEADERS}
@@ -190,7 +192,7 @@ install(
 # Create our application
 add_executable(perceptualcolorpicker src/main.cpp)
 # Get warnings when using features that have been deprecated during
-# the development cicle of Qt 5. So we can be sure to be well-prepared
+# the development cycle of Qt 5. So we can be sure to be well-prepared
 # for Qt 6. TODO It should be on debug only, and not on release build!
 target_compile_definitions(perceptualcolorpicker PRIVATE QT_DEPRECATED_WARNINGS)
 target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolor)
@@ -223,6 +225,10 @@ add_test (NAME testcolorpatch COMMAND testcolorpatch)
 add_executable (testhelper test/testhelper.cpp)
 target_link_libraries (testhelper ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testhelper COMMAND testhelper)
+
+add_executable (testmultispinbox test/testmultispinbox.cpp)
+target_link_libraries (testmultispinbox ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testmultispinbox COMMAND testmultispinbox)
 
 add_executable (testpolarpointf test/testpolarpointf.cpp)
 target_link_libraries (testpolarpointf ${LIBS} Qt5::Test perceptualcolor)

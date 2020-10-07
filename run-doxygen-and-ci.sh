@@ -42,6 +42,20 @@ grep --fixed-strings --recursive "\\endcode" $CODEDIRECTORIES
 grep --fixed-strings --recursive "@code" $CODEDIRECTORIES
 grep --fixed-strings --recursive "@endcode" $CODEDIRECTORIES
 
+# -> Doxygen style: Do not use “@em xyz”. Prefer instead “<em>xyz</em>” which
+#    might be longer, but has a clearer start point and end point, which is
+#    better when non-letter characters are involved. The @ is reserved
+#    for @ref with semantically tested references.
+# -> Same thing for “@c xyz”: Prefer instead “<tt>xyz</tt>”
+grep --fixed-strings --recursive "\\em" $CODEDIRECTORIES
+grep --fixed-strings --recursive "@em" $CODEDIRECTORIES
+grep --fixed-strings --recursive "\\c" $CODEDIRECTORIES
+grep --fixed-strings --recursive "@c" $CODEDIRECTORIES
+
+# -> Coding style: Do not use the “NULL” macro, but its counterpart “nullptr”
+#    which is more type save.
+grep --fixed-strings --recursive "NULL" $CODEDIRECTORIES
+
 # -> In some Qt classes, devicePixelRatio() returns in integer.
 #    Don’t do that and use floating point precision instead. Often,
 #    devicePixelRatioF() is an alternative that provides

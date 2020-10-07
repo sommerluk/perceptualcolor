@@ -83,6 +83,23 @@ private Q_SLOTS:
             "Size policy should have hasHeightForWidth"
         );
     }
+    
+    void testPhysicalPixelWidgetDiameter() {
+        PerceptualColor::CircularDiagram myCircularDiagram;
+        QVERIFY2(
+            myCircularDiagram.physicalPixelWidgetDiameter() <= myCircularDiagram.physicalPixelSize().width(),
+            "Diameter is not too height."
+        );
+        QVERIFY2(
+            myCircularDiagram.physicalPixelWidgetDiameter() <= myCircularDiagram.physicalPixelSize().width(),
+            "Diameter is not too width."
+        );
+        QVERIFY2(
+            myCircularDiagram.physicalPixelWidgetDiameter() > 0,
+            "Diameter is positive."
+        );
+    }
+    
 };
 
 }

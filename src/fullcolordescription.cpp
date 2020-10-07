@@ -323,9 +323,9 @@ void FullColorDescription::normalizeLch()
 /** @brief  A string with a hexadecimal representation of the color.
  * 
  * This function is similar to QColor::name(), but provides correct rounding.
- * @returns A string of the form @em \#RRGGBB with the red (R), green (G) and
- * blue (B) values represented as two hexadecimal digits in the range 00⁠–⁠FF.
- * The digits A–⁠F are always upper-case.
+ * @returns A string of the form <em>\#RRGGBB</em> with the red (R), green (G)
+ * and blue (B) values represented as two hexadecimal digits in the range
+ * 00‑FF. The digits A‑⁠F are always upper-case.
  */
 QString FullColorDescription::toRgbHexString() const
 {

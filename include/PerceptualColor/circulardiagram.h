@@ -73,6 +73,8 @@ protected:
 
 private:
     Q_DISABLE_COPY(CircularDiagram)
+    /** @brief Only for unit tests. */
+    friend class TestCircularDiagram;
 
 };
 

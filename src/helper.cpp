@@ -39,7 +39,7 @@ namespace PerceptualColor {
 
 namespace Helper {
 
-    /** @brief Number of vertical @em standard wheel steps done by a
+    /** @brief Number of vertical <em>standard</em> wheel steps done by a
      *  wheel event
      * 
      * As the QWheelEvent documentation explains, there is a common physical
@@ -48,16 +48,16 @@ namespace Helper {
      * their mouse wheel, for example because they have a higher wheel
      * resolution.
      * 
-     * This function converts the values in a QMouseEvent to the @em standard
-     * wheel step count.
+     * This function converts the values in a QMouseEvent to the
+     * <em>standard</em> wheel step count.
      * 
      * @param event the QWheelEvent
-     * @returns the count of vertical @em standard wheel steps done within
-     * this mouse event. The value is positive for up-steps and negative for
-     * down-steps. On a standard mouse wheel, moving the wheel one physical
-     * step up will return the value 1. On a non-standard, higher resolution
-     * mouse wheel, moving the wheel one physical step up will return a
-     * smaller value, for example 0.7 */
+     * @returns the count of vertical <em>standard</em> wheel steps done
+     * within this mouse event. The value is positive for up-steps and
+     * negative for down-steps. On a standard mouse wheel, moving the wheel
+     * one physical step up will return the value 1. On a non-standard,
+     * higher resolution mouse wheel, moving the wheel one physical step up
+     * will return a smaller value, for example 0.7 */
     qreal standardWheelSteps(QWheelEvent *event)
     {
         // QWheelEvent::angleDelta() returns 8 units for each degree.

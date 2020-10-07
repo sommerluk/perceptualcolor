@@ -44,11 +44,11 @@ namespace PerceptualColor {
  * Cartesian coordinate system.
  * 
  * The widget shows the chroma-lightness diagram at the whole widget extend. At the
- * y axis the diagram always shows the lightness values of @c 0 at the bottom pixel
- * and the lightness value of @c 100 at the top pixel. For the @c x (chroma) axis is
- * automatically used the same scale as for the @c y axis. So if the widget size
- * is a square, both @c x range and @c y range are from @c 0 to @c 100. If the widget
- * width is larger than the widget height, the @c x range goes beyond @c 100.
+ * y axis the diagram always shows the lightness values of 0 at the bottom pixel
+ * and the lightness value of 100 at the top pixel. For the x (chroma) axis is
+ * automatically used the same scale as for the y axis. So if the widget size
+ * is a square, both x range and y range are from 0 to 100. If the widget
+ * width is larger than the widget height, the x range goes beyond 100.
  * 
  * The widget reacts on mouse events and on keyboard events (see keyPressEvent() for details).
  * 

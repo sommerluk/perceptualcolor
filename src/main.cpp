@@ -26,11 +26,14 @@
 
 #include "PerceptualColor/colordialog.h"
 
+#include "PerceptualColor/multispinbox.h"
+
 #include <QApplication>
 
 #include <QColorDialog>
 #include <QDebug>
 #include <QPainter>
+#include <QDateTimeEdit>
 #include <QColorDialog>
 
 
@@ -81,6 +84,8 @@ int main(int argc, char *argv[])
         QObject::tr(u8"Perceptual color picker")
     );
 //     app.setLayoutDirection(Qt::RightToLeft);
+//     QLocale::setDefault(QLocale::Bengali);
+
 
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
@@ -88,7 +93,12 @@ int main(int argc, char *argv[])
         QColorDialog::ColorDialogOption::ShowAlphaChannel,
         true
     );
+m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
     m_colorDialog.show();
+
+QLocale myLocale(QLocale::French, QLocale::Togo);
+qDebug() << myLocale.timeFormat();
+
     // Run
     return app.exec();
 }

@@ -51,12 +51,12 @@ protected:
      * 
      * Measured in Device Independent Pixels: Pixels used by application (user
      * space), subject to scaling by the operating system or Qt. */
-    static constexpr int markerRadius = 4;
+    static constexpr qreal markerRadius = 4;
     /** @brief The line thickness for markers.
      * 
      * Measured in Device Independent Pixels: Pixels used by application (user
      * space), subject to scaling by the operating system or Qt. */
-    static constexpr int markerThickness = 2;
+    static constexpr qreal markerThickness = 2;
     /** @brief Amount of single step for chroma.
      * 
      * Measured in LCh chroma units.
@@ -124,6 +124,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(AbstractDiagram)
+    /** @brief Only for unit tests. */
     friend class TestAbstractDiagram;
 
 };

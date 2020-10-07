@@ -42,8 +42,12 @@ AbstractDiagram::AbstractDiagram(QWidget *parent)
 /** @brief The color for painting focus indicators
  * 
  * @returns The color for painting focus indicators. This color is taken from
- * the current widget style and might therefore change if the widget style is
- * switched by the user. */
+ * the current widget style at the moment this function is called. The value
+ * might therefore be different on the next function call, if the widget style
+ * has been switched by the user in the meantime.
+ * 
+ * @note If is known that some (external) Qt style returns a wrong value
+ * for this color. */
 QColor AbstractDiagram::focusIndicatorColor() const
 {
     return palette().color(QPalette::Highlight);
@@ -72,33 +76,19 @@ QColor AbstractDiagram::focusIndicatorColor() const
  * 
  * @note If <tt>QPaintDevice::devicePixelRatioF()</tt> is not an integer,
  * the result of this function is rounded. Qt’s widget geometry code seems
- * to round up starting with 0.5, at least on Linux/X11. As this behavior is
- * not documented and might be different on other platforms, it’s however
- * not save to rely on this assumption. Therefore, in this function, 
- * non-integer values are always rounded <em>down</em> to the next lower
- * integer. In some situations, depending on rounding, there will be an
- * unused pixel column or row at the right or at the bottom of the widget.
- * Example: A length of 101 logical pixels at a device pixel ratio of 1.5
- * will result in 151 physical pixels.
+ * to round up starting with 0.5, at least on Linux/X11. Thought there is
+ * no documentation about this, we assure this is general and provide the
+ * same rounding behavior here.
  * 
  * @returns The rounded size of the widget measured in <em>physical</em>
- * pixels, as recommended for paint events. */
+ * pixels, as recommended image size for calling
+ * <tt>QPainter::drawImage()</tt> during a paint event. */
 QSize AbstractDiagram::physicalPixelSize() const
 {
-    // Assert that static_cast<int> will always round down.:
-    static_assert(
-        static_cast<int>(1.9) == 1,
-        "Assert that static_cast<int> will always round down."
-    );
-    static_assert(
-        static_cast<int>(-1.9) == -1,
-        "Assert that static_cast<int> will always round down."
-    );
-
-    // Multiply with the scale factor and round down to next integer:
+    // Multiply with the (floating point) scale factor and round:
     return QSize(
-        static_cast<int>(size().width() * devicePixelRatioF()),
-        static_cast<int>(size().height() * devicePixelRatioF())
+        qRound(size().width() * devicePixelRatioF()),
+        qRound(size().height() * devicePixelRatioF())
     );
 }
 
@@ -122,18 +112,21 @@ QSize AbstractDiagram::physicalPixelSize() const
 ** @snippet test/testabstractdiagram.cpp AbstractDiagram Use transparency background
 ** 
 ** @todo Provide color management support? Currently, we use the same
-** value for red, green and blue, this might @em not be perfectly
+** value for red, green and blue, this might <em>not</em> be perfectly
 ** neutral gray depending on the color profile of the monitor… */
 QImage AbstractDiagram::transparencyBackground(const qreal devicePixelRatioF)
 {
-    constexpr int colorValueOne = 210;
-    constexpr int colorValueTwo = 240;
-    const int squareSize = qRound(10 * devicePixelRatioF);
+    constexpr int lightnessOne = 210; // 0‥255
+    constexpr int lightnessTwo = 240; // 0‥255
+    constexpr int squareSizeInLogicalPixel = 10;
+    const int squareSize = qRound(
+        squareSizeInLogicalPixel * devicePixelRatioF
+    );
 
     QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
-    temp.fill(QColor(colorValueOne, colorValueOne, colorValueOne));
+    temp.fill(QColor(lightnessOne, lightnessOne, lightnessOne));
     QPainter painter(&temp);
-    QColor foregroundColor(colorValueTwo, colorValueTwo, colorValueTwo);
+    QColor foregroundColor(lightnessTwo, lightnessTwo, lightnessTwo);
     painter.fillRect(
         0,
         0,

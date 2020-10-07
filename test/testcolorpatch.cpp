@@ -135,6 +135,13 @@ private Q_SLOTS:
         QCOMPARE(thePatch.color(), QColor());
     }
 
+    void testM_color() {
+        PerceptualColor::ColorPatch thePatch;
+        thePatch.setColor(Qt::red);
+        QCOMPARE(thePatch.color(), Qt::red);
+        QCOMPARE(thePatch.m_color, Qt::red);
+    }
+
     void testApplyColors() {
         PerceptualColor::ColorPatch thePatch;
         // Test initial value (an invalid color following the documentation)

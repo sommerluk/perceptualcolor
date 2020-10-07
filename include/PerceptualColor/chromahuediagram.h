@@ -79,6 +79,10 @@ namespace PerceptualColor {
  * 
  * @todo Automatically scale the thickness of the wheel (and maybe even the
  * marker) with varying widget size?
+ * 
+ * @todo Support additional mouse buttons. For example, “forward” and
+ * “backward” could be used to increase or decrease the radial, while
+ * the angel is controlled by the mouse wheel.
  *         
  * @todo Provide RESET functions for all properties around the library? */
 class ChromaHueDiagram : public CircularDiagram
@@ -129,6 +133,9 @@ protected:
 private:
 
     Q_DISABLE_COPY(ChromaHueDiagram)
+    
+    /** @brief Only for unit tests. */
+    friend class TestChromaHueDiagram;
 
     // Member variables
     /** @brief The border around the round diagram.
@@ -139,7 +146,7 @@ private:
      * The border is the space where the surrounding color wheel and, where
      * applicable, the focus indicator is painted.
      * @sa @ref markerThickness */
-    static constexpr int diagramBorder = 8 * markerThickness;
+    static constexpr qreal diagramBorder = 8 * markerThickness;
     /** @brief Internal storage of the @ref color() property */
     FullColorDescription m_color;
     /** Holds whether or not @ref m_diagramImage() is up-to-date.
@@ -162,13 +169,14 @@ private:
     qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
     /** @brief Holds if currently a mouse event is active or not.
      * 
-     * Default value is @c false.
+     * Default value is <tt>false</tt>.
      * - A mouse event gets typically activated on a @ref mousePressEvent()
-     *   done within the gamut diagram. The value is set to @c true.
+     *   done within the gamut diagram. The value is set to <tt>true</tt>.
      * - While active, all @ref mouseMoveEvent() will move the diagram’s color
      *   marker.
-     * - Once a @ref mouseReleaseEvent() occurs, the value is set to @c false.
-     *   Further mouse movements will not move the marker anymore. */
+     * - Once a @ref mouseReleaseEvent() occurs, the value is set to
+     *   <tt>false</tt>. Further mouse movements will not move the marker
+     *   anymore. */
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
     RgbColorSpace *m_rgbColorSpace;

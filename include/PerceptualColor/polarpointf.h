@@ -58,9 +58,9 @@ namespace PerceptualColor {
  *   (see @ref normalizedAngleDegree() for details)
  * 
  * When the radial is 0, often by convention the (meaningless) angle is set
- * also 0. This class does \em not normalize the angle to 0 when the radial
- * is 0 as long as initialized with a radial and an angle. However, when
- * initialized with Cartesian coordinates (0, 0) then the result is
+ * also 0. This class does <em>not</em> normalize the angle to 0 when the
+ * radial is 0 as long as initialized with a radial and an angle. However,
+ * when initialized with Cartesian coordinates (0, 0) then the result is
  * radial 0 and angle 0. See also @ref operator==().
  * 
  * This class is declared as type to Qt’s type system:

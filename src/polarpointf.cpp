@@ -103,7 +103,7 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
  * @ref angleDegree() is meaningless if the @ref radial() is 0.
  * 
  * @param other the polar coordinates to compare with
- * @returns @c true if equal, @c false otherwise */
+ * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise */
 bool PolarPointF::operator==(const PolarPointF other) const
 {
     return (
@@ -119,7 +119,7 @@ bool PolarPointF::operator==(const PolarPointF other) const
  * Inverse coordinates to @ref operator==()
  * 
  * @param other the polar coordinates to compare with
- * @returns @c true if unequal, @c false otherwise */
+ * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise */
 bool PolarPointF::operator!=(const PolarPointF other) const
 {
     return !(*this == other);

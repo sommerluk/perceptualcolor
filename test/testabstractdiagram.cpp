@@ -125,7 +125,7 @@ private Q_SLOTS:
             temp.allGray(),
             "Unscaled image is neutral gray."
         );
-        QImage temp2 = PerceptualColor::AbstractDiagram::transparencyBackground(1.25);
+        QImage temp2 = AbstractDiagram::transparencyBackground(1.25);
         QVERIFY2(
             temp2.size().width() > temp.size().width(),
             "Width of upscaled image is biggen than unscaled image."
@@ -137,6 +137,78 @@ private Q_SLOTS:
         QVERIFY2(
             temp.allGray(),
             "Upscaled image is neutral gray."
+        );
+    }
+    
+    void testFocusIndicatorColor() {
+        QVERIFY2(
+            AbstractDiagram().focusIndicatorColor().isValid(),
+            "focusIndicatorColor() returns a valid color."
+        );
+    }
+    
+    void testPhysicalPixelSize() {
+        AbstractDiagram temp;
+        temp.show();
+        qreal widthError =
+            (temp.width() * temp.devicePixelRatioF())
+            - temp.physicalPixelSize().width();
+        QVERIFY2(
+            qAbs(widthError) < 1,
+            "Rounding width with error < 1."
+        );
+        qreal heightError =
+            (temp.height() * temp.devicePixelRatioF())
+            - temp.physicalPixelSize().height();
+        QVERIFY2(
+            qAbs(heightError) < 1,
+            "Rounding height with error < 1."
+        );
+    }
+    
+    void testMarker() {
+        AbstractDiagram temp;
+        QVERIFY2(
+            temp.markerRadius > 0,
+            "Radius is positive."
+        );
+        QVERIFY2(
+            temp.markerThickness > 0,
+            "Thickness is positive."
+        );
+        QVERIFY2(
+            temp.markerRadius > temp.markerThickness,
+            "Radius is bigger than thickness. "
+            "(Otherwise, there would be no hole in the middle.)"
+        );
+        QVERIFY2(
+            std::is_floating_point<decltype(temp.markerRadius)>::value,
+            "markerRadius is floating point (important for high-dpi support)"
+        );
+        QVERIFY2(
+            std::is_floating_point<decltype(temp.markerThickness)>::value,
+            "markerThickness is floating point (important for "
+                "high-dpi support)"
+        );
+    }
+    
+    void testSteps() {
+        AbstractDiagram temp;
+        QVERIFY2(
+            temp.pageStepChroma > temp.singleStepChroma,
+            "Chroma page step is bigger than single step."
+        );
+        QVERIFY2(
+            temp.singleStepChroma > 0,
+            "Chroma single step is positive."
+        );
+        QVERIFY2(
+            temp.pageStepHue > temp.singleStepHue,
+            "Hue page step is bigger than single step."
+        );
+        QVERIFY2(
+            temp.singleStepHue > 0,
+            "Hue single step is positive."
         );
     }
 

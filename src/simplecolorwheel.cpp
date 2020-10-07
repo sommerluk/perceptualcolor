@@ -456,8 +456,8 @@ QSize SimpleColorWheel::minimumSizeHint() const
  * widget is invisible anyway.
  * 
  * This function does not repaint the widget! After calling this function,
- * you have to call manually @c update() to schedule a re-paint of the widget,
- * if you wish so. */
+ * you have to call manually <tt>update()</tt> to schedule a re-paint of the
+ * widget, if you wish so. */
 void SimpleColorWheel::updateWheelImage()
 {
     if (m_wheelImageReady) {

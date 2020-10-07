@@ -134,7 +134,7 @@ void ChromaLightnessDiagram::setImageCoordinates(const QPoint newImageCoordinate
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
- * If the mouse is clicked within the \em displayed gamut, than the marker is placed here and further
+ * If the mouse is clicked within the <em>displayed</em> gamut, than the marker is placed here and further
  * mouse movements are tracked.
  * 
  * @param event The corresponding mouse event
@@ -168,9 +168,9 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  * Reimplemented from base class.
  *
  * Reacts only on mouse move events if previously there had been a mouse press
- * event within the displayed gamut. If the mouse moves inside the \em displayed
+ * event within the displayed gamut. If the mouse moves inside the <em>displayed</em>
  * gamut, the marker is displaced there. If the mouse moves outside the
- * \em display gamut, the marker is displaced to the nearest neighbor pixel
+ * <em>displayed</em> gamut, the marker is displaced to the nearest neighbor pixel
  * within gamut.
  * 
  * If previously there had not been a mouse press event, the mouse move event is ignored.
@@ -199,8 +199,8 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
  *
  * Reimplemented from base class. Does not differentiate between left, middle and right mouse click.
  *
- * If the mouse is inside the \em displayed gamut, the marker is displaced there. If the mouse is
- * outside the \em display gamut, the marker is displaced to the nearest neighbor pixel within gamut.
+ * If the mouse is inside the <em>displayed</em> gamut, the marker is displaced there. If the mouse is
+ * outside the <em>displayed</em> gamut, the marker is displaced to the nearest neighbor pixel within gamut.
  * 
  * @param event The corresponding mouse event
  */
@@ -218,7 +218,7 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-// TODO What when m_color has a valid in-gamut color, but this color is out of the _displayed_ diagram? How to handle that?
+// TODO What when @ref m_color has a valid in-gamut color, but this color is out of the _displayed_ diagram? How to handle that?
 
 /** @brief Paint the widget.
  * 
@@ -460,14 +460,22 @@ QPoint ChromaLightnessDiagram::currentImageCoordinates()
     updateDiagramCache();
     return QPoint(
         qRound(m_color.toLch().C * (m_diagramImage.height() - 1) / 100),
-        qRound(m_color.toLch().L * (m_diagramImage.height() - 1) / 100 * (-1) + (m_diagramImage.height() - 1))
+        qRound(
+            m_color.toLch().L
+                * (m_diagramImage.height() - 1)
+                / 100
+                * (-1)
+                + (m_diagramImage.height() - 1)
+        )
     );
 }
 
 /** @brief Tests if image coordinates are in gamut.
- *  @returns @c true if the image coordinates are within the displayed gamut. Otherwise @c false.
- */
-bool ChromaLightnessDiagram::imageCoordinatesInGamut(const QPoint imageCoordinates)
+ *  @returns <tt>true</tt> if the image coordinates are within the
+ *  displayed gamut. Otherwise <tt>false</tt>. */
+bool ChromaLightnessDiagram::imageCoordinatesInGamut(
+    const QPoint imageCoordinates
+)
 {
     // variables
     bool temp;
@@ -595,20 +603,23 @@ FullColorDescription ChromaLightnessDiagram::color() const
 
 /** @brief Generates an image of a chroma-lightness diagram.
  * 
- * This function generates images of chroma-lightness diagrams in the LCh color space.
- * This function should be thread-save as long as you do not use the same LittleCMS
- * transform from different threads. (Also, out of the Qt library, it uses only QImage,
- * and not QPixmap, to make sure the result can be passed around between threads.)
+ * This function generates images of chroma-lightness diagrams in the
+ * LCh color space. This function should be thread-save as long as you do
+ * not use the same LittleCMS transform from different threads. (Also, out
+ * of the Qt library, it uses only QImage, and not QPixmap, to make sure
+ * the result can be passed around between threads.)
  * 
- * @param imageHue the (LCh) hue of the image
+ * @param imageHue the (LCh) hue of the image
  * @param imageSize the size of the requested image
- * @returns A chroma-lightness diagram for the given hue. For the y axis, its height covers
- * the lightness range 0..100. [Pixel (0) corresponds to value 100. Pixel (height-1) corresponds
- * to value 0.] Its x axis uses always the same scale as the y axis. So if the size
- * is a square, both @c x range and @c y range are from @c 0 to @c 100. If the 
- * width is larger than the height, the @c x range goes beyond @c 100. The image paints all
- * the LCh values that are within the gamut of the RGB profile. All other values are
- * Qt::transparent. Intentionally there is no anti-aliasing.
+ * @returns A chroma-lightness diagram for the given hue. For the y axis,
+ * its height covers the lightness range 0..100. [Pixel (0) corresponds
+ * to value 100. Pixel (height-1) corresponds to value 0.] Its x axis
+ * uses always the same scale as the y axis. So if the size
+ * is a square, both x range and y range are from 0 to 100. If the 
+ * width is larger than the height, the x range goes beyond 100. The
+ * image paints all the LCh values that are within the gamut of the
+ * RGB profile. All other values are Qt::transparent. Intentionally
+ * there is no anti-aliasing.
  * 
  * @todo Would anti-aliasing be possible? As there is no mathematical
  * description of the shape of the color solid, the only way to get
@@ -708,16 +719,17 @@ qDebug() << "Generating chroma-lightness gamut image took" << myTimer.restart() 
 /** @brief Refresh the diagram and associated data
  * 
  * This class has a cache of various data related to the diagram.
- * This data is cached because it is often needed and it would be expensive to calculate it
- * again and again on the fly.
+ * This data is cached because it is often needed and it would be
+ * expensive to calculate it again and again on the fly.
  * 
- * Calling this function updates this cached data. This is always necessary if the data
- * the diagram relies on, has changed. For example, if the hue() property or the widget size
- * have changed, this function has to be called.
+ * Calling this function updates this cached data. This is always
+ * necessary if the data the diagram relies on, has changed. For example,
+ * if the hue() property or the widget size have changed, this function
+ * has to be called.
  * 
- * This function does not repaint the widget! After calling this function, you have to call
- * manually @c update() to schedule a re-paint of the widget, if you wish so.
- */
+ * This function does not repaint the widget! After calling this function,
+ * you have to call manually <tt>update()</tt> to schedule a re-paint of
+ * the widget, if you wish so. */
 void ChromaLightnessDiagram::updateDiagramCache()
 {
     if (m_diagramCacheReady) {

@@ -78,12 +78,13 @@ static_assert(
  * modules Qt Core, Qt Gui and Qt Widgets are necessary)
  * and <a href="http://www.littlecms.com/">LittleCMS 2</a>.
  * 
- * The library uses in general @c int for integer values, because @c QSize()
- * and @c QPoint() also do. As the library relies heavily on the usage of
- * @c QSize() and @c QPoint(), this seems reasonable. For the same reason, it
- * uses generally @c qreal for floating point values, because @c QPointF()
- * also does. Output colors that are shown on the screen, are usually
- * 8-bit-per-channel colors. For internal transformation, usually @c qreal
+ * The library uses in general <tt>int</tt> for integer values, because
+ * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
+ * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
+ * seems reasonable. For the same reason, it uses generally <tt>qreal</tt>
+ * for floating point values, because <tt>QPointF()</tt> also does. Output
+ * colors that are shown on the screen, are usually 8-bit-per-channel
+ * colors. For internal transformation, usually <tt>qreal</tt>
  * is used for each channel, giving a better precision and reducing rounding
  * errors.
  * 
@@ -100,8 +101,13 @@ static_assert(
  * Everything that is provides in this library is encapsulated within this
  * namespace.
  * 
+ * @todo Test well the scaling for all widgets from 106.25% up to 200%.
+ * @todo When scaling is used, the icons on the OK button and the Cancel button
+ * are ugly. Why isn’t this handled automatically correctly, though on other
+ * Qt apps it seems to be handled automatically correctly?
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
- * @todo Provide more than 8 bit per channel for more precision? 10 bit? 12 bit?
+ * @todo Provide more than 8 bit per channel for more precision? 10 bit?
+ * 12 bit?
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
  * @todo Switch to the pimpl idiom? Export symbols like in
@@ -110,7 +116,7 @@ static_assert(
  * and https://labjack.com/news/simple-cpp-symbol-visibility-demo
  * @todo A program that uses our library could also use LittleCMS itself. If
  * it would use LittleCMS without thread-save API, but using it always in
- * the very same thread which is @em not the main thread, this could make
+ * the very same thread which is <em>not</em> the main thread, this could make
  * problems for our library if we use non-thread-save LittleCMS APIs. So
  * best would be that our library uses exclusively <em>thread-save</em>
  * APIs of LittleCMS.
@@ -137,7 +143,9 @@ namespace PerceptualColor {
  * across the library but do not belong strictly to one of the classes.
  * 
  * @todo Decide for each member of this namespace if it can be moved into
- * a class because it’s only used in this single class. */
+ * a class because it’s only used in this single class.
+ * @todo Maybe, get rid of this namespace completely, integrating the
+ * available functionality into the abstract base classes? */
 namespace Helper {
 
     /** @brief An RGB color.

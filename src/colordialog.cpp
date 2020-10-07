@@ -31,6 +31,7 @@
 
 // Own header
 #include "PerceptualColor/colordialog.h"
+#include "PerceptualColor/multispinbox.h"
 
 #include <QApplication>
 #include <QFormLayout>
@@ -61,10 +62,10 @@ ColorDialog::ColorDialog(QWidget *parent) : QDialog(parent)
  *  @param initial the initially chosen color of the dialog
  *  @param parent pointer to the parent widget, if any
  *  @post The object is constructed and @ref setCurrentColor() is called
- *  with @em initial. See @ref setCurrentColor() for the modifications that
- *  will be applied before setting the current color. Especially, as
+ *  with <em>initial</em>. See @ref setCurrentColor() for the modifications
+ *  that will be applied before setting the current color. Especially, as
  *  this dialog is constructed by default without alpha support, the
- *  alpha channel of @em initial is ignored and a fully opaque color is
+ *  alpha channel of <em>initial</em> is ignored and a fully opaque color is
  *  used. */
 ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
     : QDialog(parent)
@@ -102,8 +103,8 @@ QColor ColorDialog::currentColor() const
  * 
  * @param color the new color
  * \post The property @ref currentColor is adapted as follows:
- * - If @em color is not valid, <tt>Qt::black</tt> is used instead.
- * - If <em>color</em>'s <tt>QColor::Spec</tt> is @em not
+ * - If <em>color</em> is not valid, <tt>Qt::black</tt> is used instead.
+ * - If <em>color</em>'s <tt>QColor::Spec</tt> is <em>not</em>
  *   <tt>QColor::Spec::Rgb</tt> then it will be converted silently
  *   to <tt>QColor::Spec::Rgb</tt>
  * - The RGB part of @ref currentColor will be the RGB part of <tt>color</tt>.
@@ -631,6 +632,37 @@ QWidget* ColorDialog::initializeNumericPage()
     tempNumericPageFormLayout->addRow(tempHsvLabel, tempHsvLayout);
     tempNumericPageFormLayout->addRow(tr("HL&C"), m_hlcLineEdit);
     
+// Test code
+    MultiSpinBox *myMulti = new MultiSpinBox();
+    MultiSpinBox::Section mySection;
+    mySection.minimum = 0;
+    mySection.maximum = 360;
+    mySection.prefix = "";
+    mySection.suffix = "°";
+    MultiSpinBox::SectionList myConfiguration;
+    myConfiguration.append(mySection);
+    mySection.maximum = 100;
+    mySection.prefix = " ";
+    mySection.suffix = "%";
+    myConfiguration.append(mySection);
+    mySection.maximum = 255;
+    mySection.prefix = " ";
+    mySection.suffix = "";
+    myConfiguration.append(mySection);
+    myMulti->setConfiguration(myConfiguration);
+    tempNumericPageFormLayout->addRow(
+        tr("Test&Multi"),
+        myMulti
+    );
+    tempNumericPageFormLayout->addRow(
+        tr("TestDouble"), 
+        new QDoubleSpinBox()
+    );
+    tempNumericPageFormLayout->addRow(
+        tr("TestAbstract"), 
+        new QAbstractSpinBox()
+    );
+    
     // Create a global widget using the previously created global layout
     QWidget *tempWidget = new QWidget;
     tempWidget->setLayout(tempNumericPageFormLayout);
@@ -732,8 +764,8 @@ QColor ColorDialog::getColor(
  * the color that was actually selected by the user by clicking the OK button
  * or pressing the return key or another equivalent action.
  * 
- * This function most useful to get the actually selected color @em after that
- * the dialog has been closed.
+ * This function most useful to get the actually selected color <em>after</em>
+ * that the dialog has been closed.
  * 
  * When a dialog that had been closed or hidden is shown again,
  * this function returns to an invalid QColor().
@@ -748,7 +780,7 @@ QColor ColorDialog::selectedColor() const
     return m_selectedColor;
 }
 
-/** @brief Setter for property @em visible
+/** @brief Setter for property <em>visible</em>
  * 
  * Reimplemented from base class.
  * 

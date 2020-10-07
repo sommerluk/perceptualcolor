@@ -35,7 +35,7 @@ class TestXXX : public QObject
 
 public:
     TestXXX(QObject *parent = nullptr) : QObject(parent) {
-    };
+    }
 
 private Q_SLOTS:
     void initTestCase() {

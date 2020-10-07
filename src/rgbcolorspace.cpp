@@ -43,9 +43,10 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
     // TODO How to handle that?
     
     // Create an ICC v4 profile object for the Lab color space.
-    // NULL means: Default white point (D50)
+    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(
+        nullptr // nullptr means: Default white point (D50)
     // TODO Does this make sense? sRGB white point is D65!
-    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
+    );
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
     m_description = getInformationFromProfile(
@@ -292,12 +293,12 @@ QString RgbColorSpace::description() const
  * 
  * @param profileHandle handle to the ICC profile in which will be searched
  * @param infoType the type of information that is searched
- * @returns A QString with the information. First, it searches the information
- * in the current locale (language code and country code as provided currently
- * by @c QLocale). If the information is not available in this locale, it
- * silently falls back to another available localization. Note that the
- * returned QString() might be empty if the requested information is not
- * available in the ICC profile. */
+ * @returns A QString with the information. First, it searches the
+ * information in the current locale (language code and country code as
+ * provided currently by <tt>QLocale</tt>). If the information is not
+ * available in this locale, it silently falls back to another available
+ * localization. Note that the returned QString() might be empty if the
+ * requested information is not available in the ICC profile. */
 QString RgbColorSpace::getInformationFromProfile(
     cmsHPROFILE profileHandle,
     cmsInfoType infoType
@@ -352,7 +353,7 @@ QString RgbColorSpace::getInformationFromProfile(
 
     // Allocate the buffer
     wchar_t *buffer = new wchar_t[bufferLength];
-    // Initialize the buffer with NULL
+    // Initialize the buffer with 0
     for (cmsUInt32Number i = 0; i < bufferLength - 1; ++i) {
         *(buffer + i) = 0;
     }
@@ -373,7 +374,7 @@ QString RgbColorSpace::getInformationFromProfile(
         resultLength    
     );
     // Make absolutely sure the buffer is null-terminated by marking its last
-    // element (the one that was the +1 "extra" element) as NULL.
+    // element (the one that was the +1 "extra" element) as null.
     *(buffer + (bufferLength - 1)) = 0;
 
     // Create a QString() from the from the buffer
@@ -382,7 +383,7 @@ QString RgbColorSpace::getInformationFromProfile(
      * null-terminated strings. */
     QString result = QString::fromWCharArray(
         buffer, // read from the buffer
-        -1      // read until the first NULL element
+        -1      // read until the first null element
     );
 
     // Free allocated memory of the buffer

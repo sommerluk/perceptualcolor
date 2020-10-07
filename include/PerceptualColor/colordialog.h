@@ -104,12 +104,12 @@ namespace PerceptualColor {
  *   <tt>PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel</tt>
  *   or <tt>QColorDialog::ShowAlphaChannel</tt>, at your option.
  * - Calling @ref setCurrentColor() with colors that
- *   are @em not <tt>QColor::Spec::Rgb</tt> will lead to an automatic
+ *   are <em>not</em> <tt>QColor::Spec::Rgb</tt> will lead to an automatic
  *   conversion like QColorDialog does, but at difference to QColorDialog, it
  *   is done with more precision, therefor the resulting
  *   @ref currentColor() might be slightly different. The same is true
  *   for <tt>QColor::Spec::Rgb</tt> types with floating point precision:
- *   While QColorDialog would round to full integers, @em this dialog
+ *   While QColorDialog would round to full integers, <em>this</em> dialog
  *   preserves the floating point precision.
  * 
  * @warning The graphical display in @ref WheelColorPicker jumps when you
@@ -122,6 +122,51 @@ namespace PerceptualColor {
  * for RGB values changing along the gray axis: #444 → #555 → #666 changes
  * the graphically displayed hue.
  * 
+ * @todo Implement unit tests for private slots, methods and members. (For
+ * everything else, unit tests are available yet now.) This has to be done
+ * <em>after</em> the MultiSpinBox is available and has replaced the
+ * indivudual spin boxes and the line edits in this dialog.
+ * 
+ * @todo Touch screen compatibility: Position of the color patch
+ * <em>above</em> the selector widget instead of below?
+ * 
+ * This would be better for touch screen compatibility (the hand does not
+ * hide the widget that shows the resulting color); also Apple does this in
+ * its native color dialog.
+ * 
+ * On the other hand, the overall layout would be less logical: The typical
+ * workflow is probably:
+ * 1. Start with selecting a color
+ * 2. Verify the color in the color patch
+ * 3. Modify its alpha component
+ * 4. Confirm with OK button
+ * 
+ * Currently, this workflow is reflected by the layout: All elements are
+ * ordered in this very same order, from top to bottom. Changing the
+ * position of the color patch would break that.
+ * 
+ * A possible solution might be to control this with a property (enum
+ * DialogColorPatchPosition “optimizeForTouchscreen” “optimizeForWorkflow”).
+ * 
+ * @todo In general: What would mean better support for touch-screen and 
+ * convertible?
+ * 
+ * @todo In general: What would mean QML support?
+ * 
+ * @todo Bug fix this:
+ * - Set the value HSV 200 0 0
+ * - Push tabulator key until the focus enters in the “Hex” field. The
+ *   HSV values stays always 200 0 0.
+ * - Push the tabulator key once again: The HSV value changes to
+ *   200 0 0.
+ * 
+ * There are two issues:
+ * 
+ * First: Focus change should never change values.
+ * 
+ * Second: Why 360°? Even if this would be the correct value, it should
+ * never be represented by 360°, but always by 0°!
+ * 
  * @todo High-dpi-support: Scale the icons of the “OK button” and “Cancel
  * button” correctly. More details:
  * https://bugs.kde.org/show_bug.cgi?id=273938
@@ -132,8 +177,8 @@ namespace PerceptualColor {
  * both? What is more appropriate? Or use both? For @ref WheelColorPicker and
  * @ref ChromaLightnessDiagram, this help text could describe the keyboard
  * controls and be integrated as default value in the class itself. For the
- * other widgets, a help text could be defined here within \em this class,
- * if appropriate.
+ * other widgets, a help text could be defined here within <em>this</em>
+ * class, if appropriate.
  * 
  * @todo Make sure that @ref ChromaHueDiagram always shows at least at the
  * central pixel an in-gamut color. Solution: Limit the range of the lightness
@@ -194,7 +239,7 @@ class ColorDialog : public QDialog
     /** @brief Currently selected color in the dialog
      * 
      * @invariant This property is provided as an RGB value.
-     * <tt>QColor::isValid()</tt> is always @c true and
+     * <tt>QColor::isValid()</tt> is always <tt>true</tt> and
      * <tt>QColor::spec()</tt> is always <tt>QColor::Spec::Rgb</tt>.
      * 
      * @invariant The signal @ref currentColorChanged() is emitted always and
@@ -273,12 +318,13 @@ public:
      * This enum is declared to the meta-object system. This happens
      * automatically. You do not need to make any manual calls. */
     enum class DialogLayoutDimensions {
-        automatic,  /**< Decide automatically between @c collapsed and
-                         @c expanded layout based on evaluating the screen
-                         size. The decision is evaluated at the moment when
-                         setting this value, and again each time the widget is
-                         shown again. It is @em not evaluated again when a yet
-                         existing dialog is just moved to another screen. */
+        automatic,  /**< Decide automatically between <tt>collapsed</tt> and
+                         <tt>expanded</tt> layout based on evaluating the
+                         screen size. The decision is evaluated at the moment
+                         when setting this value, and again each time the
+                         widget is shown again. It is <em>not</em> evaluated
+                         again when a yet existing dialog is just moved to
+                         another screen. */
         collapsed,  /**< Use the small, “collapsed“ layout of this dialog. */
         expanded    /**< Use the large, “expanded” layout of this dialog.  */
     };

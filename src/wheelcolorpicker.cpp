@@ -83,7 +83,7 @@ void WheelColorPicker::scheduleUpdate()
  * bottom left to the top right corner.
  * @returns the size of a scaled rectangle, that has the given diagonal line
  * length and preserves the original ratio between width and height - or an
- * invalid size if oldRectangle had a surface of @c 0. The result is rounded
+ * invalid size if oldRectangle had a surface of 0. The result is rounded
  * the next smaller integer!
  */
 QSize WheelColorPicker::scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal)
