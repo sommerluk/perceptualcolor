@@ -108,7 +108,8 @@ QSize AbstractDiagram::physicalPixelSize() const
 ** This function takes care that each square has the same pixel size,
 ** without scaling errors or anti-aliasing errors.
 ** 
-** Example:
+** Example code (to use within a class that inherits from
+** @ref PerceptualColor::AbstractDiagram):
 ** @snippet test/testabstractdiagram.cpp AbstractDiagram Use transparency background
 ** 
 ** @todo Provide color management support? Currently, we use the same

@@ -87,11 +87,13 @@ private Q_SLOTS:
     void testPhysicalPixelWidgetDiameter() {
         PerceptualColor::CircularDiagram myCircularDiagram;
         QVERIFY2(
-            myCircularDiagram.physicalPixelWidgetDiameter() <= myCircularDiagram.physicalPixelSize().width(),
+            myCircularDiagram.physicalPixelWidgetDiameter()
+                <= myCircularDiagram.physicalPixelSize().width(),
             "Diameter is not too height."
         );
         QVERIFY2(
-            myCircularDiagram.physicalPixelWidgetDiameter() <= myCircularDiagram.physicalPixelSize().width(),
+            myCircularDiagram.physicalPixelWidgetDiameter()
+                <= myCircularDiagram.physicalPixelSize().width(),
             "Diameter is not too width."
         );
         QVERIFY2(
@@ -105,5 +107,5 @@ private Q_SLOTS:
 }
 
 QTEST_MAIN(PerceptualColor::TestCircularDiagram)
-
-#include "testcirculardiagram.moc" // necessary because we do not use a header file
+// The following “include” is necessary because we do not use a header file:
+#include "testcirculardiagram.moc"

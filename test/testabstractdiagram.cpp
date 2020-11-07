@@ -40,7 +40,7 @@ void testSnippet01() {
 //! [AbstractDiagram Use transparency background]
 QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
 
-constexpr qreal myDevicePixelRatioF = 1.25;
+const qreal myDevicePixelRatioF = devicePixelRatioF();
 
 QPainter myPainter(&myImage);
 
@@ -112,7 +112,8 @@ private Q_SLOTS:
     }
 
     void testTransparencyBackground() {
-        QImage temp = PerceptualColor::AbstractDiagram::transparencyBackground(1);
+        QImage temp =
+            PerceptualColor::AbstractDiagram::transparencyBackground(1);
         QVERIFY2(
             temp.size().width() > 0,
             "Width of unscaled image is bigger than 0."
@@ -217,5 +218,5 @@ private Q_SLOTS:
 }
 
 QTEST_MAIN(PerceptualColor::TestAbstractDiagram)
-
-#include "testabstractdiagram.moc" // necessary because we do not use a header file
+// The following “include” is necessary because we do not use a header file:
+#include "testabstractdiagram.moc"

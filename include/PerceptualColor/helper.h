@@ -29,6 +29,7 @@
 
 #include <QDebug> // TODO Remove me!
 #include <QImage>
+#include <QtGlobal>
 #include <QWheelEvent>
 
 #include <lcms2.h>
@@ -194,7 +195,7 @@ namespace Helper {
      * 
      * | Lab axis  | Usual software implementation | Actual human perception |
      * | :-------- | ----------------------------: | ----------------------: |
-     * | lightness |                        0..100 |                   0‥100 |
+     * | lightness |                         0‥100 |                   0‥100 |
      * | a         |                      −128‥127 |                −170‥100 |
      * | b         |                      −128‥127 |                −100‥150 |
      * 

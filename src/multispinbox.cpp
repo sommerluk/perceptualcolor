@@ -30,19 +30,24 @@
 #include "PerceptualColor/helper.h"
 
 #include <QApplication>
-#include <QHBoxLayout>
 #include <QLineEdit>
 #include <QStyle>
 #include <QStyleOption>
 
 namespace PerceptualColor {
 
-/** @param cursorPosition the cursor position to test
+/** @brief Test if a cursor position is at the current value.
+ * 
+ * Everything from the cursor position exactly before the value itself up
+ * to the cursor position exactly after the value itself. Example: “ab12cd”
+ * (prefix “ab”, value 12, suffix “cd”). The cursor positions 2, 3 and 4 are
+ * <em>at</em> the current value.
+ * 
+ * @param cursorPosition the cursor position to test
+ * 
  * @returns <tt>true</tt> if the indicated cursor position is at the
- * value text of the current section (everything from the cursor position
- * exactly before the first character to the cursor position exactly after
- * the last character counts). Otherwise <tt>false</tt>. */
-bool MultiSpinBox::cursorPositionIsAtCurrentValueText(
+ * value text of the current section. <tt>false</tt> otherwise. */
+bool MultiSpinBox::isCursorPositionAtCurrentValueText(
     const int cursorPosition
 ) const
 {
@@ -56,6 +61,16 @@ bool MultiSpinBox::cursorPositionIsAtCurrentValueText(
     return (newPositionIsHighEnough && newPositionIsLowEnough);
 }
 
+/** @brief Applies a @ref Section configuration to a <tt>QDoubleSpinBox</tt>.
+ * 
+ * Applies @ref Section::minimum, @ref Section::maximum and
+ * @ref Section::value, but ignores the other configuration settings.
+ * 
+ * @param section the section configuration that will be applied
+ * @param spinBox pointer to the spin box that will get configured
+ *
+ * @sa @ref applySectionConfigurationToFormatSpinbox
+ */
 void MultiSpinBox::applySectionConfiguration(
     PerceptualColor::MultiSpinBox::Section section,
     QDoubleSpinBox* spinBox
@@ -70,53 +85,48 @@ void MultiSpinBox::applySectionConfiguration(
     spinBox->setValue(
         section.value
     );
-    
-    // TODO This does not work (parameter is not a reference).
-    // Re-apply this to the original configuration.
-    // If the configuration as invalid, for example a value that was out
-    // of range minimum-maximum, than the corrections made in the QSpinBox
-    // are also applied to the original configuration.
-    section.maximum = spinBox->maximum();
-    section.minimum = spinBox->minimum();
-    section.value = spinBox->value();
 }
 
-
-/** @brief Apply a section configuration to the format spin box.
+/** @brief Applies a @ref Section configuration
+ * to @ref m_formatSpinBoxForCurrentValue.
  * 
- * Writes back to the configuration eventual corrections.
- * @param index the section configuration that will be applied (and,
- * if appropriate, corrected). */
+ * Convenience function for @ref applySectionConfiguration that applies
+ * the changes directly to @ref m_formatSpinBoxForCurrentValue.
+ * 
+ * @param index The index in @ref m_configuration that will be applied.
+ * That must be a valid index; otherwise the function will throw an
+ * exception. */
 void MultiSpinBox::applySectionConfigurationToFormatSpinbox(int index)
 {
     if (!Helper::inRange(0, index, m_configuration.count() - 1)) {
         qWarning()
-            << "applySectionConfigurationToFormatSpinbox called with"
-                " invalid index"
+            << "The function"
+            << __func__
+            // << "in file"
+            // << __FILE__
+            // << "near to line"
+            // << __LINE__
+            << "was called with the invalid “index“ argument"
             << index
             << "while valid range is currently"
             << 0
-            << "–"
+            << "‥"
             << m_configuration.count() - 1;
-        return;
+        throw 0;
     }
-    applySectionConfiguration(m_configuration[index], &m_formatSpinBox);
-}
-
-int MultiSpinBox::currentSectionIndex() const
-{
-    return m_currentSectionIndex;
+    applySectionConfiguration(m_configuration[index], &m_formatSpinBoxForCurrentValue);
 }
 
 /** @brief The recommended minimum size for the widget
  * 
  * Reimplemented from base class.
  * 
- * The minimum size of the widget is the same as @ref sizeHint(). (This is
- * different from QSpinBox and QDoubleSpinBox that have a minimum size hint
- * that allows for displaying only prefix and value, but not the suffix.
- * This does not seem appropriate for a @ref MultiSpinBox because it could
- * be confusing, given that its content is more complex anyway.)
+ * @note The minimum size of the widget is the same as @ref sizeHint(). This
+ * behavior is different from <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt>
+ * that have a minimum size hint that allows for displaying only prefix and
+ * value, but not the suffix. However, such a behavior does not seem
+ * appropriate for a @ref MultiSpinBox because it could be confusing, given
+ * that its content is more complex.
  * 
  * @returns the recommended minimum size for the widget */
 QSize MultiSpinBox::minimumSizeHint() const
@@ -124,19 +134,32 @@ QSize MultiSpinBox::minimumSizeHint() const
     return sizeHint();
 }
 
+/** @brief Initializes a <tt>QDoubleSpinBox</tt>.
+ * 
+ * The widget will get explicitly hidden, and the number of decimals
+ * will be configured.
+ * 
+ * @param spinBox the <tt>QDoubleSpinBox</tt> that will be initialized
+ */
 void MultiSpinBox::initializeQDoubleSpinBox(QDoubleSpinBox *spinBox)
 {
+    // Make sure that the widget is explicitly hidden, so that it will
+    // never show up unintentionally.
     spinBox->hide();
+    // Define the number of visible decimals.
     spinBox->setDecimals(0);
 }
 
-/** @brief Constructor */
+/** @brief Constructor
+ * 
+ * @param parent the parent widget */
 MultiSpinBox::MultiSpinBox(QWidget *parent)
 : QAbstractSpinBox(parent)
 {    
-    // Set up the format spin box
-    initializeQDoubleSpinBox(&m_formatSpinBox);
+    // Set up the format spin boxes
+    initializeQDoubleSpinBox(&m_formatSpinBoxForCurrentValue);
     
+    // Connect signals and slots
     connect(
         lineEdit(),
         &QLineEdit::textChanged,
@@ -149,84 +172,40 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
         this,
         &MultiSpinBox::updateSectionFromCursorPosition
     );
-    
+
+    // Initialize the configuration (default: only one section)
     m_configuration.append(Section());
     setCurrentSectionIndex(0);
 }
 
-void MultiSpinBox::updateSectionFromCursorPosition(
-    const int oldPos,
-    const int newPos
-)
-{
-    Q_UNUSED(oldPos);
-    
-    QSignalBlocker myBlocker(lineEdit());
-    int reference = 0;
-    int i;
-
-    if (cursorPositionIsAtCurrentValueText(newPos)) {
-        // We are within the value text of our current section value.
-        // Nothing to do.
-        return;
-    }
-    
-    // The new position is not at the current value, but the old one might
-    // have been. So maybe we have to correct the value, which might change
-    // its length. If the new cursor position is after this value, it will
-    // have to be adapted.
-    const int oldTextLength = lineEdit()->text().length();
-    const bool cursorPositionHasToBeAdaptedToTextLenghtChange = (
-        newPos >
-            (oldTextLength - m_currentSectionTextAfterValue.length())
-    );
-
-    for (i = 0; i < m_configuration.count() - 1; ++i) {
-        reference += m_configuration.at(i).prefix.length();
-        applySectionConfigurationToFormatSpinbox(i);
-        reference += m_formatSpinBox.cleanText().length();
-        reference += m_configuration.at(i).suffix.length();
-        if (newPos <= reference) {
-            break;
-        }
-    }
-
-    setCurrentSectionIndexWithoutSelectingText(i);
-    lineEdit()->setText(
-        m_currentSectionTextBeforeValue
-            + m_currentSectionTextOfTheValue
-            + m_currentSectionTextAfterValue
-    );
-    int correctedCursorPosition = newPos;
-    if (cursorPositionHasToBeAdaptedToTextLenghtChange) {
-        correctedCursorPosition =
-            newPos
-                + lineEdit()->text().length()
-                - oldTextLength;
-    }
-    lineEdit()->setCursorPosition(correctedCursorPosition);
-    
-    // Make sure that the buttons for step up and step down are updated.
-    update();
-}
-
-// TODO The first section is selected even if widget
-// had still no focus (when layout is not expanded).
-// That should not be like that.
-
+/** @brief The recommended size for the widget
+ * 
+ * Reimplemented from base class.
+ * 
+ * @returns the size hint
+ * 
+ * @sa @ref minimumSizeHint() */
 QSize MultiSpinBox::sizeHint() const
 {
     ensurePolished();
-    const QFontMetrics fm(fontMetrics());
+
+    const QFontMetrics myFontMetrics(fontMetrics());
     SectionList myConfiguration = m_configuration;
     int height = lineEdit()->sizeHint().height();
     int width = 0;
-    
     QString textOfMinimumValue;
     QString textOfMaximumValue;
     QString completeString;
+    // Create and initialize a QDoubleSpinBox for the format work. It would
+    // reduce the overhead not to create this object on the stack each time
+    // when calling this function. But as this function is re-implemented
+    // from the base class and must be const, we cannot simply use
+    // m_formatSpinBoxForFreeUsage, and we are not sure if the the
+    // possible performance gain woud be worth to make a const_cast.
     QDoubleSpinBox formatBox;
     initializeQDoubleSpinBox(&formatBox);
+
+    // Get the text for all the sections
     for (int i = 0; i < myConfiguration.count(); ++i) {
         // Prefix
         completeString += myConfiguration.at(i).prefix;
@@ -240,8 +219,8 @@ QSize MultiSpinBox::sizeHint() const
         applySectionConfiguration(myConfiguration.at(i), &formatBox);
         textOfMaximumValue = formatBox.cleanText();
         if (
-            fm.horizontalAdvance(textOfMinimumValue)
-                > fm.horizontalAdvance(textOfMaximumValue)
+            myFontMetrics.horizontalAdvance(textOfMinimumValue)
+                > myFontMetrics.horizontalAdvance(textOfMaximumValue)
         ) {
             completeString += textOfMinimumValue;
         } else {
@@ -250,27 +229,81 @@ QSize MultiSpinBox::sizeHint() const
         // Suffix
         completeString += myConfiguration.at(i).suffix;
     }
+    // Add some extra space
     completeString += QStringLiteral(" ");
 
     // Calculate string width and add two extra pixel for cursor
     // blinking space.
-    width = fm.horizontalAdvance(completeString) + 2;
-    QStyleOptionSpinBox opt;
-    initStyleOption(&opt);
-    QSize hint(width, height);
+    width = myFontMetrics.horizontalAdvance(completeString) + 2;
+    QStyleOptionSpinBox myStyleOptionsForSpinBoxes;
+    initStyleOption(&myStyleOptionsForSpinBoxes);
+    QSize contentSize(width, height);
     return style()->sizeFromContents(
         QStyle::CT_SpinBox,
-        &opt,
-        hint,
+        &myStyleOptionsForSpinBoxes,
+        contentSize,
         this
     ).expandedTo(QApplication::globalStrut());
 }
 
+/** @brief Updates prefix, value and suffix text 
+ * 
+ * Updates @ref m_currentSectionTextBeforeValue,
+ * @ref m_currentSectionTextOfTheValue,
+ * @ref m_currentSectionTextAfterValue
+ * to the correct values based on @ref m_currentSectionIndex. */
+void MultiSpinBox::updatePrefixValueSuffixText()
+{
+    int i;
+    
+    // Update m_currentSectionTextBeforeValue
+    m_currentSectionTextBeforeValue = QString();
+    for (i = 0; i < m_currentSectionIndex; ++i) {
+        m_currentSectionTextBeforeValue.append(m_configuration.at(i).prefix);
+        applySectionConfigurationToFormatSpinbox(i);
+        m_currentSectionTextBeforeValue.append(m_formatSpinBoxForCurrentValue.cleanText());
+        m_currentSectionTextBeforeValue.append(m_configuration.at(i).suffix);
+    }
+    m_currentSectionTextBeforeValue.append(
+        m_configuration.at(m_currentSectionIndex).prefix
+    );
+    
+    // Update m_currentSectionTextOfTheValue
+    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
+    m_currentSectionTextOfTheValue = m_formatSpinBoxForCurrentValue.textFromValue(
+        m_configuration.at(m_currentSectionIndex).value
+    );
+    
+    // Update m_currentSectionTextAfterValue
+    m_currentSectionTextAfterValue = QString();
+    m_currentSectionTextAfterValue.append(
+        m_configuration.at(m_currentSectionIndex).suffix
+    );
+    for (i = m_currentSectionIndex + 1; i < m_configuration.count(); ++i) {
+        m_currentSectionTextAfterValue.append(m_configuration.at(i).prefix);
+        applySectionConfigurationToFormatSpinbox(i);
+        m_currentSectionTextAfterValue.append(m_formatSpinBoxForCurrentValue.cleanText());
+        m_currentSectionTextAfterValue.append(m_configuration.at(i).suffix);
+    }
+    
+    // We have abused the format spinbox, that should normally always
+    // have the CURRENT format. Here we restore it:
+    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
+}
+
+/** @brief Sets the current section index.
+ *
+ * Updates the text in the QLineEdit of this widget. If the widget has focus,
+ * it also selects the value of the new current section.
+ * 
+ * @param index The index of the new current section. Must be a valid index.
+ * 
+ * @sa @ref setCurrentSectionIndexWithoutUpdatingText */
 void MultiSpinBox::setCurrentSectionIndex(int index)
 {
     QSignalBlocker myBlocker(lineEdit());
-    setCurrentSectionIndexWithoutSelectingText(index);
-    // Update the line edit widget // TODO Is this necessary here?
+    setCurrentSectionIndexWithoutUpdatingText(index);
+    // Update the line edit widget
     lineEdit()->setText(
         m_currentSectionTextBeforeValue
             + m_currentSectionTextOfTheValue
@@ -289,6 +322,51 @@ void MultiSpinBox::setCurrentSectionIndex(int index)
     };
 }
 
+/** @brief Sets the current section index without updating
+ * the <tt>QLineEdit</tt>.
+ *
+ * Does not change neither the text nor the cursor in the <tt>QLineEdit</tt>.
+ * 
+ * @param index The index of the new current section. Must be a valid index.
+ * 
+ * @sa @ref setCurrentSectionIndex */
+void MultiSpinBox::setCurrentSectionIndexWithoutUpdatingText(int index)
+{
+    if (!Helper::inRange(0, index, m_configuration.count() - 1)) {
+        qWarning()
+            << "The function"
+            << __func__
+            // << "in file"
+            // << __FILE__
+            // << "near to line"
+            // << __LINE__
+            << "was called with an invalid “index“ argument of"
+            << index
+            << "while valid range is currently"
+            << 0
+            << "‥"
+            << m_configuration.count() - 1;
+        throw 0;
+    }
+
+    if (index == m_currentSectionIndex) {
+        // There is nothing to do here.
+        return;
+    }
+
+    // Apply the changes
+    m_currentSectionIndex = index;
+    updatePrefixValueSuffixText();
+
+    // Clean up, so that the current state of m_formatSpinBox
+    // corresponds to m_currentSectionIndex.
+    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
+
+    // The state (enabled/disabled) of the buttons “Step up” and “Step down”
+    // has to be updated. To force this, update() is called manually here:
+    update();
+}
+
 /** @brief Virtual function that determines whether stepping up and down is
  * legal at any given time.
  * 
@@ -299,104 +377,30 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
 {
     QAbstractSpinBox::StepEnabled flags;
     const Section currentSection = m_configuration.at(m_currentSectionIndex);
+    
+    // Test is step up should be enabled…
     if (currentSection.value < currentSection.maximum) {
         flags.setFlag(StepUpEnabled, true);
     }
+    
+    // Test is step down should be enabled…
     if (currentSection.value > currentSection.minimum) {
         flags.setFlag(StepDownEnabled, true);
     }
-qDebug() << "Will return:" << flags;
+    
+    // Return
     return flags;
 }
 
-// TODO Delete this function (has currently only 1 call and can be
-// integrated right there).
-void MultiSpinBox::getSectionTexts(
-    const SectionList &sections,
-    const int activeSectionIndex,
-    QString &textBeforeValue,
-    QString &textOfTheValue,
-    QString &textAfterValue
-)
-{
-    if (!Helper::inRange(0, activeSectionIndex, sections.count() - 1)) {
-        qWarning()
-            << "getSectionTexts called with invalid activeSectionIndex"
-            << activeSectionIndex
-            << "while valid range is currently"
-            << 0
-            << "–"
-            << sections.count() - 1;
-        return;
-    }
-
-    int i;
-    
-    // Update textBeforeValue
-    textBeforeValue = QString();
-    for (i = 0; i < activeSectionIndex; ++i) {
-        textBeforeValue.append(sections.at(i).prefix);
-        applySectionConfigurationToFormatSpinbox(i);
-        textBeforeValue.append(m_formatSpinBox.cleanText());
-        textBeforeValue.append(sections.at(i).suffix);
-    }
-    textBeforeValue.append(
-        sections.at(activeSectionIndex).prefix
-    );
-    
-    // Update textOfTheValue
-    applySectionConfigurationToFormatSpinbox(activeSectionIndex);
-    textOfTheValue = m_formatSpinBox.textFromValue(
-        sections.at(activeSectionIndex).value
-    );
-    
-    // Update textAfterValue
-    textAfterValue = QString();
-    textAfterValue.append(
-        sections.at(activeSectionIndex).suffix
-    );
-    for (i = activeSectionIndex + 1; i < sections.count(); ++i) {
-        textAfterValue.append(sections.at(i).prefix);
-        applySectionConfigurationToFormatSpinbox(i);
-        textAfterValue.append(m_formatSpinBox.cleanText());
-        textAfterValue.append(sections.at(i).suffix);
-    }
-}
-    
-
-/** @brief Sets the current section index and selects the corresponding
- *  value in the QLineEdit. */
-void MultiSpinBox::setCurrentSectionIndexWithoutSelectingText(int index)
-{
-    if (!Helper::inRange(0, index, m_configuration.count() - 1)) {
-        qWarning()
-            << "setCurrentSectionIndexWithoutSelectingText called with"
-                " invalid index"
-            << index
-            << "while valid range is currently"
-            << 0
-            << "–"
-            << m_configuration.count() - 1;
-        return;
-    }
-
-    m_currentSectionIndex = index;
-
-    getSectionTexts(
-        m_configuration,
-        m_currentSectionIndex,
-        m_currentSectionTextBeforeValue,
-        m_currentSectionTextOfTheValue,
-        m_currentSectionTextAfterValue
-    );
-
-    // Clean up, so that the current state of m_formatSpinBox
-    // corresponds to m_currentSectionIndex.
-    applySectionConfigurationToFormatSpinbox(currentSectionIndex());
-    // Make sure that the buttons for step up and step down are updated.
-    update();
-}
-
+/** @brief Set a configuration.
+ * 
+ * @param configuration The new configuration. Each section must have valid
+ * values: <tt>@ref Section.minimum ≤ @ref Section.value ≤
+ * @ref Section.maximum </tt> If the values are not valid, they will be
+ * adjunsted silently.
+ * 
+ * @sa @ref configuration()
+ */
 void MultiSpinBox::setConfiguration(
     const MultiSpinBox::SectionList &configuration
 )
@@ -404,67 +408,143 @@ void MultiSpinBox::setConfiguration(
     if (configuration.count() < 1) {
         return;
     }
-    m_configuration = configuration;
 
-    for (int i = 0; i < configuration.count() - 1; ++i) {
-        applySectionConfigurationToFormatSpinbox(i);
+    // Make sure the configuration is valid (minimum <= value <= maximum)
+    m_configuration.clear();
+    Section tempSection;
+    for (int i = 0; i < configuration.count(); ++i) {
+        tempSection = configuration.at(i);
+        if (tempSection.maximum < tempSection.minimum) {
+            tempSection.maximum = tempSection.minimum;
+        }
+        if (tempSection.value < tempSection.minimum) {
+            tempSection.value = tempSection.minimum;
+        }
+        if (tempSection.value > tempSection.maximum) {
+            tempSection.value = tempSection.maximum;
+        }
+        m_configuration.append(tempSection);
     }
-
     setCurrentSectionIndex(0);
+
     // Make sure that the buttons for step up and step down are updated.
     update();
 }
 
-void MultiSpinBox::stepBy(int steps)
-{
-    m_configuration[m_currentSectionIndex].value = qBound<double>(
-        m_configuration[m_currentSectionIndex].minimum,
-        m_configuration[m_currentSectionIndex].value + steps,
-        m_configuration[m_currentSectionIndex].maximum
-    );
-    // Select the current value (cursor text selection)
-    setCurrentSectionIndex(m_currentSectionIndex);
-    // Make sure that the buttons for step up and step down are updated.
-    update();
-}
-
+/** @brief Provides the current configuration.
+ * 
+ * @returns the current configuration
+ * 
+ * @sa @ref setConfiguration() */
 MultiSpinBox::SectionList MultiSpinBox::configuration() const
 {
     return m_configuration;
 }
 
+/** @brief Focus handling for <em>Tab</em> respectively <em>Shift+Tab</em>.
+ * 
+ * Reimplemented from base class.
+ * 
+ * If it’s about moving the focus <em>within</em> this widget, the focus move
+ * is actually done. If it’s about moving the focus to <em>another</em>
+ * widget, the focus move is <em>not</em> actually done.
+ * 
+ * @note The documentation of the base class is not very detailed. This
+ * reimplementation does not exactly behave as the documentation of the
+ * base class suggests. Especially, it handles directly the focus move
+ * <em>within</em> the widget itself. This was, however, the only working
+ * solution we found.
+ * 
+ * @param next <tt>true</tt> stands for focus handling for <em>Tab</em>.
+ * <tt>false</tt> stands for focus handling for <em>Shift+Tab</em>.
+ * 
+ * @returns <tt>true</tt> if the focus has actually been moved within
+ * this widget or if a move to another widget is possible. <tt>false</tt>
+ * otherwise. */
 bool MultiSpinBox::focusNextPrevChild(bool next)
 {
     if (next == true) { // Move focus forward (Tab)
         if (m_currentSectionIndex < (m_configuration.count() - 1)) {
+qDebug() << "1: m_currentSectionIndex is" << m_currentSectionIndex;
             setCurrentSectionIndex(m_currentSectionIndex + 1);
             // Make sure that the buttons for step up and step down
             // are updated.
             update();
+qDebug() << "1: m_currentSectionIndex is now" << m_currentSectionIndex;
             return true;
         }
     } else { // Move focus backward (Shift+Tab)
         if (m_currentSectionIndex > 0) {
+qDebug() << "2: m_currentSectionIndex is" << m_currentSectionIndex;
             setCurrentSectionIndex(m_currentSectionIndex - 1);
             // Make sure that the buttons for step up and step down
             // are updated.
             update();
+qDebug() << "2: m_currentSectionIndex is" << m_currentSectionIndex;
             return true;
         }
     }
 
+
+qDebug() << "3: m_currentSectionIndex is" << m_currentSectionIndex;
     // Make sure that the buttons for step up and step down are updated.
     update();
+qDebug() << "3: m_currentSectionIndex is now" << m_currentSectionIndex;
     return QWidget::focusNextPrevChild(next);
 }
 
+/** @brief Handles a <tt>QEvent::FocusOut</tt>.
+ * 
+ * Reimplemented from base class.
+ * 
+ * Updates the widget (except for windows that do not
+ * specify a <tt>focusPolicy()</tt>).
+ * 
+ * @param event the <tt>QEvent::FocusOut</tt> to be handled. */
+void MultiSpinBox::focusOutEvent(QFocusEvent* event)
+{
+    QAbstractSpinBox::focusOutEvent(event);
+    switch (event->reason()) {
+        case Qt::ShortcutFocusReason:
+        case Qt::TabFocusReason:
+        case Qt::BacktabFocusReason:
+        case Qt::MouseFocusReason:
+            setCurrentSectionIndexWithoutUpdatingText(0);
+            // Make sure that the buttons for step up and step down
+            // are updated.
+            update();
+            return;
+        case Qt::ActiveWindowFocusReason:
+        case Qt::PopupFocusReason:
+        case Qt::MenuBarFocusReason:
+        case Qt::OtherFocusReason:
+        case Qt::NoFocusReason:
+        default:
+            update();
+            return;
+    }
+}
+
+/** @brief Handles a <tt>QEvent::FocusIn</tt>.
+ * 
+ * Reimplemented from base class.
+ * 
+ * Updates the widget (except for windows that do not
+ * specify a <tt>focusPolicy()</tt>).
+ * 
+ * @param event the <tt>QEvent::FocusIn</tt> to be handled. */
 void MultiSpinBox::focusInEvent(QFocusEvent* event)
 {
     QAbstractSpinBox::focusInEvent(event);
     switch (event->reason()) {
+        // TODO Why is is necessary to setCurrentSectionIndex(0) for
+        // Qt::ShortcutFocusReason? It should work without that! But a unit
+        // test fails then…
         case Qt::ShortcutFocusReason:
         case Qt::TabFocusReason:
+            qDebug() << "index before:" << m_currentSectionIndex;
             setCurrentSectionIndex(0);
+            qDebug() << "index after:" << m_currentSectionIndex;
             // Make sure that the buttons for step up and step down
             // are updated.
             update();
@@ -482,59 +562,122 @@ void MultiSpinBox::focusInEvent(QFocusEvent* event)
         case Qt::OtherFocusReason:
         case Qt::NoFocusReason:
         default:
-            return;
-    }
-}
-
-void MultiSpinBox::focusOutEvent(QFocusEvent* event)
-{
-    QAbstractSpinBox::focusOutEvent(event);
-    switch (event->reason()) {
-        case Qt::ShortcutFocusReason:
-        case Qt::TabFocusReason:
-        case Qt::BacktabFocusReason:
-        case Qt::MouseFocusReason:
-            setCurrentSectionIndexWithoutSelectingText(0);
-            // Make sure that the buttons for step up and step down
-            // are updated.
             update();
             return;
-        case Qt::ActiveWindowFocusReason:
-        case Qt::PopupFocusReason:
-        case Qt::MenuBarFocusReason:
-        case Qt::OtherFocusReason:
-        case Qt::NoFocusReason:
-        default:
-            return;
     }
 }
 
-QString MultiSpinBox::cleanTextFromText(const QString &text) const
+// TODO xxx
+
+void MultiSpinBox::stepBy(int steps)
 {
+    // TODO support for wrapping…
+    m_configuration[m_currentSectionIndex].value = qBound<double>(
+        m_configuration[m_currentSectionIndex].minimum,
+        m_configuration[m_currentSectionIndex].value + steps,
+        m_configuration[m_currentSectionIndex].maximum
+    ); // TODO Update QLineEdit!?
+    // Select the current value (cursor text selection)
+    setCurrentSectionIndex(m_currentSectionIndex);
+    // Make sure that the buttons for step up and step down are updated.
+    update();
+}
+
+void MultiSpinBox::updateValueFromText(const QString &text)
+{
+    // Get the clean test. That means, we start with “text”, but
+    // we remove the m_currentSectionTextBeforeValue and the
+    // m_currentSectionTextAfterValue, so that only the text of
+    // the value itself remains.
     QString cleanText = text;
     if (cleanText.startsWith(m_currentSectionTextBeforeValue)) {
         cleanText.remove(0, m_currentSectionTextBeforeValue.count());
     } else {
+        // The text does not start with the correct characters.
+        // This is an error. Fall back to an empty string.
         cleanText.clear();
     }
     if (cleanText.endsWith(m_currentSectionTextAfterValue)) {
         cleanText.chop(m_currentSectionTextAfterValue.count());
     } else {
+        // The text does not start with the correct characters.
+        // This is an error. Fall back to an empty string.
         cleanText.clear();
     }
-    return cleanText;
-}
 
-void MultiSpinBox::updateValueFromText(const QString &text)
-{
+    // Update…
     m_configuration[m_currentSectionIndex].value =
-        m_formatSpinBox.valueFromText(cleanTextFromText(text));
+        m_formatSpinBoxForCurrentValue.valueFromText(cleanText);
 }
 
-QValidator::State MultiSpinBox::validate(QString& input, int& pos) const
+/** @brief Updates @ref m_currentSectionIndex according to the new cursor
+ * position.
+ * 
+ * This slot works well in connection to the signal
+ * <tt>QLineEdit::cursorPositionChanged()</tt>.
+ * 
+ * @param oldPos the old cursor position (previous position)
+ * @param newPos the new cursor position (current position) */
+void MultiSpinBox::updateSectionFromCursorPosition(
+    const int oldPos,
+    const int newPos
+)
 {
-    return QAbstractSpinBox::validate(input, pos);
-    return m_formatSpinBox.validate(input, pos);
+    Q_UNUSED(oldPos);
+    
+    QSignalBlocker myBlocker(lineEdit());
+    int reference = 0;
+    int i;
+
+    if (isCursorPositionAtCurrentValueText(newPos)) {
+        // We are within the value text of our current section value.
+        // There is nothing to do here.
+        return;
+    }
+    
+    // The new position is not at the current value, but the old one might
+    // have been. So maybe we have to correct the value, which might change
+    // its length. If the new cursor position is after this value, it will
+    // have to be adapted.
+    const int oldTextLength = lineEdit()->text().length();
+    const bool cursorPositionHasToBeAdaptedToTextLenghtChange = (
+        newPos >
+            (oldTextLength - m_currentSectionTextAfterValue.length())
+    );
+
+    
+    for (i = 0; i < m_configuration.count() - 1; ++i) {
+        reference += m_configuration.at(i).prefix.length();
+        // We abuse m_formatSpinBoxForCurrentValue, which should normally have
+        // always the format of the CURRENT section. But we will restore
+        // it later…
+        applySectionConfigurationToFormatSpinbox(i);
+        reference += m_formatSpinBoxForCurrentValue.cleanText().length();
+        reference += m_configuration.at(i).suffix.length();
+        if (newPos <= reference) {
+            break;
+        }
+    }
+    // Restore m_formatSpinBoxForCurrentValue to the correct format
+    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
+    setCurrentSectionIndexWithoutUpdatingText(i);
+
+    lineEdit()->setText(
+        m_currentSectionTextBeforeValue
+            + m_currentSectionTextOfTheValue
+            + m_currentSectionTextAfterValue
+    );
+    int correctedCursorPosition = newPos;
+    if (cursorPositionHasToBeAdaptedToTextLenghtChange) {
+        correctedCursorPosition =
+            newPos
+                + lineEdit()->text().length()
+                - oldTextLength;
+    }
+    lineEdit()->setCursorPosition(correctedCursorPosition);
+    
+    // Make sure that the buttons for step up and step down are updated.
+    update();
 }
 
 }

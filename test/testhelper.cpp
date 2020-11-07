@@ -88,19 +88,28 @@ private Q_SLOTS:
         lab.b = 67;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(rgb.red > 0.8, "Test if Red is at the correct position in memory");
+        QVERIFY2(
+            rgb.red > 0.8,
+            "Test if Red is at the correct position in memory"
+        );
         lab.L = 87;
         lab.a = -86;
         lab.b = 83;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(rgb.green > 0.8, "Test if Green is at the correct position in memory");
+        QVERIFY2(
+            rgb.green > 0.8,
+            "Test if Green is at the correct position in memory"
+        );
         lab.L = 32;
         lab.a = 79;
         lab.b = -107;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(rgb.blue > 0.8, "Test if Blue is at the correct position in memory");
+        QVERIFY2(
+            rgb.blue > 0.8,
+            "Test if Blue is at the correct position in memory"
+        );
         
         // Clean up
         cmsDeleteTransform(m_transformLabToRgbHandle);

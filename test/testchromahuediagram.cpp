@@ -238,11 +238,13 @@ private Q_SLOTS:
     void testSizeHint() {
         PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
         QVERIFY2(
-            myDiagram.sizeHint().width() > myDiagram.minimumSizeHint().width(),
+            myDiagram.sizeHint().width()
+                > myDiagram.minimumSizeHint().width(),
             "minimalSizeHint width is implemented."
         );
         QVERIFY2(
-            myDiagram.sizeHint().height() > myDiagram.minimumSizeHint().height(),
+            myDiagram.sizeHint().height()
+                > myDiagram.minimumSizeHint().height(),
             "minimalSizeHint height is implemented."
         );
     }

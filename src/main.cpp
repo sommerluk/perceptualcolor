@@ -96,8 +96,13 @@ int main(int argc, char *argv[])
 m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
     m_colorDialog.show();
 
-QLocale myLocale(QLocale::French, QLocale::Togo);
-qDebug() << myLocale.timeFormat();
+QDoubleSpinBox test;
+qDebug() << "min" << test.minimum() << "val" << test.value() << "max" << test.maximum();
+test.setValue(50);
+qDebug() << "min" << test.minimum() << "val" << test.value() << "max" << test.maximum();
+test.setRange(30, 20);
+qDebug() << "min" << test.minimum() << "val" << test.value() << "max" << test.maximum();
+
 
     // Run
     return app.exec();
