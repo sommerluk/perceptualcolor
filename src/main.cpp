@@ -35,6 +35,7 @@
 #include <QPainter>
 #include <QDateTimeEdit>
 #include <QColorDialog>
+#include <memory>
 
 
 // TODO code analysis clazy cppcheck clazy
@@ -86,7 +87,6 @@ int main(int argc, char *argv[])
 //     app.setLayoutDirection(Qt::RightToLeft);
 //     QLocale::setDefault(QLocale::Bengali);
 
-
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
     m_colorDialog.setOption(
@@ -95,15 +95,7 @@ int main(int argc, char *argv[])
     );
 m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
     m_colorDialog.show();
-
-QDoubleSpinBox test;
-qDebug() << "min" << test.minimum() << "val" << test.value() << "max" << test.maximum();
-test.setValue(50);
-qDebug() << "min" << test.minimum() << "val" << test.value() << "max" << test.maximum();
-test.setRange(30, 20);
-qDebug() << "min" << test.minimum() << "val" << test.value() << "max" << test.maximum();
-
-
+    
     // Run
     return app.exec();
 }

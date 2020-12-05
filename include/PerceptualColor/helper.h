@@ -74,10 +74,33 @@ static_assert(
  * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a given
  *   lightness)
  * 
- * The library depends on (and therefore you has to link
- * against) <a href="https://www.qt.io/">Qt</a> 5.6 or higher (only the
- * modules Qt Core, Qt Gui and Qt Widgets are necessary)
- * and <a href="http://www.littlecms.com/">LittleCMS 2</a>.
+ * The library depends on (and therefore you has to link against):
+ * |                         | Qt                 | LittleCMS               |
+ * | :---------------------- | :----------------- | :---------------------- |
+ * | <b>Major release</b>    | 5                  | 2                       |
+ * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
+ * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
+ * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
+ * used in this library.</em>
+ *
+ * This library requires minimum C++11.
+ * <!--
+ *      Qt 5.6 (which is the mimimum Qt version required
+ *      by this library) only requires C++03. Only starting
+ *      with Qt 5.7, Qt itself requires C++11. (Source:
+ *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
+ *      ). But our library uses C++11 features, for example “constexpr”. In
+ *      the CMakeLists.txt file, we set -std=c++11 and -Wpedantic
+ *      and -pedantic-errors to enforce C++11.
+ * 
+ *      Note that Qt 6 will require minimum C++17,
+ *      as https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html explains.
+ *      So that might be an option also for this library, if we
+ *      decide to make it Qt-6-only. But it might
+ *      even be useful if we support Qt 5, so we have future-proof
+ *      requirements that we do not have to raise soon, and that are a
+ *      good base for LTS.
+ * -->
  * 
  * The library uses in general <tt>int</tt> for integer values, because
  * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
@@ -92,9 +115,35 @@ static_assert(
  * The source code of the library is in UTF8. A static_assert within the
  * header @ref helper.h makes sure your compiler actually treats it as UTF8.
  * 
- * @todo Is Qt 5.6 actually enough? (5.6 introduces
- * QPaintDevice::devicePixelRatioF() which we use). Even if so, wouldn’t it
- * be better to require the last LTS release (5.15), just to be compatible if
+ * @copyright Almost all the code is published under MIT License. Only
+ * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
+ * license. The <tt>LICENSES</tt> subfolder contains copies of the licence
+ * texts.
+ * 
+ * @todo Comply with KDE policies: https://community.kde.org/Policies
+ * @todo Decide is it’s better to raise C++ requirement to C++17 (see the
+ * hidden comment above in this source file).
+ * @todo Remove all qDebug calls from the source
+ * @todo Use QObject::tr() for translations. Provide po files.
+ * @todo Qt6 property bindings (QProperty QPropertyBinding) for all
+ * properties?
+ * @todo Prepare for being ABI compatible in the
+ * future. (This has to be done before 1.0.0 release. See
+ * https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Note_about_ABI
+ * and https://accu.org/journals/overload/18/100/love_1718/ for details.
+ * The Pimpl-idiom / d-pointer-idiom: The class Car in car.h forward declares
+ * in its private section the class CarPrivate (which will be defined in
+ * another header file carprivate.h which is <em>not</em> included in car.h.
+ * The implementation file car.cpp includes (and implements) both, car.h
+ * <em>and</em> carprivate.h. Having separate headers allows for unit
+ * testing, and also for polymorphy (if required – also people argue this
+ * could be bad programming style). Now, a private member
+ * pointerToImplementation will hold a pointer to the implementation object.
+ * Attention: Now, const functions of the class Car can call non-const
+ * function of the class CarPrivate, which is broken behaviour. We have
+ * to provide a solution…
+ * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
+ * be better to require the last LTS release (5.15), just to be compatible if
  * in the future we depend on this? */
 
 /** @brief The namespace of this library.
@@ -102,10 +151,19 @@ static_assert(
  * Everything that is provides in this library is encapsulated within this
  * namespace.
  * 
+ * @todo This library provides some constexpr in the public API. If now we
+ * release version 1.0.0 of this library with constexpr x == 1. Now, in
+ * version 1.1.0 of this library, we change its value to constexpr x == 5.
+ * Now, two questions: 1) Does this break binary compatibility? 2) As
+ * constexpr is (or at least <em>might</em>) be evaluated at compile
+ * time; if a program is compiled against version 1.0.0 but executed
+ * with version 1.1.0, doest’t then constexpr x have different values
+ * within the library code and within the program code, which might
+ * lead to undefined behaviour?
  * @todo Test well the scaling for all widgets from 106.25% up to 200%.
- * @todo When scaling is used, the icons on the OK button and the Cancel button
- * are ugly. Why isn’t this handled automatically correctly, though on other
- * Qt apps it seems to be handled automatically correctly?
+ * @todo When scaling is used, the icons on the OK button and the
+ * Cancel button are ugly. Why isn’t this handled automatically correctly,
+ * though on other Qt apps it seems to be handled automatically correctly?
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
  * @todo Provide more than 8 bit per channel for more precision? 10 bit?
  * 12 bit?
@@ -116,8 +174,8 @@ static_assert(
  * See also http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
  * and https://labjack.com/news/simple-cpp-symbol-visibility-demo
  * @todo A program that uses our library could also use LittleCMS itself. If
- * it would use LittleCMS without thread-save API, but using it always in
- * the very same thread which is <em>not</em> the main thread, this could make
+ * it would use LittleCMS without thread-save API, but using it always in the
+ * very same thread which is <em>not</em> the main thread, this could make
  * problems for our library if we use non-thread-save LittleCMS APIs. So
  * best would be that our library uses exclusively <em>thread-save</em>
  * APIs of LittleCMS.
@@ -152,8 +210,8 @@ namespace Helper {
     /** @brief An RGB color.
      * 
      * Storage of floating point RGB values in a format that is practical
-     * for working with * <a href="http://www.littlecms.com/">LittleCMS</a>
-     * (can be treated as buffer). The valid range for each component is 0‥1.
+     * for working with <a href="http://www.littlecms.com/">LittleCMS</a>
+     * (can be treated as buffer). The valid range for each component is 0‥1.
      * 
      * Example:
      * @snippet test/testhelper.cpp Helper Use cmsRGB */
@@ -246,15 +304,15 @@ namespace Helper {
          *  gamut diagrams. */
         static constexpr qreal defaultLightness = 50;
         /** @brief Maximum chroma value in
-         * <a href="http://www.littlecms.com/">LittleCMS</a>'
-         * build-in sRGB gamut
+         * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
+         * sRGB gamut
          * 
          *  @sa @ref defaultChroma
          *  @sa @ref versatileSrgbChroma */
         static constexpr qreal maxSrgbChroma = 132;
         /** @brief Versatile chroma value in
-         * <a href="http://www.littlecms.com/">LittleCMS</a>'
-         * build-in sRGB gamut
+         * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
+         * sRGB gamut
          * 
          *  Depending on the use case, there might be an alternative to
          *  the neutral gray defaultChroma(). For a lightness of 50, this

@@ -24,13 +24,15 @@
 # OTHER DEALINGS IN THE SOFTWARE. 
 
 # TODO Only force this in debug, not in production
-set(CMAKE_C_COMPILER   "/usr/bin/clang"  )
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+# set(CMAKE_C_COMPILER   "/usr/bin/clang"  )
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 cmake_minimum_required(VERSION 3.9)
 project(perceptualcolor DESCRIPTION "Perceptual color tools")
 
 # Provide project version
+# We are following “Semantic Versioning 2.0.0”.
+# See https://semver.org/ for details.
 set(PROJECT_MAJOR_VERSION "0")
 set(PROJECT_MINOR_VERSION "0")
 set(PROJECT_PATCH_VERSION "1")
@@ -56,10 +58,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
     ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
 
-    # Qt requires C++11 since Qt 5.7. Source:
-    # https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
-    # Also our library requires C++11. Therefore, we set -std=c++11 and
-    # -Wpedantic and -pedantic-errors
+    # Our choice for “-std” is documented via Doxygen (main page of the
+    # documentation).
 
     # The flag -Werror (treat all warnings as errors) is intentionally not
     # enabled: In new compiler versions, new warnings might be introduced.

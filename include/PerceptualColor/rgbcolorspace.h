@@ -10,7 +10,7 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
  * 
@@ -51,7 +51,6 @@ public:
     QColor colorRgbBound(const cmsCIELCh &LCh) const;
     cmsCIELab colorLab(const QColor &rgbColor) const;
     cmsCIELab colorLab(const Helper::cmsRGB &rgb) const;
-    QString description() const;
     bool inGamut(const cmsCIELab &Lab);
     bool inGamut(
         const cmsFloat64Number lightness,
@@ -59,13 +58,19 @@ public:
         const cmsFloat64Number hue
     );
     bool inGamut(const cmsCIELCh &LCh);
+    QString profileInfoCopyright() const;
+    QString profileInfoDescription() const;
+    QString profileInfoManufacturer() const;
+    QString profileInfoModel() const;
     qreal whitepointL() const;
 
 private:
     Q_DISABLE_COPY(RgbColorSpace)
     qreal m_blackpointL;
-    /** internal storage for description() property. */
-    QString m_description;
+    QString m_cmsInfoCopyright;
+    QString m_cmsInfoDescription;
+    QString m_cmsInfoManufacturer;
+    QString m_cmsInfoModel;
     cmsHTRANSFORM m_transformLabToRgb16Handle;
     cmsHTRANSFORM m_transformLabToRgbHandle;
     cmsHTRANSFORM m_transformRgbToLabHandle;

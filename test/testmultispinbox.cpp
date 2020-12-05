@@ -58,16 +58,16 @@ private Q_SLOTS:
         MultiSpinBox::Section mySection;
         mySection.minimum = 0;
         mySection.maximum = 360;
-        mySection.prefix = "";
-        mySection.suffix = "°";
+        mySection.prefix = QLatin1String();
+        mySection.suffix = QStringLiteral(u"°");
         myConfiguration.append(mySection);
         mySection.maximum = 100;
-        mySection.prefix = "  ";
-        mySection.suffix = "%";
+        mySection.prefix = QStringLiteral(u"  ");
+        mySection.suffix = QStringLiteral(u"%");
         myConfiguration.append(mySection);
         mySection.maximum = 255;
-        mySection.prefix = "  ";
-        mySection.suffix = "";
+        mySection.prefix = QStringLiteral(u"  ");
+        mySection.suffix = QLatin1String();
         myConfiguration.append(mySection);
     }
 
@@ -81,6 +81,80 @@ private Q_SLOTS:
 
     void cleanup() {
         // Called after every test function
+    }
+
+    void testFormatSpinBoxNonInitialized() {
+        // We suppose that currently no instance of MultiSpinBox exists
+        // within the test program. Therefore, it’s better that this test
+        // is the first one, just to prevent breaking it if other tests
+        // forget to delete their instances of MultiSpinBox.
+        if (
+            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
+                .toStrongRef()
+                .isNull()
+        ) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        
+        // Start actual testing…
+        QScopedPointer<MultiSpinBox> test1(new MultiSpinBox());
+        QVERIFY2(
+            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
+                .toStrongRef()
+                .isNull(),
+            "The weak pointer must be valid."
+        );
+        QVERIFY2(
+            !test1->m_formatSpinBoxNonInitialized.isNull(),
+            "The strong pointer must be valid."
+        );
+        QScopedPointer<MultiSpinBox> test2(new MultiSpinBox());
+        QVERIFY2(
+            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
+                .toStrongRef()
+                .isNull(),
+            "The weak pointer must be valid."
+        );
+        QVERIFY2(
+            !test1->m_formatSpinBoxNonInitialized.isNull(),
+            "The strong pointer must be valid."
+        );
+        QVERIFY2(
+            !test2->m_formatSpinBoxNonInitialized.isNull(),
+            "The strong pointer must be valid."
+        );
+        QCOMPARE(
+            MultiSpinBox::m_formatSpinBoxNonInitializedWeak.data(),
+            test1->m_formatSpinBoxNonInitialized.data()
+        );
+        QCOMPARE(
+            MultiSpinBox::m_formatSpinBoxNonInitializedWeak.data(),
+            test2->m_formatSpinBoxNonInitialized.data()
+        );
+        test1.reset();
+        QVERIFY2(
+            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
+                .toStrongRef()
+                .isNull(),
+            "The weak pointer must be valid."
+        );
+        QVERIFY2(
+            !test2->m_formatSpinBoxNonInitialized.isNull(),
+            "The strong pointer must be valid."
+        );
+        QCOMPARE(
+            MultiSpinBox::m_formatSpinBoxNonInitializedWeak.data(),
+            test2->m_formatSpinBoxNonInitialized.data()
+        );
+        test2.reset();
+        QVERIFY2(
+            MultiSpinBox::m_formatSpinBoxNonInitializedWeak
+                .toStrongRef()
+                .isNull(),
+            "The weak pointer must be invalid."
+        );
     }
 
     void testConstructor() {
@@ -188,14 +262,14 @@ private Q_SLOTS:
         myDouble.setMinimum(10);
         myDouble.setValue(20);
         myDouble.setMaximum(30);
-        myDouble.setPrefix("old");
-        myDouble.setSuffix("old");
+        myDouble.setPrefix(QStringLiteral(u"old"));
+        myDouble.setSuffix(QStringLiteral(u"old"));
         PerceptualColor::MultiSpinBox::Section section;
         section.minimum = 110;
         section.value = 120;
         section.maximum = 130;
-        section.prefix = "new";
-        section.suffix = "new";
+        section.prefix = QStringLiteral(u"new");
+        section.suffix = QStringLiteral(u"new");
         PerceptualColor::MultiSpinBox::applySectionConfiguration(
             section,
             &myDouble
@@ -212,14 +286,18 @@ private Q_SLOTS:
         myMulti.m_formatSpinBoxForCurrentValue.setMinimum(10);
         myMulti.m_formatSpinBoxForCurrentValue.setValue(20);
         myMulti.m_formatSpinBoxForCurrentValue.setMaximum(30);
-        myMulti.m_formatSpinBoxForCurrentValue.setPrefix("old");
-        myMulti.m_formatSpinBoxForCurrentValue.setSuffix("old");
+        myMulti.m_formatSpinBoxForCurrentValue.setPrefix(
+            QStringLiteral(u"old")
+        );
+        myMulti.m_formatSpinBoxForCurrentValue.setSuffix(
+            QStringLiteral(u"old")
+        );
         PerceptualColor::MultiSpinBox::Section section;
         section.minimum = 110;
         section.value = 120;
         section.maximum = 130;
-        section.prefix = "new";
-        section.suffix = "new";
+        section.prefix = QStringLiteral(u"new");
+        section.suffix = QStringLiteral(u"new");
         PerceptualColor::MultiSpinBox::SectionList myList;
         myList.append(section);
         assert(myList.length() == 1);
@@ -277,8 +355,8 @@ private Q_SLOTS:
         MultiSpinBox::Section section;
         section.minimum = 1;
         section.maximum = 9;
-        section.prefix = "abcdefghij";
-        section.suffix = "abcdefghij";
+        section.prefix = QStringLiteral(u"abcdefghij");
+        section.suffix = QStringLiteral(u"abcdefghij");
         config.append(section);
         myMulti.setConfiguration(config);
         const int referenceWidth = myMulti.sizeHint().width();
@@ -287,8 +365,8 @@ private Q_SLOTS:
         
         section.minimum = -1;
         section.maximum = 9;
-        section.prefix = "abcdefghij";
-        section.suffix = "abcdefghij";
+        section.prefix = QStringLiteral(u"abcdefghij");
+        section.suffix = QStringLiteral(u"abcdefghij");
         config.clear();
         config.append(section);
         myMulti.setConfiguration(config);
@@ -296,8 +374,8 @@ private Q_SLOTS:
 
         section.minimum = 1;
         section.maximum = 19;
-        section.prefix = "abcdefghij";
-        section.suffix = "abcdefghij";
+        section.prefix = QStringLiteral(u"abcdefghij");
+        section.suffix = QStringLiteral(u"abcdefghij");
         config.clear();
         config.append(section);
         myMulti.setConfiguration(config);
@@ -305,8 +383,8 @@ private Q_SLOTS:
 
         section.minimum = -1;
         section.maximum = 9;
-        section.prefix = "abcdefghijh";
-        section.suffix = "abcdefghij";
+        section.prefix = QStringLiteral(u"abcdefghijh");
+        section.suffix = QStringLiteral(u"abcdefghij");
         config.clear();
         config.append(section);
         myMulti.setConfiguration(config);
@@ -314,8 +392,8 @@ private Q_SLOTS:
 
         section.minimum = -1;
         section.maximum = 9;
-        section.prefix = "abcdefghij";
-        section.suffix = "abcdefghijh";
+        section.prefix = QStringLiteral(u"abcdefghij");
+        section.suffix = QStringLiteral(u"abcdefghijh");
         config.clear();
         config.append(section);
         myMulti.setConfiguration(config);
@@ -331,14 +409,14 @@ private Q_SLOTS:
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
-        section.prefix = "abc";
-        section.suffix = "def";
+        section.prefix = QStringLiteral(u"abc");
+        section.suffix = QStringLiteral(u"def");
         config.append(section);
         section.minimum = 10;
         section.value = 80;
         section.maximum = 90;
-        section.prefix = "ghi";
-        section.suffix = "jkl";
+        section.prefix = QStringLiteral(u"ghi");
+        section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setConfiguration(config);
         myMulti.m_currentSectionIndex = 1;
@@ -364,14 +442,14 @@ private Q_SLOTS:
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
-        section.prefix = "abc";
-        section.suffix = "def";
+        section.prefix = QStringLiteral(u"abc");
+        section.suffix = QStringLiteral(u"def");
         config.append(section);
         section.minimum = 10;
         section.value = 80;
         section.maximum = 90;
-        section.prefix = "ghi";
-        section.suffix = "jkl";
+        section.prefix = QStringLiteral(u"ghi");
+        section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setConfiguration(config);
         myMulti.setCurrentSectionIndex(1);
@@ -403,14 +481,14 @@ private Q_SLOTS:
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
-        section.prefix = "abc";
-        section.suffix = "def";
+        section.prefix = QStringLiteral(u"abc");
+        section.suffix = QStringLiteral(u"def");
         config.append(section);
         section.minimum = 10;
         section.value = 80;
         section.maximum = 90;
-        section.prefix = "ghi";
-        section.suffix = "jkl";
+        section.prefix = QStringLiteral(u"ghi");
+        section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setConfiguration(config);
         myMulti.setCurrentSectionIndex(1);
@@ -432,8 +510,8 @@ private Q_SLOTS:
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
-        section.prefix = "abc";
-        section.suffix = "def";
+        section.prefix = QStringLiteral(u"abc");
+        section.suffix = QStringLiteral(u"def");
         config.append(section);
         myMulti.setConfiguration(config);
         QAbstractSpinBox::StepEnabled flags = myMulti.stepEnabled();
@@ -519,37 +597,50 @@ private Q_SLOTS:
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
-        section.prefix = "abc";
-        section.suffix = "def";
+        section.prefix = QStringLiteral(u"abc");
+        section.suffix = QStringLiteral(u"def");
         config.append(section);
         myMulti.setConfiguration(config);
         QCOMPARE(myMulti.configuration().count(), 1);
         QCOMPARE(myMulti.configuration().at(0).minimum, 1);
         QCOMPARE(myMulti.configuration().at(0).value, 8);
         QCOMPARE(myMulti.configuration().at(0).maximum, 9);
-        QCOMPARE(myMulti.configuration().at(0).prefix, "abc");
-        QCOMPARE(myMulti.configuration().at(0).suffix, "def");
+        QCOMPARE(
+            myMulti.configuration().at(0).prefix,
+            QStringLiteral(u"abc")
+        );
+        QCOMPARE(
+            myMulti.configuration().at(0).suffix,
+            QStringLiteral(u"def")
+        );
     }
 
-    void testFocusIntegrationTab() {
-        QWidget *parentWidget = new QWidget();
+    void testFocusIntegrationForwardTab() {
+        // Integration test for:
+        // → MultiSpinBox::focusNextPrevChild()
+        // → MultiSpinBox::focusInEvent()
+        // → MultiSpinBox::focusOutEvent()
+        QScopedPointer<QWidget> parentWidget(new QWidget());
         QSpinBox *widget1 =
-            new QSpinBox(parentWidget);
+            new QSpinBox(parentWidget.data());
         widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         PerceptualColor::MultiSpinBox *widget2 =
-            new PerceptualColor::MultiSpinBox(parentWidget);
+            new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setConfiguration(myConfiguration);
         QSpinBox *widget3 =
-            new QSpinBox(parentWidget);
+            new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        QLabel *label2 = new QLabel("&Test", parentWidget);
+        QLabel *label2 = new QLabel(
+            QStringLiteral(u"&Test"),
+            parentWidget.data()
+        );
         label2->setBuddy(widget2);
         widget1->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
         // The following statement make focus and widget events working.
-        QApplication::setActiveWindow(parentWidget);
+        QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
         if (!widget1->hasFocus()) {
             // Throw an exception instead of using an assert statement.
@@ -577,7 +668,7 @@ private Q_SLOTS:
             throw 0;
         }
 
-        // Start testing
+        // Start actual testing
         
         // Apparently it isn’t possible to call simply the key click
         // on the parent widget. This code fails sometimes:
@@ -600,6 +691,62 @@ private Q_SLOTS:
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
         QCOMPARE(widget2->m_currentSectionIndex, 0);
+    }
+
+    void testFocusIntegrationBackwardTab() {
+        // Integration test for:
+        // → MultiSpinBox::focusNextPrevChild()
+        // → MultiSpinBox::focusInEvent()
+        // → MultiSpinBox::focusOutEvent()
+        QScopedPointer<QWidget> parentWidget(new QWidget());
+        QSpinBox *widget1 =
+            new QSpinBox(parentWidget.data());
+        widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        PerceptualColor::MultiSpinBox *widget2 =
+            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget2->setConfiguration(myConfiguration);
+        QSpinBox *widget3 =
+            new QSpinBox(parentWidget.data());
+        widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        QLabel *label2 = new QLabel(
+            QStringLiteral(u"&Test"),
+            parentWidget.data()
+        );
+        label2->setBuddy(widget2);
+        widget3->setFocus();
+        parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        parentWidget->show();
+        // The following statement make focus and widget events working.
+        QApplication::setActiveWindow(parentWidget.data());
+        // Assert that the setup is okay.
+        if (widget1->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (!widget3->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (QApplication::focusWidget() != widget3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->m_configuration.count() != 3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+
+        // Start actual testing
         // Move focus from widget3 to widget2/section2
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -632,22 +779,165 @@ private Q_SLOTS:
         );
         QCOMPARE(QApplication::focusWidget(), widget1);
         QCOMPARE(widget2->m_currentSectionIndex, 0);
-        // Move focus from widget1 to widget2/section0
-qDebug() << "start with" << widget2->m_currentSectionIndex;
+    }
+
+    void testFocusIntegrationOther() {
+        // Integration test for:
+        // → MultiSpinBox::focusNextPrevChild()
+        // → MultiSpinBox::focusInEvent()
+        // → MultiSpinBox::focusOutEvent()
+        QScopedPointer<QWidget> parentWidget(new QWidget());
+        QSpinBox *widget1 =
+            new QSpinBox(parentWidget.data());
+        widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        PerceptualColor::MultiSpinBox *widget2 =
+            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget2->setConfiguration(myConfiguration);
+        widget2->setCurrentSectionIndex(1);
+        QSpinBox *widget3 =
+            new QSpinBox(parentWidget.data());
+        widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        QLabel *label2 = new QLabel(
+            QStringLiteral(u"&Test"),
+            parentWidget.data()
+        );
+        label2->setBuddy(widget2);
+        QLabel *label3 = new QLabel(
+            QStringLiteral(u"&Other widget"),
+            parentWidget.data()
+        );
+        label3->setBuddy(widget3);
+        widget3->setFocus();
+        parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        parentWidget->show();
+        // The following statement make focus and widget events working.
+        QApplication::setActiveWindow(parentWidget.data());
+        // Assert that the setup is okay.
+        if (widget1->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (!widget3->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (QApplication::focusWidget() != widget3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->m_configuration.count() != 3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->m_currentSectionIndex != 1) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+
+        // Start actual testing
+        // Move focus from widget3 to widget2/section0
         QTest::keyClick(
             QApplication::focusWidget(),
             Qt::Key::Key_T,
             Qt::KeyboardModifier::AltModifier
         );
-
-qDebug() << "stop with" << widget2->m_currentSectionIndex;
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->m_currentSectionIndex, 0);
         // Move focus from widget2/section0 to widget2/section1
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->m_currentSectionIndex, 1);
-        // Make sure that MultiSpinBox does not react on some focus policies
+        // Move focus from widget2/section1 to widget3
+        QTest::keyClick(
+            QApplication::focusWidget(),
+            Qt::Key::Key_O,
+            Qt::KeyboardModifier::AltModifier
+        );
+        QCOMPARE(QApplication::focusWidget(), widget3);
+        // Move focus from widget3 to widget2/section0
+        // This has to move to section0 (even if before this event, the last
+        // selected section of widget2 was NOT section0.
+        QTest::keyClick(
+            QApplication::focusWidget(),
+            Qt::Key::Key_T,
+            Qt::KeyboardModifier::AltModifier
+        );
+        QCOMPARE(QApplication::focusWidget(), widget2);
+        QCOMPARE(widget2->m_currentSectionIndex, 0);
+    }
+
+    void testFocusIntegrationFocusPolicy() {
+        // Integration test for:
+        // → MultiSpinBox::focusNextPrevChild()
+        // → MultiSpinBox::focusInEvent()
+        // → MultiSpinBox::focusOutEvent()
+        QScopedPointer<QWidget> parentWidget(new QWidget());
+        QSpinBox *widget1 =
+            new QSpinBox(parentWidget.data());
+        widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        PerceptualColor::MultiSpinBox *widget2 =
+            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget2->setConfiguration(myConfiguration);
+        QSpinBox *widget3 =
+            new QSpinBox(parentWidget.data());
+        widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        QLabel *label2 = new QLabel(
+            QStringLiteral(u"&Test"),
+            parentWidget.data()
+        );
+        label2->setBuddy(widget2);
+        QLabel *label3 = new QLabel(
+            QStringLiteral(u"&Other widget"),
+            parentWidget.data()
+        );
+        label3->setBuddy(widget3);
+        widget3->setFocus();
+        parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        parentWidget->show();
+        // The following statement make focus and widget events working.
+        QApplication::setActiveWindow(parentWidget.data());
+        // Assert that the setup is okay.
+        if (widget1->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (!widget3->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (QApplication::focusWidget() != widget3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->m_configuration.count() != 3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+
+        // Start actual testing        
+        // Make sure that MultiSpinBox does not react on incoming tab focus
+        // events if the current focus policy does not allow tab focus.
         widget2->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
         widget1->setFocus();
         if (QApplication::focusWidget() != widget1) {
@@ -657,7 +947,6 @@ qDebug() << "stop with" << widget2->m_currentSectionIndex;
         }
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
-        // Make sure that MultiSpinBox does not react on some focus policies
         widget2->setFocusPolicy(Qt::FocusPolicy::NoFocus);
         widget1->setFocus();
         if (QApplication::focusWidget() != widget1) {
@@ -667,9 +956,205 @@ qDebug() << "stop with" << widget2->m_currentSectionIndex;
         }
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
+    }
+
+    void testStepBy() {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        widget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget->setConfiguration(myConfiguration);
+        widget->setCurrentSectionIndexWithoutUpdatingText(0);
+        widget->stepBy(13);
+        QCOMPARE(
+            widget->configuration().at(0).value,
+            13
+        );
+        widget->setCurrentSectionIndexWithoutUpdatingText(1);
+        widget->stepBy(130);
+        QCOMPARE(
+            widget->configuration().at(1).value,
+            100
+        );
+        widget->setCurrentSectionIndexWithoutUpdatingText(2);
+        widget->stepBy(-260);
+        QCOMPARE(
+            widget->configuration().at(2).value,
+            0
+        );
+    }
+    
+    void testUpdateValueFromText1() {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        widget->setConfiguration(myConfiguration);
+        const quint8 sampleSectionNumber = 1;
+        widget->setCurrentSectionIndex(
+            sampleSectionNumber
+        );
+        // Assert that the setup is okay.
+        if (widget->lineEdit()->text() != QStringLiteral(u"0°  0%  0")) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        widget->updateValueFromText(
+            QStringLiteral(u"0°  9%  0")
+        );
+        QCOMPARE(
+            widget->configuration().at(sampleSectionNumber).value,
+            9
+        );
+    }
+
+    void testUpdateValueFromText2() {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        MultiSpinBox::SectionList specialConfiguration = myConfiguration;
+        const quint8 sampleSectionNumber = 1;
+        const quint8 sampleValue = 5;
+        specialConfiguration[sampleSectionNumber].value = sampleValue;
+        widget->setConfiguration(specialConfiguration);
+        widget->setCurrentSectionIndex(
+            sampleSectionNumber
+        );
+        // Assert that the setup is okay.
+        if (widget->lineEdit()->text() != QStringLiteral(u"0°  5%  0")) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget->configuration().at(sampleSectionNumber).value
+            != sampleValue
+        ) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        // suppress warnings
+        qInstallMessageHandler(voidMessageHandler);
+        // Execute the tested function (with an invalid argument)
+        widget->updateValueFromText(
+            QStringLiteral(u"abcdef")
+        );
+        // do not suppress warning for generating invalid QColor anymore
+        qInstallMessageHandler(nullptr);
+        // The original value should not have changed.
+        QCOMPARE(
+            widget->configuration().at(sampleSectionNumber).value,
+            sampleValue
+        );
+    }
+
+    void testUpdateSectionFromCursorPosition() {
+        // Setup
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        MultiSpinBox::SectionList specialConfiguration = myConfiguration;
+        const quint8 sampleSectionNumber = 1;
+        const quint8 sampleValue = 5;
+        specialConfiguration[sampleSectionNumber].value = sampleValue;
+        widget->setConfiguration(specialConfiguration);
+        widget->setCurrentSectionIndex(
+            sampleSectionNumber
+        );
+        // Assert that the setup is okay.
+        if (widget->lineEdit()->text() != QStringLiteral(u"0°  5%  0")) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget->configuration().at(sampleSectionNumber).value
+            != sampleValue
+        ) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
         
-        // Delete the widgets (including child widgets)
-        delete parentWidget;
+        // Do testing
+        widget->lineEdit()->setCursorPosition(0);
+        QCOMPARE(widget->m_currentSectionIndex, 0);
+        widget->lineEdit()->setCursorPosition(1);
+        QCOMPARE(widget->m_currentSectionIndex, 0);
+        widget->lineEdit()->setCursorPosition(2);
+        QCOMPARE(widget->m_currentSectionIndex, 0);
+        widget->lineEdit()->setCursorPosition(4);
+        QCOMPARE(widget->m_currentSectionIndex, 1);
+        widget->lineEdit()->setCursorPosition(5);
+        QCOMPARE(widget->m_currentSectionIndex, 1);
+        widget->lineEdit()->setCursorPosition(6);
+        QCOMPARE(widget->m_currentSectionIndex, 1);
+        widget->lineEdit()->setCursorPosition(8);
+        QCOMPARE(widget->m_currentSectionIndex, 2);
+        widget->lineEdit()->setCursorPosition(9);
+        QCOMPARE(widget->m_currentSectionIndex, 2);
+    }
+
+    void testInitialLineEditValue() {
+        // Setup
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        MultiSpinBox::SectionList specialConfiguration = myConfiguration;
+        const quint8 sampleSectionNumber = 1;
+        const quint8 sampleValue = 5;
+        specialConfiguration[sampleSectionNumber].value = sampleValue;
+        widget->setConfiguration(specialConfiguration);
+        // Assert that the initial content of the line edit is okay
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"0°  5%  0")
+        );
+    }
+
+    void testArrowKeys() {
+        QScopedPointer<QWidget> parentWidget(new QWidget());
+        PerceptualColor::MultiSpinBox *widget2 =
+            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        widget2->setConfiguration(myConfiguration);
+        widget2->setFocus();
+        parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+        parentWidget->show();
+        widget2->setCurrentSectionIndex(1);
+        // The following statement make focus and widget events working.
+        QApplication::setActiveWindow(parentWidget.data());
+        // Assert that the setup is okay.
+        if (!widget2->hasFocus()) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (QApplication::focusWidget() != widget2) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->m_configuration.count() != 3) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget2->lineEdit()->text() != QStringLiteral(u"0°  0%  0")) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+
+        // Start actual testing
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
+        QCOMPARE(
+            widget2->configuration().at(1).value,
+            1
+        );
+        QCOMPARE(
+            widget2->lineEdit()->text(),
+            QStringLiteral(u"0°  1%  0")
+        );
     }
 
 };

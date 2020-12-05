@@ -49,13 +49,25 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
     );
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-    m_description = getInformationFromProfile(
+    m_cmsInfoDescription = getInformationFromProfile(
         rgbProfileHandle,
         cmsInfoDescription
     );
+    m_cmsInfoCopyright = getInformationFromProfile(
+        rgbProfileHandle,
+        cmsInfoCopyright
+    );
+    m_cmsInfoManufacturer = getInformationFromProfile(
+        rgbProfileHandle,
+        cmsInfoManufacturer
+    );
+    m_cmsInfoModel = getInformationFromProfile(
+        rgbProfileHandle,
+        cmsInfoModel
+    );
     // TODO Only change the description to "sRGB" if the build-in sRGB is
     // used, not when an actual external ICC profile is used.
-    m_description = tr("sRGB");
+//    m_cmsInfoDescription = tr("sRGB"); // TODO ???
     // Create the transforms
     m_transformLabToRgbHandle = cmsCreateTransform(
         labProfileHandle,             // input profile handle
@@ -283,10 +295,25 @@ bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
     );
 }
 
-/** Returns the description of the RGB color space. */
-QString RgbColorSpace::description() const
+QString RgbColorSpace::profileInfoCopyright() const
 {
-    return m_description;
+    return m_cmsInfoCopyright;
+}
+
+/** Returns the description of the RGB color space. */
+QString RgbColorSpace::profileInfoDescription() const
+{
+    return m_cmsInfoDescription;
+}
+
+QString RgbColorSpace::profileInfoManufacturer() const
+{
+    return m_cmsInfoManufacturer;
+}
+
+QString RgbColorSpace::profileInfoModel() const
+{
+    return m_cmsInfoModel;
 }
 
 /** @brief Get information from an ICC profile via LittleCMS
@@ -304,8 +331,8 @@ QString RgbColorSpace::getInformationFromProfile(
     cmsInfoType infoType
 )
 {
-    // Initialize a char array of 3 values (two actual characters and a
-    // terminating null)
+    // Initialize a char array of 3 values (two for actual characters and a
+    // one for a terminating null)
     // The recommended default value for language following LittleCMS
     // documentation is "en".
     char languageCode[3] = "en";
@@ -378,11 +405,21 @@ QString RgbColorSpace::getInformationFromProfile(
     *(buffer + (bufferLength - 1)) = 0;
 
     // Create a QString() from the from the buffer
-    /* cmsGetProfileInfo returns often strings that are smaller than the
-     * previously calculated buffer size. But it seems they are
-     * null-terminated strings. */
+    // cmsGetProfileInfo returns often strings that are smaller than the
+    // previously calculated buffer size. But it seems they are
+    // null-terminated strings. So we read only up to the first null value.
+    // This is save, because we made sure previously that the buffer is
+    // indeed null-terminated.
+    // QString::fromWCharArray will return a QString. It accepts arrays of
+    // wchar_t. wchar_t might have different sizes, either 16 bit or 32 bit
+    // depending on the system. The values are interpretated as UTF-16, so
+    // even when wchar_t has 32 bit, surrogate pairs are parsed as such.
+    // (which is not strictly UTF-32 conform). Single surrogates cannot
+    // be interpretated correctly, but there will be no crash:
+    // QString::fromWCharArray will continue to read, also the part after
+    // the first UTF error.
     QString result = QString::fromWCharArray(
-        buffer, // read from the buffer
+        buffer, // read from this buffer
         -1      // read until the first null element
     );
 
@@ -392,5 +429,5 @@ QString RgbColorSpace::getInformationFromProfile(
     // Return
     return result;
 }
-
+    
 }

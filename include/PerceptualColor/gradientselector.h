@@ -31,6 +31,7 @@
 #include <PerceptualColor/fullcolordescription.h>
 #include <PerceptualColor/rgbcolorspace.h>
 
+#include <QPointer>
 #include <QWidget>
 
 namespace PerceptualColor {
@@ -125,12 +126,12 @@ public Q_SLOTS:
 
 protected:
 
-    virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseReleaseEvent(QMouseEvent* event) override;
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
-    virtual void wheelEvent(QWheelEvent* event) override;
-    virtual void keyPressEvent(QKeyEvent* event) override;
-    virtual void paintEvent(QPaintEvent* event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
@@ -141,7 +142,7 @@ private:
     void initialize(RgbColorSpace* colorSpace, Qt::Orientation orientation);
     FullColorDescription m_firstColor;
     FullColorDescription m_secondColor;
-    RgbColorSpace *m_rgbColorSpace;
+    QPointer<RgbColorSpace> m_rgbColorSpace;
     void updateGradientImage();
     QPair<cmsCIELCh, qreal> intermediateColor(const cmsCIELCh &firstColor, const cmsCIELCh &secondColor, qreal fraction);
     /** @brief Cache for the gradient image

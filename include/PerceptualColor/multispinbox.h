@@ -29,6 +29,9 @@
 
 #include <QAbstractSpinBox>
 #include <QDoubleSpinBox>
+#include <QSharedPointer>
+
+#include <memory>
 
 namespace PerceptualColor {
     
@@ -40,11 +43,17 @@ namespace PerceptualColor {
  * 
  * This widget provides floating point precision.
  * 
+ * @todo All unit tests have to run green.
+ * @todo Missing features: Correct behaviour when working with the lineEdit()
+ * content: Do not cursor-select more than <em>one</em> value when editing?
+ * Accept intermediate states like “1,“. Do correct localization, also
+ * when using locales with non-latin numerals. Handle always correctly
+ * the cursor position.
+ * @todo Use this widget in @ref ColorDialog.
  * @todo Allow wrapping. Attention: Than, @ref stepEnabled() also has
  * to be changed, so that both, step up and step down, are always enabled.
- * Attention: When minimum == maximum, than the algorithm for calculating
- * the correct value after wrapping should not crash.
- */
+ * Attention: When <tt>minimum == maximum</tt>, than the algorithm for
+ * calculating the correct value after wrapping should not crash. */
 class MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
@@ -52,16 +61,16 @@ class MultiSpinBox : public QAbstractSpinBox
 public:
     /** @brief The data of a section within a @ref MultiSpinBox. */
     struct Section {
-        /** @brief The current actual value of the section. */
-        double value = 0;
-        /** @brief The maximum possible value of the section. */
-        double maximum = 100;
         /** @brief The minimum possible value of the section. */
         double minimum = 0;
+        /** @brief The maximum possible value of the section. */
+        double maximum = 100;
         /** @brief A prefix to be displayed before the value. */
         QString prefix;
         /** @brief A suffix to be displayed behind the value. */
         QString suffix;
+        /** @brief The current actual value of the section. */
+        double value = 0;
     };
     /** @brief A list of @ref Section data. */
     typedef QList<Section> SectionList;
@@ -117,9 +126,33 @@ private:
      * Holds an internal, invisible spin box that is used for
      * formatting correctly the value of the <em>current</em> section. */
     QDoubleSpinBox m_formatSpinBoxForCurrentValue;
+    /** @brief <em>Not</em> initialized internal spin box object.
+     * 
+     * Holds an internal, invisible spin box that can be used for formatting.
+     * The spin box is guaranteed to exists, but does not have a defined
+     * state. It can be freely used by all member functions of this class.
+     * So before each usage, it has to be initialized (prefix, suffix,
+     * value and so on).
+     * 
+     * Note that the very same spin box object is shared between all instances
+     * of this class. It exists as long as at least <em>one</em> instance of
+     * this class exists. The synchronization between instances happens
+     * through the static member @ref m_formatSpinBoxNonInitializedWeak: If it
+     * actually holds a spin box, the constructor @ref MultiSpinBox() will use
+     * this very same spin box is also here; if not, a new spin box is created
+     * and also provided to future other instances through the stacic
+     * @ref m_formatSpinBoxNonInitialized member. As the static member is
+     * a <em>weak</em> pointer, while the object member is a <em>shared</em>
+     * pointer, if the last instance is destroyed, automatically also the
+     * spin box will be destroyed (to save memory). If a new instance is
+     * created, also a new spin box will be created. */
+    QSharedPointer<QDoubleSpinBox> m_formatSpinBoxNonInitialized;
+    // No documentation here (documentation of this static member variable
+    // is in the .cpp file at the initialization.
+    static QWeakPointer<QDoubleSpinBox> m_formatSpinBoxNonInitializedWeak;
 
     static void applySectionConfiguration(
-        Section section,
+        const Section &section,
         QDoubleSpinBox *spinBox
     );
     void applySectionConfigurationToFormatSpinbox(int index);
@@ -127,13 +160,13 @@ private:
     bool isCursorPositionAtCurrentValueText(
         const int cursorPosition
     ) const;
-    void setCurrentSectionIndex(int index);
+    void setCurrentSectionIndex (int index);
     void setCurrentSectionIndexWithoutUpdatingText(int index);
     void updatePrefixValueSuffixText();
 
 private Q_SLOTS:
     void updateSectionFromCursorPosition(const int oldPos, const int newPos);
-    void updateValueFromText(const QString &text);
+    void updateValueFromText(const QString &lineEditText);
 };
 
 }

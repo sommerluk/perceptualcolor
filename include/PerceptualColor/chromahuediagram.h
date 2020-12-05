@@ -28,6 +28,7 @@
 #define CHROMAHUEDIAGRAM_H
 
 #include <QImage>
+#include <QPointer>
 
 #include "PerceptualColor/circulardiagram.h"
 #include "PerceptualColor/fullcolordescription.h"
@@ -179,7 +180,7 @@ private:
      *   anymore. */
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
-    RgbColorSpace *m_rgbColorSpace;
+    QPointer<RgbColorSpace> m_rgbColorSpace;
     /** Holds whether or not @ref m_wheelImage() is up-to-date.
      *  @sa @ref updateWheelCache() */
     bool m_isWheelCacheReady = false;

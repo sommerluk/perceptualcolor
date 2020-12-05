@@ -28,6 +28,7 @@
 #define CHROMALIGHTNESSDIAGRAM_H
 
 #include <QImage>
+#include <QPointer>
 #include <QWidget>
 
 #include <lcms2.h>
@@ -134,7 +135,7 @@ private:
      */
     bool m_mouseEventActive;
     /** @brief Pointer to RgbColorSpace() object */
-    RgbColorSpace *m_rgbColorSpace;
+    QPointer<RgbColorSpace> m_rgbColorSpace;
 
     QImage generateDiagramImage(
         const qreal imageHue,

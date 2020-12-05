@@ -25,7 +25,20 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-# Run doxygen, but only show errors
+# Test if we provide all licenses as required by the “reuse” specification:
+# pip3 install --user reuse
+export PATH="$HOME/.local/bin:$PATH"
+reuse lint > /dev/null
+if [ $? -eq 0 ];
+then
+    # Everything is fine. No message is printed.
+    echo
+else
+    # “reuse lint” found problems. We call it again to print its messages.
+    reuse lint
+fi
+
+# Run doxygen, but only show errors, no normal messages.
 doxygen > /dev/null
 
 CODEDIRECTORIES="include src test"
@@ -46,11 +59,11 @@ grep --fixed-strings --recursive "@endcode" $CODEDIRECTORIES
 #    might be longer, but has a clearer start point and end point, which is
 #    better when non-letter characters are involved. The @ is reserved
 #    for @ref with semantically tested references.
-# -> Same thing for “@c xyz”: Prefer instead “<tt>xyz</tt>”
+# -> Same thing for “@c xyz”: Prefer instead “<tt>xyz</tt>”.
 grep --fixed-strings --recursive "\\em" $CODEDIRECTORIES
 grep --fixed-strings --recursive "@em" $CODEDIRECTORIES
 grep --fixed-strings --recursive "\\c" $CODEDIRECTORIES
-grep --fixed-strings --recursive "@c" $CODEDIRECTORIES
+grep --perl-regexp --recursive "@c(?=([^a-zA-Z]|$))" $CODEDIRECTORIES
 
 # -> Coding style: Do not use the “NULL” macro, but its counterpart “nullptr”
 #    which is more type save.

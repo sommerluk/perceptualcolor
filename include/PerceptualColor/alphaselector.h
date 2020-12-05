@@ -33,6 +33,7 @@
 
 #include <QDoubleSpinBox>
 #include <QLabel>
+#include <QPointer>
 #include <QWidget>
 
 namespace PerceptualColor {
@@ -99,9 +100,9 @@ Q_SIGNALS:
 private:
     Q_DISABLE_COPY(AlphaSelector)
 
-    GradientSelector *m_gradientSelector;
-    QDoubleSpinBox *m_doubleSpinBox;
-    RgbColorSpace *m_rgbColorSpace;
+    QPointer<GradientSelector> m_gradientSelector;
+    QPointer<QDoubleSpinBox> m_doubleSpinBox;
+    QPointer<RgbColorSpace> m_rgbColorSpace;
     FullColorDescription m_color;
     qreal m_alpha;
     NumberFormat m_representation;

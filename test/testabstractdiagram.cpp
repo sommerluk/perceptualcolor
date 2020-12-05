@@ -27,6 +27,7 @@
 #include <QtTest/QtTest>
 
 #include <QPainter>
+#include <QWidget>
 
 #include <PerceptualColor/abstractdiagram.h>
 
@@ -36,6 +37,12 @@ class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram
 {
 Q_OBJECT
 public:
+TestAbstractDiagramHelperClass(QWidget *parent = nullptr)
+: AbstractDiagram(parent) {
+// This constuctor exists only to satisfy Clazy code checker, which
+// expects constructors taking QWidget* as argument for all classes
+// that inherit from QWidget.
+}
 void testSnippet01() {
 //! [AbstractDiagram Use transparency background]
 QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);

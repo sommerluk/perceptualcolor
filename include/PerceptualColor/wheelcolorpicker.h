@@ -31,6 +31,7 @@
 #include "PerceptualColor/simplecolorwheel.h"
 
 #include <QDebug>
+#include <QPointer>
 
 // TODO Add whatsThis value explaining the accepted keys and mouse movements
 
@@ -80,7 +81,7 @@ protected:
 private:
     Q_DISABLE_COPY(WheelColorPicker)
     /** @brief A pointer to the inner ChromaLightnessDiagram() widget. */
-    ChromaLightnessDiagram *m_chromaLightnessDiagram;
+    QPointer<ChromaLightnessDiagram> m_chromaLightnessDiagram;
     void resizeChildWidget();
     static QSize scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal);
     

@@ -88,6 +88,13 @@ namespace PerceptualColor {
  * your application. It can of course be customized with
  * <tt>QWidget::setWindowTitle()</tt>.
  * 
+ * At difference to most native platform color dialogs, <em>this</em> dialog
+ * can be resized. That makes sense, because it allows to see better the
+ * gamut image. Therefore, this dialog is by default bigger than usual
+ * native platform color dialogs. You can of course customize the dialog
+ * size with QWidget::resize() or force a more space-saving layout through
+ * the @ref layoutDimensions property.
+ * 
  * @note The API of this class is fully source-compatible to the API of
  * QColorDialog and the API behaves exactly as for QColorDialog (if not,
  * it's a bug; please report it), with the following exceptions:
@@ -149,7 +156,17 @@ namespace PerceptualColor {
  * DialogColorPatchPosition “optimizeForTouchscreen” “optimizeForWorkflow”).
  * 
  * @todo In general: What would mean better support for touch-screen and 
- * convertible?
+ * convertible? Probably: A layout that has the @ref ColorPatch in top
+ * position instead of bottom position (so the hand of the user won‘t cover
+ * it and hide it while using the dialog).
+ * 
+ * @todo Use @ref MultiSpinBox for <em>all</em> numeric values. We would
+ * update the color only if the focus leaves the @ref MultiSpinBox or when
+ * the enter key is pressed (and no Okay button in the dialog). No live
+ * update if only <em>one</em> of the three components is changed. This is
+ * necessary for LCh values that can only be evaluated for all three
+ * values at the same time. And it should be done for RGB-based values as
+ * well, just to be consistent.
  * 
  * @todo In general: What would mean QML support?
  * 
@@ -167,9 +184,12 @@ namespace PerceptualColor {
  * Second: Why 360°? Even if this would be the correct value, it should
  * never be represented by 360°, but always by 0°!
  * 
+ * @todo Use the <em>actual</em> color profile of the monitor.
+ * 
  * @todo High-dpi-support: Scale the icons of the “OK button” and “Cancel
- * button” correctly. More details:
+ * button” correctly. See also:
  * https://bugs.kde.org/show_bug.cgi?id=273938
+ * 
  * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
  * letters on-the-fly (as-you-type) to upper-case letters.
  * 
@@ -216,6 +236,14 @@ namespace PerceptualColor {
  * 
  * @todo For the tab widget, use rather icons instead of the text “hue first”
  * and “lightness first”!?
+ * 
+ * @todo Would CMYK support make sense? Would it integrate intuitively into
+ * the user interface? If we would have CMYK support, we would have two
+ * different profiles (RGB and CMYK) active simultaniously. Which one is the
+ * profile that defines the available color space? Would this be intuitive?
+ * Also, when using two different profiles, it will be possible to have
+ * out-of-gamut colors in one of the profiles. How to represent this in the
+ * UI?
  * 
  * @todo Provide palettes? Include there a palette with QColorDialog’s
  * standard colors as RGB values without a specific color space, with the 
@@ -379,21 +407,21 @@ private:
     Q_DISABLE_COPY(ColorDialog)
 
     /** @brief Pointer to the @ref GradientSelector for alpha. */
-    AlphaSelector *m_alphaSelector;
+    QPointer<AlphaSelector> m_alphaSelector;
     /** @brief Pointer to the QLabel for @ref m_alphaSelector().
      * 
      * We store this in a
      * pointer to allow toggle the visibility later. */
-    QLabel *m_alphaSelectorLabel;
+    QPointer<QLabel> m_alphaSelectorLabel;
     /** @brief Pointer to the QButtonBox of this dialog.
      * 
      * We store this in a pointer
      * to allow toggle the visibility later. */
-    QDialogButtonBox  *m_buttonBox;
+    QPointer<QDialogButtonBox> m_buttonBox;
     /** @brief Pointer to the @ref ChromaHueDiagram. */
-    ChromaHueDiagram *m_chromaHueDiagram;
+    QPointer<ChromaHueDiagram> m_chromaHueDiagram;
     /** @brief Pointer to the @ref ColorPatch widget. */
-    ColorPatch *m_colorPatch;
+    QPointer<ColorPatch> m_colorPatch;
     /** @brief Holds the current color without alpha information
      * 
      * @note The alpha information within this data member is meaningless.
@@ -403,15 +431,15 @@ private:
      * @sa @ref currentColor() */
     FullColorDescription m_currentOpaqueColor;
     /** @brief Pointer to the @ref GradientSelector for LCh lightness. */
-    GradientSelector *m_lchLightnessSelector;
+    QPointer<GradientSelector> m_lchLightnessSelector;
     /** @brief Pointer to the QLineEdit that represents the HLC value. */
-    QLineEdit *m_hlcLineEdit;
+    QPointer<QLineEdit> m_hlcLineEdit;
     /** @brief Pointer to the QSpinBox for HSV hue. */
-    QDoubleSpinBox *m_hsvHueSpinbox;
+    QPointer<QDoubleSpinBox> m_hsvHueSpinbox;
     /** @brief Pointer to the QSpinBox for HSV saturation. */
-    QDoubleSpinBox *m_hsvSaturationSpinbox;
+    QPointer<QDoubleSpinBox> m_hsvSaturationSpinbox;
     /** @brief Pointer to the QSpinBox for HSV value. */
-    QDoubleSpinBox *m_hsvValueSpinbox;
+    QPointer<QDoubleSpinBox> m_hsvValueSpinbox;
     /** @brief Holds whether currently a color change is ongoing, or not.
      * 
      * Used to avoid infinite recursions when updating the different widgets
@@ -423,7 +451,7 @@ private:
         ColorDialog::DialogLayoutDimensions::automatic;
     /** @brief Pointer to the graphical selector widget that groups lightness
      *  and chroma-hue selector. */
-    QWidget *m_lightnessFirstWidget;
+    QPointer<QWidget> m_lightnessFirstWidget;
     /** @brief Holds the receiver slot (if any) to be disconnected
      *  automatically after closing the dialog.
      * 
@@ -434,7 +462,7 @@ private:
     QByteArray m_memberToBeDisconnected;
     /** @brief Pointer to the widget that holds the numeric color
      *         representation. */
-    QWidget *m_numericalWidget;
+    QPointer<QWidget> m_numericalWidget;
     /** @brief Holds the receiver object (if any) to be disconnected
      *  automatically after closing the dialog.
      * 
@@ -444,24 +472,24 @@ private:
     /** @brief Internal storage for property @ref options */
     ColorDialogOptions m_options;
     /** @brief Pointer to the QSpinBox for RGB blue. */
-    QDoubleSpinBox *m_rgbBlueSpinbox;
+    QPointer<QDoubleSpinBox> m_rgbBlueSpinbox;
     /** @brief Pointer to the RgbColorSpace object. */
-    RgbColorSpace *m_rgbColorSpace;
+    QPointer<RgbColorSpace> m_rgbColorSpace;
     /** @brief Pointer to the QSpinBox for RGB green. */
-    QDoubleSpinBox *m_rgbGreenSpinbox;
+    QPointer<QDoubleSpinBox> m_rgbGreenSpinbox;
     /** @brief Pointer to the QLineEdit that represents the hexadecimal
      *  RGB value. */
-    QLineEdit *m_rgbLineEdit;
+    QPointer<QLineEdit> m_rgbLineEdit;
     /** @brief Pointer to the QSpinBox for RGB red. */
-    QDoubleSpinBox *m_rgbRedSpinbox;
+    QPointer<QDoubleSpinBox> m_rgbRedSpinbox;
     /** @brief Internal storage for selectedColor(). */
     QColor m_selectedColor;
     /** @brief Layout that holds the graphical and numeric selectors. */
-    QHBoxLayout *m_selectorLayout;
+    QPointer<QHBoxLayout> m_selectorLayout;
     /** @brief Pointer to the tab widget. */
-    QTabWidget *m_tabWidget;
+    QPointer<QTabWidget> m_tabWidget;
     /** @brief Pointer to the @ref WheelColorPicker widget. */
-    WheelColorPicker *m_wheelColorPicker;
+    QPointer<WheelColorPicker> m_wheelColorPicker;
 
     void applyLayoutDimensions();
     void initialize();

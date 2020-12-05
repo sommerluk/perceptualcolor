@@ -28,6 +28,7 @@
 #define SIMPLECOLORWHEEL_H
 
 #include <QImage>
+#include <QPointer>
 #include <QWidget>
 
 #include "PerceptualColor/circulardiagram.h"
@@ -164,7 +165,7 @@ private:
     /** @brief Internal storage of the hue() property */
     qreal m_hue;
     /** @brief Pointer to RgbColorSpace() object */
-    RgbColorSpace *m_rgbColorSpace;
+    QPointer<RgbColorSpace> m_rgbColorSpace;
     /** @brief Internal storage of the wheelRibbonChroma() property */
     qreal m_wheelRibbonChroma;
     /** @brief Internal storage of the wheelThickness() property */

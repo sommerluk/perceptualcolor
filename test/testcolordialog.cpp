@@ -1704,6 +1704,37 @@ private Q_SLOTS:
         QCOMPARE(m_perceptualDialog->options(), m_qDialog->options());
     }
 
+    void testSizeGrip() {
+        // As this dialog can indeed be resized, the size grip should
+        // be enabled. So, users can see the little triangle at the
+        // right botton of the dialog (or the left bottom on a
+        // right-to-left layout). So, the user will be aware
+        // that he can indeet resize this dialog, which is
+        // important as the users are used to the default
+        // platform dialogs, which often do not allow resizing. Therefore,
+        // by default, QDialog::isSizeGripEnabled() should be true.
+        // NOTE: Some widget styles like Oxygen or Breeze leave the size grip
+        // widget invisible; nevertheless it reacts on mouse events. Other
+        // widget styles indeed show the size grip widget, like Fusion or
+        // QtCurve.
+        m_perceptualDialog = new PerceptualColor::ColorDialog;
+        QCOMPARE(
+            m_perceptualDialog->isSizeGripEnabled(),
+            true
+        );
+        m_perceptualDialog->show();
+        QCOMPARE(
+            m_perceptualDialog->isSizeGripEnabled(),
+            true
+        );
+        m_perceptualDialog->hide();
+        QCOMPARE(
+            m_perceptualDialog->isSizeGripEnabled(),
+            true
+        );
+        delete m_perceptualDialog;
+    }
+
     void testLayoutDimensions() {
         m_perceptualDialog = new PerceptualColor::ColorDialog;
         // Test default value
@@ -1758,6 +1789,7 @@ private Q_SLOTS:
             m_perceptualDialog->layoutDimensions(),
             PerceptualColor::ColorDialog::DialogLayoutDimensions::automatic
         );
+        delete m_perceptualDialog;
     }
 
     void benchmarkCreateAndShowPerceptualDialog() {

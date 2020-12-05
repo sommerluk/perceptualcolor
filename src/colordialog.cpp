@@ -463,11 +463,26 @@ void ColorDialog::initialize()
         &ColorDialog::updateColorPatch
     );
 
-    // initialize the options
+    // Initialize the options
     setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
     
-    // initialize the window title
+    // Initialize the window title
     setWindowTitle(tr("Select Color"));
+
+    // Enable size grip
+    // As this dialog can indeed be resized, the size grip should
+    // be enabled. So, users can see the little triangle at the
+    // right botton of the dialog (or the left bottom on a
+    // right-to-left layout). So, the user will be aware
+    // that he can indeet resize this dialog, which is
+    // important as the users are used to the default
+    // platform dialogs, which often do not allow resizing. Therefore,
+    // by default, QDialog::isSizeGripEnabled() should be true.
+    // NOTE: Some widget styles like Oxygen or Breeze leave the size grip
+    // widget invisible; nevertheless it reacts on mouse events. Other
+    // widget styles indeed show the size grip widget, like Fusion or
+    // QtCurve.
+    setSizeGripEnabled(true);
 }
 
 /** @brief Get text for @ref m_hlcLineEdit based on @ref m_currentOpaqueColor
@@ -611,7 +626,63 @@ QWidget* ColorDialog::initializeNumericPage()
             "Range of each color: 00–FF"
         )
     );
-    
+
+    // Create RGB layout
+    QFormLayout *tempRgbFormLayout = new QFormLayout();
+    QLabel *tempRgbLabel = new QLabel(tr("&RGB"));
+    tempRgbLabel->setBuddy(m_rgbRedSpinbox);
+    tempRgbFormLayout->addRow(tempRgbLabel, tempRgbLayout);
+    tempRgbFormLayout->addRow(tr("He&x"), m_rgbLineEdit);
+    QLabel *tempHsvLabel = new QLabel(tr("HS&V"));
+    tempHsvLabel->setBuddy(m_hsvHueSpinbox);
+    tempRgbFormLayout->addRow(tempHsvLabel, tempHsvLayout);
+    QGroupBox *rgbGroupBox = new QGroupBox();
+    rgbGroupBox->setLayout(tempRgbFormLayout);
+    // LittleCMS gives access to the following data fields in profiles:
+    // description, manufacturer, model, copyright. Each field might also
+    // be empty. The most interesting field is “description”. We use it
+    // as title for the group box that contains the RGB based input widgets.
+    // The “copyright” field is not really interesting for the user; we do
+    // not use it here. The fields “manufacturer” and “model” might be
+    // interesting. If one of those two fields is not empty, we will
+    // provide a tool-tip that contains the description, manufacturer and
+    // model data fields. Otherwise, no tool-tip is used.
+    rgbGroupBox->setTitle(m_rgbColorSpace->profileInfoDescription());
+    if (!m_rgbColorSpace->profileInfoDescription().isEmpty()
+        || !m_rgbColorSpace->profileInfoManufacturer().isEmpty()
+        || !m_rgbColorSpace->profileInfoModel().isEmpty()
+    ) {
+        QStringList profileInfo;
+        profileInfo.append(
+            tr("<b>Information about the currently used RGB color profile</b>")
+        );
+        if (!m_rgbColorSpace->profileInfoDescription().isEmpty()) {
+            profileInfo.append(
+                tr("Description: <i>%1</i>")
+                    .arg(m_rgbColorSpace->profileInfoDescription())
+            );
+        }
+        if (!m_rgbColorSpace->profileInfoManufacturer().isEmpty()) {
+            profileInfo.append(
+                tr("Manufacturer: <i>%1</i>")
+                    .arg(m_rgbColorSpace->profileInfoManufacturer())
+            );
+        }
+        if (!m_rgbColorSpace->profileInfoModel().isEmpty()) {
+            profileInfo.append(
+                tr("Model: <i>%1</i>")
+                    .arg(m_rgbColorSpace->profileInfoModel())
+            );
+        }
+        // Set the tool-tip. Automatic line breaking is done by
+        // the tool-tip itself.
+        rgbGroupBox->setToolTip(
+            profileInfo.join(
+                QStringLiteral("<br>")
+            )
+        );
+    }
+
     // Create widget for the HLC color representation
     m_hlcLineEdit = new QLineEdit();
     QRegularExpression expression {
@@ -621,52 +692,36 @@ QWidget* ColorDialog::initializeNumericPage()
         new QRegularExpressionValidator(expression, this)
     );
 
-    // Create global layout
-    QFormLayout *tempNumericPageFormLayout = new QFormLayout();
-    QLabel *tempRgbLabel = new QLabel(tr("&RGB"));
-    tempRgbLabel->setBuddy(m_rgbRedSpinbox);
-    tempNumericPageFormLayout->addRow(tempRgbLabel, tempRgbLayout);
-    tempNumericPageFormLayout->addRow(tr("He&x"), m_rgbLineEdit);
-    QLabel *tempHsvLabel = new QLabel(tr("HS&V"));
-    tempHsvLabel->setBuddy(m_hsvHueSpinbox);
-    tempNumericPageFormLayout->addRow(tempHsvLabel, tempHsvLayout);
-    tempNumericPageFormLayout->addRow(tr("HL&C"), m_hlcLineEdit);
-    
-// Test code
-    MultiSpinBox *myMulti = new MultiSpinBox();
-    MultiSpinBox::Section mySection;
-    mySection.minimum = 0;
-    mySection.maximum = 360;
-    mySection.prefix = "";
-    mySection.suffix = "°";
-    MultiSpinBox::SectionList myConfiguration;
-    myConfiguration.append(mySection);
-    mySection.maximum = 100;
-    mySection.prefix = " ";
-    mySection.suffix = "%";
-    myConfiguration.append(mySection);
-    mySection.maximum = 255;
-    mySection.prefix = " ";
-    mySection.suffix = "";
-    myConfiguration.append(mySection);
-    myMulti->setConfiguration(myConfiguration);
-    tempNumericPageFormLayout->addRow(
-        tr("Test&Multi"),
-        myMulti
-    );
-    tempNumericPageFormLayout->addRow(
-        tr("TestDouble"), 
-        new QDoubleSpinBox()
-    );
-    tempNumericPageFormLayout->addRow(
-        tr("TestAbstract"), 
-        new QAbstractSpinBox()
-    );
-    
-    // Create a global widget using the previously created global layout
+    // Create a global widget
     QWidget *tempWidget = new QWidget;
-    tempWidget->setLayout(tempNumericPageFormLayout);
+    QVBoxLayout *tempMainLayout = new QVBoxLayout;
+    tempWidget->setLayout(tempMainLayout);
     tempWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    tempMainLayout->addWidget(rgbGroupBox);
+    QFormLayout *cielabFormLayout = new QFormLayout;
+    tempMainLayout->addLayout(cielabFormLayout);
+// TODO BEGIN remove this xxx
+MultiSpinBox::SectionList myConfiguration;
+MultiSpinBox *testpointer = new MultiSpinBox;
+MultiSpinBox::Section mySection;
+mySection.minimum = 0;
+mySection.maximum = 360;
+mySection.prefix = QLatin1String();
+mySection.suffix = QStringLiteral(u"°");
+myConfiguration.append(mySection);
+mySection.maximum = 100;
+mySection.prefix = QStringLiteral(u"  ");
+mySection.suffix = QStringLiteral(u"%");
+myConfiguration.append(mySection);
+mySection.maximum = 255;
+mySection.prefix = QStringLiteral(u"  ");
+mySection.suffix = QLatin1String();
+myConfiguration.append(mySection);
+testpointer->setConfiguration(myConfiguration);
+cielabFormLayout->addRow(tr("&Test"), testpointer);
+// TODO END remove this xxx
+    cielabFormLayout->addRow(tr("HL&C"), m_hlcLineEdit);
+    tempMainLayout->addStretch();
     
     // Return
     return tempWidget;
