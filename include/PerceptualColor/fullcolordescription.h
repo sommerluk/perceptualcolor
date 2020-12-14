@@ -35,11 +35,11 @@ namespace PerceptualColor {
 
 /** @brief A fully qualified color.
  * 
- * This is similar to QColor, but contains both Lab color space representations
- * and RGB color space representations. The constructor takes an RgbColorSpace()
- * object to assure color management. Once constructed, the object cannot be
- * modified anymore (except the alpha value, which does not depend on color
- * management).
+ * This is similar to QColor, but contains both Lab color space
+ * representations and RGB color space representations. The constructor takes
+ * an RgbColorSpace() object to assure color management. Once constructed,
+ * the object cannot be modified anymore (except the alpha value, which does
+ * not depend on color management).
  * 
  * Contains an RGB, LCh and Lab representation of the color and the alpha
  * channel. The data types are compatible with LittleCMS. The LCh value is
@@ -64,20 +64,41 @@ class FullColorDescription
 public:
 
     enum class outOfGamutBehaviour {
-        preserve,     /**< Leave LCh values as-is. Only the RGB is forced into the gamut. */
-        sacrifyChroma /**< Preserve the hue and the lightness and change the chroma until
-        we are within the gamut. Note that it is not always possible to preserve the lightness
-        even when it's in the range 0..100 because some color profiles do not have pure black
-        in the gamut. In these cases first the nearest available lightness is searched, and than
-        the nearest in-gamut chroma at this lightness. */
+        preserve,     /**< Leave LCh values as-is. Only the RGB is forced
+                           into the gamut. */
+        sacrifyChroma /**< Preserve the hue and the lightness and change the
+                           chroma until we are within the gamut. Note that it
+                           is not always possible to preserve the lightness
+                           even when it's in the range 0..100 because some
+                           color profiles do not have pure black in the gamut.
+                           In these cases first the nearest available
+                           lightness is searched, and than the nearest
+                           in-gamut chroma at this lightness. */
     };
     // Q_ENUM(outOfGamutBehaviour); TODO Not possible for non-QObject classes?
 
     FullColorDescription();
-    FullColorDescription(RgbColorSpace *colorSpace, const Helper::cmsRGB &rgb, qreal alpha = 1);
-    FullColorDescription(RgbColorSpace *colorSpace, QColor rgb);
-    FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour coordinates, qreal alpha = 1);
-    FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELCh &lch, outOfGamutBehaviour coordinates, qreal alpha = 1);
+    FullColorDescription(
+        RgbColorSpace *colorSpace,
+        const Helper::cmsRGB &rgb,
+        qreal alpha = 1
+    );
+    FullColorDescription(
+        RgbColorSpace *colorSpace,
+        QColor rgb
+    );
+    FullColorDescription(
+        RgbColorSpace *colorSpace,
+        const cmsCIELab &lab,
+        outOfGamutBehaviour coordinates,
+        qreal alpha = 1
+    );
+    FullColorDescription(
+        RgbColorSpace *colorSpace,
+        const cmsCIELCh &lch,
+        outOfGamutBehaviour coordinates,
+        qreal alpha = 1
+    );
 
     /** @brief Default copy constructor
      *
@@ -97,10 +118,14 @@ public:
     ~FullColorDescription() = default;
 
     /** @brief Default Assignment operator */
-    FullColorDescription& operator=(const FullColorDescription& other) = default;
+    FullColorDescription& operator=(
+        const FullColorDescription& other
+    ) = default;
 
     /** @brief Default move assignment operator */
-    FullColorDescription& operator=(FullColorDescription&& other) noexcept = default;
+    FullColorDescription& operator=(
+        FullColorDescription&& other
+    ) noexcept = default;
 
     bool operator==(const FullColorDescription& other) const;
 
@@ -138,7 +163,10 @@ private:
     static cmsCIELCh toLch(const cmsCIELab &lab);
 };
 
-QDebug operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value);
+QDebug operator<<(
+    QDebug dbg,
+    const PerceptualColor::FullColorDescription &value
+);
 
 } // namespace PerceptualColor
 

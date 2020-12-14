@@ -30,7 +30,7 @@
 #include <QImage>
 #include <QPointer>
 
-#include "PerceptualColor/circulardiagram.h"
+#include "PerceptualColor/abstractcirculardiagram.h"
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -66,6 +66,8 @@ namespace PerceptualColor {
  *   accepted for clicks within the actual circle, but also for clicks
  *   within the surrounding rectangle.
  * 
+ * @todo Declare a property for @ref color()
+ * 
  * @todo Example code: How to create the widget at a given
  * lightness.
  * 
@@ -86,7 +88,7 @@ namespace PerceptualColor {
  * the angel is controlled by the mouse wheel.
  *         
  * @todo Provide RESET functions for all properties around the library? */
-class ChromaHueDiagram : public CircularDiagram
+class ChromaHueDiagram : public AbstractCircularDiagram
 {
     Q_OBJECT
 
@@ -102,8 +104,8 @@ class ChromaHueDiagram : public CircularDiagram
     Q_PROPERTY(FullColorDescription color READ color WRITE setColor NOTIFY colorChanged USER true)
 
 public:
-    explicit ChromaHueDiagram(
-        RgbColorSpace *colorSpace,
+    Q_INVOKABLE explicit ChromaHueDiagram(
+        PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
     /** @brief Destructor */

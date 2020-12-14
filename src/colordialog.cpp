@@ -549,27 +549,27 @@ void ColorDialog::readHlcNumericValues()
 QWidget* ColorDialog::initializeNumericPage()
 {
     // Create HSV spin boxes
-    constexpr int hsvDecimals = 0;
+    constexpr int decimals = 2; // TODO xxx set this back to 0
     QHBoxLayout *tempHsvLayout = new QHBoxLayout;
     m_hsvHueSpinbox = new QDoubleSpinBox();
     m_hsvHueSpinbox->setAlignment(Qt::AlignRight);
     m_hsvHueSpinbox->setMaximum(360);
     m_hsvHueSpinbox->setWrapping(true);
-    m_hsvHueSpinbox->setDecimals(hsvDecimals);
+    m_hsvHueSpinbox->setDecimals(decimals);
     m_hsvHueSpinbox->setWhatsThis(
         tr("<p>Hue</p><p>Range: 0–360</p>")
     );
     m_hsvSaturationSpinbox = new QDoubleSpinBox();
     m_hsvSaturationSpinbox->setAlignment(Qt::AlignRight);
     m_hsvSaturationSpinbox->setMaximum(255);
-    m_hsvSaturationSpinbox->setDecimals(hsvDecimals);
+    m_hsvSaturationSpinbox->setDecimals(decimals);
     m_hsvSaturationSpinbox->setWhatsThis(
         tr("<p>Saturation</p><p>Range: 0–255</p>")
     );
     m_hsvValueSpinbox = new QDoubleSpinBox();
     m_hsvValueSpinbox->setAlignment(Qt::AlignRight);
     m_hsvValueSpinbox->setMaximum(255);
-    m_hsvValueSpinbox->setDecimals(hsvDecimals);
+    m_hsvValueSpinbox->setDecimals(decimals);
     m_hsvValueSpinbox->setWhatsThis(
         tr("<p>Brightness/Value</p><p>Range: 0–255</p>")
     );
@@ -578,26 +578,25 @@ QWidget* ColorDialog::initializeNumericPage()
     tempHsvLayout->addWidget(m_hsvValueSpinbox);
 
     // Create RGB spin boxes
-    constexpr int rgbDecimals = 0;
     QHBoxLayout *tempRgbLayout = new QHBoxLayout;
     m_rgbRedSpinbox = new QDoubleSpinBox();
     m_rgbRedSpinbox->setAlignment(Qt::AlignRight);
     m_rgbRedSpinbox->setMaximum(255);
-    m_rgbRedSpinbox->setDecimals(rgbDecimals);
+    m_rgbRedSpinbox->setDecimals(decimals);
     m_rgbRedSpinbox->setWhatsThis(
         tr("<p>Red</p><p>Range: 0–255</p>")
     );
     m_rgbGreenSpinbox = new QDoubleSpinBox();
     m_rgbGreenSpinbox->setAlignment(Qt::AlignRight);
     m_rgbGreenSpinbox->setMaximum(255);
-    m_rgbGreenSpinbox->setDecimals(rgbDecimals);
+    m_rgbGreenSpinbox->setDecimals(decimals);
     m_rgbGreenSpinbox->setWhatsThis(
         tr("<p>Green</p><p>Range: 0–255</p>")
     );
     m_rgbBlueSpinbox = new QDoubleSpinBox();
     m_rgbBlueSpinbox->setAlignment(Qt::AlignRight);
     m_rgbBlueSpinbox->setMaximum(255);
-    m_rgbBlueSpinbox->setDecimals(rgbDecimals);
+    m_rgbBlueSpinbox->setDecimals(decimals);
     m_rgbBlueSpinbox->setWhatsThis(
         tr("<p>Blue</p><p>Range: 0–255</p>")
     );
@@ -623,7 +622,7 @@ QWidget* ColorDialog::initializeNumericPage()
             "<ul>RR: two-digit code for red</ul>"
             "<ul>GG: two-digit code for green</ul>"
             "<ul>BB: two-digit code for blue</ul>"
-            "Range of each color: 00–FF"
+            "Range for each color: 00–FF"
         )
     );
 
@@ -674,9 +673,8 @@ QWidget* ColorDialog::initializeNumericPage()
                     .arg(m_rgbColorSpace->profileInfoModel())
             );
         }
-        // Set the tool-tip. Automatic line breaking is done by
-        // the tool-tip itself.
-        rgbGroupBox->setToolTip(
+        // Set help text.
+        rgbGroupBox->setWhatsThis(
             profileInfo.join(
                 QStringLiteral("<br>")
             )
@@ -740,7 +738,10 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
  * @param option the option to set
  * @param on the new value of the option
  */
-void ColorDialog::setOption(QColorDialog::ColorDialogOption option, bool on)
+void ColorDialog::setOption(
+    PerceptualColor::ColorDialog::ColorDialogOption option,
+    bool on
+)
 {
     QColorDialog::ColorDialogOptions temp = m_options;
     temp.setFlag(option, on);
@@ -748,10 +749,16 @@ void ColorDialog::setOption(QColorDialog::ColorDialogOption option, bool on)
 }
 
 /** @brief Setter for @ref options */
-void ColorDialog::setOptions(QColorDialog::ColorDialogOptions options)
+void ColorDialog::setOptions(
+    PerceptualColor::ColorDialog::ColorDialogOptions newOptions
+)
 {
+    if (newOptions == m_options) {
+        return;
+    }
+
     // Save the new options
-    m_options = options;
+    m_options = newOptions;
     // Correct QColorDialog::ColorDialogOption::DontUseNativeDialog
     // which must be always on
     m_options.setFlag(
@@ -769,6 +776,9 @@ void ColorDialog::setOptions(QColorDialog::ColorDialogOptions options)
     m_buttonBox->setVisible(
         !m_options.testFlag(QColorDialog::ColorDialogOption::NoButtons)
     );
+    
+    // Notify
+    Q_EMIT optionsChanged(m_options);
 }
 
 /** @brief Getter for @ref options
@@ -778,7 +788,9 @@ void ColorDialog::setOptions(QColorDialog::ColorDialogOptions options)
  * @param option the requested option
  * @returns the value of the requested option
  */
-bool ColorDialog::testOption(QColorDialog::ColorDialogOption option) const
+bool ColorDialog::testOption(
+    PerceptualColor::ColorDialog::ColorDialogOption option
+) const
 {
     return m_options.testFlag(option);
 }
@@ -892,6 +904,7 @@ void ColorDialog::setLayoutDimensions(
 {
     m_layoutDimensions = newLayoutDimensions;
     applyLayoutDimensions();
+    Q_EMIT layoutDimensionsChanged(m_layoutDimensions);
 }
 
 /** @brief Arranges the layout conforming to @ref layoutDimensions

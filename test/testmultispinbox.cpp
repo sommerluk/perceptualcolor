@@ -83,80 +83,6 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testFormatSpinBoxNonInitialized() {
-        // We suppose that currently no instance of MultiSpinBox exists
-        // within the test program. Therefore, it’s better that this test
-        // is the first one, just to prevent breaking it if other tests
-        // forget to delete their instances of MultiSpinBox.
-        if (
-            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
-                .toStrongRef()
-                .isNull()
-        ) {
-            // Throw an exception instead of using an assert statement.
-            // Assert statements seem to be not always reliably within QTest.
-            throw 0;
-        }
-        
-        // Start actual testing…
-        QScopedPointer<MultiSpinBox> test1(new MultiSpinBox());
-        QVERIFY2(
-            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
-                .toStrongRef()
-                .isNull(),
-            "The weak pointer must be valid."
-        );
-        QVERIFY2(
-            !test1->m_formatSpinBoxNonInitialized.isNull(),
-            "The strong pointer must be valid."
-        );
-        QScopedPointer<MultiSpinBox> test2(new MultiSpinBox());
-        QVERIFY2(
-            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
-                .toStrongRef()
-                .isNull(),
-            "The weak pointer must be valid."
-        );
-        QVERIFY2(
-            !test1->m_formatSpinBoxNonInitialized.isNull(),
-            "The strong pointer must be valid."
-        );
-        QVERIFY2(
-            !test2->m_formatSpinBoxNonInitialized.isNull(),
-            "The strong pointer must be valid."
-        );
-        QCOMPARE(
-            MultiSpinBox::m_formatSpinBoxNonInitializedWeak.data(),
-            test1->m_formatSpinBoxNonInitialized.data()
-        );
-        QCOMPARE(
-            MultiSpinBox::m_formatSpinBoxNonInitializedWeak.data(),
-            test2->m_formatSpinBoxNonInitialized.data()
-        );
-        test1.reset();
-        QVERIFY2(
-            !MultiSpinBox::m_formatSpinBoxNonInitializedWeak
-                .toStrongRef()
-                .isNull(),
-            "The weak pointer must be valid."
-        );
-        QVERIFY2(
-            !test2->m_formatSpinBoxNonInitialized.isNull(),
-            "The strong pointer must be valid."
-        );
-        QCOMPARE(
-            MultiSpinBox::m_formatSpinBoxNonInitializedWeak.data(),
-            test2->m_formatSpinBoxNonInitialized.data()
-        );
-        test2.reset();
-        QVERIFY2(
-            MultiSpinBox::m_formatSpinBoxNonInitializedWeak
-                .toStrongRef()
-                .isNull(),
-            "The weak pointer must be invalid."
-        );
-    }
-
     void testConstructor() {
         // Test the the constructor does not crash
         PerceptualColor::MultiSpinBox myMulti;
@@ -257,94 +183,11 @@ private Q_SLOTS:
         );
     }
 
-    void testApplySectionConfiguration() {
-        QDoubleSpinBox myDouble;
-        myDouble.setMinimum(10);
-        myDouble.setValue(20);
-        myDouble.setMaximum(30);
-        myDouble.setPrefix(QStringLiteral(u"old"));
-        myDouble.setSuffix(QStringLiteral(u"old"));
-        PerceptualColor::MultiSpinBox::Section section;
-        section.minimum = 110;
-        section.value = 120;
-        section.maximum = 130;
-        section.prefix = QStringLiteral(u"new");
-        section.suffix = QStringLiteral(u"new");
-        PerceptualColor::MultiSpinBox::applySectionConfiguration(
-            section,
-            &myDouble
-        );
-        QCOMPARE(myDouble.minimum(), 110); // Should have been applied.
-        QCOMPARE(myDouble.value(), 120); // Should have been applied.
-        QCOMPARE(myDouble.maximum(), 130); // Should have been applied.
-        QCOMPARE(myDouble.prefix(), "old"); // Should not have been applied.
-        QCOMPARE(myDouble.suffix(), "old"); // Should not have been applied.
-    }
-
-    void testApplySectionConfigurationToFormatSpinbox() {
-        PerceptualColor::MultiSpinBox myMulti;
-        myMulti.m_formatSpinBoxForCurrentValue.setMinimum(10);
-        myMulti.m_formatSpinBoxForCurrentValue.setValue(20);
-        myMulti.m_formatSpinBoxForCurrentValue.setMaximum(30);
-        myMulti.m_formatSpinBoxForCurrentValue.setPrefix(
-            QStringLiteral(u"old")
-        );
-        myMulti.m_formatSpinBoxForCurrentValue.setSuffix(
-            QStringLiteral(u"old")
-        );
-        PerceptualColor::MultiSpinBox::Section section;
-        section.minimum = 110;
-        section.value = 120;
-        section.maximum = 130;
-        section.prefix = QStringLiteral(u"new");
-        section.suffix = QStringLiteral(u"new");
-        PerceptualColor::MultiSpinBox::SectionList myList;
-        myList.append(section);
-        assert(myList.length() == 1);
-        myMulti.m_configuration = myList;
-        myMulti.applySectionConfigurationToFormatSpinbox(0);
-        QCOMPARE(myMulti.m_formatSpinBoxForCurrentValue.minimum(), 110);
-        QCOMPARE(myMulti.m_formatSpinBoxForCurrentValue.value(), 120);
-        QCOMPARE(myMulti.m_formatSpinBoxForCurrentValue.maximum(), 130);
-        QCOMPARE(myMulti.m_formatSpinBoxForCurrentValue.prefix(), "old");
-        QCOMPARE(myMulti.m_formatSpinBoxForCurrentValue.suffix(), "old");
-        
-        // suppress warnings
-        qInstallMessageHandler(voidMessageHandler);
-        QVERIFY_EXCEPTION_THROWN(
-            myMulti.applySectionConfigurationToFormatSpinbox(5),
-            int
-        );
-        // do not suppress warning for generating invalid QColor anymore
-        qInstallMessageHandler(nullptr);
-    }
-    
     void testMinimalSizeHint() {
         PerceptualColor::MultiSpinBox myMulti;
         QCOMPARE(myMulti.minimumSizeHint(), myMulti.sizeHint());
         myMulti.setConfiguration(myConfiguration);
         QCOMPARE(myMulti.minimumSizeHint(), myMulti.sizeHint());
-    }
-    
-    void testInitializeQDoubleSpinBox() {
-        QDoubleSpinBox myDouble;
-        PerceptualColor::MultiSpinBox myMulti;
-        myDouble.setDecimals(8);
-        myDouble.show();
-        myMulti.initializeQDoubleSpinBox(&myDouble);
-        QVERIFY2(
-            myDouble.decimals() != 8,
-            "Verify that the strange value of 8 has been changed during "
-                "the configuration."
-        );
-        QVERIFY2(
-            myDouble.isHidden(),
-            "Verify that the widget is hidden."
-        );
-        QVERIFY2(
-            !myDouble.isVisible(),
-            "Verify that the widget is not visible."
-        );
     }
 
     void testSizeHint() {

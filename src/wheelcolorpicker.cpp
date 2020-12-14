@@ -37,7 +37,10 @@
 namespace PerceptualColor {
 
 /** @brief Constructor */
-WheelColorPicker::WheelColorPicker(RgbColorSpace *colorSpace, QWidget *parent) : SimpleColorWheel(colorSpace, parent)
+WheelColorPicker::WheelColorPicker(
+    PerceptualColor::RgbColorSpace *colorSpace,
+    QWidget *parent
+) : SimpleColorWheel(colorSpace, parent)
 {
     
     m_chromaLightnessDiagram = new ChromaLightnessDiagram(colorSpace, this);
@@ -136,7 +139,7 @@ void WheelColorPicker::keyPressEvent(QKeyEvent *event)
 void WheelColorPicker::resizeChildWidget()
 {
     int diagonal = qMax(
-        contentDiameter() - 2 * (wheelThickness() + border()),
+        contentDiameter() - 2 * (m_wheelThickness + border()),
         0
     );
     // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to

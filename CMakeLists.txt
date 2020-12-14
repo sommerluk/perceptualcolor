@@ -21,15 +21,25 @@
 # HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-# OTHER DEALINGS IN THE SOFTWARE. 
+# OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO Only force this in debug, not in production
-# set(CMAKE_C_COMPILER   "/usr/bin/clang"  )
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
+
+
+
+################# General setup #################
 cmake_minimum_required(VERSION 3.9)
 project(perceptualcolor DESCRIPTION "Perceptual color tools")
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# Get directories for installation process
+include(GNUInstallDirs)
 
+
+
+
+
+################# Version number #################
 # Provide project version
 # We are following “Semantic Versioning 2.0.0”.
 # See https://semver.org/ for details.
@@ -41,23 +51,29 @@ set(PROJECT_VERSION
 )
 # # Substitutes all occurrences of @PROJECT_VERSION@ in the source code file
 # # by the actual value in CMake
-# configure_file( version_config.h.in ${CMAKE_BINARY_DIR}/generated/version_config.h )
+# configure_file(
+#     version_config.h.in
+#     ${CMAKE_BINARY_DIR}/generated/version_config.h
+# )
 # # Make sure the generated file can be included:
 # include_directories( ${CMAKE_BINARY_DIR}/generated/ )
 
-# Find includes in corresponding build directories
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
-# Instruct CMake to create code from Qt designer ui files
-set(CMAKE_AUTOUIC ON)
-# Use also our local FIND modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-# TODO Make the following code support more compilers
+
+
+
+
+################# Compiler settings #################
+# TODO Only force this in debug, not in production
+# set(CMAKE_C_COMPILER   "/usr/bin/clang"  )
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 # Enable compiler warings and optimization
 if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
     ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
 
+    # TODO It might be better not to enable warnings in production builds,
+    # as the available parameters might change or go away in later
+    # compiler releases.
+    
     # Our choice for “-std” is documented via Doxygen (main page of the
     # documentation).
 
@@ -104,36 +120,41 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(warnings "/W4 /WX /EHsc")
 endif()
-# Get directories for installation process
-include(GNUInstallDirs)
 
-# Setup external library dependencies
+
+
+
+
+################# Setup external library dependencies #################
+# Use also our local FIND modules
+set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+find_package(LCMS2 REQUIRED)
 # TODO require Test only for unit tests, not for normal building
 find_package(Qt5 COMPONENTS Core Gui Widgets Test REQUIRED)
-find_package(LCMS2 REQUIRED)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+# Instruct CMake to create code from Qt designer ui files
+set(CMAKE_AUTOUIC ON)
 include_directories(${LCMS2_INCLUDE_DIRS})
 # Define external library dependencies
 set(LIBS ${LIBS} Qt5::Core Qt5::Gui Qt5::Widgets ${LCMS2_LIBRARIES})
 
 
-# TODO Do this only during development, not for release
-# # Find iwyu (include-what-you-use), a tool to check for unnecessary
-# # header includes:
-# find_program(iwyu_path NAMES include-what-you-use iwyu)
-# if(NOT iwyu_path)
-#   message(FATAL_ERROR "Could not find the program include-what-you-use")
-# endif()
 
 
+
+################# Setup source code #################
 # Set the sources for our library
 set(perceptualcolor_SRC
+  src/abstractcirculardiagram.cpp
   src/abstractdiagram.cpp
   src/alphaselector.cpp
   src/chromahuediagram.cpp
   src/chromalightnessdiagram.cpp
-  src/circulardiagram.cpp
   src/colordialog.cpp
   src/colorpatch.cpp
+  src/extendeddoublevalidator.cpp
   src/fullcolordescription.cpp
   src/gradientselector.cpp
   src/helper.cpp
@@ -143,16 +164,16 @@ set(perceptualcolor_SRC
   src/simplecolorwheel.cpp
   src/wheelcolorpicker.cpp
 )
-
 # Set the headers for our library
 set(perceptualcolor_HEADERS
+  include/PerceptualColor/abstractcirculardiagram.h
   include/PerceptualColor/abstractdiagram.h
   include/PerceptualColor/alphaselector.h
   include/PerceptualColor/chromahuediagram.h
   include/PerceptualColor/chromalightnessdiagram.h
-  include/PerceptualColor/circulardiagram.h
   include/PerceptualColor/colordialog.h
   include/PerceptualColor/colorpatch.h
+  include/PerceptualColor/extendeddoublevalidator.h
   include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientselector.h
   include/PerceptualColor/helper.h
@@ -162,12 +183,15 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/simplecolorwheel.h
   include/PerceptualColor/wheelcolorpicker.h
 )
-
 # Include directories
 include_directories("${CMAKE_SOURCE_DIR}/src/")
 include_directories("${CMAKE_SOURCE_DIR}/include/")
 
-# Create our library
+
+
+
+
+################# Build library #################
 # The headers have to be added here explicitly because otherwise Qt's MOC
 # would not find them because they are not in the same directory as the
 # corresponding .cpp files
@@ -181,7 +205,15 @@ set_target_properties(perceptualcolor PROPERTIES VERSION
 set_target_properties(perceptualcolor PROPERTIES SOVERSION
     ${PROJECT_MAJOR_VERSION}
 )
-# set_target_properties(perceptualcolor PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+# TODO Do this only during development, not for release
+# # Find iwyu (include-what-you-use), a tool to check for unnecessary
+# # header includes:
+# find_program(iwyu_path NAMES include-what-you-use iwyu)
+# if(NOT iwyu_path)
+#   message(FATAL_ERROR "Could not find the program include-what-you-use")
+# endif()
+# set_target_properties(perceptualcolor
+#     PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 target_link_libraries(perceptualcolor ${LIBS})
 install(
     TARGETS perceptualcolor
@@ -189,47 +221,77 @@ install(
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# Create our application
+
+
+
+
+################# Build application #################
 add_executable(perceptualcolorpicker src/main.cpp)
 # Get warnings when using features that have been deprecated during
 # the development cycle of Qt 5. So we can be sure to be well-prepared
 # for Qt 6. TODO It should be on debug only, and not on release build!
-target_compile_definitions(perceptualcolorpicker PRIVATE QT_DEPRECATED_WARNINGS)
+target_compile_definitions(perceptualcolorpicker
+    PRIVATE QT_DEPRECATED_WARNINGS)
 target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolor)
 install(TARGETS perceptualcolorpicker DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-# Provide unit tests
 
+
+
+
+################# Build unit tests #################
 enable_testing ()
 
-add_executable (testabstractdiagram test/testabstractdiagram.cpp)
-target_link_libraries (testabstractdiagram ${LIBS} Qt5::Test perceptualcolor)
+add_executable (testabstractcirculardiagram
+    test/testabstractcirculardiagram.cpp)
+target_link_libraries (testabstractcirculardiagram
+    ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testabstractcirculardiagram COMMAND testabstractcirculardiagram)
+
+add_executable (testabstractdiagram
+    test/testabstractdiagram.cpp)
+target_link_libraries (testabstractdiagram
+    ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testabstractdiagram COMMAND testabstractdiagram)
 
-add_executable (testchromahuediagram test/testchromahuediagram.cpp)
-target_link_libraries (testchromahuediagram ${LIBS} Qt5::Test perceptualcolor)
+add_executable (testchromahuediagram
+    test/testchromahuediagram.cpp)
+target_link_libraries (testchromahuediagram
+    ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testchromahuediagram COMMAND testchromahuediagram)
 
-add_executable (testcirculardiagram test/testcirculardiagram.cpp)
-target_link_libraries (testcirculardiagram ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testcirculardiagram COMMAND testcirculardiagram)
-
-add_executable (testcolordialog test/testcolordialog.cpp)
-target_link_libraries (testcolordialog ${LIBS} Qt5::Test perceptualcolor)
+add_executable (testcolordialog
+    test/testcolordialog.cpp)
+target_link_libraries (testcolordialog
+    ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testcolordialog COMMAND testcolordialog)
 
-add_executable (testcolorpatch test/testcolorpatch.cpp)
-target_link_libraries (testcolorpatch ${LIBS} Qt5::Test perceptualcolor)
+add_executable (testcolorpatch
+    test/testcolorpatch.cpp)
+target_link_libraries (testcolorpatch
+    ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testcolorpatch COMMAND testcolorpatch)
 
-add_executable (testhelper test/testhelper.cpp)
-target_link_libraries (testhelper ${LIBS} Qt5::Test perceptualcolor)
+add_executable (testextendeddoublevalidator
+    test/testextendeddoublevalidator.cpp)
+target_link_libraries (testextendeddoublevalidator
+    ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testextendeddoublevalidator COMMAND testextendeddoublevalidator)
+
+add_executable (testhelper
+    test/testhelper.cpp)
+target_link_libraries (testhelper
+    ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testhelper COMMAND testhelper)
 
-add_executable (testmultispinbox test/testmultispinbox.cpp)
-target_link_libraries (testmultispinbox ${LIBS} Qt5::Test perceptualcolor)
+add_executable (testmultispinbox
+    test/testmultispinbox.cpp)
+target_link_libraries (testmultispinbox
+    ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testmultispinbox COMMAND testmultispinbox)
 
-add_executable (testpolarpointf test/testpolarpointf.cpp)
-target_link_libraries (testpolarpointf ${LIBS} Qt5::Test perceptualcolor)
+add_executable (testpolarpointf
+    test/testpolarpointf.cpp)
+target_link_libraries (testpolarpointf
+    ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testpolarpointf COMMAND testpolarpointf)

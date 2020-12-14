@@ -54,6 +54,8 @@ namespace PerceptualColor {
  * colors within the slider even if both, the first and the second color are
  * in-gamut colors. Out-of-gamut colors are not rendered, so you might see
  * a hole in the gradient.
+ * 
+ * @todo Declare Q_PROPERTY for @ref setFirstColor() and @ref setSecondColor()
  */
 class GradientSelector : public AbstractDiagram
 {
@@ -63,9 +65,8 @@ class GradientSelector : public AbstractDiagram
     /** @brief Orientation of the widget
      * 
      * @sa setOrientation()
-     * @sa m_orientation()
-     */
-    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
+     * @sa m_orientation() */
+    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
 
     /** @brief The value of the gradient
      * 
@@ -75,8 +76,7 @@ class GradientSelector : public AbstractDiagram
      * - 1 means: totally secondColor()
      * 
      * @sa setFraction()
-     * @sa m_fraction()
-     */
+     * @sa m_fraction() */
     Q_PROPERTY(qreal fraction READ fraction WRITE setFraction NOTIFY fractionChanged USER true)
 
     /** @brief This property holds the page step.
@@ -85,9 +85,8 @@ class GradientSelector : public AbstractDiagram
      * Corresponds to the user pressing PageUp or PageDown.
      * 
      * @sa setPageStep()
-     * @sa m_pageStep()
-     */
-    Q_PROPERTY(qreal pageStep READ pageStep WRITE setPageStep)
+     * @sa m_pageStep() */
+    Q_PROPERTY(qreal pageStep READ pageStep WRITE setPageStep NOTIFY pageStepChanged)
 
     /** @brief This property holds the single step.
      * 
@@ -95,13 +94,19 @@ class GradientSelector : public AbstractDiagram
      * Corresponds to the user pressing an arrow key.
      * 
      * @sa setSingleStep()
-     * @sa m_singleStep()
-     */
-    Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep)
+     * @sa m_singleStep() */
+    Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep NOTIFY singleStepChanged)
 
 public:
-    explicit GradientSelector(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
-    explicit GradientSelector(RgbColorSpace *colorSpace, Qt::Orientation orientation, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit GradientSelector(
+        PerceptualColor::RgbColorSpace *colorSpace,
+        QWidget *parent = nullptr
+    );
+    Q_INVOKABLE explicit GradientSelector(
+        PerceptualColor::RgbColorSpace *colorSpace,
+        Qt::Orientation orientation,
+        QWidget *parent = nullptr
+    );
 
     virtual QSize sizeHint() const override;
 
@@ -114,10 +119,16 @@ public:
 Q_SIGNALS:
     /** @brief Signal for fraction() property. */
     void fractionChanged(const qreal newFraction);
+    void orientationChanged(const Qt::Orientation newOrientation);
+    void pageStepChanged(const qreal newPageStep);
+    void singleStepChanged(const qreal newSingleStep);
 
 public Q_SLOTS:
-    void setOrientation(const Qt::Orientation orientation);
-    void setColors(const PerceptualColor::FullColorDescription &col1, const PerceptualColor::FullColorDescription &col2);
+    void setOrientation(const Qt::Orientation newOrientation);
+    void setColors(
+        const PerceptualColor::FullColorDescription &col1,
+        const PerceptualColor::FullColorDescription &col2
+    );
     void setFirstColor(const PerceptualColor::FullColorDescription &col);
     void setSecondColor(const PerceptualColor::FullColorDescription &col);
     void setFraction(const qreal newFraction);
@@ -143,13 +154,19 @@ private:
     FullColorDescription m_firstColor;
     FullColorDescription m_secondColor;
     QPointer<RgbColorSpace> m_rgbColorSpace;
+    void setOrientationAndForceUpdate(const Qt::Orientation newOrientation);
     void updateGradientImage();
-    QPair<cmsCIELCh, qreal> intermediateColor(const cmsCIELCh &firstColor, const cmsCIELCh &secondColor, qreal fraction);
+    QPair<cmsCIELCh, qreal> intermediateColor(
+        const cmsCIELCh &firstColor,
+        const cmsCIELCh &secondColor,
+        qreal fraction
+    );
     /** @brief Cache for the gradient image
      * 
-     * Holds the current gradient image (without the selection cursor). Always
-     * at the left is the first color, always at the right is the second color.
-     * So when painting, it might be necessary to rotate the image.
+     * Holds the current gradient image (without the selection cursor).
+     * Always at the left is the first color, always at the right is the
+     * second color. So when painting, it might be necessary to rotate
+     * the image.
      * 
      * This is a cache. Before using it, check if it's up-to-date with
      * m_gradientImageReady(). If not, use updateGradientImage() to

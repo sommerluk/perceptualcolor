@@ -48,7 +48,7 @@ namespace PerceptualColor {
  * @param parent Passed to the QWidget base class constructor
  */
 ChromaLightnessDiagram::ChromaLightnessDiagram(
-    RgbColorSpace *colorSpace,
+    PerceptualColor::RgbColorSpace *colorSpace,
     QWidget *parent)
 : AbstractDiagram(parent)
 {
@@ -586,11 +586,6 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
 
 // TODO what if a part of the gamut at the right is not displayed?
-
-int ChromaLightnessDiagram::border() const
-{
-    return m_border;
-}
 
 /** @brief Color of the current selection
  * 

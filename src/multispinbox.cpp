@@ -27,6 +27,7 @@
 // Own header
 #include "PerceptualColor/multispinbox.h"
 
+#include "PerceptualColor/extendeddoublevalidator.h"
 #include "PerceptualColor/helper.h"
 
 #include <QApplication>
@@ -35,15 +36,6 @@
 #include <QStyleOption>
 
 namespace PerceptualColor {
-
-/** @brief Static weak pointer to the <em>not</em> initialized internal
- * spin box object (if any).
- * 
- * Initial value is a null pointer.
- * 
- * @sa @ref m_formatSpinBoxNonInitialized */
-QWeakPointer<QDoubleSpinBox> MultiSpinBox::m_formatSpinBoxNonInitializedWeak
-    = QWeakPointer<QDoubleSpinBox>();
 
 /** @brief Test if a cursor position is at the current value.
  * 
@@ -70,65 +62,6 @@ bool MultiSpinBox::isCursorPositionAtCurrentValueText(
     return (newPositionIsHighEnough && newPositionIsLowEnough);
 }
 
-/** @brief Applies a @ref Section configuration to a <tt>QDoubleSpinBox</tt>.
- * 
- * Applies @ref Section::minimum, @ref Section::maximum and
- * @ref Section::value, but ignores the other configuration settings.
- * 
- * @param section the section configuration that will be applied
- * @param spinBox pointer to the spin box that will get configured
- *
- * @sa @ref applySectionConfigurationToFormatSpinbox
- */
-void MultiSpinBox::applySectionConfiguration(
-    const PerceptualColor::MultiSpinBox::Section &section,
-    QDoubleSpinBox* spinBox
-)
-{
-    spinBox->setMaximum(
-        section.maximum
-    );
-    spinBox->setMinimum(
-        section.minimum
-    );
-    spinBox->setValue(
-        section.value
-    );
-}
-
-/** @brief Applies a @ref Section configuration
- * to @ref m_formatSpinBoxForCurrentValue.
- * 
- * Convenience function for @ref applySectionConfiguration that applies
- * the changes directly to @ref m_formatSpinBoxForCurrentValue.
- * 
- * @param index The index in @ref m_configuration that will be applied.
- * That must be a valid index; otherwise the function will throw an
- * exception. */
-void MultiSpinBox::applySectionConfigurationToFormatSpinbox(int index)
-{
-    if (!Helper::inRange(0, index, m_configuration.count() - 1)) {
-        qWarning()
-            << "The function"
-            << __func__
-            // << "in file"
-            // << __FILE__
-            // << "near to line"
-            // << __LINE__
-            << "was called with the invalid “index“ argument"
-            << index
-            << "while valid range is currently"
-            << 0
-            << "‥"
-            << m_configuration.count() - 1;
-        throw 0;
-    }
-    applySectionConfiguration(
-        m_configuration.at(index),
-        &m_formatSpinBoxForCurrentValue
-    );
-}
-
 /** @brief The recommended minimum size for the widget
  * 
  * Reimplemented from base class.
@@ -146,54 +79,19 @@ QSize MultiSpinBox::minimumSizeHint() const
     return sizeHint();
 }
 
-/** @brief Initializes a <tt>QDoubleSpinBox</tt>.
- * 
- * The widget will get explicitly hidden, and the number of decimals
- * will be configured.
- * 
- * @param spinBox the <tt>QDoubleSpinBox</tt> that will be initialized
- */
-void MultiSpinBox::initializeQDoubleSpinBox(QDoubleSpinBox *spinBox)
-{
-    // Make sure that the widget is explicitly hidden, so that it will
-    // never show up unintentionally.
-    spinBox->hide();
-    // Define the number of visible decimals.
-    spinBox->setDecimals(0);
-}
-
 /** @brief Constructor
  * 
  * @param parent the parent widget */
 MultiSpinBox::MultiSpinBox(QWidget *parent)
 : QAbstractSpinBox(parent)
 {
-    // Set up the internal format spin box that is commom to all instances
-    // of this class.
-    // We do NOT use m_formatSpinBoxNonInitializedWeak.isNull() to test the
-    // validity. Instead, we pass through .toStrongRef(). As the
-    // Qt documentation says:
-    //     “Therefore, to access the pointer that QWeakPointer is tracking,
-    //      you must first promote it to QSharedPointer and verify if the
-    //      resulting object is null or not. QSharedPointer guarantees that
-    //      the object isn't deleted, so if you obtain a non-null object, you
-    //      may use the pointer.”
-    if (m_formatSpinBoxNonInitializedWeak.toStrongRef().isNull()) {
-        // There is no existing spin box object.
-        // So we have to create a new one.
-        m_formatSpinBoxNonInitialized.reset(new QDoubleSpinBox);
-        m_formatSpinBoxNonInitializedWeak =
-            m_formatSpinBoxNonInitialized.toWeakRef();
-        // Make sure that the widget is explicitly hidden, so that it will
-        // never show up unintentionally.
-        m_formatSpinBoxNonInitialized->hide();
-    } else {
-        m_formatSpinBoxNonInitialized =
-            m_formatSpinBoxNonInitializedWeak.toStrongRef();
-    }
-
-    // Set up the format spin boxes
-    initializeQDoubleSpinBox(&m_formatSpinBoxForCurrentValue);
+    // Set up the m_validator
+    m_validator = new ExtendedDoubleValidator(this);
+    m_validator->setLocale(locale());
+    // TODO m_validator has to be initialized, but calling just
+    // setCurrentSectionIndex() wouldn’t be enough because if the
+    // new section is not different from the old one, nothing happens.
+    lineEdit()->setValidator(m_validator);
     
     // Connect signals and slots
     connect(
@@ -238,8 +136,6 @@ QSize MultiSpinBox::sizeHint() const
     QString textOfMinimumValue;
     QString textOfMaximumValue;
     QString completeString;
-    // Initialize a QDoubleSpinBox for the format work.
-    initializeQDoubleSpinBox(m_formatSpinBoxNonInitialized.data());
 
     // Get the text for all the sections
     for (int i = 0; i < myConfiguration.count(); ++i) {
@@ -248,18 +144,16 @@ QSize MultiSpinBox::sizeHint() const
         // For each section, test if the minimum value or the maximum
         // takes more space (width). Choose the one that takes more place
         // (width).
-        myConfiguration[i].value = myConfiguration.at(i).minimum;
-        applySectionConfiguration(
-            myConfiguration.at(i),
-            m_formatSpinBoxNonInitialized.data()
+        textOfMinimumValue = locale().toString(
+            myConfiguration.at(i).minimum,
+            'f',
+            myConfiguration.at(i).decimals
         );
-        textOfMinimumValue = m_formatSpinBoxNonInitialized->cleanText();
-        myConfiguration[i].value = myConfiguration.at(i).maximum;
-        applySectionConfiguration(
-            myConfiguration.at(i),
-            m_formatSpinBoxNonInitialized.data()
+        textOfMaximumValue = locale().toString(
+            myConfiguration.at(i).maximum,
+            'f',
+            myConfiguration.at(i).decimals
         );
-        textOfMaximumValue = m_formatSpinBoxNonInitialized->cleanText();
         if (
             myFontMetrics.horizontalAdvance(textOfMinimumValue)
                 > myFontMetrics.horizontalAdvance(textOfMaximumValue)
@@ -271,12 +165,15 @@ QSize MultiSpinBox::sizeHint() const
         // Suffix
         completeString += myConfiguration.at(i).suffix;
     }
-    // Add some extra space
+    
+    // Add some extra space, just as QSpinBox seems to do also.
     completeString += QStringLiteral(u" ");
 
     // Calculate string width and add two extra pixel for cursor
     // blinking space.
     width = myFontMetrics.horizontalAdvance(completeString) + 2;
+
+    // Calculate the final size in pixel
     QStyleOptionSpinBox myStyleOptionsForSpinBoxes;
     initStyleOption(&myStyleOptionsForSpinBoxes);
     QSize contentSize(width, height);
@@ -286,6 +183,18 @@ QSize MultiSpinBox::sizeHint() const
         contentSize,
         this
     ).expandedTo(QApplication::globalStrut());
+}
+
+/** @brief Formats the value of a given section.
+ * 
+ * @param mySection the section that will be formatted
+ * @returns the value, formatted (without prefix or suffix), as text */
+QString MultiSpinBox::formattedValue(const Section &mySection) const {
+    return locale().toString(
+        mySection.value,
+        'f',
+        mySection.decimals
+    );
 }
 
 /** @brief Updates prefix, value and suffix text 
@@ -302,9 +211,8 @@ void MultiSpinBox::updatePrefixValueSuffixText()
     m_currentSectionTextBeforeValue = QString();
     for (i = 0; i < m_currentSectionIndex; ++i) {
         m_currentSectionTextBeforeValue.append(m_configuration.at(i).prefix);
-        applySectionConfigurationToFormatSpinbox(i);
         m_currentSectionTextBeforeValue.append(
-            m_formatSpinBoxForCurrentValue.cleanText()
+            formattedValue(m_configuration.at(i))
         );
         m_currentSectionTextBeforeValue.append(m_configuration.at(i).suffix);
     }
@@ -313,11 +221,9 @@ void MultiSpinBox::updatePrefixValueSuffixText()
     );
     
     // Update m_currentSectionTextOfTheValue
-    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
-    m_currentSectionTextOfTheValue =
-        m_formatSpinBoxForCurrentValue.textFromValue(
-            m_configuration.at(m_currentSectionIndex).value
-        );
+    m_currentSectionTextOfTheValue = formattedValue(
+        m_configuration.at(m_currentSectionIndex)
+    );
     
     // Update m_currentSectionTextAfterValue
     m_currentSectionTextAfterValue = QString();
@@ -326,16 +232,12 @@ void MultiSpinBox::updatePrefixValueSuffixText()
     );
     for (i = m_currentSectionIndex + 1; i < m_configuration.count(); ++i) {
         m_currentSectionTextAfterValue.append(m_configuration.at(i).prefix);
-        applySectionConfigurationToFormatSpinbox(i);
+        
         m_currentSectionTextAfterValue.append(
-            m_formatSpinBoxForCurrentValue.cleanText()
+            formattedValue(m_configuration.at(i))
         );
         m_currentSectionTextAfterValue.append(m_configuration.at(i).suffix);
     }
-    
-    // We have abused the format spinbox, that should normally always
-    // have the CURRENT format. Here we restore it:
-    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
 }
 
 /** @brief Sets the current section index.
@@ -406,10 +308,12 @@ void MultiSpinBox::setCurrentSectionIndexWithoutUpdatingText(int index)
     // Apply the changes
     m_currentSectionIndex = index;
     updatePrefixValueSuffixText();
-
-    // Clean up, so that the current state of m_formatSpinBox
-    // corresponds to m_currentSectionIndex.
-    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
+    m_validator->setPrefix(m_currentSectionTextBeforeValue);
+    m_validator->setSuffix(m_currentSectionTextAfterValue);
+    m_validator->setRange(
+        m_configuration.at(m_currentSectionIndex).minimum,
+        m_configuration.at(m_currentSectionIndex).maximum
+    );
 
     // The state (enabled/disabled) of the buttons “Step up” and “Step down”
     // has to be updated. To force this, update() is called manually here:
@@ -641,12 +545,16 @@ void MultiSpinBox::stepBy(int steps)
         m_configuration.at(m_currentSectionIndex).value + steps,
         m_configuration.at(m_currentSectionIndex).maximum
     );
+    // Update the internal representation
+    updatePrefixValueSuffixText();
     // Update the content of the QLineEdit and select the current
     // value (as cursor text selection):
     setCurrentSectionIndex(m_currentSectionIndex);
     // Make sure that the buttons for step up and step down are updated.
     update();
 }
+
+// TODO WARNING startsWith and endsWith have strange behaviour is the argument is empty, but not null.
 
 /** @brief Updates the value of the current section in @ref m_configuration.
  * 
@@ -706,8 +614,10 @@ void MultiSpinBox::updateValueFromText(const QString &lineEditText)
     }
 
     // Update…
+    bool ok;
     m_configuration[m_currentSectionIndex].value =
-        m_formatSpinBoxForCurrentValue.valueFromText(cleanText);
+        locale().toDouble(cleanText, &ok);
+    // TODO What to do if ok has returned false?
     // Make sure that the buttons for step up and step down are updated.
     update();
     // The lineEdit()->text() property is intentionally not updated because
@@ -765,22 +675,16 @@ void MultiSpinBox::updateSectionFromCursorPosition(
     ) {
         reference +=
             m_configuration.at(sectionOfTheNewCursorPosition).prefix.length();
-        // We abuse m_formatSpinBoxForCurrentValue, which should
-        // normally have always the format of the CURRENT section.
-        // But we will restore it later…
-        applySectionConfigurationToFormatSpinbox(
-            sectionOfTheNewCursorPosition
-        );
         reference +=
-            m_formatSpinBoxForCurrentValue.cleanText().length();
+            formattedValue(
+                m_configuration.at(sectionOfTheNewCursorPosition)
+            ).length(); // TODO length(), size(), count() are counting code units. Is the cursor position also calculated in code units or rather in real code points?
         reference +=
             m_configuration.at(sectionOfTheNewCursorPosition).suffix.length();
         if (newPos <= reference) {
             break;
         }
     }
-    // Restore m_formatSpinBoxForCurrentValue to the correct format
-    applySectionConfigurationToFormatSpinbox(m_currentSectionIndex);
 
     setCurrentSectionIndexWithoutUpdatingText(
         sectionOfTheNewCursorPosition

@@ -551,10 +551,13 @@ private Q_SLOTS:
             + QStringLiteral("\".");
         QVERIFY2(testClassIndex >= 0, message.toLatin1());
         QMetaProperty testClassProperty = testClass.property(testClassIndex);
-        QCOMPARE(
-            testClassProperty.hasNotifySignal(),
-            referenceClassProperty.hasNotifySignal()
-        );
+        if (referenceClassProperty.hasNotifySignal()) {
+            QVERIFY2(
+                testClassProperty.hasNotifySignal(),
+                "If the reference class has a notify signal, "
+                    "the test class must have also a notify signal."
+            );
+        }
         QCOMPARE(
             testClassProperty.isConstant(),
             referenceClassProperty.isConstant()
@@ -641,46 +644,48 @@ private Q_SLOTS:
             testClassProperty.name(),
             referenceClassProperty.name()
         );
-        QCOMPARE(
-            testClassProperty.notifySignal().methodSignature(),
-            referenceClassProperty.notifySignal().methodSignature()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().methodType(),
-            referenceClassProperty.notifySignal().methodType()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().name(),
-            referenceClassProperty.notifySignal().name()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().parameterCount(),
-            referenceClassProperty.notifySignal().parameterCount()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().parameterNames(),
-            referenceClassProperty.notifySignal().parameterNames()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().parameterTypes(),
-            referenceClassProperty.notifySignal().parameterTypes()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().returnType(),
-            referenceClassProperty.notifySignal().returnType()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().revision(),
-            referenceClassProperty.notifySignal().revision()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().tag(),
-            referenceClassProperty.notifySignal().tag()
-        );
-        QCOMPARE(
-            testClassProperty.notifySignal().typeName(),
-            referenceClassProperty.notifySignal().typeName()
-        );
+        if (referenceClassProperty.hasNotifySignal()) {
+            QCOMPARE(
+                testClassProperty.notifySignal().methodSignature(),
+                referenceClassProperty.notifySignal().methodSignature()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().methodType(),
+                referenceClassProperty.notifySignal().methodType()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().name(),
+                referenceClassProperty.notifySignal().name()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().parameterCount(),
+                referenceClassProperty.notifySignal().parameterCount()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().parameterNames(),
+                referenceClassProperty.notifySignal().parameterNames()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().parameterTypes(),
+                referenceClassProperty.notifySignal().parameterTypes()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().returnType(),
+                referenceClassProperty.notifySignal().returnType()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().revision(),
+                referenceClassProperty.notifySignal().revision()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().tag(),
+                referenceClassProperty.notifySignal().tag()
+            );
+            QCOMPARE(
+                testClassProperty.notifySignal().typeName(),
+                referenceClassProperty.notifySignal().typeName()
+            );
+        }
         QCOMPARE(
             testClassProperty.type(),
             referenceClassProperty.type()

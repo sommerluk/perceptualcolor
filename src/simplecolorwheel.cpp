@@ -42,7 +42,7 @@
 namespace PerceptualColor {
 
 /** @brief Constructor */
-SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) : CircularDiagram(parent)
+SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) : AbstractCircularDiagram(parent)
 {
     // Setup LittleCMS (must be first thing because other operations rely on working LittleCMS)
     m_rgbColorSpace = colorSpace;
@@ -52,8 +52,6 @@ SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
     // each time, and this could crash if done before everything is
     // initialized.
     m_hue = Helper::LchDefaults::defaultHue;
-    m_wheelRibbonChroma = Helper::LchDefaults::versatileSrgbChroma;
-    m_wheelThickness = default_wheelThickness;
     m_mouseEventActive = false;
 }
 
@@ -369,20 +367,7 @@ qreal SimpleColorWheel::hue() const
 
 qreal SimpleColorWheel::wheelRibbonChroma() const
 {
-    return m_wheelRibbonChroma;
-}
-
-/**
- * Set the chroma property. After changing this property, the widget gets updated.
- * @param newChroma The new chroma value to set. Range: >= 0. Values < 0 will be substituted by 0.
- */
-void SimpleColorWheel::setWheelRibbonChroma(const qreal newChroma)
-{
-    qreal temp = qMax(static_cast<qreal>(0), newChroma); // substitute values < 0 with 0
-    if (m_wheelRibbonChroma != temp) {
-        m_wheelRibbonChroma = temp;
-        update(); // schedule a paintEvent()
-    }
+    return Helper::LchDefaults::versatileSrgbChroma;
 }
 
 /**
@@ -482,37 +467,13 @@ void SimpleColorWheel::resetHue()
     setHue(Helper::LchDefaults::defaultHue);
 }
 
-/** @brief Reset the wheelRibbonChroma() property. */
-void SimpleColorWheel::resetWheelRibbonChroma()
-{
-    setWheelRibbonChroma(Helper::LchDefaults::versatileSrgbChroma);
-}
-
-int SimpleColorWheel::wheelThickness() const
-{
-    return m_wheelThickness;
-}
-
-/** @brief Setter for the wheelThickness() property.
- * 
- * @param newWheelThickness the new wheel thickness
- */
-void SimpleColorWheel::setWheelThickness(const int newWheelThickness)
-{
-    int temp = qMax(newWheelThickness, 0);
-    if (m_wheelThickness != temp) {
-        m_wheelThickness = temp;
-        m_wheelImageReady = false; // because the border has changed, so the size of the pixmap will change.
-        update();
-    }
-}
-
-/** @brief Reset the wheelThickness() property. */
-void SimpleColorWheel::resetWheelThickness()
-{
-    setWheelThickness(default_wheelThickness);
-}
-
+/** @brief The border between the outer border of the wheel ribbon and
+* the border of the widget.
+* 
+* The diagram is not painted on the whole extend of the widget. A border
+* is left to allow that the focus indicator can be painted completely
+* even when the widget has the focus. The border is determined
+* automatically, its value depends on markerThickness(). */
 int SimpleColorWheel::border() const
 {
     return 2 * markerThickness;

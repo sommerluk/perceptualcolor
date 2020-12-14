@@ -65,7 +65,10 @@ class WheelColorPicker : public SimpleColorWheel
      // Can more than one USER property co-exist?
 
 public:
-    explicit WheelColorPicker(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit WheelColorPicker(
+        PerceptualColor::RgbColorSpace *colorSpace,
+        QWidget *parent = nullptr
+    );
     virtual ~WheelColorPicker() override = default;
     FullColorDescription currentColor();
     void setCurrentColor(const FullColorDescription &newCurrentColorRgb);

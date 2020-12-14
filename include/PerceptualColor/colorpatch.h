@@ -77,7 +77,7 @@ class ColorPatch : public AbstractDiagram
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
-    explicit ColorPatch(QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorPatch(QWidget *parent = nullptr);
     /** @brief Getter for property @ref color
      *  @returns the property @ref color */
     QColor color() const;

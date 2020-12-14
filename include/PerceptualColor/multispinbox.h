@@ -29,9 +29,12 @@
 
 #include <QAbstractSpinBox>
 #include <QDoubleSpinBox>
+#include <QPointer>
 #include <QSharedPointer>
 
 #include <memory>
+
+#include "PerceptualColor/extendeddoublevalidator.h"
 
 namespace PerceptualColor {
     
@@ -43,7 +46,18 @@ namespace PerceptualColor {
  * 
  * This widget provides floating point precision.
  * 
- * @todo All unit tests have to run green.
+ * @todo This class inherits from QAbstractSpinBox, which provides
+ * properties. We have to make sure these properties work also for
+ * this class. There are various types of properties.
+ * 1.) Properties that have to be implemented here in @ref MultiSpinBox (such
+ *     as <tt>correctionMode</tt> or <tt>showGroupSeparator</tt>).
+ * 2.) Properties that should work “out of the box” but should be tested
+ *     nevertheless (such as <tt>frame</tt> or <tt>accelerated</tt>
+ *     or <tt>readonly</tt>).
+ * 3.) Properties that cannot work with this class for design reasons, and
+ *     this has to be documentated (such as <tt>wrapping</tt> which cannot
+ *      be set for the hole @ref MultiSpinBox but has to be individual per
+ *     section).
  * @todo Missing features: Correct behaviour when working with the lineEdit()
  * content: Do not cursor-select more than <em>one</em> value when editing?
  * Accept intermediate states like “1,“. Do correct localization, also
@@ -57,14 +71,25 @@ namespace PerceptualColor {
 class MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
-    
+
+    /* @brief The configuration of the sections of this widget.
+     * 
+     * @sa @ref configuration()
+     * @sa @ref setConfiguration()
+     * @sa @ref m_configuration
+     * TODO Using this “configuration” property seems a little wired.
+     * What would be a better design? */
+//     Q_PROPERTY(SectionList configuration READ configuration WRITE setConfiguration)
+
 public:
     /** @brief The data of a section within a @ref MultiSpinBox. */
     struct Section {
-        /** @brief The minimum possible value of the section. */
-        double minimum = 0;
+        /** @brief The number of digits after the decimal point. */
+        int decimals = 0;
         /** @brief The maximum possible value of the section. */
         double maximum = 100;
+        /** @brief The minimum possible value of the section. */
+        double minimum = 0;
         /** @brief A prefix to be displayed before the value. */
         QString prefix;
         /** @brief A suffix to be displayed behind the value. */
@@ -75,15 +100,19 @@ public:
     /** @brief A list of @ref Section data. */
     typedef QList<Section> SectionList;
     
-    MultiSpinBox(QWidget *parent = nullptr);
+    Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
 
+    /** @brief Getter for property @ref configuration
+     *  @returns the property @ref configuration */
     MultiSpinBox::SectionList configuration() const;
     virtual QSize minimumSizeHint() const override;
+    virtual QSize sizeHint() const override;
+    virtual void stepBy(int steps) override;
+
+public Q_SLOTS:
     void setConfiguration(
         const MultiSpinBox::SectionList &configuration
     );
-    virtual QSize sizeHint() const override;
-    virtual void stepBy(int steps) override;
 
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;
@@ -126,37 +155,9 @@ private:
      * Holds an internal, invisible spin box that is used for
      * formatting correctly the value of the <em>current</em> section. */
     QDoubleSpinBox m_formatSpinBoxForCurrentValue;
-    /** @brief <em>Not</em> initialized internal spin box object.
-     * 
-     * Holds an internal, invisible spin box that can be used for formatting.
-     * The spin box is guaranteed to exists, but does not have a defined
-     * state. It can be freely used by all member functions of this class.
-     * So before each usage, it has to be initialized (prefix, suffix,
-     * value and so on).
-     * 
-     * Note that the very same spin box object is shared between all instances
-     * of this class. It exists as long as at least <em>one</em> instance of
-     * this class exists. The synchronization between instances happens
-     * through the static member @ref m_formatSpinBoxNonInitializedWeak: If it
-     * actually holds a spin box, the constructor @ref MultiSpinBox() will use
-     * this very same spin box is also here; if not, a new spin box is created
-     * and also provided to future other instances through the stacic
-     * @ref m_formatSpinBoxNonInitialized member. As the static member is
-     * a <em>weak</em> pointer, while the object member is a <em>shared</em>
-     * pointer, if the last instance is destroyed, automatically also the
-     * spin box will be destroyed (to save memory). If a new instance is
-     * created, also a new spin box will be created. */
-    QSharedPointer<QDoubleSpinBox> m_formatSpinBoxNonInitialized;
-    // No documentation here (documentation of this static member variable
-    // is in the .cpp file at the initialization.
-    static QWeakPointer<QDoubleSpinBox> m_formatSpinBoxNonInitializedWeak;
+    QPointer<ExtendedDoubleValidator> m_validator;
 
-    static void applySectionConfiguration(
-        const Section &section,
-        QDoubleSpinBox *spinBox
-    );
-    void applySectionConfigurationToFormatSpinbox(int index);
-    static void initializeQDoubleSpinBox(QDoubleSpinBox *spinBox);
+    QString formattedValue(const Section &mySection) const;
     bool isCursorPositionAtCurrentValueText(
         const int cursorPosition
     ) const;

@@ -134,12 +134,20 @@ namespace PerceptualColor {
  * <em>after</em> the MultiSpinBox is available and has replaced the
  * indivudual spin boxes and the line edits in this dialog.
  * 
+ * @todo The HLC widget could provide intermediate values during the
+ * user is editing. These could be displayed, and if the intermediate
+ * value is out-of-gamut, the @ref ColorPatch could display an empty
+ * value, and the diagram widgets could indeed put the marker at the
+ * out-of-gamut position. Once the HLC widget finishes the editing,
+ * an out-of-gamut value should of cource be corrected, following
+ * the <tt>QAbstractSpinbox::correctionMode</tt> policy.
+ * 
  * @todo Touch screen compatibility: Position of the color patch
  * <em>above</em> the selector widget instead of below?
  * 
- * This would be better for touch screen compatibility (the hand does not
- * hide the widget that shows the resulting color); also Apple does this in
- * its native color dialog.
+ * This would be better for touch screen compatibility (the hand of the user
+ * does not hide the widget that shows the resulting color); also Apple does
+ * this in its native color dialog.
  * 
  * On the other hand, the overall layout would be less logical: The typical
  * workflow is probably:
@@ -155,10 +163,13 @@ namespace PerceptualColor {
  * A possible solution might be to control this with a property (enum
  * DialogColorPatchPosition “optimizeForTouchscreen” “optimizeForWorkflow”).
  * 
+ * @todo Touch screen compatibility, second part: A spin box can also
+ * be used on mobile phone (putting the numbers with on-screen keyboard).
+ * But the + and - button for increasing or decreasing the values might
+ * be too small. And mobile UI uses often wheels for this use case…
+ * 
  * @todo In general: What would mean better support for touch-screen and 
- * convertible? Probably: A layout that has the @ref ColorPatch in top
- * position instead of bottom position (so the hand of the user won‘t cover
- * it and hide it while using the dialog).
+ * convertible? More things to do?
  * 
  * @todo Use @ref MultiSpinBox for <em>all</em> numeric values. We would
  * update the color only if the focus leaves the @ref MultiSpinBox or when
@@ -315,8 +326,9 @@ class ColorDialog : public QDialog
      * @sa @ref testOption()
      * @sa WRITE @ref setOptions()
      * @sa @ref setOption()
+     * @sa @ref optionsChanged()
      * @sa @ref m_options */
-    Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions)
+    Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
 
     /** @brief Layout dimensions
      * 
@@ -333,8 +345,9 @@ class ColorDialog : public QDialog
      * 
      * @sa @ref DialogLayoutDimensions
      * @sa @ref layoutDimensions()
-     * @sa @ref setLayoutDimensions() */
-    Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions)
+     * @sa @ref setLayoutDimensions()
+     * @sa @ref layoutDimensionsChanged */
+    Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
         
 public:
     /** @brief Local alias for QColorDialog::ColorDialogOption */
@@ -357,8 +370,11 @@ public:
         expanded    /**< Use the large, “expanded” layout of this dialog.  */
     };
     Q_ENUM(DialogLayoutDimensions)
-    explicit ColorDialog(QWidget *parent = nullptr);
-    explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorDialog(QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorDialog(
+        const QColor &initial,
+        QWidget *parent = nullptr
+    );
     virtual ~ColorDialog() override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
@@ -372,21 +388,29 @@ public:
     ColorDialog::DialogLayoutDimensions layoutDimensions() const;
     // Make sure not to override the base class’s “open“ function
     using QDialog::open;
-    void open(QObject *receiver, const char *member);
+    Q_INVOKABLE void open(QObject *receiver, const char *member);
     /** @brief Getter for property @ref options
      * @returns the current @ref options */
     ColorDialogOptions options() const;
-    QColor selectedColor() const;
-    void setLayoutDimensions(
-        const ColorDialog::DialogLayoutDimensions newLayoutDimensions
-    );
-    void setOption(ColorDialogOption option, bool on = true);
-    void setOptions(ColorDialogOptions options);
+    Q_INVOKABLE QColor selectedColor() const;
     virtual void setVisible(bool visible) override;
-    bool testOption(ColorDialogOption option) const;
+    Q_INVOKABLE bool testOption(
+        PerceptualColor::ColorDialog::ColorDialogOption option
+    ) const;
 
 public Q_SLOTS:
     void setCurrentColor(const QColor &color);
+    void setLayoutDimensions(
+        const PerceptualColor::ColorDialog::DialogLayoutDimensions
+            newLayoutDimensions
+    );
+    Q_INVOKABLE void setOption(
+        PerceptualColor::ColorDialog::ColorDialogOption option,
+        bool on = true
+    );
+    void setOptions(
+        PerceptualColor::ColorDialog::ColorDialogOptions newOptions
+    );
 
 Q_SIGNALS:
     /** @brief This signal is emitted just after the user has clicked OK to
@@ -399,6 +423,19 @@ Q_SIGNALS:
      * dialog.
      * @param color the new “current color” */
     void currentColorChanged(const QColor &color);
+    /** @brief Notify signal for property @ref layoutDimensions.
+     *
+     * @param newLayoutDimensions the new layout dimensions */
+    void layoutDimensionsChanged(
+        const PerceptualColor::ColorDialog::DialogLayoutDimensions
+            newLayoutDimensions
+    );
+    /** @brief Notify signal for property @ref options.
+     *
+     * @param newOptions the new options */
+    void optionsChanged(
+        const PerceptualColor::ColorDialog::ColorDialogOptions newOptions
+    );
 
 protected:
     virtual void done(int result) override;

@@ -115,11 +115,43 @@ static_assert(
  * The source code of the library is in UTF8. A static_assert within the
  * header @ref helper.h makes sure your compiler actually treats it as UTF8.
  * 
- * @copyright Almost all the code is published under MIT License. Only
+ * @copyright Almost all the code is published under MIT License. Only
  * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
  * license. The <tt>LICENSES</tt> subfolder contains copies of the licence
  * texts.
  * 
+ * @todo mark all public non-slot functions with Q_INVOKABLE (except property
+ * setters and getters)
+ * @todo A good widget library should
+ * - run on all systems (✓ We do not use system-specific code nor do we
+ *   rely on byte order)
+ * - support hight-dpi (? work in progress)
+ * - stylable by QStyle (? partial)
+ * - stylable by style sheets (✗)
+ * - accessibility (✗)
+ * @todo KDE Frameworks / https://marketplace.qt.io/ ?
+ * @todo Provide property bindings as described in 
+ * https://www.qt.io/blog/property-bindings-in-qt-6 or not? It is worth
+ * when we do not support QML? What are the pitfalls? Imagine a property
+ * that holds a percent value from 0 to 100; the setter enforces this
+ * range; the binding bypasses the setter and allows every value? And:
+ * How can callbacks know about when a setter was called in C++? See
+ * also: https://doc.qt.io/qt-5/qtqml-cppintegration-exposecppattributes.html
+ * and https://doc.qt.io/qt-5/qtqml-tutorials-extending-qml-example.html and
+ * http://blog.aeguana.com/2015/12/12/writing-a-gui-using-qml-for-a-c-project/
+ * for interaction between QML and C++. Pitfalls: Example of color() property
+ * stored internally at m_color: Much implementation code of the clas will
+ * access directly m_color instead of color(), so when using bindings,
+ * this code is broken?
+ * @todo Provide QML support so that for
+ * https://doc.qt.io/qt-5/qml-qtquick-dialogs-colordialog.html (or its
+ * Qt6 counterpart) we provide a source compatible alternative, like for
+ * QColorWidget? Split the library in three parts (Common, Widgets, QML)?
+ * @todo no constexpr should be exposted in any header as they are determined
+ * on compile time. So if later we change the value, an application could
+ * have a different value in the lib file (compile time of the library) and
+ * the executable (compile time of the executable, which could be compoiled
+ * against a different header/version).
  * @todo Comply with KDE policies: https://community.kde.org/Policies
  * @todo Decide is it’s better to raise C++ requirement to C++17 (see the
  * hidden comment above in this source file).

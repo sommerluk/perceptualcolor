@@ -32,7 +32,10 @@
 
 namespace PerceptualColor {
 
-AlphaSelector::AlphaSelector(RgbColorSpace *colorSpace, QWidget *parent) : QWidget(parent)
+AlphaSelector::AlphaSelector(
+    PerceptualColor::RgbColorSpace *colorSpace,
+    QWidget *parent
+) : QWidget(parent)
 {
     m_rgbColorSpace = colorSpace;
     QHBoxLayout *layout = new QHBoxLayout();
@@ -126,6 +129,7 @@ void AlphaSelector::setRepresentation(AlphaSelector::NumberFormat newRepresentat
         default:
             throw;
     }
+    Q_EMIT representationChanged(m_representation);
 }
 
 void AlphaSelector::setAlphaFromRepresentationFormat(qreal newAlphaRepresentation)
@@ -164,16 +168,19 @@ void AlphaSelector::setColor(const FullColorDescription &newColor)
         1
     );
     m_gradientSelector->setColors(first, second);
+    Q_EMIT colorChanged(m_color);
 }
 
 /** @brief Register this widget as buddy.
  * 
  * This function registers this widget as the focus buddy of a QLabel. It's
  * better using this function than calling directly QLabel::setBuddy(). This
- * function does not set this entire widget as focus buddy, but only the spin box
- * part, which seems reasonable as focus buddies react on keyboard events and
- * the spin box is better adapted to keyboard input than the slider.
- */
+ * function does not set this entire widget as focus buddy, but only the spin
+ * box part, which seems reasonable as focus buddies react on keyboard events
+ * and the spin box is better adapted to keyboard input than the slider.
+ * 
+ * @todo Is there a more elegant solution for this problem? Without this
+ * function? */
 void AlphaSelector::registerAsBuddy(QLabel *label)
 {
     label->setBuddy(m_doubleSpinBox);

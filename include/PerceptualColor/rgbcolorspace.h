@@ -35,29 +35,33 @@
 
 namespace PerceptualColor {
 
-/** @brief Interface to LittleCMS for working with an RGB color space */
+/** @brief Interface to LittleCMS for working with an RGB color space
+ * 
+ * @todo Declare Q_PROPERTY for @ref profileInfoCopyright(),
+ * @ref profileInfoDescription(), @ref profileInfoManufacturer(),
+ * @ref profileInfoModel(), @ref whitepointL() */
 class RgbColorSpace : public QObject
 {
     Q_OBJECT
 
 public:
-    RgbColorSpace(QObject *parent = nullptr);
+    Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
     virtual ~RgbColorSpace();
     qreal blackpointL() const;
-    QColor colorRgb(const cmsCIELab &Lab) const;
-    QColor colorRgb(const cmsCIELCh &LCh) const;
-    Helper::cmsRGB colorRgbBoundSimple(const cmsCIELab &Lab) const;
-    QColor colorRgbBound(const cmsCIELab &Lab) const;
-    QColor colorRgbBound(const cmsCIELCh &LCh) const;
-    cmsCIELab colorLab(const QColor &rgbColor) const;
-    cmsCIELab colorLab(const Helper::cmsRGB &rgb) const;
-    bool inGamut(const cmsCIELab &Lab);
-    bool inGamut(
+    Q_INVOKABLE QColor colorRgb(const cmsCIELab &Lab) const;
+    Q_INVOKABLE QColor colorRgb(const cmsCIELCh &LCh) const;
+    Q_INVOKABLE Helper::cmsRGB colorRgbBoundSimple(const cmsCIELab &Lab) const;
+    Q_INVOKABLE QColor colorRgbBound(const cmsCIELab &Lab) const;
+    Q_INVOKABLE QColor colorRgbBound(const cmsCIELCh &LCh) const;
+    Q_INVOKABLE cmsCIELab colorLab(const QColor &rgbColor) const;
+    Q_INVOKABLE cmsCIELab colorLab(const Helper::cmsRGB &rgb) const;
+    Q_INVOKABLE bool inGamut(const cmsCIELab &Lab);
+    Q_INVOKABLE bool inGamut(
         const cmsFloat64Number lightness,
         const cmsFloat64Number chroma,
         const cmsFloat64Number hue
     );
-    bool inGamut(const cmsCIELCh &LCh);
+    Q_INVOKABLE bool inGamut(const cmsCIELCh &LCh);
     QString profileInfoCopyright() const;
     QString profileInfoDescription() const;
     QString profileInfoManufacturer() const;

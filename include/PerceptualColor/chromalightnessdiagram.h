@@ -59,23 +59,12 @@ namespace PerceptualColor {
  * value that accepts focus by mouse click, the focus will not only be
  * accepted for clicks within the actual display gamut, but also for clicks
  * within the surrounding rectangle.
+ * 
+ * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE
  */
 class ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT
-
-    /** @brief The border between the widget outer border and the diagram itself.
-     * 
-     * The diagram is not painted on the whole extend of the widget. A border is
-     * left to allow that the selection marker can be painted completely even when
-     * a pixel on the border of the diagram is selected. The border is
-     * determined automatically, its value depends on @ref markerRadius and
-     * @ref markerThickness.
-     * 
-     * @sa border()
-     * @sa updateBorder()
-     */
-    Q_PROPERTY(int border READ border STORED false)
 
     /** @brief Currently selected color
      * 
@@ -86,9 +75,11 @@ class ChromaLightnessDiagram : public AbstractDiagram
     Q_PROPERTY(FullColorDescription color READ color WRITE setColor NOTIFY colorChanged USER true)
 
 public:
-    explicit ChromaLightnessDiagram(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaLightnessDiagram(
+        PerceptualColor::RgbColorSpace *colorSpace,
+        QWidget *parent = nullptr
+    );
     virtual ~ChromaLightnessDiagram() override = default;
-    int border() const;
     FullColorDescription color() const;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
@@ -114,7 +105,16 @@ private:
 
     Q_DISABLE_COPY(ChromaLightnessDiagram)
 
-    /** @brief Internal storage of the border() property */
+    /** @brief The border between the widget outer border and the diagram itself.
+     * 
+     * The diagram is not painted on the whole extend of the widget. A border is
+     * left to allow that the selection marker can be painted completely even when
+     * a pixel on the border of the diagram is selected. The border is
+     * determined automatically, its value depends on @ref markerRadius and
+     * @ref markerThickness.
+     * 
+     * @sa updateBorder()
+     */
     int m_border;
     /** @brief Internal storage of the chromaLightness() property */
 //     QPointF m_chromaLightness;

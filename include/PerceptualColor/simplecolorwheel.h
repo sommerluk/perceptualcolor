@@ -31,7 +31,7 @@
 #include <QPointer>
 #include <QWidget>
 
-#include "PerceptualColor/circulardiagram.h"
+#include "PerceptualColor/abstractcirculardiagram.h"
 #include "PerceptualColor/polarpointf.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -50,22 +50,9 @@ namespace PerceptualColor {
  * accepted for clicks within the actual circle, but also for clicks
  * within the surrounding rectangle.
  */
-class SimpleColorWheel : public CircularDiagram
+class SimpleColorWheel : public AbstractCircularDiagram
 {
     Q_OBJECT
-
-    /** // deduced from markerThickness and wheelThickness */
-    /** @brief The border between the outer border of the wheel ribbon and the
-     * border of the widget.
-     * 
-     * The diagram is not painted on the whole extend of the widget. A border is
-     * left to allow that the focus indicator can be painted completely even when
-     * the widget has the focus. The border is determined automatically, its
-     * value depends on markerThickness().
-     * 
-     * @sa border()
-     */
-    Q_PROPERTY(int border READ border)
 
     /** @brief The currently selected hue.
      * 
@@ -82,32 +69,15 @@ class SimpleColorWheel : public CircularDiagram
      */
     Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged USER true)
 
-    /** @brief the chroma with which the wheel ribbon is painted.
-     * 
-     * @sa wheelRibbonChroma()
-     * @sa setWheelRibbonChroma()
-     * @sa resetWheelRibbonChroma
-     */
-    Q_PROPERTY(qreal wheelRibbonChroma READ wheelRibbonChroma WRITE setWheelRibbonChroma RESET resetWheelRibbonChroma)
-
-    /** @brief the thickness of the wheel ribbon
-     * 
-     * @sa wheelThickness()
-     * @sa setWheelThickness()
-     * @sa resetWheelThickness()
-     * @sa default_wheelThickness
-     */
-    Q_PROPERTY(int wheelThickness READ wheelThickness WRITE setWheelThickness RESET resetWheelThickness)
-
 public:
-    explicit SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit SimpleColorWheel(
+        PerceptualColor::RgbColorSpace *colorSpace,
+        QWidget *parent = nullptr
+    );
     virtual ~SimpleColorWheel() override = default;
-    int border() const;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
-    int wheelThickness() const;
-    qreal wheelRibbonChroma() const;
     static QImage generateWheelImage(
         RgbColorSpace *colorSpace,
         const int outerDiameter,
@@ -123,11 +93,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void resetHue();
-    void resetWheelRibbonChroma();
-    void resetWheelThickness();
     void setHue(const qreal newHue);
-    void setWheelRibbonChroma(const qreal newChroma);
-    void setWheelThickness(const int newMarkerThickness);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
@@ -138,7 +104,12 @@ protected:
     virtual void resizeEvent(QResizeEvent* event) override;
     virtual void wheelEvent(QWheelEvent *event) override;
     int contentDiameter() const;
-
+    int border() const;
+    /** @brief the thickness of the wheel ribbon */
+    static constexpr int m_wheelThickness = 20;
+    /** @brief the chroma with which the wheel ribbon is painted. */
+    qreal wheelRibbonChroma() const;
+    
 private:
     Q_DISABLE_COPY(SimpleColorWheel)
 
@@ -166,16 +137,13 @@ private:
     qreal m_hue;
     /** @brief Pointer to RgbColorSpace() object */
     QPointer<RgbColorSpace> m_rgbColorSpace;
-    /** @brief Internal storage of the wheelRibbonChroma() property */
-    qreal m_wheelRibbonChroma;
-    /** @brief Internal storage of the wheelThickness() property */
-    int m_wheelThickness;
 
-    /** @brief Default value for wheelThickness() property. */
-    static constexpr int default_wheelThickness = 20;
-
-    QPointF fromWheelCoordinatesToWidgetCoordinates(const PolarPointF wheelCoordinates) const;
-    PolarPointF fromWidgetCoordinatesToWheelCoordinates(const QPoint widgetCoordinates) const;
+    QPointF fromWheelCoordinatesToWidgetCoordinates(
+        const PolarPointF wheelCoordinates
+    ) const;
+    PolarPointF fromWidgetCoordinatesToWheelCoordinates(
+        const QPoint widgetCoordinates
+    ) const;
     void updateWheelImage();
 
 };

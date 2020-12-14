@@ -61,19 +61,20 @@ class AlphaSelector : public QWidget
      * The alpha channel of this property is ignored. See
      * alpha() for the actually used alpha channel.
      * 
-     * @sa setColor()
-     */
-    Q_PROPERTY(PerceptualColor::FullColorDescription color READ color WRITE setColor)
+     * @sa setColor() */
+    Q_PROPERTY(PerceptualColor::FullColorDescription color READ color WRITE setColor NOTIFY colorChanged)
 
     /** @brief Representation form in the spin box.
      * 
-     * @sa setRepresentation()
-     */
-    Q_PROPERTY(PerceptualColor::AlphaSelector::NumberFormat representation READ representation WRITE setRepresentation)
+     * @sa setRepresentation() */
+    Q_PROPERTY(PerceptualColor::AlphaSelector::NumberFormat representation READ representation WRITE setRepresentation NOTIFY representationChanged)
     
 public:
     /** Constructor */
-    AlphaSelector(RgbColorSpace *colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE AlphaSelector(
+        PerceptualColor::RgbColorSpace *colorSpace,
+        QWidget *parent = nullptr
+    );
     qreal alpha() const;
     FullColorDescription color() const;
 
@@ -95,7 +96,11 @@ public Q_SLOTS:
     );
 
 Q_SIGNALS:
-    void alphaChanged(qreal alpha);
+    void alphaChanged(const qreal alpha);
+    void colorChanged(const PerceptualColor::FullColorDescription &newColor);
+    void representationChanged(
+        const AlphaSelector::NumberFormat newRepresentation
+    );
 
 private:
     Q_DISABLE_COPY(AlphaSelector)

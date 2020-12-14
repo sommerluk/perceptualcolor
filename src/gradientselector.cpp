@@ -35,14 +35,17 @@
 
 namespace PerceptualColor {
 
-GradientSelector::GradientSelector(RgbColorSpace *colorSpace, QWidget *parent)
+GradientSelector::GradientSelector(
+    PerceptualColor::RgbColorSpace *colorSpace,
+    QWidget *parent
+)
 : AbstractDiagram(parent)
 {
     initialize(colorSpace, Qt::Orientation::Vertical);
 }
 
 GradientSelector::GradientSelector(
-    RgbColorSpace* colorSpace,
+    PerceptualColor::RgbColorSpace* colorSpace,
     Qt::Orientation orientation,
     QWidget* parent
 ) : AbstractDiagram(parent)
@@ -80,6 +83,7 @@ void GradientSelector::initialize(
             1
         )
     );
+    m_gradientImageReady = false;
 }
 
 QSize GradientSelector::sizeHint() const
@@ -232,12 +236,18 @@ qreal GradientSelector::pageStep()
 
 void GradientSelector::setSingleStep(qreal newSingleStep)
 {
-    m_singleStep = newSingleStep;
+    if (newSingleStep != m_singleStep) {
+        m_singleStep = newSingleStep;
+        Q_EMIT singleStepChanged(m_singleStep);
+    }
 }
 
 void GradientSelector::setPageStep(qreal newPageStep)
 {
-    m_pageStep= newPageStep;
+    if (newPageStep != m_pageStep) {
+        m_pageStep = newPageStep;
+        Q_EMIT pageStepChanged(m_pageStep);
+    }
 }
 
 // TODO It would be better to have an arrow outside the slider. This
@@ -331,18 +341,25 @@ Qt::Orientation	GradientSelector::orientation() const
     return m_orientation;
 }
 
-void GradientSelector::setOrientation(Qt::Orientation orientation)
+void GradientSelector::setOrientationAndForceUpdate(Qt::Orientation newOrientation)
 {
-    m_orientation = orientation;
-    if (m_orientation == Qt::Orientation::Vertical) {
+    if (newOrientation == Qt::Orientation::Vertical) {
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     } else {
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     }
+    m_orientation = newOrientation;
     m_gradientImageReady = false;
     updateGeometry(); // notify the layout system the the geometry has changed
 }
 
+void GradientSelector::setOrientation(Qt::Orientation newOrientation)
+{
+    if (newOrientation != m_orientation) {
+        setOrientationAndForceUpdate(newOrientation);
+        Q_EMIT orientationChanged(m_orientation);
+    }
+}
 
 void GradientSelector::setColors(const FullColorDescription &col1, const FullColorDescription &col2)
 {

@@ -69,6 +69,8 @@ QSize ColorPatch::minimumSizeHint() const
     return QSize(50, 50);
 }
 
+// No documentation here (documentation of properties
+// and its getters are in the header)
 QColor ColorPatch::color() const
 {
     return m_color;

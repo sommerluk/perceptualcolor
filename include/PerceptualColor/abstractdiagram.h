@@ -34,14 +34,17 @@ namespace PerceptualColor {
 /** @brief Base class for LCh diagrams.
  * 
  * Provides some elements that are common for all LCh diagrams in this
- * library. */
+ * library.
+ * 
+ * @todo Touchscreen support: Magnify the marker circle, when diagram is
+ * used on a touch device?  */
 class AbstractDiagram : public QFrame
 {
     Q_OBJECT
 
 public:
 
-    AbstractDiagram(QWidget *parent = nullptr);
+    Q_INVOKABLE AbstractDiagram(QWidget *parent = nullptr);
 
 protected:
 

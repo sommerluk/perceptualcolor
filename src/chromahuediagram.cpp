@@ -48,9 +48,9 @@ namespace PerceptualColor {
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the QWidget base class constructor. */
 ChromaHueDiagram::ChromaHueDiagram(
-    RgbColorSpace *colorSpace,
+    PerceptualColor::RgbColorSpace *colorSpace,
     QWidget *parent
-) : CircularDiagram(parent)
+) : AbstractCircularDiagram(parent)
 {
     // Setup LittleCMS. This is the first thing to do, because other
     // operations rely on a working LittleCMS.

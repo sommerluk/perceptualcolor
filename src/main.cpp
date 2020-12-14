@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
     );
 //     app.setLayoutDirection(Qt::RightToLeft);
 //     QLocale::setDefault(QLocale::Bengali);
+//     QLocale::setDefault(QLocale::German);
 
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
@@ -95,7 +96,7 @@ int main(int argc, char *argv[])
     );
 m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
     m_colorDialog.show();
-    
+
     // Run
     return app.exec();
 }
