@@ -340,7 +340,8 @@ void ColorDialog::initialize()
         m_lightnessFirstWidget,
         tr("&Lightness first")
     );
-    // create the ColorPatch
+    
+    // Create the ColorPatch
     m_colorPatch = new ColorPatch();
 
     // Create widget for the numerical values
@@ -377,9 +378,9 @@ void ColorDialog::initialize()
 
     // Create the main layout
     QVBoxLayout *tempMainLayout = new QVBoxLayout();
+    tempMainLayout->addWidget(m_colorPatch);
     tempMainLayout->addLayout(m_selectorLayout);
     tempMainLayout->addLayout(tempAlphaLayout);
-    tempMainLayout->addWidget(m_colorPatch);
     tempMainLayout->addWidget(m_buttonBox);
     setLayout(tempMainLayout);
     
@@ -699,9 +700,9 @@ QWidget* ColorDialog::initializeNumericPage()
     QFormLayout *cielabFormLayout = new QFormLayout;
     tempMainLayout->addLayout(cielabFormLayout);
 // TODO BEGIN remove this xxx
-MultiSpinBox::SectionList myConfiguration;
+QList<MultiSpinBox::SectionData> myConfiguration;
 MultiSpinBox *testpointer = new MultiSpinBox;
-MultiSpinBox::Section mySection;
+MultiSpinBox::SectionData mySection;
 mySection.minimum = 0;
 mySection.maximum = 360;
 mySection.prefix = QLatin1String();
@@ -715,7 +716,7 @@ mySection.maximum = 255;
 mySection.prefix = QStringLiteral(u"  ");
 mySection.suffix = QLatin1String();
 myConfiguration.append(mySection);
-testpointer->setConfiguration(myConfiguration);
+testpointer->setSections (myConfiguration);
 cielabFormLayout->addRow(tr("&Test"), testpointer);
 // TODO END remove this xxx
     cielabFormLayout->addRow(tr("HL&C"), m_hlcLineEdit);

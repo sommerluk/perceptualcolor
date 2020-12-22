@@ -66,6 +66,9 @@ namespace PerceptualColor {
  *   accepted for clicks within the actual circle, but also for clicks
  *   within the surrounding rectangle.
  * 
+ * @warning The image is wrong: The hue indicator is not at the correct
+ * position (at least at 150%).
+ * 
  * @todo Declare a property for @ref color()
  * 
  * @todo Example code: How to create the widget at a given

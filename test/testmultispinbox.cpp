@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    MultiSpinBox::SectionList myConfiguration;
+    QList<MultiSpinBox::SectionData> myConfiguration;
     static void voidMessageHandler(
         QtMsgType,
         const QMessageLogContext &,
@@ -55,7 +55,7 @@ private:
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first test function is executed
-        MultiSpinBox::Section mySection;
+        MultiSpinBox::SectionData mySection;
         mySection.minimum = 0;
         mySection.maximum = 360;
         mySection.prefix = QLatin1String();
@@ -88,7 +88,7 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox myMulti;
         // Test basic constructor results
         QVERIFY2(
-            myMulti.m_configuration.length() > 0,
+            myMulti.m_sections.length() > 0,
             "Make sure the default configuration has at least 1 section."
         );
     }
@@ -96,66 +96,66 @@ private Q_SLOTS:
     void testCurrentSectionIndex() {
         MultiSpinBox test;
         // Test default index
-        QCOMPARE(test.m_currentSectionIndex, 0);
+        QCOMPARE(test.m_currentIndex, 0);
         
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if setting negative value is ignored
-        QVERIFY_EXCEPTION_THROWN(test.setCurrentSectionIndex(-1), int);
-        QCOMPARE(test.m_currentSectionIndex, 0);
-        QVERIFY_EXCEPTION_THROWN(test.setCurrentSectionIndex(-100), int);
-        QCOMPARE(test.m_currentSectionIndex, 0);
+        QVERIFY_EXCEPTION_THROWN(test.setCurrentIndex(-1), int);
+        QCOMPARE(test.m_currentIndex, 0);
+        QVERIFY_EXCEPTION_THROWN(test.setCurrentIndex(-100), int);
+        QCOMPARE(test.m_currentIndex, 0);
         // Test setting too high values is ignored
-        QVERIFY_EXCEPTION_THROWN(test.setCurrentSectionIndex(100), int);
-        QCOMPARE(test.m_currentSectionIndex, 0);
+        QVERIFY_EXCEPTION_THROWN(test.setCurrentIndex(100), int);
+        QCOMPARE(test.m_currentIndex, 0);
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
         
         // Test if correct sections are stored correctly
-        MultiSpinBox::SectionList mySectionList;
-        mySectionList.append(MultiSpinBox::Section());
-        mySectionList.append(MultiSpinBox::Section());
-        mySectionList.append(MultiSpinBox::Section());
-        test.setConfiguration(mySectionList);
-        test.setCurrentSectionIndex(2);
-        QCOMPARE(test.m_currentSectionIndex, 2);
+        QList<MultiSpinBox::SectionData> mySectionList;
+        mySectionList.append(MultiSpinBox::SectionData());
+        mySectionList.append(MultiSpinBox::SectionData());
+        mySectionList.append(MultiSpinBox::SectionData());
+        test.setSections (mySectionList);
+        test.setCurrentIndex(2);
+        QCOMPARE(test.m_currentIndex, 2);
     }
     
     void testSetConfiguration() {
         // Correct configurations should be applied as-is.
-        MultiSpinBox::SectionList mySectionList;
-        mySectionList.append(MultiSpinBox::Section());
-        mySectionList.append(MultiSpinBox::Section());
-        mySectionList.append(MultiSpinBox::Section());
+        QList<MultiSpinBox::SectionData> mySectionList;
+        mySectionList.append(MultiSpinBox::SectionData());
+        mySectionList.append(MultiSpinBox::SectionData());
+        mySectionList.append(MultiSpinBox::SectionData());
         MultiSpinBox test;
-        test.setConfiguration(mySectionList);
-        QCOMPARE(test.configuration().count(), 3);
+        test.setSections (mySectionList);
+        QCOMPARE(test.sections().count(), 3);
 
         // Empty configurations shall be ignored
-        test.setConfiguration(MultiSpinBox::SectionList());
-        QCOMPARE(test.configuration().count(), 3);
+        test.setSections (QList<MultiSpinBox::SectionData>());
+        QCOMPARE(test.sections().count(), 3);
 
         // Invalid values should be adapted
         mySectionList.clear();
-        MultiSpinBox::Section myInvalidSection;
+        MultiSpinBox::SectionData myInvalidSection;
         myInvalidSection.minimum = 50;
         myInvalidSection.value = 40;
         myInvalidSection.maximum = 30;
         mySectionList.append(myInvalidSection);
-        test.setConfiguration(mySectionList);
+        test.setSections (mySectionList);
         QVERIFY2(
-            test.m_configuration.at(0).minimum
-                <= test.m_configuration.at(0).maximum,
+            test.m_sections.at(0).minimum
+                <= test.m_sections.at(0).maximum,
             "minimum <= maximum"
         );
         QVERIFY2(
-            test.m_configuration.at(0).minimum
-                <= test.m_configuration.at(0).value,
+            test.m_sections.at(0).minimum
+                <= test.m_sections.at(0).value,
             "minimum <= value"
         );
         QVERIFY2(
-            test.m_configuration.at(0).value
-                <= test.m_configuration.at(0).maximum,
+            test.m_sections.at(0).value
+                <= test.m_sections.at(0).maximum,
             "value <= maximum"
         );
 
@@ -165,20 +165,20 @@ private Q_SLOTS:
         myInvalidSection.value = -60;
         myInvalidSection.maximum = -70;
         mySectionList.append(myInvalidSection);
-        test.setConfiguration(mySectionList);
+        test.setSections (mySectionList);
         QVERIFY2(
-            test.m_configuration.at(0).minimum
-                <= test.m_configuration.at(0).maximum,
+            test.m_sections.at(0).minimum
+                <= test.m_sections.at(0).maximum,
             "minimum <= maximum"
         );
         QVERIFY2(
-            test.m_configuration.at(0).minimum
-                <= test.m_configuration.at(0).value,
+            test.m_sections.at(0).minimum
+                <= test.m_sections.at(0).value,
             "minimum <= value"
         );
         QVERIFY2(
-            test.m_configuration.at(0).value
-                <= test.m_configuration.at(0).maximum,
+            test.m_sections.at(0).value
+                <= test.m_sections.at(0).maximum,
             "value <= maximum"
         );
     }
@@ -186,7 +186,7 @@ private Q_SLOTS:
     void testMinimalSizeHint() {
         PerceptualColor::MultiSpinBox myMulti;
         QCOMPARE(myMulti.minimumSizeHint(), myMulti.sizeHint());
-        myMulti.setConfiguration(myConfiguration);
+        myMulti.setSections (myConfiguration);
         QCOMPARE(myMulti.minimumSizeHint(), myMulti.sizeHint());
     }
 
@@ -194,14 +194,14 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox myMulti;
         // Example configuration with long prefix and suffix to make
         // sure being bigger than the default minimal widget size.
-        MultiSpinBox::SectionList config;
-        MultiSpinBox::Section section;
+        QList<MultiSpinBox::SectionData> config;
+        MultiSpinBox::SectionData section;
         section.minimum = 1;
         section.maximum = 9;
         section.prefix = QStringLiteral(u"abcdefghij");
         section.suffix = QStringLiteral(u"abcdefghij");
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         const int referenceWidth = myMulti.sizeHint().width();
 
         // Now test various configurations that should lead to bigger sizes…
@@ -212,7 +212,7 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"abcdefghij");
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         QVERIFY(myMulti.sizeHint().width() > referenceWidth);
 
         section.minimum = 1;
@@ -221,7 +221,7 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"abcdefghij");
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         QVERIFY(myMulti.sizeHint().width() > referenceWidth);
 
         section.minimum = -1;
@@ -230,7 +230,7 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"abcdefghij");
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         QVERIFY(myMulti.sizeHint().width() > referenceWidth);
 
         section.minimum = -1;
@@ -239,7 +239,7 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"abcdefghijh");
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         QVERIFY(myMulti.sizeHint().width() > referenceWidth);
     }
 
@@ -247,8 +247,8 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox myMulti;
         // Example configuration with long prefix and suffix to make
         // sure being bigger than the default minimal widget size.
-        MultiSpinBox::SectionList config;
-        MultiSpinBox::Section section;
+        QList<MultiSpinBox::SectionData> config;
+        MultiSpinBox::SectionData section;
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
@@ -261,8 +261,8 @@ private Q_SLOTS:
         section.prefix = QStringLiteral(u"ghi");
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
-        myMulti.setConfiguration(config);
-        myMulti.m_currentSectionIndex = 1;
+        myMulti.setSections (config);
+        myMulti.m_currentIndex = 1;
         myMulti.updatePrefixValueSuffixText();
         QCOMPARE(
             myMulti.m_currentSectionTextBeforeValue,
@@ -280,8 +280,8 @@ private Q_SLOTS:
     
     void testSetCurrentSectionIndexWithoutSelectingText() {
         PerceptualColor::MultiSpinBox myMulti;
-        MultiSpinBox::SectionList config;
-        MultiSpinBox::Section section;
+        QList<MultiSpinBox::SectionData> config;
+        MultiSpinBox::SectionData section;
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
@@ -294,10 +294,10 @@ private Q_SLOTS:
         section.prefix = QStringLiteral(u"ghi");
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
-        myMulti.setConfiguration(config);
-        myMulti.setCurrentSectionIndex(1);
+        myMulti.setSections (config);
+        myMulti.setCurrentIndex(1);
         QCOMPARE(
-            myMulti.m_currentSectionIndex,
+            myMulti.m_currentIndex,
             1
         );
         QVERIFY2(
@@ -308,19 +308,19 @@ private Q_SLOTS:
     
     void testSetCurrentSectionIndex() {
         PerceptualColor::MultiSpinBox myMulti;
-        myMulti.setConfiguration(myConfiguration);
-        myMulti.setCurrentSectionIndex(2);
-        QCOMPARE(myMulti.m_currentSectionIndex, 2);
-        myMulti.setCurrentSectionIndex(0);
-        QCOMPARE(myMulti.m_currentSectionIndex, 0);
-        myMulti.setCurrentSectionIndex(1);
-        QCOMPARE(myMulti.m_currentSectionIndex, 1);
-        myMulti.setCurrentSectionIndex(2);
-        QCOMPARE(myMulti.m_currentSectionIndex, 2);
-        myMulti.setCurrentSectionIndex(0);
-        QCOMPARE(myMulti.m_currentSectionIndex, 0);
-        MultiSpinBox::SectionList config;
-        MultiSpinBox::Section section;
+        myMulti.setSections (myConfiguration);
+        myMulti.setCurrentIndex(2);
+        QCOMPARE(myMulti.m_currentIndex, 2);
+        myMulti.setCurrentIndex(0);
+        QCOMPARE(myMulti.m_currentIndex, 0);
+        myMulti.setCurrentIndex(1);
+        QCOMPARE(myMulti.m_currentIndex, 1);
+        myMulti.setCurrentIndex(2);
+        QCOMPARE(myMulti.m_currentIndex, 2);
+        myMulti.setCurrentIndex(0);
+        QCOMPARE(myMulti.m_currentIndex, 0);
+        QList<MultiSpinBox::SectionData> config;
+        MultiSpinBox::SectionData section;
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
@@ -333,10 +333,10 @@ private Q_SLOTS:
         section.prefix = QStringLiteral(u"ghi");
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
-        myMulti.setConfiguration(config);
-        myMulti.setCurrentSectionIndex(1);
+        myMulti.setSections (config);
+        myMulti.setCurrentIndex(1);
         QCOMPARE(
-            myMulti.m_currentSectionIndex,
+            myMulti.m_currentIndex,
             1
         );
         QVERIFY2(
@@ -348,15 +348,15 @@ private Q_SLOTS:
 
     void testStepEnabled() {
         PerceptualColor::MultiSpinBox myMulti;
-        MultiSpinBox::SectionList config;
-        MultiSpinBox::Section section;
+        QList<MultiSpinBox::SectionData> config;
+        MultiSpinBox::SectionData section;
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
         section.prefix = QStringLiteral(u"abc");
         section.suffix = QStringLiteral(u"def");
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         QAbstractSpinBox::StepEnabled flags = myMulti.stepEnabled();
         QVERIFY2(
             flags.testFlag(QAbstractSpinBox::StepUpEnabled),
@@ -369,7 +369,7 @@ private Q_SLOTS:
         section.value = 9;
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         flags = myMulti.stepEnabled();
         QVERIFY2(
             !flags.testFlag(QAbstractSpinBox::StepUpEnabled),
@@ -382,7 +382,7 @@ private Q_SLOTS:
         section.value = 10;
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         flags = myMulti.stepEnabled();
         QVERIFY2(
             !flags.testFlag(QAbstractSpinBox::StepUpEnabled),
@@ -395,7 +395,7 @@ private Q_SLOTS:
         section.value = 1;
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         flags = myMulti.stepEnabled();
         QVERIFY2(
             flags.testFlag(QAbstractSpinBox::StepUpEnabled),
@@ -408,7 +408,7 @@ private Q_SLOTS:
         section.value = 0;
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         flags = myMulti.stepEnabled();
         QVERIFY2(
             flags.testFlag(QAbstractSpinBox::StepUpEnabled),
@@ -421,7 +421,7 @@ private Q_SLOTS:
         section.value = -1;
         config.clear();
         config.append(section);
-        myMulti.setConfiguration(config);
+        myMulti.setSections (config);
         flags = myMulti.stepEnabled();
         QVERIFY2(
             flags.testFlag(QAbstractSpinBox::StepUpEnabled),
@@ -435,25 +435,25 @@ private Q_SLOTS:
     
     void testConfiguration() {
         PerceptualColor::MultiSpinBox myMulti;
-        MultiSpinBox::SectionList config;
-        MultiSpinBox::Section section;
+        QList<MultiSpinBox::SectionData> config;
+        MultiSpinBox::SectionData section;
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;
         section.prefix = QStringLiteral(u"abc");
         section.suffix = QStringLiteral(u"def");
         config.append(section);
-        myMulti.setConfiguration(config);
-        QCOMPARE(myMulti.configuration().count(), 1);
-        QCOMPARE(myMulti.configuration().at(0).minimum, 1);
-        QCOMPARE(myMulti.configuration().at(0).value, 8);
-        QCOMPARE(myMulti.configuration().at(0).maximum, 9);
+        myMulti.setSections (config);
+        QCOMPARE(myMulti.sections().count(), 1);
+        QCOMPARE(myMulti.sections().at(0).minimum, 1);
+        QCOMPARE(myMulti.sections().at(0).value, 8);
+        QCOMPARE(myMulti.sections().at(0).maximum, 9);
         QCOMPARE(
-            myMulti.configuration().at(0).prefix,
+            myMulti.sections().at(0).prefix,
             QStringLiteral(u"abc")
         );
         QCOMPARE(
-            myMulti.configuration().at(0).suffix,
+            myMulti.sections().at(0).suffix,
             QStringLiteral(u"def")
         );
     }
@@ -470,7 +470,7 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox *widget2 =
             new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        widget2->setConfiguration(myConfiguration);
+        widget2->setSections (myConfiguration);
         QSpinBox *widget3 =
             new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -505,7 +505,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_configuration.count() != 3) {
+        if (widget2->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -521,19 +521,19 @@ private Q_SLOTS:
         // Move focus from widget1 to widget2/section0
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 0);
+        QCOMPARE(widget2->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget2/section1
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 1);
+        QCOMPARE(widget2->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget2/section2
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 2);
+        QCOMPARE(widget2->m_currentIndex, 2);
         // Move focus from widget2/section2 to widget3
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
-        QCOMPARE(widget2->m_currentSectionIndex, 0);
+        QCOMPARE(widget2->m_currentIndex, 0);
     }
 
     void testFocusIntegrationBackwardTab() {
@@ -548,7 +548,7 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox *widget2 =
             new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        widget2->setConfiguration(myConfiguration);
+        widget2->setSections (myConfiguration);
         QSpinBox *widget3 =
             new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -583,7 +583,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_configuration.count() != 3) {
+        if (widget2->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -597,7 +597,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 2);
+        QCOMPARE(widget2->m_currentIndex, 2);
         // Move focus from widget2/section2 to widget2/section1
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -605,7 +605,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 1);
+        QCOMPARE(widget2->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget2/section0
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -613,7 +613,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 0);
+        QCOMPARE(widget2->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget1
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -621,7 +621,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget1);
-        QCOMPARE(widget2->m_currentSectionIndex, 0);
+        QCOMPARE(widget2->m_currentIndex, 0);
     }
 
     void testFocusIntegrationOther() {
@@ -636,8 +636,8 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox *widget2 =
             new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        widget2->setConfiguration(myConfiguration);
-        widget2->setCurrentSectionIndex(1);
+        widget2->setSections (myConfiguration);
+        widget2->setCurrentIndex(1);
         QSpinBox *widget3 =
             new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -677,12 +677,12 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_configuration.count() != 3) {
+        if (widget2->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_currentSectionIndex != 1) {
+        if (widget2->m_currentIndex != 1) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -696,11 +696,11 @@ private Q_SLOTS:
             Qt::KeyboardModifier::AltModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 0);
+        QCOMPARE(widget2->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget2/section1
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 1);
+        QCOMPARE(widget2->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget3
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -717,7 +717,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::AltModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentSectionIndex, 0);
+        QCOMPARE(widget2->m_currentIndex, 0);
     }
 
     void testFocusIntegrationFocusPolicy() {
@@ -732,7 +732,7 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox *widget2 =
             new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        widget2->setConfiguration(myConfiguration);
+        widget2->setSections (myConfiguration);
         QSpinBox *widget3 =
             new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -772,7 +772,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_configuration.count() != 3) {
+        if (widget2->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -806,23 +806,23 @@ private Q_SLOTS:
             new PerceptualColor::MultiSpinBox()
         );
         widget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        widget->setConfiguration(myConfiguration);
-        widget->setCurrentSectionIndexWithoutUpdatingText(0);
+        widget->setSections (myConfiguration);
+        widget->setCurrentIndexWithoutUpdatingText(0);
         widget->stepBy(13);
         QCOMPARE(
-            widget->configuration().at(0).value,
+            widget->sections().at(0).value,
             13
         );
-        widget->setCurrentSectionIndexWithoutUpdatingText(1);
+        widget->setCurrentIndexWithoutUpdatingText(1);
         widget->stepBy(130);
         QCOMPARE(
-            widget->configuration().at(1).value,
+            widget->sections().at(1).value,
             100
         );
-        widget->setCurrentSectionIndexWithoutUpdatingText(2);
+        widget->setCurrentIndexWithoutUpdatingText(2);
         widget->stepBy(-260);
         QCOMPARE(
-            widget->configuration().at(2).value,
+            widget->sections().at(2).value,
             0
         );
     }
@@ -831,9 +831,9 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
-        widget->setConfiguration(myConfiguration);
+        widget->setSections (myConfiguration);
         const quint8 sampleSectionNumber = 1;
-        widget->setCurrentSectionIndex(
+        widget->setCurrentIndex(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -846,7 +846,7 @@ private Q_SLOTS:
             QStringLiteral(u"0°  9%  0")
         );
         QCOMPARE(
-            widget->configuration().at(sampleSectionNumber).value,
+            widget->sections().at(sampleSectionNumber).value,
             9
         );
     }
@@ -855,12 +855,12 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
-        MultiSpinBox::SectionList specialConfiguration = myConfiguration;
+        QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
-        widget->setConfiguration(specialConfiguration);
-        widget->setCurrentSectionIndex(
+        widget->setSections (specialConfiguration);
+        widget->setCurrentIndex(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -869,7 +869,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget->configuration().at(sampleSectionNumber).value
+        if (widget->sections().at(sampleSectionNumber).value
             != sampleValue
         ) {
             // Throw an exception instead of using an assert statement.
@@ -886,7 +886,7 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
         // The original value should not have changed.
         QCOMPARE(
-            widget->configuration().at(sampleSectionNumber).value,
+            widget->sections().at(sampleSectionNumber).value,
             sampleValue
         );
     }
@@ -896,12 +896,12 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
-        MultiSpinBox::SectionList specialConfiguration = myConfiguration;
+        QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
-        widget->setConfiguration(specialConfiguration);
-        widget->setCurrentSectionIndex(
+        widget->setSections (specialConfiguration);
+        widget->setCurrentIndex(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -910,7 +910,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget->configuration().at(sampleSectionNumber).value
+        if (widget->sections().at(sampleSectionNumber).value
             != sampleValue
         ) {
             // Throw an exception instead of using an assert statement.
@@ -920,21 +920,21 @@ private Q_SLOTS:
         
         // Do testing
         widget->lineEdit()->setCursorPosition(0);
-        QCOMPARE(widget->m_currentSectionIndex, 0);
+        QCOMPARE(widget->m_currentIndex, 0);
         widget->lineEdit()->setCursorPosition(1);
-        QCOMPARE(widget->m_currentSectionIndex, 0);
+        QCOMPARE(widget->m_currentIndex, 0);
         widget->lineEdit()->setCursorPosition(2);
-        QCOMPARE(widget->m_currentSectionIndex, 0);
+        QCOMPARE(widget->m_currentIndex, 0);
         widget->lineEdit()->setCursorPosition(4);
-        QCOMPARE(widget->m_currentSectionIndex, 1);
+        QCOMPARE(widget->m_currentIndex, 1);
         widget->lineEdit()->setCursorPosition(5);
-        QCOMPARE(widget->m_currentSectionIndex, 1);
+        QCOMPARE(widget->m_currentIndex, 1);
         widget->lineEdit()->setCursorPosition(6);
-        QCOMPARE(widget->m_currentSectionIndex, 1);
+        QCOMPARE(widget->m_currentIndex, 1);
         widget->lineEdit()->setCursorPosition(8);
-        QCOMPARE(widget->m_currentSectionIndex, 2);
+        QCOMPARE(widget->m_currentIndex, 2);
         widget->lineEdit()->setCursorPosition(9);
-        QCOMPARE(widget->m_currentSectionIndex, 2);
+        QCOMPARE(widget->m_currentIndex, 2);
     }
 
     void testInitialLineEditValue() {
@@ -942,11 +942,11 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
-        MultiSpinBox::SectionList specialConfiguration = myConfiguration;
+        QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
-        widget->setConfiguration(specialConfiguration);
+        widget->setSections (specialConfiguration);
         // Assert that the initial content of the line edit is okay
         QCOMPARE(
             widget->lineEdit()->text(),
@@ -959,11 +959,11 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox *widget2 =
             new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        widget2->setConfiguration(myConfiguration);
+        widget2->setSections (myConfiguration);
         widget2->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
-        widget2->setCurrentSectionIndex(1);
+        widget2->setCurrentIndex(1);
         // The following statement make focus and widget events working.
         QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
@@ -977,7 +977,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_configuration.count() != 3) {
+        if (widget2->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -991,7 +991,7 @@ private Q_SLOTS:
         // Start actual testing
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Up);
         QCOMPARE(
-            widget2->configuration().at(1).value,
+            widget2->sections().at(1).value,
             1
         );
         QCOMPARE(

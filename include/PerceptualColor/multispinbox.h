@@ -32,8 +32,6 @@
 #include <QPointer>
 #include <QSharedPointer>
 
-#include <memory>
-
 #include "PerceptualColor/extendeddoublevalidator.h"
 
 namespace PerceptualColor {
@@ -72,18 +70,17 @@ class MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
 
-    /* @brief The configuration of the sections of this widget.
-     * 
-     * @sa @ref configuration()
-     * @sa @ref setConfiguration()
-     * @sa @ref m_configuration
-     * TODO Using this “configuration” property seems a little wired.
-     * What would be a better design? */
-//     Q_PROPERTY(SectionList configuration READ configuration WRITE setConfiguration)
-
 public:
-    /** @brief The data of a section within a @ref MultiSpinBox. */
-    struct Section {
+    /** @brief The data of a section within a @ref MultiSpinBox.
+     * 
+     * For a specific section within a @ref MultiSpinBox, this data structure
+     * contains on the one hand the @ref value itself, and on the other hand
+     * also the various setting parameters for the widget.
+     * 
+     * @todo How to make this future-proof? Maybe later we want to add
+     * singleStep() or pageStep() values? Are d-pointers working well when
+     * this data structure has to be copy-able? */
+    struct SectionData {
         /** @brief The number of digits after the decimal point. */
         int decimals = 0;
         /** @brief The maximum possible value of the section. */
@@ -97,22 +94,15 @@ public:
         /** @brief The current actual value of the section. */
         double value = 0;
     };
-    /** @brief A list of @ref Section data. */
-    typedef QList<Section> SectionList;
     
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
-
-    /** @brief Getter for property @ref configuration
-     *  @returns the property @ref configuration */
-    MultiSpinBox::SectionList configuration() const;
     virtual QSize minimumSizeHint() const override;
+    QList<MultiSpinBox::SectionData> sections() const;
+    Q_INVOKABLE void setSections (
+        const QList<MultiSpinBox::SectionData> &newSections
+    );
     virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
-
-public Q_SLOTS:
-    void setConfiguration(
-        const MultiSpinBox::SectionList &configuration
-    );
 
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;
@@ -126,14 +116,15 @@ private:
     /** @brief Only for unit tests. */
     friend class TestMultiSpinBox;
 
-    /** @brief Holds the configuration.
-     * @sa READ @ref configuration
-     * @sa WRITE @ref setConfiguration */
-    MultiSpinBox::SectionList m_configuration;
+    /** @brief Holds the data for the sections.
+     * 
+     * @sa @ref sections()
+     * @sa @ref setSections() */
+    QList<MultiSpinBox::SectionData> m_sections;
     /** @brief Holds the index of the currently selected section.
-     * @sa @ref setCurrentSectionIndex
-     * @sa @ref setCurrentSectionIndexWithoutUpdatingText */
-    int m_currentSectionIndex = 0;
+     * @sa @ref setCurrentIndex
+     * @sa @ref setCurrentIndexWithoutUpdatingText */
+    int m_currentIndex = 0;
     /** @brief The string of everything <em>after</em> the current section
      * value.
      * 
@@ -157,12 +148,12 @@ private:
     QDoubleSpinBox m_formatSpinBoxForCurrentValue;
     QPointer<ExtendedDoubleValidator> m_validator;
 
-    QString formattedValue(const Section &mySection) const;
+    QString formattedValue(const SectionData &mySection) const;
     bool isCursorPositionAtCurrentValueText(
         const int cursorPosition
     ) const;
-    void setCurrentSectionIndex (int index);
-    void setCurrentSectionIndexWithoutUpdatingText(int index);
+    void setCurrentIndex(int newIndex);
+    void setCurrentIndexWithoutUpdatingText(int newIndex);
     void updatePrefixValueSuffixText();
 
 private Q_SLOTS:

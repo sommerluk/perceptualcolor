@@ -35,6 +35,35 @@
 # no-inefficient-qlist-soft: In Qt6, QList and QVector will be aliases
 # anyway. And, in Qt6 QList will be the default type. So we will
 # follow this recommendation and always use QList.
-export CLAZY_CHECKS="level2,no-inefficient-qlist-soft,assert-with-side-effects,container-inside-loop,detaching-member,heap-allocated-small-trivial-type,no-ifndef-define-typo,no-inefficient-qlist,isempty-vs-count,qhash-with-char-pointer-key,qproperty-type-mismatch,qrequiredresult-candidates,qstring-varargs,qt-keywords,qt4-qstring-from-array,qvariant-template-instantiation,raw-environment-function,reserve-candidates,signal-with-return-value,thread-with-slots,tr-non-literal,unneeded-cast"
-# run clazy only for the targets perceptualcolor (the library) and perceptualcolorpicker (the application), but not for the unit tests
-rm -rf build/* && cd build && cmake ../ -DCMAKE_CXX_COMPILER=clazy > /dev/null && make clean && make > /dev/null && cd .. && rm -r build/*
+export CLAZY_CHECKS="level2,\
+no-inefficient-qlist-soft,\
+assert-with-side-effects,\
+container-inside-loop,\
+detaching-member,\
+heap-allocated-small-trivial-type,\
+no-ifndef-define-typo,\
+no-inefficient-qlist,\
+isempty-vs-count,\
+qhash-with-char-pointer-key,\
+qproperty-type-mismatch,\
+qrequiredresult-candidates,\
+qstring-varargs,\
+qt-keywords,\
+qt4-qstring-from-array,\
+qvariant-template-instantiation,\
+raw-environment-function,\
+reserve-candidates,\
+signal-with-return-value,\
+thread-with-slots,\
+tr-non-literal,\
+unneeded-cast"
+
+# We run “make” with the argument “--jobs” without specifying the number
+# of parallel jobs. This means the number is jobs is maximum.
+rm -rf build/* \
+    && cd build \
+    && cmake ../ -DCMAKE_CXX_COMPILER=clazy > /dev/null \
+    && make clean \
+    && make --jobs > /dev/null \
+    && cd .. \
+    && rm -r build/*

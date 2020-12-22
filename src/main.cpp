@@ -33,6 +33,7 @@
 #include <QColorDialog>
 #include <QDebug>
 #include <QPainter>
+#include <QPushButton>
 #include <QDateTimeEdit>
 #include <QColorDialog>
 #include <memory>
@@ -94,8 +95,13 @@ int main(int argc, char *argv[])
         QColorDialog::ColorDialogOption::ShowAlphaChannel,
         true
     );
-m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
+    m_colorDialog.setLayoutDimensions(
+        PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed
+    );
     m_colorDialog.show();
+    
+//     m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
+
 
     // Run
     return app.exec();

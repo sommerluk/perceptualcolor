@@ -129,6 +129,22 @@ static_assert(
  * - stylable by QStyle (? partial)
  * - stylable by style sheets (✗)
  * - accessibility (✗)
+ * @todo A good widget library should also be touchscreen-ready.
+ * - In ColorDialog: Have the color indicator at the
+ *   bottom, so he isn’t hidden by the hand of the user. This would not be
+ *   too worse for a mouse user either. (It’s propably not worth to offer
+ *   an alternative, workflow-oriented design for mouse users, because the
+ *   widget would become inconsistant between various machines. And it does
+ *   not make the user experience <em>so</em> much more for mouse users
+ *   either. If we would want this nevertheless, we could determine if
+ *   the current machine has a touch screen be calling the static
+ *   <tt>QList&lt;const QTouchDevice *&gt; QTouchDevice::devices()</tt> and
+ *   iterate over the list. If at least one item has
+ *   <tt>type == QTouchDevice::TouchScreen</tt> then use the touchscreen
+ *   layout; other don’t use it.)
+ * - An alternative to
+ *   the spin box? How, for up to 360 values (degrees in step by 1)? Or
+ *   should the steps simply be bigger?
  * @todo KDE Frameworks / https://marketplace.qt.io/ ?
  * @todo Provide property bindings as described in 
  * https://www.qt.io/blog/property-bindings-in-qt-6 or not? It is worth
@@ -174,6 +190,13 @@ static_assert(
  * Attention: Now, const functions of the class Car can call non-const
  * function of the class CarPrivate, which is broken behaviour. We have
  * to provide a solution…
+ * @todo <tt>private Q_SLOTS</tt> can be connected to (with the old connection
+ * syntax) from everywhere, so they are indeed not private. That’s not great.
+ * As we use almost exclusively the new connection syntax, we can connect
+ * to all functions, not only slots, so we could simply change private slots
+ * to private functions. Or, better: If switching to pimpl, in the private
+ * class, the private slots will become public slots, which is fine and
+ * expressive.
  * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
  * be better to require the last LTS release (5.15), just to be compatible if
  * in the future we depend on this? */
@@ -182,6 +205,7 @@ static_assert(
  * 
  * Everything that is provides in this library is encapsulated within this
  * namespace.
+ * 
  * 
  * @todo This library provides some constexpr in the public API. If now we
  * release version 1.0.0 of this library with constexpr x == 1. Now, in
