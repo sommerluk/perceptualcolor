@@ -1745,7 +1745,7 @@ private Q_SLOTS:
         // Test default value
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed
         );
         
         // Test if values are correctly stored before showing

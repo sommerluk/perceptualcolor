@@ -28,9 +28,7 @@
 #define MULTISPINBOX_H
 
 #include <QAbstractSpinBox>
-#include <QDoubleSpinBox>
 #include <QPointer>
-#include <QSharedPointer>
 
 #include "PerceptualColor/extendeddoublevalidator.h"
 
@@ -141,11 +139,6 @@ private:
     QString m_currentSectionTextBeforeValue;
     /** @brief The string of the current section value. */
     QString m_currentSectionTextOfTheValue;
-    /** @brief Internal spin box object.
-     * 
-     * Holds an internal, invisible spin box that is used for
-     * formatting correctly the value of the <em>current</em> section. */
-    QDoubleSpinBox m_formatSpinBoxForCurrentValue;
     /** @brief The validator for the <tt>QLineEdit</tt>.
      * 
      * This validator allows changes only to the <em>current</em> section.

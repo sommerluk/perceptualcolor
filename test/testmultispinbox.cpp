@@ -30,6 +30,7 @@
 
 #include <QLabel>
 #include <QLineEdit>
+#include <QSpinBox>
 
 namespace PerceptualColor {
 
@@ -997,6 +998,91 @@ private Q_SLOTS:
         QCOMPARE(
             widget2->lineEdit()->text(),
             QStringLiteral(u"0°  1%  0")
+        );
+    }
+    
+    void testInteraction() {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        widget->show();
+        widget->setSections (myConfiguration);
+        // Assert that the setup is okay.
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"0°  0%  0")
+        );
+        // Go to begin of the line edit
+        QTest::keyClick(widget.data(), Qt::Key_Home);
+        // Select the first “0”:
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier, 0);
+        // Write “45”
+        QTest::keyClicks(widget.data(), "45");
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        // Select “45”
+        QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
+        QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
+        // Copy to clipboard
+        QTest::keyClick(widget.data(), Qt::Key_C, Qt::ControlModifier, 0);
+        // Go to second section
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        // Select second section:
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier, 0);
+        QCOMPARE(
+            widget->lineEdit()->selectedText(),
+            QStringLiteral(u"0")
+        );
+        // Take “45” from clipboard
+        QTest::keyClick(widget.data(), Qt::Key_V, Qt::ControlModifier, 0);
+        QCOMPARE(
+            widget->lineEdit()->selectedText(),
+            QStringLiteral(u"45")
+        );
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
         );
     }
 
