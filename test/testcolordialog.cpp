@@ -1745,7 +1745,7 @@ private Q_SLOTS:
         // Test default value
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::automatic
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
         );
         
         // Test if values are correctly stored before showing
@@ -1764,11 +1764,11 @@ private Q_SLOTS:
             PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded
         );
         m_perceptualDialog->setLayoutDimensions(
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::automatic
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
         );
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::automatic
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
         );
         
         // Test if values are correctly stored after showing
@@ -1788,11 +1788,11 @@ private Q_SLOTS:
             PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded
         );
         m_perceptualDialog->setLayoutDimensions(
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::automatic
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
         );
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::automatic
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
         );
         delete m_perceptualDialog;
     }

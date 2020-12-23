@@ -925,7 +925,7 @@ void ColorDialog::applyLayoutDimensions()
         case DialogLayoutDimensions::expanded:
             collapsedLayout = false;
             break;
-        case DialogLayoutDimensions::automatic:
+        case DialogLayoutDimensions::screenSizeDependent:
             // Note: The following code works correctly on scaled
             // devices (high-DPI…).
             

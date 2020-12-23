@@ -67,7 +67,7 @@ namespace PerceptualColor {
  *   within the surrounding rectangle.
  * 
  * @warning The image is wrong: The hue indicator is not at the correct
- * position (at least at 150%).
+ * position (at least at 150% screen scaling).
  * 
  * @todo Declare a property for @ref color()
  * 

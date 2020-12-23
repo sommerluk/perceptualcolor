@@ -338,7 +338,8 @@ class ColorDialog : public QDialog
      * tab widgets, while for the expanded variant, more elements are
      * visible at the same time.
      * 
-     * Default value: PerceptualColor::DialogLayoutDimensions::automatic
+     * Default value:
+     * <tt>PerceptualColor::DialogLayoutDimensions::collapsed</tt>
      * 
      * When the layout dimension effectively changes, also the dialog size
      * is adapted.
@@ -359,15 +360,17 @@ public:
      * This enum is declared to the meta-object system. This happens
      * automatically. You do not need to make any manual calls. */
     enum class DialogLayoutDimensions {
-        automatic,  /**< Decide automatically between <tt>collapsed</tt> and
-                         <tt>expanded</tt> layout based on evaluating the
-                         screen size. The decision is evaluated at the moment
-                         when setting this value, and again each time the
-                         widget is shown again. It is <em>not</em> evaluated
-                         again when a yet existing dialog is just moved to
-                         another screen. */
-        collapsed,  /**< Use the small, “collapsed“ layout of this dialog. */
-        expanded    /**< Use the large, “expanded” layout of this dialog.  */
+        screenSizeDependent, /**< Decide automatically between
+                             <tt>collapsed</tt> and <tt>expanded</tt> layout
+                             based on evaluating the screen size of the default
+                             screen of the widget. The decision
+                             is evaluated at the moment when setting this
+                             value, and again each time the widget is shown
+                             again. It is <em>not</em> evaluated again when a
+                             yet existing dialog is just moved to another
+                             screen. */
+        collapsed, /**< Use the small, “collapsed“ layout of this dialog. */
+        expanded /**< Use the large, “expanded” layout of this dialog.  */
     };
     Q_ENUM(DialogLayoutDimensions)
     Q_INVOKABLE explicit ColorDialog(QWidget *parent = nullptr);
@@ -485,7 +488,7 @@ private:
     bool m_isColorChangeInProgress = false;
     /** @brief Internal storage for property @ref layoutDimensions */
     PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions =
-        ColorDialog::DialogLayoutDimensions::automatic;
+        ColorDialog::DialogLayoutDimensions::collapsed;
     /** @brief Pointer to the graphical selector widget that groups lightness
      *  and chroma-hue selector. */
     QPointer<QWidget> m_lightnessFirstWidget;

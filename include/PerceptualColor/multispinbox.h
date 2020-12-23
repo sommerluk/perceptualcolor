@@ -97,7 +97,7 @@ public:
     
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
     virtual QSize minimumSizeHint() const override;
-    QList<MultiSpinBox::SectionData> sections() const;
+    Q_INVOKABLE QList<MultiSpinBox::SectionData> sections() const;
     Q_INVOKABLE void setSections (
         const QList<MultiSpinBox::SectionData> &newSections
     );
@@ -146,6 +146,18 @@ private:
      * Holds an internal, invisible spin box that is used for
      * formatting correctly the value of the <em>current</em> section. */
     QDoubleSpinBox m_formatSpinBoxForCurrentValue;
+    /** @brief The validator for the <tt>QLineEdit</tt>.
+     * 
+     * This validator allows changes only to the <em>current</em> section.
+     * If the current section changes, also this validator will be adapted
+     * to cover the new current section.
+     * 
+     * @note It is <em>not</em> possible to change various values at the
+     * same time, for example by marking all the current text and use
+     * Ctrl-V to past a complete new value from the clipbord. This would
+     * be impossible to parse reliably, because the prefixes and suffixes
+     * of each section might contain (localized) digits that would be
+     * difficult to differenciate from the actual value. */
     QPointer<ExtendedDoubleValidator> m_validator;
 
     QString formattedValue(const SectionData &mySection) const;
