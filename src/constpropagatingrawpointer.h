@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2013 Torbjörn Klatt <opensource@torbjoern-klatt.de>
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
  * 
  * Permission is hereby granted, free of charge, to any person
@@ -25,100 +24,89 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef CONSTPROPAGATINGUNIQUEPOINTER_H
-#define CONSTPROPAGATINGUNIQUEPOINTER_H
-
-#include <memory>
+#ifndef CONSTPROPAGATINGRAWPOINTER_H
+#define CONSTPROPAGATINGRAWPOINTER_H
 
 namespace PerceptualColor {
 
-/** @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
+/** @brief A <tt>const</tt> propagating raw pointer
  * 
- * With normal <tt>std::unique_ptr</tt> pointers (and also with raw
- * C++ pointers), within <tt>const</tt> functions you can do non-const
+ * With normal raw C++ pointers (and also with <tt>std::unique_ptr</tt>
+ * pointers), within <tt>const</tt> functions you can do non-const
  * operations <em>on objects that a pointer points to</em>.
  * 
  * <em>This</em> pointer type is different: It propagates the const-ness of
  * the object members and propagates them to the call through the pointer;
  * it will trigger a compiler error if non-cost access to object members
  * or methods is done from within const functions. Apart from that, it
- * behaves like <tt>std::unique_ptr</tt> (from which it inherits).
+ * behaves similar to raw pointers.
  * 
  * Think of this template as a simple alternative to
- * <tt>std::experimental::propagate_const&lt; std::unique_ptr&lt;T&gt; &gt;</tt>
+ * <tt>std::experimental::propagate_const&lt; T* &gt;</tt>
  * 
  * Example code:
- * @snippet test/testconstpropagatinguniquepointer.cpp ConstPropagatingUniquePointer Example
+ * @snippet test/testconstpropagatingrawpointer.cpp ConstPropagatingRawPointer Example
  * 
- * @sa @ref ConstPropagatingRawPointer
+ * @sa @ref ConstPropagatingUniquePointer
  *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation? Or remove propagate_const header from this library?
- * 
- * @author Torbjörn Klatt <opensource@torbjoern-klatt.de>
- * @date 2013-04-14
- * @copyright MIT License
- * @author Lukas Sommer
- * @date 2020
- * @copyright MIT License */
-template<typename T> class ConstPropagatingUniquePointer final
-    : public std::unique_ptr<T>
+ * implementation? Or remove propagate_const header from this library? */
+template <typename T>
+class ConstPropagatingRawPointer final
 {
 public:
     /** @brief Default constructor
      * 
      * Creates a pointer that points to <tt>nullptr</tt>. */
-    explicit ConstPropagatingUniquePointer() : std::unique_ptr<T>(nullptr)
+    explicit ConstPropagatingRawPointer() : m_pointer(nullptr)
     {
     }
 
     /** @brief Constructor
      * 
      * @param pointer Object to which to point */
-    explicit ConstPropagatingUniquePointer(
-        typename std::unique_ptr<T>::element_type* pointer
-    ) : std::unique_ptr<T>(pointer)
+    explicit ConstPropagatingRawPointer(T *pointer) : m_pointer(pointer)
     {
     }
-    
-    /** @brief Default destructor
-     * 
-     * This destructor is not marked as <tt>override</tt> because the
-     * base class’s destructor is not virtual.*/
-    ~ConstPropagatingUniquePointer() noexcept = default;
+
+    /** @brief Default destructor */
+    ~ConstPropagatingRawPointer() noexcept = default;
 
     /** @brief Non-const pointer operator
      * 
      * @returns Non-const pointer operator */
-    typename std::unique_ptr<T>::element_type* operator->()
+    T * operator->()
     {
-        return std::unique_ptr<T>::operator->();
+        return m_pointer;
     }
 
     /** @brief Const pointer operator
      * 
      * @returns Const pointer */
-    const typename std::unique_ptr<T>::element_type* operator->() const
-    {
-        return std::unique_ptr<T>::operator->();
+    const T * operator->() const {
+        return m_pointer;
     }
 
     /** @brief Non-const dereference operator
      * 
      * @returns Non-const dereference operator */
-    typename std::unique_ptr<T>::element_type& operator*()
+    T & operator*()
     {
-        return std::unique_ptr<T>::operator*();
+        return *m_pointer;
     }
 
     /** @brief Const dereference operator
      * 
      * @returns Const dereference operator */
-    const typename std::unique_ptr<T>::element_type& operator*() const
+    const T & operator*() const
     {
-        return std::unique_ptr<T>::operator*();
+        return *m_pointer;
     }
+
+private:
+    /** @brief Internal storage for the pointer */
+    T * m_pointer;
 
 };
 

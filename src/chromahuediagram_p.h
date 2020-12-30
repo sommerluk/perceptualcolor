@@ -27,7 +27,7 @@
 #ifndef CHROMAHUEDIAGRAM_P_H
 #define CHROMAHUEDIAGRAM_P_H
 
-#include <QPointer>
+#include "constpropagatingrawpointer.h"
 
 namespace PerceptualColor {
 
@@ -36,10 +36,6 @@ namespace PerceptualColor {
 class ChromaHueDiagram::ChromaHueDiagramPrivate final
 {
 public:
-    /** @brief Constructor
-     * 
-     * @param backLink Pointer to the object to which <em>this</em> object
-     * is attached to. */
     ChromaHueDiagramPrivate(ChromaHueDiagram *backLink);
     /** @brief Default destructor
      * 
@@ -90,7 +86,7 @@ public:
      *   anymore. */
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+    RgbColorSpace *m_rgbColorSpace;
     /** Holds whether or not @ref m_wheelImage() is up-to-date.
      *  @sa @ref updateWheelCache() */
     bool m_isWheelCacheReady = false;
@@ -134,17 +130,9 @@ public:
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)
     
-    // TODO WARNING This may not be a unique pointer, but must be a normal
-    // pointer, because the pointer is not owning… But… it should
-    // nevertheless be const-propagating!!
-    // And: Find a const-propagating-pointer-solution which allows calling
-    // private slots, which is missing at AlphaSelector. But it’s better to
-    // test private slots wich another class then AlphaSelector, because
-    // AlphaSelector has overloaded signals, which makes everything more
-    // complicate. Also: Couldn’t we just make the connect() call within
-    // the private class instead of the public class to get around this
-    // problem?
-    ChromaHueDiagram *q_pointer;
+    /** @brief Pointer to the object from which <em>this</em> object
+     *  is the private implementation. */
+    ConstPropagatingRawPointer<ChromaHueDiagram> q_pointer;
 };
 
 }

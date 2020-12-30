@@ -116,10 +116,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestAlphaSelector;
-
-private Q_SLOTS:
-    /** TODO Private functions have to be moved to @ref AlphaSelectorPrivate */
-    void setAlphaFromRepresentationFormat(qreal newAlphaRepresentation);
 };
 
 }

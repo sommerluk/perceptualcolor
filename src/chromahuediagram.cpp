@@ -81,8 +81,8 @@ ChromaHueDiagram::~ChromaHueDiagram()
 
 /** @brief Constructor
  * 
- * @param backLink Pointer to the object to which <em>this</em> object
- * is attached to. */
+ * @param backLink Pointer to the object from which <em>this</em> object
+ * is the private implementation. */
 ChromaHueDiagram::ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(
     ChromaHueDiagram *backLink
 ) : q_pointer(backLink)

@@ -24,48 +24,56 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ALPHASELECTOR_P_H
-#define ALPHASELECTOR_P_H
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
-#include "constpropagatingrawpointer.h"
+#include <PerceptualColor/constpropagatingrawpointer.h>
 
-#include "PerceptualColor/gradientselector.h"
+#include <QtTest>
 
-#include <QDoubleSpinBox>
+#include <QObject>
 
 namespace PerceptualColor {
 
-/** @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
-class AlphaSelector::AlphaSelectorPrivate final
+class TestConstPropagatingRawPointer : public QObject
 {
+    Q_OBJECT
+
 public:
-    AlphaSelectorPrivate(AlphaSelector *backLink);
-    /** @brief Default destructor
-     * 
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~AlphaSelectorPrivate() noexcept = default;
+    TestConstPropagatingRawPointer(
+        QObject *parent = nullptr
+    ) : QObject(parent) {
+    }
 
-    qreal m_alpha;
-    FullColorDescription m_color;
-    QPointer<QDoubleSpinBox> m_doubleSpinBox;
-    QPointer<GradientSelector> m_gradientSelector;
-    NumberFormat m_representation;
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+private Q_SLOTS:
 
-public Q_SLOTS:
-    /** TODO Private functions have to be moved to @ref AlphaSelectorPrivate */
-    void setAlphaFromRepresentationFormat(qreal newAlphaRepresentation);
+    void initTestCase() {
+        // Called before the first test function is executed
+    }
 
-private:
-    Q_DISABLE_COPY(AlphaSelectorPrivate)
-    
-    /** @brief Pointer to the object from which <em>this</em> object
-     *  is the private implementation. */
-    ConstPropagatingRawPointer<AlphaSelector> q_pointer;
+    void cleanupTestCase() {
+        // Called after the last test function was executed
+    }
+
+    void init() {
+        // Called before each test function is executed
+    }
+    void cleanup() {
+        // Called after every test function
+    }
+
+void testSnippet() {
+//! [ConstPropagatingRawPointer Example]
+// A ConstPropagatingRawPointer pointing to a new QObject
+PerceptualColor::ConstPropagatingRawPointer<QObject> myPointer(
+    new QObject()
+);
+//! [ConstPropagatingRawPointer Example]
+}
+
 };
 
 }
 
-#endif // ALPHASELECTOR_P_H
+QTEST_MAIN(PerceptualColor::TestConstPropagatingRawPointer)
+#include "testconstpropagatingrawpointer.moc" // necessary because we do not use a header file

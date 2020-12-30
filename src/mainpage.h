@@ -111,8 +111,9 @@
  * the additional code complexity. Therefore, this library uses a more simple
  * pimpl idiom without inheritance of the private implementation, It has
  * however all the other features of the Qt pimpl idiom, including
- * <tt>const</tt> propagating access to the private implementation thanks to
- * @ref PerceptualColor::ConstPropagatingUniquePointer. And, at difference
+ * <tt>const</tt> propagating access to the private implementation
+ * thanks to @ref PerceptualColor::ConstPropagatingUniquePointer and
+ * @ref PerceptualColor::ConstPropagatingRawPointer. And, at difference
  * to Qt’s pimpl idiom, it keeps private code strictly private.
  * Note however, that switching later from our current pimpl idiom to
  * the polymorph Qt pimpl idiom would break the binary compatibility. See also

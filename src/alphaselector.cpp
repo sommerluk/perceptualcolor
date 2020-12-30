@@ -44,7 +44,7 @@ AlphaSelector::AlphaSelector(
     QWidget *parent
 ) :
     QWidget(parent),
-    d_pointer(new AlphaSelectorPrivate)
+    d_pointer(new AlphaSelectorPrivate(this))
 {
     d_pointer->m_rgbColorSpace = colorSpace;
     QHBoxLayout *layout = new QHBoxLayout();
@@ -68,8 +68,9 @@ AlphaSelector::AlphaSelector(
         d_pointer->m_doubleSpinBox,
         QOverload<double>::of(&QDoubleSpinBox::valueChanged),
         this,
-        &AlphaSelector::setAlphaFromRepresentationFormat
+        [this](qreal newAlphaRepresentation) { d_pointer->setAlphaFromRepresentationFormat(newAlphaRepresentation); }
     );
+
     cmsCIELCh lch;
     lch.L = Helper::LchDefaults::defaultLightness;
     lch.C = Helper::LchDefaults::defaultChroma;
@@ -97,6 +98,16 @@ AlphaSelector::~AlphaSelector() noexcept
 {
 }
 
+/** @brief Constructor
+ * 
+ * @param backLink Pointer to the object from which <em>this</em> object
+ * is the private implementation. */
+AlphaSelector::AlphaSelectorPrivate::AlphaSelectorPrivate(
+    AlphaSelector *backLink
+) : q_pointer(backLink)
+{
+}
+
 qreal AlphaSelector::alpha() const
 {
     return d_pointer->m_alpha;
@@ -113,7 +124,9 @@ AlphaSelector::NumberFormat AlphaSelector::representation() const
 }
 
 
-void AlphaSelector::setRepresentation(AlphaSelector::NumberFormat newRepresentation)
+void AlphaSelector::setRepresentation(
+    AlphaSelector::NumberFormat newRepresentation
+)
 {
     if (d_pointer->m_representation == newRepresentation) {
         return;
@@ -147,17 +160,25 @@ void AlphaSelector::setRepresentation(AlphaSelector::NumberFormat newRepresentat
     Q_EMIT representationChanged(d_pointer->m_representation);
 }
 
-void AlphaSelector::setAlphaFromRepresentationFormat(qreal newAlphaRepresentation)
+void AlphaSelector::AlphaSelectorPrivate::setAlphaFromRepresentationFormat(
+    qreal newAlphaRepresentation
+)
 {
-    switch (d_pointer->m_representation) {
+    switch (m_representation) {
         case AlphaSelector::NumberFormat::one:
-            setAlpha(newAlphaRepresentation);
+            q_pointer->setAlpha(
+                newAlphaRepresentation
+            );
             break;
         case AlphaSelector::NumberFormat::percent:
-            setAlpha(newAlphaRepresentation / static_cast<qreal>(100));
+            q_pointer->setAlpha(
+                newAlphaRepresentation / static_cast<qreal>(100)
+            );
             break;
         case AlphaSelector::NumberFormat::twoHundredAndFiftyFive:
-            setAlpha(newAlphaRepresentation / static_cast<qreal>(255));
+            q_pointer->setAlpha(
+                newAlphaRepresentation / static_cast<qreal>(255)
+            );
             break;
         default:
             throw;
