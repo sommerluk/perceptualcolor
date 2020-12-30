@@ -279,10 +279,18 @@ private Q_SLOTS:
         // Test if signal for new color is emitted.
         myDiagram.setColor(referenceColor);
         QCOMPARE(spyPerceptualDialog.count(), 1);
+        QCOMPARE(
+            myDiagram.color().toRgbQColor(),
+            referenceColor.toRgbQColor()
+        );
         
         // Test that no signal is emitted for old color.
         myDiagram.setColor(referenceColor);
         QCOMPARE(spyPerceptualDialog.count(), 1);
+        QCOMPARE(
+            myDiagram.color().toRgbQColor(),
+            referenceColor.toRgbQColor()
+        );
         
         // Test using an invalid FullColorDescription
         myDiagram.setColor(FullColorDescription());

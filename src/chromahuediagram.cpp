@@ -434,6 +434,10 @@ FullColorDescription ChromaHueDiagram::color() const
  * wrong… */
 void ChromaHueDiagram::setColor(const FullColorDescription &color)
 {
+    if (!color.isValid()) {
+        return;
+    }
+
     if (color == d_pointer->m_color) {
         return;
     }

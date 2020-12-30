@@ -55,8 +55,9 @@ ColorDialog::ColorDialog(QWidget *parent) : QDialog(parent)
     // chroma-hue-diagram at zero surface. Therefore, we try a middle
     // lightness and a middle chroma (a lightness-chroma-combination that
     // will be valid through the hole range of hue. For the hue, the natural
-    // choice would be 0°, which is red. But we choose 270°, which is blue.
-    // (Blue feels more neutral than red.)
+    // choice would be 0°, which is red. Why choosing something different
+    // from 0° without a technical reason?, Well, we chooe 270°, which is
+    // blue; blue feels more neutral than red for a pop-up dialog.
     cmsCIELCh initialColor;
     // TODO Would it be better to use a hue of 0°? See comment above…
     initialColor.h = 270;

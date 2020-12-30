@@ -145,9 +145,7 @@ private:
      * functions of instances of <em>this</em> class. */
     friend class ChromaHueDiagramPrivate;
     /** @brief Pointer to implementation (pimpl) */
-    // TODO When using ConstPropagatingUniquePointer<> it will crash
-    // when ChromaHueDiagram is called. Why?
-    ChromaHueDiagramPrivate *d_pointer;
+    ConstPropagatingUniquePointer<ChromaHueDiagramPrivate> d_pointer;
     
     /** @brief Only for unit tests. */
     friend class TestChromaHueDiagram;

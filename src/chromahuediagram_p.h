@@ -135,8 +135,16 @@ private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)
     
     // TODO WARNING This may not be a unique pointer, but must be a normal
-    // pointer, because the pointer is not owning…
-    ConstPropagatingUniquePointer<ChromaHueDiagram> q_pointer;
+    // pointer, because the pointer is not owning… But… it should
+    // nevertheless be const-propagating!!
+    // And: Find a const-propagating-pointer-solution which allows calling
+    // private slots, which is missing at AlphaSelector. But it’s better to
+    // test private slots wich another class then AlphaSelector, because
+    // AlphaSelector has overloaded signals, which makes everything more
+    // complicate. Also: Couldn’t we just make the connect() call within
+    // the private class instead of the public class to get around this
+    // problem?
+    ChromaHueDiagram *q_pointer;
 };
 
 }
