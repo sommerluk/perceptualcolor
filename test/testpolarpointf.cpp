@@ -24,8 +24,12 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
 #include "PerceptualColor/polarpointf.h"
-#include <QtTest/QtTest>
+
+#include <QtTest>
 
 namespace PerceptualColor {
 
@@ -35,6 +39,15 @@ class TestPolarPointF : public QObject
 
 public:
     TestPolarPointF(QObject *parent = nullptr) : QObject(parent) {
+    }
+
+private:
+    static void voidMessageHandler(
+        QtMsgType,
+        const QMessageLogContext &,
+        const QString &
+    ) {
+        // dummy message handler that does not print messages
     }
 
 private Q_SLOTS:
@@ -356,6 +369,18 @@ private Q_SLOTS:
         var.setValue(temp01);
         QCOMPARE(var.value<PerceptualColor::PolarPointF>(), temp01);
     }
+
+    void testDebug() {
+        // suppress warnings
+        qInstallMessageHandler(voidMessageHandler);
+
+        // Test if QDebug support does not make a crash.
+        qDebug() << PolarPointF();
+        
+        // do not suppress warning for generating invalid QColor anymore
+        qInstallMessageHandler(nullptr);
+    }
+
 };
 
 }

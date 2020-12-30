@@ -24,9 +24,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** @file
- * 
- * Definition of @ref PerceptualColor::Helper namespace and its members. */
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
 // Own header
 #include "PerceptualColor/helper.h"

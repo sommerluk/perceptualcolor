@@ -24,9 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QPainter>
-#include <QtTest/QtTest>
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
 #include <PerceptualColor/helper.h>
+
+#include <QtTest>
+
+#include <QPainter>
 #include <PerceptualColor/rgbcolorspace.h>
 
 namespace PerceptualColor {

@@ -34,15 +34,6 @@
 
 #include <lcms2.h>
 
-/** @file
- * 
- * Declaration of the @ref PerceptualColor::Helper namespace and its members.
- * 
- * Also contains some general documentation for this library.
- * 
- * The source code of the library is in UTF8. A static_assert within the
- * header @ref helper.h makes sure your compiler actually treats it as UTF8.
- */
 // Test if the compiler treats the source code actually as UTF8.
 // A test string is converted to UTF8 code units (u8"") and each
 // code unit is checked to be correct.
@@ -55,201 +46,6 @@ static_assert(
     "This source code has to be read-in as UTF8 by the compiler."
 );
 
-/** @mainpage
- * This library provides various Qt GUI components for choosing colors, with
- * focus on an intuitive and perceptually uniform presentation. The GUI
- * widgets are based internally on the LCh color model, which does reflect
- * the human perception much better than RGB or its transforms like HSV.
- * However, the widgets do not require the user itself to know anything
- * about LCh at all, because the graphical representations is
- * intuitive enough. This library lives in the namespace #PerceptualColor.
- * 
- * How to get started? @ref PerceptualColor::ColorDialog provides a perceptual
- * replacement for QColorDialog:
- * @snippet test/testcolordialog.cpp ColorDialog Get color
- * 
- * And there are also individual widgets available. Among others:
- * - @ref PerceptualColor::WheelColorPicker (a full-featured color wheel)
- * - @ref PerceptualColor::ColorPatch (to show a particular color)
- * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a given
- *   lightness)
- * 
- * The library depends on (and therefore you has to link against):
- * |                         | Qt                 | LittleCMS               |
- * | :---------------------- | :----------------- | :---------------------- |
- * | <b>Major release</b>    | 5                  | 2                       |
- * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
- * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
- * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
- * used in this library.</em>
- *
- * This library requires minimum C++11.
- * <!--
- *      Qt 5.6 (which is the mimimum Qt version required
- *      by this library) only requires C++03. Only starting
- *      with Qt 5.7, Qt itself requires C++11. (Source:
- *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
- *      ). But our library uses C++11 features, for example “constexpr”. In
- *      the CMakeLists.txt file, we set -std=c++11 and -Wpedantic
- *      and -pedantic-errors to enforce C++11.
- * 
- *      Note that Qt 6 will require minimum C++17,
- *      as https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html explains.
- *      So that might be an option also for this library, if we
- *      decide to make it Qt-6-only. But it might
- *      even be useful if we support Qt 5, so we have future-proof
- *      requirements that we do not have to raise soon, and that are a
- *      good base for LTS.
- * -->
- * 
- * The library uses in general <tt>int</tt> for integer values, because
- * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
- * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
- * seems reasonable. For the same reason, it uses generally <tt>qreal</tt>
- * for floating point values, because <tt>QPointF()</tt> also does. Output
- * colors that are shown on the screen, are usually 8-bit-per-channel
- * colors. For internal transformation, usually <tt>qreal</tt>
- * is used for each channel, giving a better precision and reducing rounding
- * errors.
- * 
- * The source code of the library is in UTF8. A static_assert within the
- * header @ref helper.h makes sure your compiler actually treats it as UTF8.
- * 
- * @copyright Almost all the code is published under MIT License. Only
- * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
- * license. The <tt>LICENSES</tt> subfolder contains copies of the licence
- * texts.
- * 
- * @todo mark all public non-slot functions with Q_INVOKABLE (except property
- * setters and getters)
- * @todo A good widget library should
- * - run on all systems (✓ We do not use system-specific code nor do we
- *   rely on byte order)
- * - support hight-dpi (? work in progress)
- * - stylable by QStyle (? partial)
- * - stylable by style sheets (✗)
- * - accessibility (✗)
- * @todo A good widget library should also be touchscreen-ready.
- * - In ColorDialog: Have the color indicator at the
- *   bottom, so he isn’t hidden by the hand of the user. This would not be
- *   too worse for a mouse user either. (It’s propably not worth to offer
- *   an alternative, workflow-oriented design for mouse users, because the
- *   widget would become inconsistant between various machines. And it does
- *   not make the user experience <em>so</em> much more for mouse users
- *   either. If we would want this nevertheless, we could determine if
- *   the current machine has a touch screen be calling the static
- *   <tt>QList&lt;const QTouchDevice *&gt; QTouchDevice::devices()</tt> and
- *   iterate over the list. If at least one item has
- *   <tt>type == QTouchDevice::TouchScreen</tt> then use the touchscreen
- *   layout; other don’t use it.)
- * - An alternative to
- *   the spin box? How, for up to 360 values (degrees in step by 1)? Or
- *   should the steps simply be bigger?
- * @todo KDE Frameworks / https://marketplace.qt.io/ ?
- * @todo Provide property bindings as described in 
- * https://www.qt.io/blog/property-bindings-in-qt-6 or not? It is worth
- * when we do not support QML? What are the pitfalls? Imagine a property
- * that holds a percent value from 0 to 100; the setter enforces this
- * range; the binding bypasses the setter and allows every value? And:
- * How can callbacks know about when a setter was called in C++? See
- * also: https://doc.qt.io/qt-5/qtqml-cppintegration-exposecppattributes.html
- * and https://doc.qt.io/qt-5/qtqml-tutorials-extending-qml-example.html and
- * http://blog.aeguana.com/2015/12/12/writing-a-gui-using-qml-for-a-c-project/
- * for interaction between QML and C++. Pitfalls: Example of color() property
- * stored internally at m_color: Much implementation code of the clas will
- * access directly m_color instead of color(), so when using bindings,
- * this code is broken?
- * @todo Provide QML support so that for
- * https://doc.qt.io/qt-5/qml-qtquick-dialogs-colordialog.html (or its
- * Qt6 counterpart) we provide a source compatible alternative, like for
- * QColorWidget? Split the library in three parts (Common, Widgets, QML)?
- * @todo no constexpr should be exposted in any header as they are determined
- * on compile time. So if later we change the value, an application could
- * have a different value in the lib file (compile time of the library) and
- * the executable (compile time of the executable, which could be compoiled
- * against a different header/version).
- * @todo Comply with KDE policies: https://community.kde.org/Policies
- * @todo Decide is it’s better to raise C++ requirement to C++17 (see the
- * hidden comment above in this source file).
- * @todo Remove all qDebug calls from the source
- * @todo Use QObject::tr() for translations. Provide po files.
- * @todo Qt6 property bindings (QProperty QPropertyBinding) for all
- * properties?
- * @todo Prepare for being ABI compatible in the
- * future. (This has to be done before 1.0.0 release. See
- * https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B#Note_about_ABI
- * and https://accu.org/journals/overload/18/100/love_1718/ for details.
- * The Pimpl-idiom / d-pointer-idiom: The class Car in car.h forward declares
- * in its private section the class CarPrivate (which will be defined in
- * another header file carprivate.h which is <em>not</em> included in car.h.
- * The implementation file car.cpp includes (and implements) both, car.h
- * <em>and</em> carprivate.h. Having separate headers allows for unit
- * testing, and also for polymorphy (if required – also people argue this
- * could be bad programming style). Now, a private member
- * pointerToImplementation will hold a pointer to the implementation object.
- * Attention: Now, const functions of the class Car can call non-const
- * function of the class CarPrivate, which is broken behaviour. We have
- * to provide a solution…
- * @todo <tt>private Q_SLOTS</tt> can be connected to (with the old connection
- * syntax) from everywhere, so they are indeed not private. That’s not great.
- * As we use almost exclusively the new connection syntax, we can connect
- * to all functions, not only slots, so we could simply change private slots
- * to private functions. Or, better: If switching to pimpl, in the private
- * class, the private slots will become public slots, which is fine and
- * expressive.
- * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
- * be better to require the last LTS release (5.15), just to be compatible if
- * in the future we depend on this? */
-
-/** @brief The namespace of this library.
- * 
- * Everything that is provides in this library is encapsulated within this
- * namespace.
- * 
- * 
- * @todo This library provides some constexpr in the public API. If now we
- * release version 1.0.0 of this library with constexpr x == 1. Now, in
- * version 1.1.0 of this library, we change its value to constexpr x == 5.
- * Now, two questions: 1) Does this break binary compatibility? 2) As
- * constexpr is (or at least <em>might</em>) be evaluated at compile
- * time; if a program is compiled against version 1.0.0 but executed
- * with version 1.1.0, doest’t then constexpr x have different values
- * within the library code and within the program code, which might
- * lead to undefined behaviour?
- * @todo Test well the scaling for all widgets from 106.25% up to 200%.
- * @todo When scaling is used, the icons on the OK button and the
- * Cancel button are ugly. Why isn’t this handled automatically correctly,
- * though on other Qt apps it seems to be handled automatically correctly?
- * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
- * @todo Provide more than 8 bit per channel for more precision? 10 bit?
- * 12 bit?
- * @todo Only expose in the headers and in the public API what is absolutely
- * necessary.
- * @todo Switch to the pimpl idiom? Export symbols like in
- * https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
- * See also http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
- * and https://labjack.com/news/simple-cpp-symbol-visibility-demo
- * @todo A program that uses our library could also use LittleCMS itself. If
- * it would use LittleCMS without thread-save API, but using it always in the
- * very same thread which is <em>not</em> the main thread, this could make
- * problems for our library if we use non-thread-save LittleCMS APIs. So
- * best would be that our library uses exclusively <em>thread-save</em>
- * APIs of LittleCMS.
- * @todo Qt Designer support for the widgets
- * @todo It might be useful to support for all widgets grayed out appearance
- * when they are disabled. Just fade out, maybe with some transparency, and
- * let colors still be visible, would be a bad idea: It would be highly
- * confusing seeing colors, but colors that are wrong. So everything would
- * have to be gray. For @ref ColorPatch and @ref GradientSelector this could
- * be simply the default background, similar to grayed out spin boxes. And for
- * the diagram widgets, only the shape would stay visible, with uniform
- * standard gray colors coming from <tt>QStyle</tt>. The markers might not
- * even be displayed at all.
- * @todo Follow KDE's <b><a href="https://hig.kde.org/index.html">HIG</a></b>
- * @todo Add screenshots of widgets to the documentation
- * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
- * also https://phabricator.kde.org/T12359
- * @todo Spell checking for the documentation */
 namespace PerceptualColor {
 
 /** @brief Various smaller help elements.
@@ -259,6 +55,7 @@ namespace PerceptualColor {
  * 
  * @todo Decide for each member of this namespace if it can be moved into
  * a class because it’s only used in this single class.
+ * 
  * @todo Maybe, get rid of this namespace completely, integrating the
  * available functionality into the abstract base classes? */
 namespace Helper {
@@ -270,7 +67,10 @@ namespace Helper {
      * (can be treated as buffer). The valid range for each component is 0‥1.
      * 
      * Example:
-     * @snippet test/testhelper.cpp Helper Use cmsRGB */
+     * @snippet test/testhelper.cpp Helper Use cmsRGB
+     * 
+     * @todo What about the structs within this namespace? They can be
+     * constructed. Shouldn’t their destructor be virtual noexcept override? */
     struct cmsRGB {
         /** @brief The red value. */
         cmsFloat64Number red;
@@ -331,7 +131,10 @@ namespace Helper {
      *   be: <b>0°‥360°</b>
      * 
      * But what could be useful default values? This struct provides some
-     * proposals. All values are <tt>constexpr</tt>. */
+     * proposals. All values are <tt>constexpr</tt>. 
+     * 
+     * @todo What about the structs within this namespace? They can be
+     * constructed. Shouldn’t their destructor be virtual noexcept override? */
     struct LchDefaults {
         /** @brief Default chroma value
          * 

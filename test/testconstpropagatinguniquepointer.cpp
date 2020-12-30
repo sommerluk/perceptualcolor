@@ -27,23 +27,26 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
-#include "PerceptualColor/xxx.h"
-#include "xxx_p.h"
+#include <PerceptualColor/constpropagatinguniquepointer.h>
 
 #include <QtTest>
 
+#include <QObject>
+
 namespace PerceptualColor {
 
-class TestXXX : public QObject
+class TestConstPropagatingUniquePointer : public QObject
 {
-
     Q_OBJECT
 
 public:
-    TestXXX(QObject *parent = nullptr) : QObject(parent) {
+    TestConstPropagatingUniquePointer(
+        QObject *parent = nullptr
+    ) : QObject(parent) {
     }
 
 private Q_SLOTS:
+
     void initTestCase() {
         // Called before the first test function is executed
     }
@@ -55,19 +58,22 @@ private Q_SLOTS:
     void init() {
         // Called before each test function is executed
     }
-
     void cleanup() {
         // Called after every test function
     }
 
-    void testDef() {
-        // TODO implement me!
-    }
+void testSnippet() {
+//! [ConstPropagatingUniquePointer Example]
+// A ConstPropagatingUniquePointer pointing to a new QObject
+PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
+    new QObject()
+);
+//! [ConstPropagatingUniquePointer Example]
+}
+
 };
 
 }
 
-QTEST_MAIN(PerceptualColor::TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+QTEST_MAIN(PerceptualColor::TestConstPropagatingUniquePointer)
+#include "testconstpropagatinguniquepointer.moc" // necessary because we do not use a header file

@@ -59,7 +59,7 @@ namespace PerceptualColor {
  * within a widget, but widget and FullColorDescription are
  * based on different color spaces? Display would be wrong! Or not?
  */
-class FullColorDescription
+class FullColorDescription final
 {
 public:
 
@@ -111,11 +111,6 @@ public:
      * @param other the object to move
      */   
     FullColorDescription(FullColorDescription&& other) noexcept = default;
-
-    /**
-     * Destructor
-     */
-    ~FullColorDescription() = default;
 
     /** @brief Default Assignment operator */
     FullColorDescription& operator=(

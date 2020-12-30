@@ -24,50 +24,27 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
-
-#include "PerceptualColor/xxx.h"
-#include "xxx_p.h"
-
-#include <QtTest>
+#ifndef ABSTRACTCIRCULARDIAGRAM_P_H
+#define ABSTRACTCIRCULARDIAGRAM_P_H
 
 namespace PerceptualColor {
 
-class TestXXX : public QObject
+/** @brief Private implementation within the <em>Pointer to
+ *  implementation</em> idiom */
+class AbstractCircularDiagram::AbstractCircularDiagramPrivate final
 {
-
-    Q_OBJECT
-
 public:
-    TestXXX(QObject *parent = nullptr) : QObject(parent) {
-    }
-
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first test function is executed
-    }
-
-    void cleanupTestCase() {
-        // Called after the last test function was executed
-    }
-
-    void init() {
-        // Called before each test function is executed
-    }
-
-    void cleanup() {
-        // Called after every test function
-    }
-
-    void testDef() {
-        // TODO implement me!
-    }
+    /** @brief Constructor */
+    AbstractCircularDiagramPrivate() = default;
+    /** @brief Default destructor
+     * 
+     * The destructor is non-<tt>virtual</tt> because
+     * the class as a whole is <tt>final</tt>. */
+    ~AbstractCircularDiagramPrivate() noexcept = default;
+private:
+    Q_DISABLE_COPY(AbstractCircularDiagramPrivate)
 };
 
 }
 
-QTEST_MAIN(PerceptualColor::TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+#endif // ABSTRACTCIRCULARDIAGRAM_P_H

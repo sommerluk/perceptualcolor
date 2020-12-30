@@ -74,7 +74,8 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
-    virtual ~SimpleColorWheel() override = default;
+    /** @brief Default destructor */
+    virtual ~SimpleColorWheel() noexcept override = default;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;

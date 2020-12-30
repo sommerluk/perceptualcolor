@@ -59,6 +59,8 @@ class ExtendedDoubleValidator : public QDoubleValidator
 
 public:
     Q_INVOKABLE ExtendedDoubleValidator(QObject *parent = nullptr);
+    /** @brief Default destructor */
+    virtual ~ExtendedDoubleValidator() noexcept override = default;
     /** @brief Getter for property @ref prefix
      *  @returns the property @ref prefix */
     QString prefix() const;

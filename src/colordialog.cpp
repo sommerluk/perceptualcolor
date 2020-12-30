@@ -24,10 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** @file
- * 
- * Definition of the @ref PerceptualColor::ColorDialog class and its
- * members. */
+
 
 // Own header
 #include "PerceptualColor/colordialog.h"
@@ -45,16 +42,38 @@ namespace PerceptualColor {
 /** @brief Constructor
  * 
  *  @param parent pointer to the parent widget, if any
- *  @post The @ref currentColor property is set to Qt::white. */
+ *  @post The @ref currentColor property is set to a useful default value. */
 ColorDialog::ColorDialog(QWidget *parent) : QDialog(parent)
 {
     initialize();
-    // Calling setCurrentColor() guaranties to update all widgets
+    // As initial color, QColorDialog chooses white, probably because
+    // it’t quite neutral.
+    // We do things differently here: We want a color that has a chroma,
+    // because this way, new users do not see the widget diagrams at an
+    // extreme position, but somewhere in the middle. This is important,
+    // because extreme positions like “white” leave for example the
+    // chroma-hue-diagram at zero surface. Therefore, we try a middle
+    // lightness and a middle chroma (a lightness-chroma-combination that
+    // will be valid through the hole range of hue. For the hue, the natural
+    // choice would be 0°, which is red. But we choose 270°, which is blue.
+    // (Blue feels more neutral than red.)
+    cmsCIELCh initialColor;
+    // TODO Would it be better to use a hue of 0°? See comment above…
+    initialColor.h = 270;
+    initialColor.L = Helper::LchDefaults::defaultLightness;
+    initialColor.C = Helper::LchDefaults::versatileSrgbChroma;
+    // Calling setCurrentFullColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid
     // be default, and therefor different, setCurrentColor()
     // guaranties to update all widgets.
-    setCurrentColor(QColor(Qt::white));
+    setCurrentFullColor(
+        FullColorDescription(
+            m_rgbColorSpace,
+            initialColor,
+            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+        )
+    );
 }
 
 /** @brief Constructor
@@ -80,7 +99,7 @@ ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
 }
 
 /** @brief Destructor */
-ColorDialog::~ColorDialog()
+ColorDialog::~ColorDialog() noexcept
 {
     // All the layouts and widgets used here are automatically child widgets
     // of this dialog widget. Therefor they are deleted automatically.
@@ -102,7 +121,7 @@ QColor ColorDialog::currentColor() const
 /** @brief Setter for @ref currentColor property.
  * 
  * @param color the new color
- * \post The property @ref currentColor is adapted as follows:
+ * @post The property @ref currentColor is adapted as follows:
  * - If <em>color</em> is not valid, <tt>Qt::black</tt> is used instead.
  * - If <em>color</em>'s <tt>QColor::Spec</tt> is <em>not</em>
  *   <tt>QColor::Spec::Rgb</tt> then it will be converted silently
@@ -123,12 +142,21 @@ void ColorDialog::setCurrentColor(const QColor& color)
         // For invalid colors same behavior as QColorDialog
         temp = QColor(Qt::black);
     }
+    setCurrentFullColor(FullColorDescription(m_rgbColorSpace, temp));
+}
+
+/** @brief Sets the @ref currentColor property.
+ * 
+ * @param color The new color to set. The alpha value is taken
+ * into account. */
+void ColorDialog::setCurrentFullColor(const FullColorDescription& color)
+{
     if (testOption(QColorDialog::ColorDialogOption::ShowAlphaChannel)) {
-        m_alphaSelector->setAlpha(color.alphaF());
+        m_alphaSelector->setAlpha(color.alpha());
     } else {
         m_alphaSelector->setAlpha(1);
     }
-    setCurrentOpaqueColor(FullColorDescription(m_rgbColorSpace, temp));
+    setCurrentOpaqueColor(color);
 }
 
 /** @brief Opens the dialog and connects its @ref colorSelected() signal to
@@ -157,7 +185,7 @@ void ColorDialog::setCurrentOpaqueQColor(const QColor& color)
 
 /** @brief Updates the color patch widget
  * 
- * @post The color page widget will show the color of
+ * @post The color patch widget will show the color of
  * @ref m_currentOpaqueColor and the alpha value of
  * @ref m_alphaSelector() as available with
  * @ref AlphaSelector::alpha(). */
@@ -201,21 +229,40 @@ void ColorDialog::setCurrentOpaqueColor(const FullColorDescription& color)
     // Update all the widgets for opaque color…
     QColor tempRgbQColor = color.toRgbQColor();
     tempRgbQColor.setAlpha(255);
-    m_rgbRedSpinbox->setValue(tempRgbQColor.redF() * 255);
-    m_rgbGreenSpinbox->setValue(tempRgbQColor.greenF() * 255);
-    m_rgbBlueSpinbox->setValue(tempRgbQColor.blueF() * 255);
-    m_hsvHueSpinbox->setValue(color.toHsvQColor().hsvHueF() * 360);
-    m_hsvSaturationSpinbox->setValue(
-        color.toHsvQColor().hsvSaturationF() * 255
-    );
-    m_hsvValueSpinbox->setValue(color.toHsvQColor().valueF() * 255);
-    m_hlcLineEdit->setText(textForHlcLineEdit());
+    QList<MultiSpinBox::SectionData> tempSections;
+    
+    // Update RGB widget
+    tempSections = m_rgbSpinBox->sections();
+    tempSections[0].value = tempRgbQColor.redF() * 255;
+    tempSections[1].value = tempRgbQColor.greenF() * 255;
+    tempSections[2].value = tempRgbQColor.blueF() * 255;
+    m_rgbSpinBox->setSections(tempSections);
+    
+    // Update HSV widget
+    tempSections = m_hsvSpinBox->sections();
+    tempSections[0].value = color.toHsvQColor().hsvHueF() * 360;
+    tempSections[1].value = color.toHsvQColor().hsvSaturationF() * 255;
+    tempSections[2].value = color.toHsvQColor().valueF() * 255;
+    m_hsvSpinBox->setSections(tempSections);
+    
+    // Update HLC widget
+    tempSections = m_hlcSpinBox->sections();
+    tempSections[0].value = m_currentOpaqueColor.toLch().h;
+    tempSections[1].value = m_currentOpaqueColor.toLch().L;
+    tempSections[2].value = m_currentOpaqueColor.toLch().C;
+    m_hlcSpinBox->setSections(tempSections);
+
+    // Update RGB hex widget
     m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
+    
+    // Update the diagrams
     m_lchLightnessSelector->setFraction(
         color.toLch().L / static_cast<qreal>(100)
     );
     m_chromaHueDiagram->setColor(color);
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
+    
+    // Update alpha selector
     m_alphaSelector->setColor(m_currentOpaqueColor);
 
     // Update widgets that take alpha information
@@ -250,11 +297,12 @@ void ColorDialog::readLightnessValue()
  * updates the dialog accordingly. */
 void ColorDialog::readHsvNumericValues()
 {
+    QList<MultiSpinBox::SectionData> hsvSections = m_hsvSpinBox->sections();
     setCurrentOpaqueQColor(
         QColor::fromHsvF(
-            m_hsvHueSpinbox->value() / static_cast<qreal>(360),
-            m_hsvSaturationSpinbox->value() / static_cast<qreal>(255),
-            m_hsvValueSpinbox->value() / static_cast<qreal>(255)
+            hsvSections[0].value / static_cast<qreal>(360),
+            hsvSections[1].value / static_cast<qreal>(255),
+            hsvSections[2].value / static_cast<qreal>(255)
         )
     );
 }
@@ -263,11 +311,12 @@ void ColorDialog::readHsvNumericValues()
  * updates the dialog accordingly. */
 void ColorDialog::readRgbNumericValues()
 {
+    QList<MultiSpinBox::SectionData> rgbSections = m_rgbSpinBox->sections();
     setCurrentOpaqueQColor(
         QColor::fromRgbF(
-            m_rgbRedSpinbox->value() / static_cast<qreal>(255),
-            m_rgbGreenSpinbox->value() / static_cast<qreal>(255),
-            m_rgbBlueSpinbox->value() / static_cast<qreal>(255)
+            rgbSections[0].value / static_cast<qreal>(255),
+            rgbSections[1].value / static_cast<qreal>(255),
+            rgbSections[2].value / static_cast<qreal>(255)
         )
     );
 }
@@ -277,8 +326,8 @@ void ColorDialog::readRgbNumericValues()
 void ColorDialog::readRgbHexValues()
 {
     QString temp = m_rgbLineEdit->text();
-    if (!temp.startsWith('#')) {
-        temp = QString('#') + temp;
+    if (!temp.startsWith(QStringLiteral(u"#"))) {
+        temp = QStringLiteral(u"#") + temp;
     }
     QColor rgb;
     rgb.setNamedColor(temp);
@@ -386,20 +435,8 @@ void ColorDialog::initialize()
     
     // initialize signal-slot-connections
     connect(
-        m_rgbRedSpinbox,
-        QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-        this,
-        &ColorDialog::readRgbNumericValues
-    );
-    connect(
-        m_rgbGreenSpinbox,
-        QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-        this,
-        &ColorDialog::readRgbNumericValues
-    );
-    connect(
-        m_rgbBlueSpinbox,
-        QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        m_rgbSpinBox,
+        &MultiSpinBox::editingFinished,
         this,
         &ColorDialog::readRgbNumericValues
     );
@@ -410,32 +447,14 @@ void ColorDialog::initialize()
         &ColorDialog::readRgbHexValues
     );
     connect(
-        m_hsvHueSpinbox,
-        QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        m_hsvSpinBox,
+        &MultiSpinBox::editingFinished,
         this,
         &ColorDialog::readHsvNumericValues
     );
     connect(
-        m_hsvSaturationSpinbox,
-        QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-        this,
-        &ColorDialog::readHsvNumericValues
-    );
-    connect(
-        m_hsvValueSpinbox,
-        QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-        this,
-        &ColorDialog::readHsvNumericValues
-    );
-    connect(
-        qApp,
-        &QApplication::focusChanged,
-        this,
-        &ColorDialog::handleFocusChange
-    );
-    connect(
-        m_hlcLineEdit,
-        &QLineEdit::returnPressed,
+        m_hlcSpinBox,
+        &MultiSpinBox::editingFinished,
         this,
         &ColorDialog::readHlcNumericValues
     );
@@ -486,62 +505,22 @@ void ColorDialog::initialize()
     setSizeGripEnabled(true);
 }
 
-/** @brief Get text for @ref m_hlcLineEdit based on @ref m_currentOpaqueColor
- * @returns A QString appropriate for @ref m_hlcLineEdit */
-QString ColorDialog::textForHlcLineEdit() const
-{
-    return
-        QString(QStringLiteral(u"%1 %2 %3"))
-            .arg(m_currentOpaqueColor.toLch().h, 0, 'f', 0)
-            .arg(m_currentOpaqueColor.toLch().L, 0, 'f', 0)
-            .arg(m_currentOpaqueColor.toLch().C, 0, 'f', 0);
-}
-
-/** @brief React on focus changes
- * 
- * This function tests if the focus is leaving @ref m_hlcLineEdit(). If so, it
- * will update the other widgets if necessary. We have to to this because
- * @ref m_hlcLineEdit is a QLineEdit and its editingFinished() will not be
- * emitted if the current value is not conform to the input mask and the
- * validator. So we might miss (invalid) value changes. It is nevertheless
- * important to catch these cases, because the widget must be reset to a valid
- * value. */
-void ColorDialog::handleFocusChange(QWidget *old/*, QWidget *now*/)
-{
-    if (old == m_hlcLineEdit) {
-        if (m_hlcLineEdit->text() != textForHlcLineEdit()) {
-            // Only read-in the values if really changed. That's important
-            // because otherwise, passing just with the focus through the
-            // m_hlcLineEdit widget, each time the value would be read-in.
-            // This would lead to rounding errors: L might be 50.8 before,
-            // but displayed is just 51. At read-in, it would be changed from
-            // 50.8 to 51, which is undesirable except the user has really
-            // changed a value in this widget.
-            readHlcNumericValues();
-        }
-    }
-}
-
 /** @brief Reads the HLC numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialog::readHlcNumericValues()
 {
+    QList<MultiSpinBox::SectionData> hlcSections = m_hlcSpinBox->sections();
     cmsCIELCh lch;
-    QStringList temp = m_hlcLineEdit->text().split(QStringLiteral(u" "));
-    if (temp.size() == 3) {
-        lch.h = temp.at(0).toInt();
-        lch.L = qMin(temp.at(1).toInt(), 100);
-        lch.C = temp.at(2).toInt();
-        setCurrentOpaqueColor(
-            FullColorDescription(
-                m_rgbColorSpace,
-                lch,
-                FullColorDescription::outOfGamutBehaviour::sacrifyChroma
-            )
-        );
-    } else {
-        m_hlcLineEdit->setText(textForHlcLineEdit());
-    }
+    lch.h = hlcSections[0].value;
+    lch.L = hlcSections[1].value;
+    lch.C = hlcSections[2].value;
+    setCurrentOpaqueColor(
+        FullColorDescription(
+            m_rgbColorSpace,
+            lch,
+            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+        )
+    );
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.
@@ -549,61 +528,26 @@ void ColorDialog::readHlcNumericValues()
  * widgets as child widgets. */
 QWidget* ColorDialog::initializeNumericPage()
 {
-    // Create HSV spin boxes
-    constexpr int decimals = 2; // TODO xxx set this back to 0
-    QHBoxLayout *tempHsvLayout = new QHBoxLayout;
-    m_hsvHueSpinbox = new QDoubleSpinBox();
-    m_hsvHueSpinbox->setAlignment(Qt::AlignRight);
-    m_hsvHueSpinbox->setMaximum(360);
-    m_hsvHueSpinbox->setWrapping(true);
-    m_hsvHueSpinbox->setDecimals(decimals);
-    m_hsvHueSpinbox->setWhatsThis(
-        tr("<p>Hue</p><p>Range: 0–360</p>")
-    );
-    m_hsvSaturationSpinbox = new QDoubleSpinBox();
-    m_hsvSaturationSpinbox->setAlignment(Qt::AlignRight);
-    m_hsvSaturationSpinbox->setMaximum(255);
-    m_hsvSaturationSpinbox->setDecimals(decimals);
-    m_hsvSaturationSpinbox->setWhatsThis(
-        tr("<p>Saturation</p><p>Range: 0–255</p>")
-    );
-    m_hsvValueSpinbox = new QDoubleSpinBox();
-    m_hsvValueSpinbox->setAlignment(Qt::AlignRight);
-    m_hsvValueSpinbox->setMaximum(255);
-    m_hsvValueSpinbox->setDecimals(decimals);
-    m_hsvValueSpinbox->setWhatsThis(
-        tr("<p>Brightness/Value</p><p>Range: 0–255</p>")
-    );
-    tempHsvLayout->addWidget(m_hsvHueSpinbox);
-    tempHsvLayout->addWidget(m_hsvSaturationSpinbox);
-    tempHsvLayout->addWidget(m_hsvValueSpinbox);
+    // Setup
+    constexpr int decimals = 0; // TODO xxx set this back to 0
+    MultiSpinBox::SectionData mySection;
+    mySection.decimals = decimals;
 
-    // Create RGB spin boxes
-    QHBoxLayout *tempRgbLayout = new QHBoxLayout;
-    m_rgbRedSpinbox = new QDoubleSpinBox();
-    m_rgbRedSpinbox->setAlignment(Qt::AlignRight);
-    m_rgbRedSpinbox->setMaximum(255);
-    m_rgbRedSpinbox->setDecimals(decimals);
-    m_rgbRedSpinbox->setWhatsThis(
-        tr("<p>Red</p><p>Range: 0–255</p>")
+    // Create RGB MultiSpinBox
+    m_rgbSpinBox = new MultiSpinBox();
+    QList<MultiSpinBox::SectionData> rgbSections;
+    mySection.minimum = 0;
+    mySection.maximum = 255;
+    mySection.suffix = QStringLiteral(u" ");
+    rgbSections.append(mySection);
+    mySection.prefix = QStringLiteral(u" ");
+    rgbSections.append(mySection);
+    mySection.suffix = QString();
+    rgbSections.append(mySection);
+    m_rgbSpinBox->setSections(rgbSections);
+    m_rgbSpinBox->setWhatsThis(
+        tr("<p>Red, green, blue: 0–255</p>")
     );
-    m_rgbGreenSpinbox = new QDoubleSpinBox();
-    m_rgbGreenSpinbox->setAlignment(Qt::AlignRight);
-    m_rgbGreenSpinbox->setMaximum(255);
-    m_rgbGreenSpinbox->setDecimals(decimals);
-    m_rgbGreenSpinbox->setWhatsThis(
-        tr("<p>Green</p><p>Range: 0–255</p>")
-    );
-    m_rgbBlueSpinbox = new QDoubleSpinBox();
-    m_rgbBlueSpinbox->setAlignment(Qt::AlignRight);
-    m_rgbBlueSpinbox->setMaximum(255);
-    m_rgbBlueSpinbox->setDecimals(decimals);
-    m_rgbBlueSpinbox->setWhatsThis(
-        tr("<p>Blue</p><p>Range: 0–255</p>")
-    );
-    tempRgbLayout->addWidget(m_rgbRedSpinbox);
-    tempRgbLayout->addWidget(m_rgbGreenSpinbox);
-    tempRgbLayout->addWidget(m_rgbBlueSpinbox);
 
     // Create widget for the hex style color representation
     m_rgbLineEdit = new QLineEdit();
@@ -627,26 +571,52 @@ QWidget* ColorDialog::initializeNumericPage()
         )
     );
 
+    // Create HSV spin box
+    m_hsvSpinBox = new MultiSpinBox();
+    QList<MultiSpinBox::SectionData> hsvSections;
+    mySection.prefix = QString();
+    mySection.minimum = 0;
+    mySection.maximum = 360;
+    mySection.isWrapping = true;
+    mySection.suffix = QStringLiteral(u"° ");
+    hsvSections.append(mySection);
+    mySection.prefix = QStringLiteral(u" ");
+    mySection.maximum = 255;
+    mySection.isWrapping = false;
+    mySection.suffix = QStringLiteral(u" ");
+    hsvSections.append(mySection);
+    mySection.suffix = QString();
+    hsvSections.append(mySection);
+    m_hsvSpinBox->setSections(hsvSections);
+    m_hsvSpinBox->setWhatsThis(
+        tr(
+            "<p>Hue: 0°–360°</p>"
+            "<p>Saturation: 0–255</p>"
+            "<p>Brightness/Value: 0–255</p>"
+        )
+    );
+
     // Create RGB layout
     QFormLayout *tempRgbFormLayout = new QFormLayout();
     QLabel *tempRgbLabel = new QLabel(tr("&RGB"));
-    tempRgbLabel->setBuddy(m_rgbRedSpinbox);
-    tempRgbFormLayout->addRow(tempRgbLabel, tempRgbLayout);
+    tempRgbLabel->setBuddy(m_rgbSpinBox);
+    tempRgbFormLayout->addRow(tempRgbLabel, m_rgbSpinBox);
     tempRgbFormLayout->addRow(tr("He&x"), m_rgbLineEdit);
     QLabel *tempHsvLabel = new QLabel(tr("HS&V"));
-    tempHsvLabel->setBuddy(m_hsvHueSpinbox);
-    tempRgbFormLayout->addRow(tempHsvLabel, tempHsvLayout);
+    tempHsvLabel->setBuddy(m_hsvSpinBox);
+    tempRgbFormLayout->addRow(tempHsvLabel, m_hsvSpinBox);
     QGroupBox *rgbGroupBox = new QGroupBox();
     rgbGroupBox->setLayout(tempRgbFormLayout);
     // LittleCMS gives access to the following data fields in profiles:
     // description, manufacturer, model, copyright. Each field might also
     // be empty. The most interesting field is “description”. We use it
     // as title for the group box that contains the RGB based input widgets.
-    // The “copyright” field is not really interesting for the user; we do
-    // not use it here. The fields “manufacturer” and “model” might be
-    // interesting. If one of those two fields is not empty, we will
+    // Also the fields “manufacturer” and “model” might be
+    // interesting. If one of those three fields is not empty, we will
     // provide a tool-tip that contains the description, manufacturer and
     // model data fields. Otherwise, no tool-tip is used.
+    // The “copyright” field is not really interesting for the user; we do
+    // not use it here.
     rgbGroupBox->setTitle(m_rgbColorSpace->profileInfoDescription());
     if (!m_rgbColorSpace->profileInfoDescription().isEmpty()
         || !m_rgbColorSpace->profileInfoManufacturer().isEmpty()
@@ -683,12 +653,31 @@ QWidget* ColorDialog::initializeNumericPage()
     }
 
     // Create widget for the HLC color representation
-    m_hlcLineEdit = new QLineEdit();
-    QRegularExpression expression {
-        QStringLiteral(u"\\d{1,3}\\s\\d{1,3}\\s\\d{1,3}")
-    };
-    m_hlcLineEdit->setValidator(
-        new QRegularExpressionValidator(expression, this)
+    QList<MultiSpinBox::SectionData> hlcSections;
+    m_hlcSpinBox = new MultiSpinBox;
+    mySection.minimum = 0;
+    mySection.maximum = 360;
+    mySection.prefix = QLatin1String();
+    mySection.suffix = QStringLiteral(u"° ");
+    mySection.isWrapping = true;
+    hlcSections.append(mySection);
+    mySection.maximum = 100;
+    mySection.prefix = QStringLiteral(u" ");
+    mySection.suffix = QStringLiteral(u"% ");
+    mySection.isWrapping = false;
+    hlcSections.append(mySection);
+    mySection.maximum = 255;
+    mySection.prefix = QStringLiteral(u" ");
+    mySection.suffix = QLatin1String();
+    mySection.isWrapping = false;
+    hlcSections.append(mySection);
+    m_hlcSpinBox->setSections (hlcSections);
+    m_hlcSpinBox->setWhatsThis(
+        tr(
+            "<p>Hue: 0°–360°</p>"
+            "<p>Lightness: 0%–100%</p>"
+            "<p>Chroma: 0–255</p>"
+        )
     );
 
     // Create a global widget
@@ -696,30 +685,10 @@ QWidget* ColorDialog::initializeNumericPage()
     QVBoxLayout *tempMainLayout = new QVBoxLayout;
     tempWidget->setLayout(tempMainLayout);
     tempWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-    tempMainLayout->addWidget(rgbGroupBox);
     QFormLayout *cielabFormLayout = new QFormLayout;
+    cielabFormLayout->addRow(tr("HL&C"), m_hlcSpinBox);
     tempMainLayout->addLayout(cielabFormLayout);
-// TODO BEGIN remove this xxx
-QList<MultiSpinBox::SectionData> myConfiguration;
-MultiSpinBox *testpointer = new MultiSpinBox;
-MultiSpinBox::SectionData mySection;
-mySection.minimum = 0;
-mySection.maximum = 360;
-mySection.prefix = QLatin1String();
-mySection.suffix = QStringLiteral(u"°");
-myConfiguration.append(mySection);
-mySection.maximum = 100;
-mySection.prefix = QStringLiteral(u"  ");
-mySection.suffix = QStringLiteral(u"%");
-myConfiguration.append(mySection);
-mySection.maximum = 255;
-mySection.prefix = QStringLiteral(u"  ");
-mySection.suffix = QLatin1String();
-myConfiguration.append(mySection);
-testpointer->setSections (myConfiguration);
-cielabFormLayout->addRow(tr("&Test"), testpointer);
-// TODO END remove this xxx
-    cielabFormLayout->addRow(tr("HL&C"), m_hlcLineEdit);
+    tempMainLayout->addWidget(rgbGroupBox);
     tempMainLayout->addStretch();
     
     // Return

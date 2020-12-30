@@ -46,7 +46,7 @@ class RgbColorSpace : public QObject
 
 public:
     Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
-    virtual ~RgbColorSpace();
+    virtual ~RgbColorSpace() noexcept override;
     qreal blackpointL() const;
     Q_INVOKABLE QColor colorRgb(const cmsCIELab &Lab) const;
     Q_INVOKABLE QColor colorRgb(const cmsCIELCh &LCh) const;

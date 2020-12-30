@@ -27,12 +27,8 @@
 #ifndef COLORPATCH_H
 #define COLORPATCH_H
 
-/** @file
- * 
- * Declaration of the @ref PerceptualColor::ColorPatch class and its
- * members. */
-
 #include "PerceptualColor/abstractdiagram.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor {
 
@@ -72,12 +68,13 @@ class ColorPatch : public AbstractDiagram
      * @sa @ref color()
      * @sa @ref setColor()
      * @sa @ref colorChanged()
-     * @sa @ref m_color
+     * @sa @ref ColorPatchPrivate::m_color
      */
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
     Q_INVOKABLE explicit ColorPatch(QWidget *parent = nullptr);
+    virtual ~ColorPatch() noexcept override;
     /** @brief Getter for property @ref color
      *  @returns the property @ref color */
     QColor color() const;
@@ -98,16 +95,18 @@ protected:
 
 private:
     Q_DISABLE_COPY(ColorPatch)
-    
+
+    class ColorPatchPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class ColorPatchPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<ColorPatchPrivate> d_pointer;
+
     /** @brief Only for unit tests. */
     friend class TestColorPatch;
-
-    /** @brief Internal storage for property @ref color
-     * 
-     * QColor automatically initializes with an invalid color, just like it
-     * should be for the property @ref color, so no need to initialize here
-     * explicitly. */
-    QColor m_color;
 };
 
 }

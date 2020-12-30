@@ -24,25 +24,32 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** @file
- * 
- * Definition of the @ref PerceptualColor::ColorPatch class and its members. */
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
-// Own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/colorpatch.h"
+// Second, the private implementation.
+#include "colorpatch_p.h"
 
 #include <QPainter>
-
-#include "PerceptualColor/helper.h"
 
 namespace PerceptualColor {
 
 /** @brief Constructor */
-ColorPatch::ColorPatch(QWidget *parent) : AbstractDiagram(parent)
+ColorPatch::ColorPatch(QWidget *parent) :
+    AbstractDiagram(parent),
+    d_pointer(new ColorPatchPrivate())
 {
     setFrameShape(QFrame::StyledPanel);
     setFrameShadow(QFrame::Sunken);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+}
+
+/** @brief Destructor */
+ColorPatch::~ColorPatch() noexcept
+{
 }
 
 /** @brief Provide the size hint.
@@ -73,14 +80,14 @@ QSize ColorPatch::minimumSizeHint() const
 // and its getters are in the header)
 QColor ColorPatch::color() const
 {
-    return m_color;
+    return d_pointer->m_color;
 }
 
 /** @brief Set the @ref color property. */
 void ColorPatch::setColor(const QColor &newColor)
 {
-    if (newColor != m_color) {
-        m_color = newColor;
+    if (newColor != d_pointer->m_color) {
+        d_pointer->m_color = newColor;
         Q_EMIT colorChanged(newColor);
         update(); // schedules a paint event
     }
@@ -93,7 +100,7 @@ void ColorPatch::setColor(const QColor &newColor)
 void ColorPatch::paintEvent(QPaintEvent *event)
 {
     
-    if (!m_color.isValid()) {
+    if (!d_pointer->m_color.isValid()) {
         // Paint the frame, as provided by the base class
         QFrame::paintEvent(event);
         return;
@@ -105,20 +112,17 @@ void ColorPatch::paintEvent(QPaintEvent *event)
         qRound(contentsRect().height() * devicePixelRatioF()),
         QImage::Format_RGB32
     );
-    if (m_color.alphaF() < 1) {
+    if (d_pointer->m_color.alphaF() < 1) {
         // Prepare the image with (semi-)transparent color
-        QImage tempBackground;
-            // Background for colors that are not fully opaque
-            tempBackground = transparencyBackground(
-                devicePixelRatioF()
-            );
+        // Background for colors that are not fully opaque
+        QImage tempBackground = transparencyBackground();
         // Paint the color above
         QPainter(&tempBackground).fillRect(
             0,
             0,
             size().width(),
             size().height(),
-            m_color
+            d_pointer->m_color
         );
         // Fill the image with tiles. (QBrush will ignore
         // the devicePixelRatioF.)
@@ -145,7 +149,7 @@ void ColorPatch::paintEvent(QPaintEvent *event)
             0,
             tempImage.width(),
             tempImage.height(),
-            m_color
+            d_pointer->m_color
         );
     }
     // Set correct devicePixelRatioF for image

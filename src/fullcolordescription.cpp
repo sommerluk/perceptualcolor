@@ -24,6 +24,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
 // own header
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/polarpointf.h"
@@ -284,7 +287,11 @@ cmsCIELCh FullColorDescription::toLch() const
 
 /**
  * @returns if this object is valid, the alpha channel, otherwise an arbitrary
- * value. 0 is fully transparent, 1 is fully opaque. */
+ * value. 0 is fully transparent, 1 is fully opaque.
+ * 
+ * @todo Rename this to alphaF() for consistence with QColor? Do the same
+ * thing for other field of this class?
+ */
 qreal FullColorDescription::alpha() const
 {
     return m_alpha;

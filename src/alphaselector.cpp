@@ -24,37 +24,48 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/alphaselector.h"
+// Second, the private implementation.
+#include "alphaselector_p.h"
 
 #include <QDebug>
-#include <QSignalBlocker>
 #include <QHBoxLayout>
+#include <QSignalBlocker>
 
 namespace PerceptualColor {
 
 AlphaSelector::AlphaSelector(
     PerceptualColor::RgbColorSpace *colorSpace,
     QWidget *parent
-) : QWidget(parent)
+) :
+    QWidget(parent),
+    d_pointer(new AlphaSelectorPrivate)
 {
-    m_rgbColorSpace = colorSpace;
+    d_pointer->m_rgbColorSpace = colorSpace;
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    m_gradientSelector = new GradientSelector(m_rgbColorSpace);
-    m_gradientSelector->setOrientation(Qt::Orientation::Horizontal);
-    m_doubleSpinBox = new QDoubleSpinBox();
-    m_doubleSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
-    layout->addWidget(m_gradientSelector);
-    layout->addWidget(m_doubleSpinBox);
+    d_pointer->m_gradientSelector = new GradientSelector(
+        d_pointer->m_rgbColorSpace
+    );
+    d_pointer->m_gradientSelector->setOrientation(Qt::Orientation::Horizontal);
+    d_pointer->m_doubleSpinBox = new QDoubleSpinBox();
+    d_pointer->m_doubleSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
+    layout->addWidget(d_pointer->m_gradientSelector);
+    layout->addWidget(d_pointer->m_doubleSpinBox);
     setLayout(layout);
     connect(
-        m_gradientSelector,
+        d_pointer->m_gradientSelector,
         &GradientSelector::fractionChanged,
         this,
         &AlphaSelector::setAlpha
     );
     connect(
-        m_doubleSpinBox,
+        d_pointer->m_doubleSpinBox,
         QOverload<double>::of(&QDoubleSpinBox::valueChanged),
         this,
         &AlphaSelector::setAlphaFromRepresentationFormat
@@ -64,7 +75,7 @@ AlphaSelector::AlphaSelector(
     lch.C = Helper::LchDefaults::defaultChroma;
     lch.h = Helper::LchDefaults::defaultHue;
     FullColorDescription temp = FullColorDescription(
-        m_rgbColorSpace,
+        d_pointer->m_rgbColorSpace,
         lch,
         FullColorDescription::outOfGamutBehaviour::preserve
     );
@@ -82,59 +93,63 @@ AlphaSelector::AlphaSelector(
     setColor(temp);
 }
 
+AlphaSelector::~AlphaSelector() noexcept
+{
+}
+
 qreal AlphaSelector::alpha() const
 {
-    return m_alpha;
+    return d_pointer->m_alpha;
 }
 
 FullColorDescription AlphaSelector::color() const
 {
-    return m_color;
+    return d_pointer->m_color;
 }
 
 AlphaSelector::NumberFormat AlphaSelector::representation() const
 {
-    return m_representation;
+    return d_pointer->m_representation;
 }
 
 
 void AlphaSelector::setRepresentation(AlphaSelector::NumberFormat newRepresentation)
 {
-    if (m_representation == newRepresentation) {
+    if (d_pointer->m_representation == newRepresentation) {
         return;
     }
-    m_representation = newRepresentation;
-    switch (m_representation) {
+    d_pointer->m_representation = newRepresentation;
+    switch (d_pointer->m_representation) {
         case AlphaSelector::NumberFormat::one:
-            m_doubleSpinBox->setMinimum(0);
-            m_doubleSpinBox->setMaximum(1);
-            m_doubleSpinBox->setSuffix(QLatin1String());
-            m_doubleSpinBox->setDecimals(2);
-            m_doubleSpinBox->setValue(m_alpha);
+            d_pointer->m_doubleSpinBox->setMinimum(0);
+            d_pointer->m_doubleSpinBox->setMaximum(1);
+            d_pointer->m_doubleSpinBox->setSuffix(QLatin1String());
+            d_pointer->m_doubleSpinBox->setDecimals(2);
+            d_pointer->m_doubleSpinBox->setValue(d_pointer->m_alpha);
             break;
         case AlphaSelector::NumberFormat::percent:
-            m_doubleSpinBox->setMinimum(0);
-            m_doubleSpinBox->setMaximum(100);
-            m_doubleSpinBox->setSuffix(QStringLiteral(u"%"));
-            m_doubleSpinBox->setDecimals(0);
-            m_doubleSpinBox->setValue(m_alpha * 100);
+            d_pointer->m_doubleSpinBox->setMinimum(0);
+            d_pointer->m_doubleSpinBox->setMaximum(100);
+            d_pointer->m_doubleSpinBox->setSuffix(QStringLiteral(u"%"));
+            d_pointer->m_doubleSpinBox->setDecimals(0);
+            d_pointer->m_doubleSpinBox->setValue(d_pointer->m_alpha * 100);
             break;
         case AlphaSelector::NumberFormat::twoHundredAndFiftyFive:
-            m_doubleSpinBox->setMinimum(0);
-            m_doubleSpinBox->setMaximum(255);
-            m_doubleSpinBox->setSuffix(QLatin1String());
-            m_doubleSpinBox->setDecimals(0);
-            m_doubleSpinBox->setValue(m_alpha * 255);
+            d_pointer->m_doubleSpinBox->setMinimum(0);
+            d_pointer->m_doubleSpinBox->setMaximum(255);
+            d_pointer->m_doubleSpinBox->setSuffix(QLatin1String());
+            d_pointer->m_doubleSpinBox->setDecimals(0);
+            d_pointer->m_doubleSpinBox->setValue(d_pointer->m_alpha * 255);
             break;
         default:
             throw;
     }
-    Q_EMIT representationChanged(m_representation);
+    Q_EMIT representationChanged(d_pointer->m_representation);
 }
 
 void AlphaSelector::setAlphaFromRepresentationFormat(qreal newAlphaRepresentation)
 {
-    switch (m_representation) {
+    switch (d_pointer->m_representation) {
         case AlphaSelector::NumberFormat::one:
             setAlpha(newAlphaRepresentation);
             break;
@@ -151,24 +166,24 @@ void AlphaSelector::setAlphaFromRepresentationFormat(qreal newAlphaRepresentatio
 
 void AlphaSelector::setColor(const FullColorDescription &newColor)
 {
-    if (m_color == newColor) {
+    if (d_pointer->m_color == newColor) {
         return;
     }
-    m_color = newColor;
+    d_pointer->m_color = newColor;
     FullColorDescription first = FullColorDescription(
-        m_rgbColorSpace,
+        d_pointer->m_rgbColorSpace,
         newColor.toLch(),
         FullColorDescription::outOfGamutBehaviour::preserve,
         0
     );
     FullColorDescription second = FullColorDescription(
-        m_rgbColorSpace,
+        d_pointer->m_rgbColorSpace,
         newColor.toLch(),
         FullColorDescription::outOfGamutBehaviour::preserve,
         1
     );
-    m_gradientSelector->setColors(first, second);
-    Q_EMIT colorChanged(m_color);
+    d_pointer->m_gradientSelector->setColors(first, second);
+    Q_EMIT colorChanged(d_pointer->m_color);
 }
 
 /** @brief Register this widget as buddy.
@@ -183,32 +198,32 @@ void AlphaSelector::setColor(const FullColorDescription &newColor)
  * function? */
 void AlphaSelector::registerAsBuddy(QLabel *label)
 {
-    label->setBuddy(m_doubleSpinBox);
+    label->setBuddy(d_pointer->m_doubleSpinBox);
 }
 
 void AlphaSelector::setAlpha(qreal newAlpha)
 {
-    if (m_alpha == newAlpha) {
+    if (d_pointer->m_alpha == newAlpha) {
         return;
     }
-    m_alpha = newAlpha;
-    Q_EMIT alphaChanged(m_alpha);
-    const QSignalBlocker blockerSpinBox(m_doubleSpinBox);
-    switch (m_representation) {
+    d_pointer->m_alpha = newAlpha;
+    Q_EMIT alphaChanged(d_pointer->m_alpha);
+    const QSignalBlocker blockerSpinBox(d_pointer->m_doubleSpinBox);
+    switch (d_pointer->m_representation) {
         case AlphaSelector::NumberFormat::one:
-            m_doubleSpinBox->setValue(m_alpha);
+            d_pointer->m_doubleSpinBox->setValue(d_pointer->m_alpha);
             break;
         case AlphaSelector::NumberFormat::percent:
-            m_doubleSpinBox->setValue(m_alpha * 100);
+            d_pointer->m_doubleSpinBox->setValue(d_pointer->m_alpha * 100);
             break;
         case AlphaSelector::NumberFormat::twoHundredAndFiftyFive:
-            m_doubleSpinBox->setValue(m_alpha * 255);
+            d_pointer->m_doubleSpinBox->setValue(d_pointer->m_alpha * 255);
             break;
         default:
             throw;
     }
-    const QSignalBlocker blockerGradient(m_gradientSelector);
-    m_gradientSelector->setFraction(m_alpha);
+    const QSignalBlocker blockerGradient(d_pointer->m_gradientSelector);
+    d_pointer->m_gradientSelector->setFraction(d_pointer->m_alpha);
 }
 
 }

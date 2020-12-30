@@ -24,12 +24,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
+#include <PerceptualColor/abstractdiagram.h>
+
+#include <QtTest>
 
 #include <QPainter>
 #include <QWidget>
-
-#include <PerceptualColor/abstractdiagram.h>
 
 namespace PerceptualColor {
 
@@ -47,8 +50,6 @@ void testSnippet01() {
 //! [AbstractDiagram Use transparency background]
 QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
 
-const qreal myDevicePixelRatioF = devicePixelRatioF();
-
 QPainter myPainter(&myImage);
 
 // Fill the hole image with tiles made of transparencyBackground()
@@ -60,7 +61,7 @@ myPainter.fillRect(
     // During painting, QBrush will ignore the device pixel ratio
     // of the underlying transparencyBackground image!
     QBrush(
-        transparencyBackground(myDevicePixelRatioF)
+        transparencyBackground()
     )
 );
 
@@ -74,8 +75,6 @@ myPainter.fillRect(
         QColor(255, 0, 0, 128)
     )
 );
-
-myImage.setDevicePixelRatio(myDevicePixelRatioF);
 //! [AbstractDiagram Use transparency background]
 }
 };
@@ -119,32 +118,20 @@ private Q_SLOTS:
     }
 
     void testTransparencyBackground() {
+        PerceptualColor::AbstractDiagram myDiagram;
         QImage temp =
-            PerceptualColor::AbstractDiagram::transparencyBackground(1);
+            myDiagram.transparencyBackground();
         QVERIFY2(
             temp.size().width() > 0,
-            "Width of unscaled image is bigger than 0."
+            "Width of image is bigger than 0."
         );
         QVERIFY2(
             temp.size().height() > 0,
-            "Height of unscaled image is bigger than 0."
+            "Height of image is bigger than 0."
         );
         QVERIFY2(
             temp.allGray(),
-            "Unscaled image is neutral gray."
-        );
-        QImage temp2 = AbstractDiagram::transparencyBackground(1.25);
-        QVERIFY2(
-            temp2.size().width() > temp.size().width(),
-            "Width of upscaled image is biggen than unscaled image."
-        );
-        QVERIFY2(
-            temp2.size().height() > temp.size().height(),
-            "Height of upscaled image is bigger than unscaled image."
-        );
-        QVERIFY2(
-            temp.allGray(),
-            "Upscaled image is neutral gray."
+            "Image is neutral gray."
         );
     }
     

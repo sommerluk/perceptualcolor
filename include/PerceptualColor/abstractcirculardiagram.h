@@ -28,6 +28,7 @@
 #define ABSTRACTCIRCULARDIAGRAM_H
 
 #include "PerceptualColor/abstractdiagram.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor {
     
@@ -58,13 +59,16 @@ namespace PerceptualColor {
  * circle. Therefore, this class simply defaults to
  * <tt>Qt::FocusPolicy::TabFocus</tt> for <tt>QWidget::focusPolicy()</tt>. But
  * it is up to child classes to actually reimplement
- * <tt>mousePressEvent()</tt> accordingly. */
+ * <tt>mousePressEvent()</tt> accordingly.
+ * 
+ * @todo Circular diagrams should be right-aligned on RTL layouts. */
 class AbstractCircularDiagram : public AbstractDiagram
 {
     Q_OBJECT
 
 public:
     Q_INVOKABLE AbstractCircularDiagram(QWidget *parent = nullptr);
+    virtual ~AbstractCircularDiagram() noexcept override;
     virtual bool hasHeightForWidth() const override;
     virtual int heightForWidth(int w) const override;
 
@@ -73,6 +77,16 @@ protected:
 
 private:
     Q_DISABLE_COPY(AbstractCircularDiagram)
+
+    class AbstractCircularDiagramPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class AbstractCircularDiagramPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<AbstractCircularDiagramPrivate> d_pointer;
+
     /** @brief Only for unit tests. */
     friend class TestCircularDiagram;
 

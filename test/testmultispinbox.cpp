@@ -24,9 +24,12 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
 #include "PerceptualColor/multispinbox.h"
+
+#include <QtTest>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -94,6 +97,88 @@ private Q_SLOTS:
         );
     }
 
+    void testInteraction() {
+        // This test is suprisingly slow.
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        widget->show();
+        widget->setSections (myConfiguration);
+        // Assert that the setup is okay.
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"0°  0%  0")
+        );
+        // Go to begin of the line edit
+        QTest::keyClick(widget.data(), Qt::Key_Home);
+        // Select the first “0”:
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier, 0);
+        // Write “45”
+        QTest::keyClicks(widget.data(), QStringLiteral(u"45"));
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        // Select “45”
+        QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
+        QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
+        // Copy to clipboard
+        QTest::keyClick(widget.data(), Qt::Key_C, Qt::ControlModifier, 0);
+        // Go to second section
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  0%  0")
+        );
+        // Select second section:
+        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier, 0);
+        QCOMPARE(
+            widget->lineEdit()->selectedText(),
+            QStringLiteral(u"0")
+        );
+        // Take “45” from clipboard
+        QTest::keyClick(widget.data(), Qt::Key_V, Qt::ControlModifier, 0);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+        QTest::keyClick(widget.data(), Qt::Key_Right);
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"45°  45%  0")
+        );
+    }
+
     void testCurrentSectionIndex() {
         MultiSpinBox test;
         // Test default index
@@ -102,12 +187,21 @@ private Q_SLOTS:
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if setting negative value is ignored
-        QVERIFY_EXCEPTION_THROWN(test.setCurrentIndex(-1), int);
+        QVERIFY_EXCEPTION_THROWN(
+            test.setCurrentIndexAndUpdateTextAndSelectValue(-1),
+            int
+        );
         QCOMPARE(test.m_currentIndex, 0);
-        QVERIFY_EXCEPTION_THROWN(test.setCurrentIndex(-100), int);
+        QVERIFY_EXCEPTION_THROWN(
+            test.setCurrentIndexAndUpdateTextAndSelectValue(-100),
+            int
+        );
         QCOMPARE(test.m_currentIndex, 0);
         // Test setting too high values is ignored
-        QVERIFY_EXCEPTION_THROWN(test.setCurrentIndex(100), int);
+        QVERIFY_EXCEPTION_THROWN(
+            test.setCurrentIndexAndUpdateTextAndSelectValue(100),
+            int
+        );
         QCOMPARE(test.m_currentIndex, 0);
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
@@ -118,7 +212,7 @@ private Q_SLOTS:
         mySectionList.append(MultiSpinBox::SectionData());
         mySectionList.append(MultiSpinBox::SectionData());
         test.setSections (mySectionList);
-        test.setCurrentIndex(2);
+        test.setCurrentIndexAndUpdateTextAndSelectValue(2);
         QCOMPARE(test.m_currentIndex, 2);
     }
     
@@ -266,16 +360,16 @@ private Q_SLOTS:
         myMulti.m_currentIndex = 1;
         myMulti.updatePrefixValueSuffixText();
         QCOMPARE(
-            myMulti.m_currentSectionTextBeforeValue,
-            "abc8defghi"
+            myMulti.m_textBeforeCurrentValue,
+            QStringLiteral(u"abc8defghi")
         );
         QCOMPARE(
-            myMulti.m_currentSectionTextOfTheValue,
-            "80"
+            myMulti.m_textOfCurrentValue,
+            QStringLiteral(u"80")
         );
         QCOMPARE(
-            myMulti.m_currentSectionTextAfterValue,
-            "jkl"
+            myMulti.m_textAfterCurrentValue,
+            QStringLiteral(u"jkl")
         );
     }
     
@@ -296,7 +390,7 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setSections (config);
-        myMulti.setCurrentIndex(1);
+        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(
             myMulti.m_currentIndex,
             1
@@ -310,15 +404,15 @@ private Q_SLOTS:
     void testSetCurrentSectionIndex() {
         PerceptualColor::MultiSpinBox myMulti;
         myMulti.setSections (myConfiguration);
-        myMulti.setCurrentIndex(2);
+        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(2);
         QCOMPARE(myMulti.m_currentIndex, 2);
-        myMulti.setCurrentIndex(0);
+        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(0);
         QCOMPARE(myMulti.m_currentIndex, 0);
-        myMulti.setCurrentIndex(1);
+        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(myMulti.m_currentIndex, 1);
-        myMulti.setCurrentIndex(2);
+        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(2);
         QCOMPARE(myMulti.m_currentIndex, 2);
-        myMulti.setCurrentIndex(0);
+        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(0);
         QCOMPARE(myMulti.m_currentIndex, 0);
         QList<MultiSpinBox::SectionData> config;
         MultiSpinBox::SectionData section;
@@ -335,7 +429,7 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setSections (config);
-        myMulti.setCurrentIndex(1);
+        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(
             myMulti.m_currentIndex,
             1
@@ -347,7 +441,7 @@ private Q_SLOTS:
         );
     }
 
-    void testStepEnabled() {
+    void testStepEnabledSimple() {
         PerceptualColor::MultiSpinBox myMulti;
         QList<MultiSpinBox::SectionData> config;
         MultiSpinBox::SectionData section;
@@ -431,6 +525,94 @@ private Q_SLOTS:
         QVERIFY2(
             !flags.testFlag(QAbstractSpinBox::StepDownEnabled),
             "Step down should be disabled"
+        );
+    }
+
+    void testStepEnabledAndSectionIndex_data() {
+        QTest::addColumn<int>("cursorPosition");
+        QTest::addColumn<int>("sectionIndex");
+        QTest::addColumn<int>("minimum");
+        QTest::addColumn<int>("value");
+        QTest::addColumn<int>("maximum");
+        QTest::addColumn<bool>("StepUpEnabled");
+        QTest::addColumn<bool>("StepDownEnabled");
+
+        QTest::newRow("0") << 0 << 0 << 0 << 0 << 360 << true << false;
+        QTest::newRow("1") << 1 << 0 << 0 << 0 << 360 << true << false;
+        QTest::newRow("2") << 2 << 0 << 0 << 0 << 360 << true << false;
+        QTest::newRow("4") << 4 << 1 << 0 << 5 << 100 << true << true ;
+        QTest::newRow("5") << 5 << 1 << 0 << 5 << 100 << true << true ;
+        QTest::newRow("6") << 6 << 1 << 0 << 5 << 100 << true << true ;
+        QTest::newRow("8") << 8 << 2 << 0 << 0 << 255 << true << false;
+        QTest::newRow("9") << 9 << 2 << 0 << 0 << 255 << true << false;
+    }
+
+    void testStepEnabledAndSectionIndex() {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        QList<MultiSpinBox::SectionData> specialConfiguration =
+            myConfiguration;
+        const quint8 sampleSectionNumber = 1;
+        const quint8 sampleValue = 5;
+        specialConfiguration[sampleSectionNumber].value = sampleValue;
+        widget->setSections (specialConfiguration);
+        widget->setCurrentIndexAndUpdateTextAndSelectValue(
+            sampleSectionNumber
+        );
+        // Assert that the setup is okay.
+        if (widget->lineEdit()->text() != QStringLiteral(u"0°  5%  0")) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        if (widget->sections().at(sampleSectionNumber).value
+            != sampleValue
+        ) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        QAbstractSpinBox::StepEnabled flags;
+
+        // Actual testing
+        QFETCH(int, cursorPosition);
+        QFETCH(int, sectionIndex);
+        QFETCH(int, minimum);
+        QFETCH(int, value);
+        QFETCH(int, maximum);
+        QFETCH(bool, StepUpEnabled);
+        QFETCH(bool, StepDownEnabled);
+        widget->lineEdit()->setCursorPosition(cursorPosition);
+        if (widget->lineEdit()->text() != QStringLiteral(u"0°  5%  0")) {
+            // Throw an exception instead of using an assert statement.
+            // Assert statements seem to be not always reliably within QTest.
+            throw 0;
+        }
+        flags = widget->stepEnabled();
+        QCOMPARE(
+            widget->m_currentIndex,
+            sectionIndex
+        );
+        QCOMPARE(
+            widget->m_sections.at(widget->m_currentIndex).minimum,
+            minimum
+        );
+        QCOMPARE(
+            widget->m_sections.at(widget->m_currentIndex).value,
+            value
+        );
+        QCOMPARE(
+            widget->m_sections.at(widget->m_currentIndex).maximum,
+            maximum
+        );
+        QCOMPARE(
+            flags.testFlag(QAbstractSpinBox::StepUpEnabled),
+            StepUpEnabled
+        );
+        QCOMPARE(
+            flags.testFlag(QAbstractSpinBox::StepDownEnabled),
+            StepDownEnabled
         );
     }
     
@@ -517,7 +699,8 @@ private Q_SLOTS:
         // Apparently it isn’t possible to call simply the key click
         // on the parent widget. This code fails sometimes:
         // QTest::keyClick(parentWidget, Qt::Key::Key_Tab);
-        // Therefore, we call QTest::keyClick() on QApplication::focusWidget()
+        // Therefore, we call QTest::keyClick() on
+        // QApplication::focusWidget()
         
         // Move focus from widget1 to widget2/section0
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
@@ -638,7 +821,7 @@ private Q_SLOTS:
             new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setSections (myConfiguration);
-        widget2->setCurrentIndex(1);
+        widget2->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QSpinBox *widget3 =
             new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -827,14 +1010,14 @@ private Q_SLOTS:
             0
         );
     }
-    
+
     void testUpdateValueFromText1() {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
         widget->setSections (myConfiguration);
         const quint8 sampleSectionNumber = 1;
-        widget->setCurrentIndex(
+        widget->setCurrentIndexAndUpdateTextAndSelectValue(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -843,7 +1026,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        widget->updateValueFromText(
+        widget->updateCurrentValueFromText(
             QStringLiteral(u"0°  9%  0")
         );
         QCOMPARE(
@@ -856,12 +1039,13 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
-        QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
+        QList<MultiSpinBox::SectionData> specialConfiguration =
+            myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections (specialConfiguration);
-        widget->setCurrentIndex(
+        widget->setCurrentIndexAndUpdateTextAndSelectValue(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -880,7 +1064,7 @@ private Q_SLOTS:
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Execute the tested function (with an invalid argument)
-        widget->updateValueFromText(
+        widget->updateCurrentValueFromText(
             QStringLiteral(u"abcdef")
         );
         // do not suppress warning for generating invalid QColor anymore
@@ -897,12 +1081,13 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
-        QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
+        QList<MultiSpinBox::SectionData> specialConfiguration =
+            myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections (specialConfiguration);
-        widget->setCurrentIndex(
+        widget->setCurrentIndexAndUpdateTextAndSelectValue(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -943,7 +1128,8 @@ private Q_SLOTS:
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
-        QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
+        QList<MultiSpinBox::SectionData> specialConfiguration =
+            myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
@@ -964,7 +1150,7 @@ private Q_SLOTS:
         widget2->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
-        widget2->setCurrentIndex(1);
+        widget2->setCurrentIndexAndUpdateTextAndSelectValue(1);
         // The following statement make focus and widget events working.
         QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
@@ -1000,8 +1186,95 @@ private Q_SLOTS:
             QStringLiteral(u"0°  1%  0")
         );
     }
-    
-    void testInteraction() {
+
+    void testSectionDataDebug() {
+        // suppress warnings
+        qInstallMessageHandler(voidMessageHandler);
+
+        // Test if QDebug support does not make a crash.
+        qDebug() << MultiSpinBox::SectionData();
+        
+        // do not suppress warning for generating invalid QColor anymore
+        qInstallMessageHandler(nullptr);
+    }
+
+    void testFixedSection_data() {
+        QTest::addColumn<double>("value");
+        QTest::addColumn<double>("expectedOnIsWrappigFalse");
+        QTest::addColumn<double>("expectedOnIsWrappigTrue");
+
+        QTest::newRow(" -5") <<  -5. <<   0. << 355.;
+        QTest::newRow("  0") <<   0. <<   0. <<   0.;
+        QTest::newRow("  5") <<   5. <<   5. <<   5.;
+        QTest::newRow("355") << 355. << 355. << 355.;
+        QTest::newRow("360") << 360. << 360. <<   0.;
+        QTest::newRow("365") << 365. << 360. <<   5.;
+        QTest::newRow("715") << 715. << 360. << 355.;
+        QTest::newRow("720") << 720. << 360. <<   0.;
+        QTest::newRow("725") << 725. << 360. <<   5.;
+    }
+
+    void testFixedSection() {
+        MultiSpinBox::SectionData mySection;
+        mySection.minimum = 0;
+        mySection.maximum = 360;
+        
+        QFETCH(double, value);
+        QFETCH(double, expectedOnIsWrappigFalse);
+        QFETCH(double, expectedOnIsWrappigTrue);
+        
+        mySection.value = value;
+        mySection.isWrapping = false;
+        QCOMPARE(
+            MultiSpinBox::fixedSection(mySection).value,
+            expectedOnIsWrappigFalse
+        );
+        mySection.isWrapping = true;
+        QCOMPARE(
+            MultiSpinBox::fixedSection(mySection).value,
+            expectedOnIsWrappigTrue
+        );
+    }
+
+    void testFixedSectionOther_data() {
+        QTest::addColumn<double>("value");
+        QTest::addColumn<double>("expectedOnIsWrappigFalse");
+        QTest::addColumn<double>("expectedOnIsWrappigTrue");
+
+        QTest::newRow("-25") << -25. << -20. << 335.;
+        QTest::newRow("-20") << -20. << -20. << -20.;
+        QTest::newRow("-15") << -15. << -15. << -15.;
+        QTest::newRow("335") << 335. << 335. << 335.;
+        QTest::newRow("340") << 340. << 340. << -20.;
+        QTest::newRow("345") << 345. << 340. << -15.;
+        QTest::newRow("695") << 695. << 340. << 335.;
+        QTest::newRow("700") << 700. << 340. << -20.;
+        QTest::newRow("705") << 705. << 340. << -15.;
+    }
+
+    void testFixedSectionOther() {
+        MultiSpinBox::SectionData mySection;
+        mySection.minimum = -20;
+        mySection.maximum = 340;
+        
+        QFETCH(double, value);
+        QFETCH(double, expectedOnIsWrappigFalse);
+        QFETCH(double, expectedOnIsWrappigTrue);
+        
+        mySection.value = value;
+        mySection.isWrapping = false;
+        QCOMPARE(
+            MultiSpinBox::fixedSection(mySection).value,
+            expectedOnIsWrappigFalse
+        );
+        mySection.isWrapping = true;
+        QCOMPARE(
+            MultiSpinBox::fixedSection(mySection).value,
+            expectedOnIsWrappigTrue
+        );
+    }
+
+    void testReturnKey() {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(
             new PerceptualColor::MultiSpinBox()
         );
@@ -1012,77 +1285,76 @@ private Q_SLOTS:
             widget->lineEdit()->text(),
             QStringLiteral(u"0°  0%  0")
         );
+        
         // Go to begin of the line edit
         QTest::keyClick(widget.data(), Qt::Key_Home);
-        // Select the first “0”:
-        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier, 0);
-        // Write “45”
-        QTest::keyClicks(widget.data(), "45");
+        // Input
+        QTest::keyClick(widget.data(), Qt::Key_3);
+        QTest::keyClick(widget.data(), Qt::Key_7);
         QCOMPARE(
             widget->lineEdit()->text(),
-            QStringLiteral(u"45°  0%  0")
+            QStringLiteral(u"370°  0%  0")
         );
-        // Select “45”
-        QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
-        QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
-        // Copy to clipboard
-        QTest::keyClick(widget.data(), Qt::Key_C, Qt::ControlModifier, 0);
-        // Go to second section
-        QTest::keyClick(widget.data(), Qt::Key_Right);
+        // Trigger the value fix
+        QTest::keyClick(widget.data(), Qt::Key_Return);
         QCOMPARE(
             widget->lineEdit()->text(),
-            QStringLiteral(u"45°  0%  0")
+            QStringLiteral(u"360°  0%  0")
         );
-        QTest::keyClick(widget.data(), Qt::Key_Right);
+        
+        // Go to end of the line edit
+        QTest::keyClick(widget.data(), Qt::Key_End);
+        // Input
+        QTest::keyClick(widget.data(), Qt::Key_9);
+        QTest::keyClick(widget.data(), Qt::Key_9);
+        QTest::keyClick(widget.data(), Qt::Key_9);
         QCOMPARE(
             widget->lineEdit()->text(),
-            QStringLiteral(u"45°  0%  0")
+            QStringLiteral(u"360°  0%  0999")
         );
-        QTest::keyClick(widget.data(), Qt::Key_Right);
+        // Trigger the value fix
+        QTest::keyClick(widget.data(), Qt::Key_Return);
         QCOMPARE(
             widget->lineEdit()->text(),
-            QStringLiteral(u"45°  0%  0")
+            QStringLiteral(u"360°  0%  255")
         );
-        QTest::keyClick(widget.data(), Qt::Key_Right);
+    }
+
+    void testSnippet01() {
+//! [MultiSpinBox Basic example]
+PerceptualColor::MultiSpinBox *myHsvSpinBox =
+    new PerceptualColor::MultiSpinBox();
+PerceptualColor::MultiSpinBox::SectionData mySection;
+QList<PerceptualColor::MultiSpinBox::SectionData> hsvSections;
+
+mySection.decimals = 1;
+
+mySection.prefix = QString();
+mySection.minimum = 0;
+mySection.value = 310;
+mySection.isWrapping = true;
+mySection.maximum = 360;
+mySection.suffix = QStringLiteral(u"° ");
+hsvSections.append(mySection);
+
+mySection.prefix = QStringLiteral(u" ");
+mySection.minimum = 0;
+mySection.value = 200;
+mySection.maximum = 255;
+mySection.isWrapping = false;
+mySection.suffix = QStringLiteral(u" ");
+hsvSections.append(mySection);
+
+mySection.value = 100;
+mySection.suffix = QString();
+hsvSections.append(mySection);
+
+myHsvSpinBox->setSections(hsvSections);
+// Initial content is:  310,0°  200,0  100,0
+//! [MultiSpinBox Basic example]
         QCOMPARE(
-            widget->lineEdit()->text(),
-            QStringLiteral(u"45°  0%  0")
-        );
-        // Select second section:
-        QTest::keyClick(widget.data(), Qt::Key_Right, Qt::ShiftModifier, 0);
-        QCOMPARE(
-            widget->lineEdit()->selectedText(),
-            QStringLiteral(u"0")
-        );
-        // Take “45” from clipboard
-        QTest::keyClick(widget.data(), Qt::Key_V, Qt::ControlModifier, 0);
-        QCOMPARE(
-            widget->lineEdit()->selectedText(),
-            QStringLiteral(u"45")
-        );
-        QCOMPARE(
-            widget->lineEdit()->text(),
-            QStringLiteral(u"45°  45%  0")
-        );
-        QTest::keyClick(widget.data(), Qt::Key_Right);
-        QCOMPARE(
-            widget->lineEdit()->text(),
-            QStringLiteral(u"45°  45%  0")
-        );
-        QTest::keyClick(widget.data(), Qt::Key_Right);
-        QCOMPARE(
-            widget->lineEdit()->text(),
-            QStringLiteral(u"45°  45%  0")
-        );
-        QTest::keyClick(widget.data(), Qt::Key_Right);
-        QCOMPARE(
-            widget->lineEdit()->text(),
-            QStringLiteral(u"45°  45%  0")
-        );
-        QTest::keyClick(widget.data(), Qt::Key_Right);
-        QCOMPARE(
-            widget->lineEdit()->text(),
-            QStringLiteral(u"45°  45%  0")
+            myHsvSpinBox->lineEdit()->text(),
+            QStringLiteral("310,0°  200,0  100,0")
         );
     }
 

@@ -66,74 +66,78 @@ CODEDIRECTORIES="include src test"
 #    @snippet instead! That allows that the example code is actually compiled
 #    and that helps detecting errors.
 grep \
-    --fixed-strings \
     --recursive \
-    "\\code" \
+    --fixed-strings "\\code" \
     $CODEDIRECTORIES
 grep \
-    --fixed-strings \
     --recursive \
-    "\\endcode" \
+    --fixed-strings "\\endcode" \
     $CODEDIRECTORIES
 grep \
-    --fixed-strings \
     --recursive \
-    "@code" \
+    --fixed-strings "@code" \
     $CODEDIRECTORIES
 grep \
-    --fixed-strings \
     --recursive \
-    "@endcode" \
+    --fixed-strings "@endcode" \
     $CODEDIRECTORIES
+
 # -> Doxygen style: Do not use “@em xyz”. Prefer instead “<em>xyz</em>” which
 #    might be longer, but has a clearer start point and end point, which is
 #    better when non-letter characters are involved. The @ is reserved
 #    for @ref with semantically tested references.
 # -> Same thing for “@c xyz”: Prefer instead “<tt>xyz</tt>”.
 grep \
-    --fixed-strings \
     --recursive \
-    "\\em" \
+    --fixed-strings "\\em" \
     $CODEDIRECTORIES
 grep \
-    --fixed-strings \
     --recursive \
-    "@em" \
+    --fixed-strings "@em" \
     $CODEDIRECTORIES
 grep \
-    --fixed-strings \
     --recursive \
-    "\\c" \
+    --fixed-strings "\\c" \
     $CODEDIRECTORIES
 grep \
-    --perl-regexp \
-    --recursive \
-    "@c(?=([^a-zA-Z]|$))" \
+   --recursive  \
+    --perl-regexp "@c(?=([^a-zA-Z]|$))" \
     $CODEDIRECTORIES
+
 # -> Coding style: Do not use the “NULL” macro, but its counterpart “nullptr”
 #    which is more type save.
 grep \
-    --fixed-strings \
     --recursive \
-    "NULL" \
+    --fixed-strings "NULL" \
     $CODEDIRECTORIES
+
+# -> Coding style: Do not use inline functions. If used in a header,
+#    once exposed, they cannot be changed without breaking binary
+#    compatibility, because applications linking against the library
+#    will always execute the inline function version against they where
+#    compiled, and never the inline function of the library version
+#    against they are linking at run-time.
+grep \
+    --recursive \
+    --fixed-strings "inline" \
+    $CODEDIRECTORIES
+
 # -> In some Qt classes, devicePixelRatio() returns in integer.
 #    Don’t do that and use floating point precision instead. Often,
 #    devicePixelRatioF() is an alternative that provides
 #    a qreal return value.
 grep \
-    --perl-regexp \
     --recursive \
-    "devicePixelRatio(?!F)" \
+    --perl-regexp "devicePixelRatio(?!F)" \
     $CODEDIRECTORIES
+
 # Qt’s documentation about QImage::Format says: For optimal performance only
 # use the format types QImage::Format_ARGB32_Premultiplied,
 # QImage::Format_RGB32 or QImage::Format_RGB16. Any other format, including
 # QImage::Format_ARGB32, has significantly worse performance.
 grep \
-    --perl-regexp \
     --recursive \
-    "QImage::Format_(?!(ARGB32_Premultiplied|RGB32|RGB16))" \
+    --perl-regexp "QImage::Format_(?!(ARGB32_Premultiplied|RGB32|RGB16))" \
     $CODEDIRECTORIES
 
 

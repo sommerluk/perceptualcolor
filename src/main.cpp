@@ -24,6 +24,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
 #include "PerceptualColor/colordialog.h"
 
 #include "PerceptualColor/multispinbox.h"
@@ -36,8 +39,8 @@
 #include <QPushButton>
 #include <QDateTimeEdit>
 #include <QColorDialog>
-#include <memory>
-
+#include <memory>// Other includes
+#include <QtMath>
 
 // TODO code analysis clazy cppcheck clazy
 
@@ -88,21 +91,24 @@ int main(int argc, char *argv[])
 //     app.setLayoutDirection(Qt::RightToLeft);
 //     QLocale::setDefault(QLocale::Bengali);
 //     QLocale::setDefault(QLocale::German);
-
+    
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
     m_colorDialog.setOption(
         QColorDialog::ColorDialogOption::ShowAlphaChannel,
         true
     );
-    m_colorDialog.setLayoutDimensions(
-        PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed
-    );
+//     m_colorDialog.setOption(
+//         QColorDialog::ColorDialogOption::NoButtons,
+//         true
+//     );
+//     m_colorDialog.setLayoutDimensions(
+//         PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
+//     );
     m_colorDialog.show();
     
 //     m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
-
-
+    
     // Run
     return app.exec();
 }

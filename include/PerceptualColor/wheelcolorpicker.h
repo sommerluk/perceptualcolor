@@ -69,7 +69,8 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
-    virtual ~WheelColorPicker() override = default;
+    /** @brief Default destructor */
+    virtual ~WheelColorPicker() noexcept override = default;
     FullColorDescription currentColor();
     void setCurrentColor(const FullColorDescription &newCurrentColorRgb);
 

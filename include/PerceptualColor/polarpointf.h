@@ -27,11 +27,6 @@
 #ifndef POLARPOINTF_H
 #define POLARPOINTF_H
 
-/** @file
- * 
- * Declaration of the @ref PerceptualColor::PolarPointF class and its
- * members. */
-
 #include <QDebug>
 #include <QPointF>
 #include <QMetaType>
@@ -72,15 +67,14 @@ namespace PerceptualColor {
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
  */
-class PolarPointF
+class PolarPointF final
 {
 public:
     explicit PolarPointF();
 
     /** @brief Default copy constructor
      *
-     * @param other the object to copy
-     */
+     * @param other the object to copy */
     PolarPointF(const PolarPointF& other) = default;
 
     /** @brief Default move constructor

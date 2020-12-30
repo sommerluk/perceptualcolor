@@ -24,9 +24,12 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
 #include "include/PerceptualColor/chromahuediagram.h"
+
+#include <QtTest>
 
 namespace PerceptualColor {
 
@@ -58,11 +61,15 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testConstructor() {
+    void testConstructorAndDestructor() {
+        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+    }
+
+    void testShow() {
         PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
         myDiagram.show();
     }
-    
+
     void testKeyPressEvent() {
         PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
         cmsCIELCh referenceColorLch;

@@ -24,6 +24,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
 // Own header
 #include "PerceptualColor/extendeddoublevalidator.h"
 
@@ -83,6 +86,12 @@ QValidator::State ExtendedDoubleValidator::validate(
     // This is inconsistent. Therefore, we test is m_prefix is empty.
     // If not, we do nothing.
     // The same also applies to suffix.
+    // TODO Bug report, because Qt documentation says at
+    // https://doc.qt.io/qt-6/qstring.html#distinction-between-null-and-empty-strings
+    // (and at its Qt-5-counterpart): 
+    //     “All functions except isNull() treat null strings the same
+    //      as empty strings.”
+    // This is apparently wrong (at least for Qt 5).
     if (!m_prefix.isEmpty()) {
         if (myInput.startsWith(m_prefix)) {
             myInput.remove(0, m_prefix.size());

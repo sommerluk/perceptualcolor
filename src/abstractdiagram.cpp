@@ -24,8 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// Own header
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/abstractdiagram.h"
+// Second, the private implementation.
+#include "abstractdiagram_p.h"
 
 #include <QPainter>
 
@@ -36,6 +42,11 @@ namespace PerceptualColor {
  * to the QWidget base class constructor. */
 AbstractDiagram::AbstractDiagram(QWidget *parent)
 : QFrame(parent)
+{
+}
+
+/** @brief Destructor */
+AbstractDiagram::~AbstractDiagram() noexcept
 {
 }
 
@@ -98,13 +109,13 @@ QSize AbstractDiagram::physicalPixelSize() const
 ** on which it is shown. This function provides a suitable background
 ** for showcasing a color.
 ** 
-** @param devicePixelRatioF the QWidget::devicePixelRatioF() for which
-** you want to have the background image
 ** @returns An image of a mosaic of neutral gray rectangles of different
 ** lightness. You can use this as tiles to paint a background.
 ** 
-** @note The function does not use floating point drawing, but rounds
-** to full integers. Therefor, the result is always a sharp image.
+** @note The image is considering QWidget::devicePixelRatioF() to deliver
+** sharp (and correctly scaled) images also for HiDPI devices.
+** The painting does not use floating point drawing, but rounds
+** to full integers. Therefore, the result is always a sharp image.
 ** This function takes care that each square has the same pixel size,
 ** without scaling errors or anti-aliasing errors.
 ** 
@@ -115,13 +126,13 @@ QSize AbstractDiagram::physicalPixelSize() const
 ** @todo Provide color management support? Currently, we use the same
 ** value for red, green and blue, this might <em>not</em> be perfectly
 ** neutral gray depending on the color profile of the monitor… */
-QImage AbstractDiagram::transparencyBackground(const qreal devicePixelRatioF)
+QImage AbstractDiagram::transparencyBackground() const
 {
     constexpr int lightnessOne = 210; // 0‥255
     constexpr int lightnessTwo = 240; // 0‥255
     constexpr int squareSizeInLogicalPixel = 10;
     const int squareSize = qRound(
-        squareSizeInLogicalPixel * devicePixelRatioF
+        squareSizeInLogicalPixel * devicePixelRatioF()
     );
 
     QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
@@ -142,7 +153,7 @@ QImage AbstractDiagram::transparencyBackground(const qreal devicePixelRatioF)
         squareSize,
         foregroundColor
     );
-    temp.setDevicePixelRatio(devicePixelRatioF);
+    temp.setDevicePixelRatio(devicePixelRatioF());
     return temp;
 }
 

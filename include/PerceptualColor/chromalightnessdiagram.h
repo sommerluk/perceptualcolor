@@ -79,7 +79,8 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
-    virtual ~ChromaLightnessDiagram() override = default;
+    /** @brief Default destructor */
+    virtual ~ChromaLightnessDiagram() noexcept override = default;
     FullColorDescription color() const;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;

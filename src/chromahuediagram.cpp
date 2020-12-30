@@ -24,8 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// Own header
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/chromahuediagram.h"
+// Second, the private implementation.
+#include "chromahuediagram_p.h"
 
 #include "PerceptualColor/helper.h"
 #include "PerceptualColor/polarpointf.h"
@@ -50,26 +56,39 @@ namespace PerceptualColor {
 ChromaHueDiagram::ChromaHueDiagram(
     PerceptualColor::RgbColorSpace *colorSpace,
     QWidget *parent
-) : AbstractCircularDiagram(parent)
+) : AbstractCircularDiagram(parent),
+    d_pointer(new ChromaHueDiagramPrivate(this))
 {
     // Setup LittleCMS. This is the first thing to do, because other
     // operations rely on a working LittleCMS.
-    m_rgbColorSpace = colorSpace;
+    d_pointer->m_rgbColorSpace = colorSpace;
 
     // Initialize the color
     cmsCIELCh initialColorLch;
     initialColorLch.h = Helper::LchDefaults::defaultHue;
     initialColorLch.C = Helper::LchDefaults::versatileSrgbChroma;
     initialColorLch.L = Helper::LchDefaults::defaultLightness;
-    m_color = FullColorDescription(
-        m_rgbColorSpace,
+    d_pointer->m_color = FullColorDescription(
+        d_pointer->m_rgbColorSpace,
         initialColorLch,
         FullColorDescription::outOfGamutBehaviour::sacrifyChroma
     );
-
-
 }
 
+ChromaHueDiagram::~ChromaHueDiagram()
+{
+}
+
+/** @brief Constructor
+ * 
+ * @param backLink Pointer to the object to which <em>this</em> object
+ * is attached to. */
+ChromaHueDiagram::ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(
+    ChromaHueDiagram *backLink
+) : q_pointer(backLink)
+{
+}
+    
 /** @brief Sets the @ref color property corresponding to given widget
  * coordinates.
  * 
@@ -86,7 +105,7 @@ ChromaHueDiagram::ChromaHueDiagram(
  * @note This function works independently of the actually display color
  * gamut diagram. So if parts of the gamut are cut off in the diagram,
  * this does not influence this function. */
-void ChromaHueDiagram::setColorFromImageCoordinates(
+void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromImageCoordinates(
     const QPoint imageCoordinates
 )
 {
@@ -97,7 +116,7 @@ void ChromaHueDiagram::setColorFromImageCoordinates(
         lab.L = m_color.toLch().L;
         lab.a = aB.x();
         lab.b = aB.y();
-        setColor(
+        q_pointer->setColor(
             FullColorDescription(
                 m_rgbColorSpace,
                 lab,
@@ -112,11 +131,12 @@ void ChromaHueDiagram::setColorFromImageCoordinates(
  * Reimplemented from base class.
  *
  * @post
- * - If the mouse is clicked with the circular diagram (inside or outside
- *   of the visible gamut), than this widget gets the focus and and
- *   @ref m_isMouseEventActive is set to <tt>true</tt> to track mouse
- *   movements from now on. Reacts on all clicks (left, middle, right). If the
- *   mouse was within the gamut, the diagram’s marker is displaced there. If
+ * - If the mouse is clicked with the circular diagram (inside or
+ *   outside of the visible gamut), than this widget gets the focus
+ *   and and @ref ChromaHueDiagramPrivate::m_isMouseEventActive is
+ *   set to <tt>true</tt> to track mouse movements from now on.
+ *   Reacts on all clicks (left, middle, right). If the mouse was
+ *   within the gamut, the diagram’s marker is displaced there. If
  *   the mouse was outside the gamut, the diagram’s marker always stays
  *   within the gamut: The chroma value is scarified while the hue value is
  *   retained.
@@ -128,7 +148,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 {
     // TODO Also accept out-of-gamut clicks when they are covered by the
     // current marker.
-    if (areImageCoordinatesWithinDiagramSurface(event->pos())) {
+    if (d_pointer->areImageCoordinatesWithinDiagramSurface(event->pos())) {
         event->accept();
         // Mouse focus is handled manually because so we can accept
         // focus only on mouse clicks within the displayed gamut, while
@@ -137,13 +157,13 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         // of mouse focus is up to this code here.
         setFocus(Qt::MouseFocusReason);
         // Enable mouse tracking from now on:
-        m_isMouseEventActive = true;
+        d_pointer->m_isMouseEventActive = true;
         // As clicks are only accepted within the visible gamut, the mouse
         // cursor is made invisible. Its function is taken over by the value
         // marker within the displayed gamut.
         setCursor(Qt::BlankCursor);
         // Set the color property
-        setColorFromImageCoordinates(event->pos());
+        d_pointer->setColorFromImageCoordinates(event->pos());
         // Schedule a paint event, so that the wheel marker will show. It’s
         // not enough to hope setColorFromWidgetCoordinates() would do this,
         // because setColorFromWidgetCoordinates() would not update the
@@ -162,7 +182,8 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
  *
  * Reimplemented from base class.
  *
- * Reacts only on mouse move events @ref m_isMouseEventActive is <tt>true</tt>.
+ * Reacts only on mouse move events if
+ * @ref ChromaHueDiagramPrivate::m_isMouseEventActive is <tt>true</tt>.
  * - If the mouse moves within the gamut, the diagram’s marker is displaced
  *   there. The mouse cursor is invisible; only the diagram’ marker is visible.
  * - If the mouse moves outside the gamut, the diagram’s marker always stays
@@ -170,29 +191,29 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
  *   retained. Both, the diagram’s marker <em>and</em> the mouse cursor are
  *   visible.
  * 
- * If @ref m_isMouseEventActive is <tt>false</tt>, it simply falls back to
- * QWidget’s default implementation.
+ * If @ref ChromaHueDiagramPrivate::m_isMouseEventActive is <tt>false</tt>,
+ * it simply falls back to QWidget’s default implementation.
  * 
  * @param event The corresponding mouse event */
 void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_isMouseEventActive) {
+    if (d_pointer->m_isMouseEventActive) {
         event->accept();
         cmsCIELab lab;
-        QPointF aB = fromImageCoordinatesToAB(event->pos());
-        lab.L = m_color.toLch().L;
+        QPointF aB = d_pointer->fromImageCoordinatesToAB(event->pos());
+        lab.L = d_pointer->m_color.toLch().L;
         lab.a = aB.x();
         lab.b = aB.y();
         if (
-            areImageCoordinatesWithinDiagramSurface(event->pos()) &&
-            m_rgbColorSpace->inGamut(lab)
+            d_pointer->areImageCoordinatesWithinDiagramSurface(event->pos()) &&
+            d_pointer->m_rgbColorSpace->inGamut(lab)
             
         ) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
         }
-        setColorFromImageCoordinates(event->pos());
+        d_pointer->setColorFromImageCoordinates(event->pos());
     } else {
         // Make sure default behavior like drag-window in KDE’s
         // Breeze widget style works.
@@ -204,17 +225,18 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
  *
  * Reimplemented from base class. Reacts on all clicks (left, middle, right).
  *
- * If @ref m_isMouseEventActive is <tt>true</tt> then:
+ * If @ref ChromaHueDiagramPrivate::m_isMouseEventActive is <tt>true</tt> then:
  * - If the mouse is within the gamut, the diagram’s marker is displaced
  *   there.
  * - If the mouse moves outside the gamut, the diagram’s marker always stays
  *   within the gamut: The chroma value is scarified while the hue value is
  *   retained.
  * - The mouse cursor is made visible (if he wasn’t yet visible anyway).
- * - @ref m_isMouseEventActive is set to <tt>false</tt>.
+ * - @ref ChromaHueDiagramPrivate::m_isMouseEventActive is set
+ *   to <tt>false</tt>.
  * 
- * If @ref m_isMouseEventActive is <tt>false</tt>, it simply falls back to
- * QWidget’s default implementation.
+ * If @ref ChromaHueDiagramPrivate::m_isMouseEventActive is <tt>false</tt>,
+ * it simply falls back to QWidget’s default implementation.
  * 
  * @todo What if the widget displays a gamut that has no L*=0.1 because its
  * blackpoint is lighter.? Scarifying chroma alone does not help? How to
@@ -224,11 +246,11 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
  * @param event The corresponding mouse event */
 void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_isMouseEventActive) {
+    if (d_pointer->m_isMouseEventActive) {
         event->accept();
         unsetCursor();
-        m_isMouseEventActive = false;
-        setColorFromImageCoordinates(event->pos());
+        d_pointer->m_isMouseEventActive = false;
+        d_pointer->setColorFromImageCoordinates(event->pos());
         // Schedule a paint event, so that the wheel marker will be hidden.
         // It’s not enough to hope setColorFromWidgetCoordinates() would do
         // this, because setColorFromWidgetCoordinates() would not update the
@@ -255,16 +277,16 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
     if (
         // Do nothing while a the mouse is clicked and the mouse movement is
         // tracked anyway because this would be confusing for the user.
-        (!m_isMouseEventActive) &&
+        (!d_pointer->m_isMouseEventActive) &&
         // Only react on good old vertical wheels,
         // and not on horizontal wheels.
         (event->angleDelta().y() != 0) &&
         // Only react on wheel events when then happen in the appropriate
         // area.a
-        areImageCoordinatesWithinDiagramSurface(event->pos())
+        d_pointer->areImageCoordinatesWithinDiagramSurface(event->pos())
     ) {
         event->accept();
-        cmsCIELCh lch = m_color.toLch();
+        cmsCIELCh lch = d_pointer->m_color.toLch();
         // Calculate the new hue.
         // This may result in a hue smaller then 0° or bigger then 360°.
         // This is no problem because the constructor of FullColorDescription
@@ -272,7 +294,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
         lch.h += Helper::standardWheelSteps(event) * singleStepHue;
         setColor(
             FullColorDescription(
-                m_rgbColorSpace,
+                d_pointer->m_rgbColorSpace,
                 lch,
                 FullColorDescription::outOfGamutBehaviour::sacrifyChroma
             )
@@ -313,7 +335,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
  * are likely that the user tries them out by trial-and-error. */
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
-    cmsCIELCh lch = m_color.toLch();
+    cmsCIELCh lch = d_pointer->m_color.toLch();
     switch (event->key()) {
         case Qt::Key_Up:
             lch.C += singleStepChroma;
@@ -363,7 +385,7 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     }
     setColor(
         FullColorDescription(
-            m_rgbColorSpace,
+            d_pointer->m_rgbColorSpace,
             lch,
             FullColorDescription::outOfGamutBehaviour::sacrifyChroma
         )
@@ -398,7 +420,7 @@ QSize ChromaHueDiagram::minimumSizeHint() const
 // and its getters are in the header)
 FullColorDescription ChromaHueDiagram::color() const
 {
-    return m_color;
+    return d_pointer->m_color;
 }
 
 /** @brief Setter for the @ref color() property.
@@ -412,17 +434,17 @@ FullColorDescription ChromaHueDiagram::color() const
  * wrong… */
 void ChromaHueDiagram::setColor(const FullColorDescription &color)
 {
-    if (color == m_color) {
+    if (color == d_pointer->m_color) {
         return;
     }
 
-    FullColorDescription oldColor = m_color;
+    FullColorDescription oldColor = d_pointer->m_color;
 
-    m_color = color;
+    d_pointer->m_color = color;
 
     // Update, if necessary, the diagram.
-    if (m_color.toLch().L != oldColor.toLch().L) {
-        m_diagramCacheReady = false;
+    if (d_pointer->m_color.toLch().L != oldColor.toLch().L) {
+        d_pointer->m_diagramCacheReady = false;
     }
 
     // Schedule a paint event:
@@ -461,11 +483,11 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
         newWidgetDiameter = 0;
     }
     // Update the widget
-    if (newWidgetDiameter != m_widgetDiameter) {
-        m_widgetDiameter = newWidgetDiameter;
-        m_diagramOffset = (m_widgetDiameter - 1) / static_cast<qreal>(2);
-        m_diagramCacheReady = false;
-        m_isWheelCacheReady = false;
+    if (newWidgetDiameter != d_pointer->m_widgetDiameter) {
+        d_pointer->m_widgetDiameter = newWidgetDiameter;
+        d_pointer->m_diagramOffset = (d_pointer->m_widgetDiameter - 1) / static_cast<qreal>(2);
+        d_pointer->m_diagramCacheReady = false;
+        d_pointer->m_isWheelCacheReady = false;
         // As by Qt documentation: The widget will be erased and receive a
         // paint event immediately after processing the resize event. No
         // drawing need be (or should be) done inside this handler.
@@ -478,7 +500,7 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
  * @param imageCoordinates the image coordinates
  * @returns the diagram (a-b) value for given image coordinates
  */
-QPointF ChromaHueDiagram::fromImageCoordinatesToAB(
+QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::fromImageCoordinatesToAB(
     const QPoint imageCoordinates
 )
 {
@@ -493,7 +515,7 @@ QPointF ChromaHueDiagram::fromImageCoordinatesToAB(
 /**
  * @returns the logical coordinates that correspond to @ref m_color()
  */
-QPoint ChromaHueDiagram::imageCoordinatesFromColor()
+QPoint ChromaHueDiagram::ChromaHueDiagramPrivate::imageCoordinatesFromColor()
 {
     const qreal scaleFactor =
         (m_widgetDiameter - 2 * diagramBorder) / static_cast<qreal>(2 * m_maxChroma);
@@ -513,7 +535,7 @@ QPoint ChromaHueDiagram::imageCoordinatesFromColor()
  * @param imageCoordinates the image coordinates to test
  * @returns <tt>true</tt> if the given image coordinates are within this
  * circle, <tt>false</tt> otherwise. */
-bool ChromaHueDiagram::areImageCoordinatesWithinDiagramSurface(
+bool ChromaHueDiagram::ChromaHueDiagramPrivate::areImageCoordinatesWithinDiagramSurface(
     const QPoint imageCoordinates
 )
 {
@@ -539,7 +561,7 @@ bool ChromaHueDiagram::areImageCoordinatesWithinDiagramSurface(
 
 /** @brief in image of a-b plane of the color space at a given lightness */
 // TODO How to make sure the diagram has at least a few pixels?
-QImage ChromaHueDiagram::generateDiagramImage3(
+QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage3(
     const RgbColorSpace *colorSpace,
     const int imageSize,
     const qreal maxChroma,
@@ -635,7 +657,7 @@ QImage ChromaHueDiagram::generateDiagramImage3(
 
 /** @brief in image of a-b plane of the color space at a given lightness */
 // How to make sure the diagram has at least a few pixels?
-QImage ChromaHueDiagram::generateDiagramImage(
+QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage(
     const RgbColorSpace *colorSpace,
     const int imageSize,
     const qreal maxChroma,
@@ -720,7 +742,7 @@ QImage ChromaHueDiagram::generateDiagramImage(
  * This function does not repaint the widget! After calling this function,
  * you have to call manually <tt>update()</tt> to schedule a re-paint of the
  * widget, if you wish so. */
-void ChromaHueDiagram::updateDiagramCache()
+void ChromaHueDiagram::ChromaHueDiagramPrivate::updateDiagramCache()
 {
     if (m_diagramCacheReady) {
         return;
@@ -734,13 +756,13 @@ void ChromaHueDiagram::updateDiagramCache()
     constexpr cmsCIELCh backgroundColor = Helper::LchDefaults::neutralGray;
     m_diagramImage = generateDiagramImage(
         m_rgbColorSpace,
-        physicalPixelWidgetDiameter(),
+        q_pointer->physicalPixelWidgetDiameter(),
         m_maxChroma,
         m_color.toLch().L,
-        diagramBorder * devicePixelRatioF(),
+        diagramBorder * q_pointer->devicePixelRatioF(),
         m_rgbColorSpace->colorRgbBound(backgroundColor)
     );
-    m_diagramImage.setDevicePixelRatio(devicePixelRatioF());
+    m_diagramImage.setDevicePixelRatio(q_pointer->devicePixelRatioF());
 
     // Mark cache as ready
     m_diagramCacheReady = true;
@@ -760,7 +782,7 @@ void ChromaHueDiagram::updateDiagramCache()
  * This function does not repaint the widget! After calling this function, you have to call
  * manually <tt>update()</tt> to schedule a re-paint of the widget, if you wish so.
  */
-void ChromaHueDiagram::updateWheelCache()
+void ChromaHueDiagram::ChromaHueDiagramPrivate::updateWheelCache()
 {
     if (m_isWheelCacheReady) {
         return;
@@ -772,13 +794,13 @@ void ChromaHueDiagram::updateWheelCache()
     m_wheelImage = QImage();
     m_wheelImage = SimpleColorWheel::generateWheelImage(
         m_rgbColorSpace,
-        physicalPixelWidgetDiameter(),                                 // diameter
-        2 * markerThickness * devicePixelRatioF(),                      // border
-        4 * markerThickness * devicePixelRatioF(),                      // thickness
+        q_pointer->physicalPixelWidgetDiameter(),                                 // diameter
+        2 * markerThickness * q_pointer->devicePixelRatioF(),                      // border
+        4 * markerThickness * q_pointer->devicePixelRatioF(),                      // thickness
         Helper::LchDefaults::defaultLightness,      // lightness
         Helper::LchDefaults::versatileSrgbChroma    // chroma
     );
-    m_wheelImage.setDevicePixelRatio(devicePixelRatioF());
+    m_wheelImage.setDevicePixelRatio(q_pointer->devicePixelRatioF());
 
     // Mark cache as ready
     m_isWheelCacheReady = true;
@@ -789,15 +811,17 @@ void ChromaHueDiagram::updateWheelCache()
  * 
  * Reimplemented from base class.
  *
- * - Paints the widget. Takes the existing @ref m_diagramImage and
- *   @ref m_wheelImage and paints them on the widget.
+ * - Paints the widget. Takes the existing
+ *   @ref ChromaHueDiagramPrivate::m_diagramImage and
+ *   @ref ChromaHueDiagramPrivate::m_wheelImage and paints them on the widget.
  * - Paints the markers.
  * - If the widget has focus, it also paints the focus indicator.
  * 
  * @param event the paint event
  * 
- * @todo What when @ref m_color has a valid in-gamut color, but this color is
- * out of the <em>displayed</em> diagram? How to handle that?
+ * @todo What when @ref ChromaHueDiagramPrivate::m_color has a valid
+ * in-gamut color, but this color is out of the <em>displayed</em> diagram?
+ * How to handle that?
  * 
  * @todo Better design on small widget sizes for the whole library. */
 void ChromaHueDiagram::paintEvent(QPaintEvent* event)
@@ -838,40 +862,46 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     QBrush brush;
 
     // Paint the gamut itself as available in the cache.
-    updateDiagramCache();
+    d_pointer->updateDiagramCache();
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.drawImage(
         QPoint(0, 0),   // position of the image
-        m_diagramImage  // image
+        d_pointer->m_diagramImage  // image
     );
 
     // Paint a color wheel around
-    updateWheelCache();
+    d_pointer->updateWheelCache();
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.drawImage(
         QPoint(0, 0),   // position of the image
-        m_wheelImage    // image
+        d_pointer->m_wheelImage    // image
     );
 
     // Paint a marker on the color wheel
     // only if a mouse event is currently active.
-    if (m_isMouseEventActive) {
+    if (d_pointer->m_isMouseEventActive) {
         // TODO Apparently the position is not exact.
         qreal radius =
-            m_widgetDiameter / static_cast<qreal>(2) - 2 * markerThickness;
+            d_pointer->m_widgetDiameter / static_cast<qreal>(2) - 2 * markerThickness;
         // Get widget coordinates for our marker
         QPointF myMarkerInner = PolarPointF(
             radius - 4 * markerThickness,
-            m_color.toLch().h
+            d_pointer->m_color.toLch().h
         ).toCartesian();
         QPointF myMarkerOuter = PolarPointF(
             radius,
-            m_color.toLch().h
+            d_pointer->m_color.toLch().h
         ).toCartesian();
         myMarkerInner.ry() *= -1;
         myMarkerOuter.ry() *= -1;
-        myMarkerInner += QPointF(m_diagramOffset, m_diagramOffset);
-        myMarkerOuter += QPointF(m_diagramOffset, m_diagramOffset);
+        myMarkerInner += QPointF(
+            d_pointer->m_diagramOffset,
+            d_pointer->m_diagramOffset
+        );
+        myMarkerOuter += QPointF(
+            d_pointer->m_diagramOffset,
+            d_pointer->m_diagramOffset
+        );
         // Draw the line
         pen = QPen();
         pen.setWidth(markerThickness);
@@ -913,20 +943,20 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
         brush = QBrush(Qt::transparent);
         painter.setBrush(brush);
         painter.drawEllipse(
-            QPointF(m_diagramOffset + 1, m_diagramOffset + 1),   // center
-            (m_widgetDiameter - markerThickness) / 2,   // x radius
-            (m_widgetDiameter - markerThickness) / 2    // y radius
+            QPointF(d_pointer->m_diagramOffset + 1, d_pointer->m_diagramOffset + 1),   // center
+            (d_pointer->m_widgetDiameter - markerThickness) / 2,   // x radius
+            (d_pointer->m_widgetDiameter - markerThickness) / 2    // y radius
         );
     }
 
     // Paint the marker on-the-fly.
     painter.setRenderHint(QPainter::Antialiasing, true);
-    QPoint imageCoordinates = imageCoordinatesFromColor();
+    QPoint imageCoordinates = d_pointer->imageCoordinatesFromColor();
     pen = QPen();
     pen.setWidth(markerThickness);
     // Set color of the marker: Black or white, depending on the lightness of
     // the currently selected color.
-    if (m_color.toLch().L >= 50) { // range: 0..100
+    if (d_pointer->m_color.toLch().L >= 50) { // range: 0..100
         pen.setColor(Qt::black);
     } else {
         pen.setColor(Qt::white);
@@ -942,8 +972,8 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     );
     PolarPointF lineEndPolar = PolarPointF(
         QPointF(
-            imageCoordinates.x() - m_diagramOffset,
-            (imageCoordinates.y() - m_diagramOffset) * (-1)
+            imageCoordinates.x() - d_pointer->m_diagramOffset,
+            (imageCoordinates.y() - d_pointer->m_diagramOffset) * (-1)
         )
     );
     qreal newRadial = lineEndPolar.radial() - markerRadius - 1.5;
@@ -954,9 +984,15 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
             lineEndPolar.angleDegree()
         ).toCartesian();
         lineEndCartesian.setY(lineEndCartesian.y() * (-1));
-        lineEndCartesian += QPointF(m_diagramOffset, m_diagramOffset);
+        lineEndCartesian += QPointF(
+            d_pointer->m_diagramOffset,
+            d_pointer->m_diagramOffset
+        );
         painter.drawLine(
-            QPointF(m_diagramOffset, m_diagramOffset),
+            QPointF(
+                d_pointer->m_diagramOffset,
+                d_pointer->m_diagramOffset
+            ),
             lineEndCartesian
         );
     }

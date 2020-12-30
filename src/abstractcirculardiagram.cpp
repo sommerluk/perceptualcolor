@@ -24,8 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// Own header
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/abstractcirculardiagram.h"
+// Second, the private implementation.
+#include "abstractcirculardiagram_p.h"
 
 #include <QFocusEvent>
 
@@ -37,8 +43,9 @@ namespace PerceptualColor {
 /** @brief The constructor.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the QWidget base class constructor. */
-AbstractCircularDiagram::AbstractCircularDiagram(QWidget *parent)
-: AbstractDiagram(parent)
+AbstractCircularDiagram::AbstractCircularDiagram(QWidget *parent) :
+    AbstractDiagram(parent)/*,
+    d_pointer(new AbstractCircularDiagramPrivate())*/
 {
     // Set size policy
     QSizePolicy temp = QSizePolicy(
@@ -56,6 +63,11 @@ AbstractCircularDiagram::AbstractCircularDiagram(QWidget *parent)
 
     // Set focus policy
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
+}
+
+/** @brief Destructor */
+AbstractCircularDiagram::~AbstractCircularDiagram() noexcept
+{
 }
 
 /** @brief Indicates that the widget's preferred height depends on its width.

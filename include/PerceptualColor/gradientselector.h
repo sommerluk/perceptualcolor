@@ -107,6 +107,8 @@ public:
         Qt::Orientation orientation,
         QWidget *parent = nullptr
     );
+    /** @brief Default destructor */
+    virtual ~GradientSelector() noexcept override = default;
 
     virtual QSize sizeHint() const override;
 

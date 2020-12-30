@@ -27,10 +27,8 @@
 #ifndef CHROMAHUEDIAGRAM_H
 #define CHROMAHUEDIAGRAM_H
 
-#include <QImage>
-#include <QPointer>
-
 #include "PerceptualColor/abstractcirculardiagram.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -66,7 +64,7 @@ namespace PerceptualColor {
  *   accepted for clicks within the actual circle, but also for clicks
  *   within the surrounding rectangle.
  * 
- * @warning The image is wrong: The hue indicator is not at the correct
+ * @todo The image is wrong: The hue indicator is not at the correct
  * position (at least at 150% screen scaling).
  * 
  * @todo Declare a property for @ref color()
@@ -111,8 +109,8 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
-    /** @brief Destructor */
-    virtual ~ChromaHueDiagram() override = default;
+    /** @brief Default destructor */
+    virtual ~ChromaHueDiagram() override;
     /** @brief Getter for property @ref color
      *  @returns the property @ref color */
     FullColorDescription color() const;
@@ -139,93 +137,20 @@ protected:
 private:
 
     Q_DISABLE_COPY(ChromaHueDiagram)
+
+    class ChromaHueDiagramPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class ChromaHueDiagramPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    // TODO When using ConstPropagatingUniquePointer<> it will crash
+    // when ChromaHueDiagram is called. Why?
+    ChromaHueDiagramPrivate *d_pointer;
     
     /** @brief Only for unit tests. */
     friend class TestChromaHueDiagram;
-
-    // Member variables
-    /** @brief The border around the round diagram.
-     * 
-     * Measured in Device Independent Pixels: Pixels used by application
-     * (user space), subject to scaling by the operating system or Qt. 
-     * 
-     * The border is the space where the surrounding color wheel and, where
-     * applicable, the focus indicator is painted.
-     * @sa @ref markerThickness */
-    static constexpr qreal diagramBorder = 8 * markerThickness;
-    /** @brief Internal storage of the @ref color() property */
-    FullColorDescription m_color;
-    /** Holds whether or not @ref m_diagramImage() is up-to-date.
-     *  @sa @ref updateDiagramCache() */
-    bool m_diagramCacheReady = false;
-    /** @brief A cache for the diagram as QImage. Might be outdated.
-     *  @sa @ref updateDiagramCache()
-     *  @sa @ref m_diagramCacheReady */
-    QImage m_diagramImage;
-    /** @brief Position of the center of the diagram coordinate system
-     * 
-     * This value is measured in widget coordinates. */
-    qreal m_diagramOffset = 0;
-    /** @brief Diameter of the widget.
-     * 
-     * This is different from <tt>size()</tt>. It is the maximum possible
-     * diameter that is available within the current <tt>size()</tt>. */
-    int m_widgetDiameter = 0;
-    /** @todo This should not be hard-coded sRGB. */
-    qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
-    /** @brief Holds if currently a mouse event is active or not.
-     * 
-     * Default value is <tt>false</tt>.
-     * - A mouse event gets typically activated on a @ref mousePressEvent()
-     *   done within the gamut diagram. The value is set to <tt>true</tt>.
-     * - While active, all @ref mouseMoveEvent() will move the diagram’s color
-     *   marker.
-     * - Once a @ref mouseReleaseEvent() occurs, the value is set to
-     *   <tt>false</tt>. Further mouse movements will not move the marker
-     *   anymore. */
-    bool m_isMouseEventActive = false;
-    /** @brief Pointer to @ref RgbColorSpace object */
-    QPointer<RgbColorSpace> m_rgbColorSpace;
-    /** Holds whether or not @ref m_wheelImage() is up-to-date.
-     *  @sa @ref updateWheelCache() */
-    bool m_isWheelCacheReady = false;
-    /** @brief A cache for the wheel as QImage. Might be outdated.
-     *  @sa @ref updateWheelCache()
-     *  @sa @ref m_isWheelCacheReady */
-    QImage m_wheelImage;
-
-    // Member functions
-    bool areImageCoordinatesWithinDiagramSurface(
-        const QPoint imageCoordinates
-    );
-    QPoint imageCoordinatesFromColor();
-    QPointF fromImageCoordinatesToAB(const QPoint imageCoordinates);
-    static QImage generateDiagramImage(
-        const RgbColorSpace *colorSpace,
-        const int imageSize,
-        const qreal maxChroma,
-        const qreal lightness,
-        const qreal border,
-        const QColor backgroundColor
-    );
-    static QImage generateDiagramImage2(
-        const RgbColorSpace *colorSpace,
-        const int imageSize,
-        const qreal maxChroma,
-        const qreal lightness,
-        const int border
-    );
-    static QImage generateDiagramImage3(
-        const RgbColorSpace *colorSpace,
-        const int imageSize,
-        const qreal maxChroma,
-        const qreal lightness,
-        const int border
-    );
-    void setColorFromImageCoordinates(const QPoint imageCoordinates);
-    void updateDiagramCache();
-    void updateWheelCache();
-
 };
 
 }

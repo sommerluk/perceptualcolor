@@ -24,10 +24,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** @file
- * 
- * Definition of the @ref PerceptualColor::PolarPointF class and its
- * members. */
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
 // Own header
 #include "PerceptualColor/polarpointf.h"

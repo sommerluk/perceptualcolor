@@ -24,6 +24,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
 // Own header
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -119,7 +122,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
 }
 
 /** @brief Destructor */
-RgbColorSpace::~RgbColorSpace()
+RgbColorSpace::~RgbColorSpace() noexcept
 {
     cmsDeleteTransform(m_transformLabToRgb16Handle);
     cmsDeleteTransform(m_transformLabToRgbHandle);
@@ -340,7 +343,7 @@ QString RgbColorSpace::getInformationFromProfile(
     // documentation is "US".
     char countryCode[3] = "US";
     // Update languageCode and countryCode to the actual locale (if possible)
-    QStringList list = QLocale().name().split('_');
+    QStringList list = QLocale().name().split(QStringLiteral(u"_"));
     // The locale codes should be ASCII only, so QString::toLatin1() should
     // return valid results.
     if (list.at(0).size() == 2) {

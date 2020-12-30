@@ -24,6 +24,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
+
 // own header
 #include "PerceptualColor/gradientselector.h"
 
@@ -459,7 +462,7 @@ void GradientSelector::updateGradientImage()
         0,
         actualLength,
         m_gradientThickness,
-        QBrush(transparencyBackground(devicePixelRatioF()))
+        QBrush(transparencyBackground())
     );
     for (i = 0; i < m_gradientThickness; ++i) {
         painter.drawImage(0, i, temp);

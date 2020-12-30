@@ -84,11 +84,12 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
     # Set common flags for both, GCC and Clang.
     set(CMAKE_CXX_FLAGS "\
         -O3\
-        -std=c++11\
+        -std=c++17\
         -Wpedantic\
         -pedantic-errors\
         -Wall\
         -Wextra\
+        -Wcast-align\
         -Wvla\
         -Wconversion\
         -Wsign-conversion\
@@ -98,7 +99,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
     endif()
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        # TODO Do not enable -Weverything (and the excluded checks)
+        # TODO Do not enable -Weverything (and the following excluded checks)
         #      on non-debug builds
         # TODO Get rid of -Wno-float-equal and -Wno-c++2a-compat
         # Add additional flags for Clang
@@ -164,7 +165,8 @@ set(perceptualcolor_SRC
   src/simplecolorwheel.cpp
   src/wheelcolorpicker.cpp
 )
-# Set the headers for our library
+# Set the headers for our library. This list only contains the headers
+# that are _not_ within the source directory.
 set(perceptualcolor_HEADERS
   include/PerceptualColor/abstractcirculardiagram.h
   include/PerceptualColor/abstractdiagram.h
@@ -173,6 +175,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/chromalightnessdiagram.h
   include/PerceptualColor/colordialog.h
   include/PerceptualColor/colorpatch.h
+  include/PerceptualColor/constpropagatinguniquepointer.h
   include/PerceptualColor/extendeddoublevalidator.h
   include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientselector.h
@@ -271,6 +274,12 @@ add_executable (testcolorpatch
 target_link_libraries (testcolorpatch
     ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testcolorpatch COMMAND testcolorpatch)
+
+add_executable (testconstpropagatinguniquepointer
+    test/testconstpropagatinguniquepointer.cpp)
+target_link_libraries (testconstpropagatinguniquepointer
+    ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testconstpropagatinguniquepointer COMMAND testconstpropagatinguniquepointer)
 
 add_executable (testextendeddoublevalidator
     test/testextendeddoublevalidator.cpp)

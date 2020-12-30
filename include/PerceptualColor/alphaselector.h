@@ -27,13 +27,11 @@
 #ifndef PERCEPTUALCOLOR_ALPHASELECTOR_H
 #define PERCEPTUALCOLOR_ALPHASELECTOR_H
 
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/fullcolordescription.h"
-#include "PerceptualColor/gradientselector.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
-#include <QDoubleSpinBox>
 #include <QLabel>
-#include <QPointer>
 #include <QWidget>
 
 namespace PerceptualColor {
@@ -75,6 +73,8 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
+    /** @brief Default destructor */
+    virtual ~AlphaSelector() noexcept override;
     qreal alpha() const;
     FullColorDescription color() const;
 
@@ -105,14 +105,20 @@ Q_SIGNALS:
 private:
     Q_DISABLE_COPY(AlphaSelector)
 
-    QPointer<GradientSelector> m_gradientSelector;
-    QPointer<QDoubleSpinBox> m_doubleSpinBox;
-    QPointer<RgbColorSpace> m_rgbColorSpace;
-    FullColorDescription m_color;
-    qreal m_alpha;
-    NumberFormat m_representation;
+    class AlphaSelectorPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class AlphaSelectorPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<AlphaSelectorPrivate> d_pointer;
+
+    /** @brief Only for unit tests. */
+    friend class TestAlphaSelector;
 
 private Q_SLOTS:
+    /** TODO Private functions have to be moved to @ref AlphaSelectorPrivate */
     void setAlphaFromRepresentationFormat(qreal newAlphaRepresentation);
 };
 

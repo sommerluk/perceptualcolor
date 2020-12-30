@@ -24,50 +24,33 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
-
-#include "PerceptualColor/xxx.h"
-#include "xxx_p.h"
-
-#include <QtTest>
+#ifndef COLORPATCH_P_H
+#define COLORPATCH_P_H
 
 namespace PerceptualColor {
 
-class TestXXX : public QObject
+/** @brief Private implementation within the <em>Pointer to
+ *  implementation</em> idiom */
+class ColorPatch::ColorPatchPrivate final
 {
-
-    Q_OBJECT
-
 public:
-    TestXXX(QObject *parent = nullptr) : QObject(parent) {
-    }
-
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first test function is executed
-    }
-
-    void cleanupTestCase() {
-        // Called after the last test function was executed
-    }
-
-    void init() {
-        // Called before each test function is executed
-    }
-
-    void cleanup() {
-        // Called after every test function
-    }
-
-    void testDef() {
-        // TODO implement me!
-    }
+    /** @brief Constructor */
+    ColorPatchPrivate() = default;
+    /** @brief Default destructor
+     * 
+     * The destructor is non-<tt>virtual</tt> because
+     * the class as a whole is <tt>final</tt>. */
+    ~ColorPatchPrivate() noexcept = default;
+    /** @brief Internal storage for property @ref ColorPatch::color
+     * 
+     * QColor automatically initializes with an invalid color, just like it
+     * should be for the property @ref ColorPatch::color, so no need to
+     * initialize here explicitly. */
+    QColor m_color;
+private:
+    Q_DISABLE_COPY(ColorPatchPrivate)
 };
 
 }
 
-QTEST_MAIN(PerceptualColor::TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+#endif // COLORPATCH_P_H

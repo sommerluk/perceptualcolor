@@ -28,6 +28,7 @@
 #define ABSTRACTDIAGRAM_H
 
 #include <QFrame>
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor {
     
@@ -45,6 +46,8 @@ class AbstractDiagram : public QFrame
 public:
 
     Q_INVOKABLE AbstractDiagram(QWidget *parent = nullptr);
+    /** @brief Default destructor */
+    virtual ~AbstractDiagram() noexcept override;
 
 protected:
 
@@ -121,12 +124,20 @@ protected:
     // methods
     QColor focusIndicatorColor() const;
     QSize physicalPixelSize() const;
-    
-    // static methods
-    static QImage transparencyBackground(const qreal devicePixelRatioF);
+    QImage transparencyBackground() const;
 
 private:
     Q_DISABLE_COPY(AbstractDiagram)
+
+    class AbstractDiagramPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class AbstractDiagramPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<AbstractDiagramPrivate> d_pointer;
+
     /** @brief Only for unit tests. */
     friend class TestAbstractDiagram;
 

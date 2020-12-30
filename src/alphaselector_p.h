@@ -24,50 +24,38 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#ifndef ALPHASELECTOR_P_H
+#define ALPHASELECTOR_P_H
 
-#include "PerceptualColor/xxx.h"
-#include "xxx_p.h"
+#include "PerceptualColor/gradientselector.h"
 
-#include <QtTest>
+#include <QDoubleSpinBox>
 
 namespace PerceptualColor {
 
-class TestXXX : public QObject
+/** @brief Private implementation within the <em>Pointer to
+ *  implementation</em> idiom */
+class AlphaSelector::AlphaSelectorPrivate final
 {
-
-    Q_OBJECT
-
 public:
-    TestXXX(QObject *parent = nullptr) : QObject(parent) {
-    }
+    /** @brief Constructor */
+    AlphaSelectorPrivate() = default;
+    /** @brief Default destructor
+     * 
+     * The destructor is non-<tt>virtual</tt> because
+     * the class as a whole is <tt>final</tt>. */
+    ~AlphaSelectorPrivate() noexcept = default;
 
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first test function is executed
-    }
-
-    void cleanupTestCase() {
-        // Called after the last test function was executed
-    }
-
-    void init() {
-        // Called before each test function is executed
-    }
-
-    void cleanup() {
-        // Called after every test function
-    }
-
-    void testDef() {
-        // TODO implement me!
-    }
+    qreal m_alpha;
+    FullColorDescription m_color;
+    QPointer<QDoubleSpinBox> m_doubleSpinBox;
+    QPointer<GradientSelector> m_gradientSelector;
+    NumberFormat m_representation;
+    QPointer<RgbColorSpace> m_rgbColorSpace;
+private:
+    Q_DISABLE_COPY(AlphaSelectorPrivate)
 };
 
 }
 
-QTEST_MAIN(PerceptualColor::TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+#endif // ALPHASELECTOR_P_H

@@ -24,9 +24,13 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
 #include "PerceptualColor/colorpatch.h"
+#include "colorpatch_p.h"
+
+#include <QtTest>
 
 namespace PerceptualColor {
 
@@ -139,7 +143,7 @@ private Q_SLOTS:
         PerceptualColor::ColorPatch thePatch;
         thePatch.setColor(Qt::red);
         QCOMPARE(thePatch.color(), Qt::red);
-        QCOMPARE(thePatch.m_color, Qt::red);
+        QCOMPARE(thePatch.d_pointer->m_color, Qt::red);
     }
 
     void testApplyColors() {

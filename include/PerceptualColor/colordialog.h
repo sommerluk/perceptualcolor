@@ -27,16 +27,12 @@
 #ifndef COLORDIALOG_H
 #define COLORDIALOG_H
 
-/** @file
- * 
- * Declaration of the @ref PerceptualColor::ColorDialog class and its
- * members. */
-
 #include "PerceptualColor/alphaselector.h"
 #include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/chromahuediagram.h"
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/gradientselector.h"
+#include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/wheelcolorpicker.h"
 
 #include <QByteArray>
@@ -95,6 +91,11 @@ namespace PerceptualColor {
  * size with QWidget::resize() or force a more space-saving layout through
  * the @ref layoutDimensions property.
  * 
+ * The @ref ColorPatch that indicates the selected color is placed prominently
+ * at the top of the widget. That is also useful for touch screens as the
+ * @ref ColorPatch will not be hidden by the hand of the user when the user
+ * is touching the above color selection widgets.
+ * 
  * @note The API of this class is fully source-compatible to the API of
  * QColorDialog and the API behaves exactly as for QColorDialog (if not,
  * it's a bug; please report it), with the following exceptions:
@@ -129,10 +130,18 @@ namespace PerceptualColor {
  * for RGB values changing along the gray axis: #444 → #555 → #666 changes
  * the graphically displayed hue.
  * 
- * @todo Implement unit tests for private slots, methods and members. (For
- * everything else, unit tests are available yet now.) This has to be done
- * <em>after</em> the MultiSpinBox is available and has replaced the
- * indivudual spin boxes and the line edits in this dialog.
+ * @todo The dialog shows up with a widget width that is bigger than
+ * the recommended width. This is useless: The diagram won’t get
+ * bigger anyway, because the height did <em>not</em> raise. And the
+ * spinboxes have no advantage in being wider. Why actually does the dialog
+ * behave like this?
+ * 
+ * @todo Update the colors while typing a number in a field? Example:
+ * You type in @ref m_hlcSpinBox the value 301°, 60%  129 which will be
+ * out of sRGB gamut. Currently, no changes are applied until either the
+ * focus leaves @ref m_hlcSpinBox or the enter key is hit. When changes
+ * are applied, the value is corrected to an in-gamut value. Should this
+ * same behaviour also apply during typing?
  * 
  * @todo The HLC widget could provide intermediate values during the
  * user is editing. These could be displayed, and if the intermediate
@@ -142,42 +151,12 @@ namespace PerceptualColor {
  * an out-of-gamut value should of cource be corrected, following
  * the <tt>QAbstractSpinbox::correctionMode</tt> policy.
  * 
- * @todo Touch screen compatibility: Position of the color patch
- * <em>above</em> the selector widget instead of below?
- * 
- * This would be better for touch screen compatibility (the hand of the user
- * does not hide the widget that shows the resulting color); also Apple does
- * this in its native color dialog.
- * 
- * On the other hand, the overall layout would be less logical: The typical
- * workflow is probably:
- * 1. Start with selecting a color
- * 2. Verify the color in the color patch
- * 3. Modify its alpha component
- * 4. Confirm with OK button
- * 
- * Currently, this workflow is reflected by the layout: All elements are
- * ordered in this very same order, from top to bottom. Changing the
- * position of the color patch would break that.
- * 
- * A possible solution might be to control this with a property (enum
- * DialogColorPatchPosition “optimizeForTouchscreen” “optimizeForWorkflow”).
- * 
- * @todo Touch screen compatibility, second part: A spin box can also
- * be used on mobile phone (putting the numbers with on-screen keyboard).
- * But the + and - button for increasing or decreasing the values might
- * be too small. And mobile UI uses often wheels for this use case…
- * 
- * @todo In general: What would mean better support for touch-screen and 
- * convertible? More things to do?
- * 
- * @todo Use @ref MultiSpinBox for <em>all</em> numeric values. We would
- * update the color only if the focus leaves the @ref MultiSpinBox or when
- * the enter key is pressed (and no Okay button in the dialog). No live
- * update if only <em>one</em> of the three components is changed. This is
- * necessary for LCh values that can only be evaluated for all three
- * values at the same time. And it should be done for RGB-based values as
- * well, just to be consistent.
+ * @todo Touch screen compatibility: In general: What would mean better
+ * support for touch-screen and convertible? More things to do? For example,
+ * A spin box can also be used on mobile phone (putting the numbers
+ * with on-screen keyboard). But the + and - button for increasing
+ * or decreasing the values might be too small. And mobile UI uses
+ * often wheels for this use case…
  * 
  * @todo In general: What would mean QML support?
  * 
@@ -214,26 +193,6 @@ namespace PerceptualColor {
  * @todo Make sure that @ref ChromaHueDiagram always shows at least at the
  * central pixel an in-gamut color. Solution: Limit the range of the lightness
  * selector? Or a better algorithm in @ref ChromaHueDiagram?
- * 
- * @todo Develop a new widget inherited from QAbstractSpinbox() that allows
- * input of various numeric values in the same widget, similar to
- * QDateTimeEdit(), but more flexible and appropriate for the different
- * possible color representations. Maybe: Allow entering
- * <em>HLC 359 50 29</em> in the form
- * <em>h*<sub>ab</sub> 359 L* 50 C*<sub>ab</sub> 29</em>? Would this
- * actually be a better user experience, or would it be rather confusing
- * and less comfortable?
- * 
- * @todo The child widget @ref m_hsvHueSpinbox() is a QDoubleSpinBox. The
- * current behavior for pageStep‌ = 10 is 356 → 360 → 0 → 10. The expected
- * behavior would be 356 → 6 for a continuous experience. A solution will
- * likely require a new class inherited from QDoubleSpinBox or maybe
- * QAbstractSpinbox. Provide directly a widget that would also do the
- * work for HLC etc (calendar-widget-like with various values within
- * a single spin box).
- * 
- * @todo Background color (or text color) for RGB could be red, green and
- * blue, corresponding to each component?
  * 
  * @todo Support for other models like HSL, Munsell? With an option to
  * enable or disable them? (NCS not, because it is not free.)
@@ -361,14 +320,14 @@ public:
      * automatically. You do not need to make any manual calls. */
     enum class DialogLayoutDimensions {
         screenSizeDependent, /**< Decide automatically between
-                             <tt>collapsed</tt> and <tt>expanded</tt> layout
-                             based on evaluating the screen size of the default
-                             screen of the widget. The decision
-                             is evaluated at the moment when setting this
-                             value, and again each time the widget is shown
-                             again. It is <em>not</em> evaluated again when a
-                             yet existing dialog is just moved to another
-                             screen. */
+            <tt>collapsed</tt> and <tt>expanded</tt> layout: <tt>collapsed</tt>
+            is used on small screens, and <tt>expanded</tt> on big screens. The
+            decision is based on the screen size of the <em>default screen</em>
+            of the widget (see <tt>QGuiApplication::primaryScreen()</tt> for
+            details). The decision is evaluated at the moment when setting this
+            value, and again each time the widget is shown again. It is
+            <em>not</em> evaluated again when a yet existing dialog is just
+            moved to another screen. */
         collapsed, /**< Use the small, “collapsed“ layout of this dialog. */
         expanded /**< Use the large, “expanded” layout of this dialog.  */
     };
@@ -378,7 +337,7 @@ public:
         const QColor &initial,
         QWidget *parent = nullptr
     );
-    virtual ~ColorDialog() override;
+    virtual ~ColorDialog() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     QColor currentColor() const;
@@ -446,6 +405,9 @@ protected:
 private:
     Q_DISABLE_COPY(ColorDialog)
 
+    /** @brief Only for unit tests. */
+    friend class TestColorDialog;
+
     /** @brief Pointer to the @ref GradientSelector for alpha. */
     QPointer<AlphaSelector> m_alphaSelector;
     /** @brief Pointer to the QLabel for @ref m_alphaSelector().
@@ -472,14 +434,10 @@ private:
     FullColorDescription m_currentOpaqueColor;
     /** @brief Pointer to the @ref GradientSelector for LCh lightness. */
     QPointer<GradientSelector> m_lchLightnessSelector;
-    /** @brief Pointer to the QLineEdit that represents the HLC value. */
-    QPointer<QLineEdit> m_hlcLineEdit;
-    /** @brief Pointer to the QSpinBox for HSV hue. */
-    QPointer<QDoubleSpinBox> m_hsvHueSpinbox;
-    /** @brief Pointer to the QSpinBox for HSV saturation. */
-    QPointer<QDoubleSpinBox> m_hsvSaturationSpinbox;
-    /** @brief Pointer to the QSpinBox for HSV value. */
-    QPointer<QDoubleSpinBox> m_hsvValueSpinbox;
+    /** @brief Pointer to the @ref MultiSpinBox for HLC. */
+    QPointer<MultiSpinBox> m_hlcSpinBox;
+    /** @brief Pointer to the @ref MultiSpinBox for HSV. */
+    QPointer<MultiSpinBox> m_hsvSpinBox;
     /** @brief Holds whether currently a color change is ongoing, or not.
      * 
      * Used to avoid infinite recursions when updating the different widgets
@@ -511,17 +469,13 @@ private:
     QPointer<QObject> m_receiverToBeDisconnected;
     /** @brief Internal storage for property @ref options */
     ColorDialogOptions m_options;
-    /** @brief Pointer to the QSpinBox for RGB blue. */
-    QPointer<QDoubleSpinBox> m_rgbBlueSpinbox;
     /** @brief Pointer to the RgbColorSpace object. */
     QPointer<RgbColorSpace> m_rgbColorSpace;
-    /** @brief Pointer to the QSpinBox for RGB green. */
-    QPointer<QDoubleSpinBox> m_rgbGreenSpinbox;
     /** @brief Pointer to the QLineEdit that represents the hexadecimal
      *  RGB value. */
     QPointer<QLineEdit> m_rgbLineEdit;
-    /** @brief Pointer to the QSpinBox for RGB red. */
-    QPointer<QDoubleSpinBox> m_rgbRedSpinbox;
+    /** @brief Pointer to the @ref MultiSpinBox for RGB. */
+    QPointer<MultiSpinBox> m_rgbSpinBox;
     /** @brief Internal storage for selectedColor(). */
     QColor m_selectedColor;
     /** @brief Layout that holds the graphical and numeric selectors. */
@@ -534,10 +488,9 @@ private:
     void applyLayoutDimensions();
     void initialize();
     QWidget* initializeNumericPage();
-    QString textForHlcLineEdit() const;
+    void setCurrentFullColor(const FullColorDescription& color);
 
 private Q_SLOTS:
-    void handleFocusChange(QWidget *old/*, QWidget *now*/);
     void readHlcNumericValues();
     void readHsvNumericValues();
     void readLightnessValue();

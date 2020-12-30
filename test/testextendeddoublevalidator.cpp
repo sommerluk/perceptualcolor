@@ -24,9 +24,12 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <QtTest/QtTest>
+#define QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_TO_ASCII
 
 #include "PerceptualColor/extendeddoublevalidator.h"
+
+#include <QtTest>
 
 namespace PerceptualColor {
 
