@@ -68,7 +68,11 @@ AlphaSelector::AlphaSelector(
         d_pointer->m_doubleSpinBox,
         QOverload<double>::of(&QDoubleSpinBox::valueChanged),
         this,
-        [this](qreal newAlphaRepresentation) { d_pointer->setAlphaFromRepresentationFormat(newAlphaRepresentation); }
+        [this](qreal newAlphaRepresentation) {
+            d_pointer->setAlphaFromRepresentationFormat(
+                newAlphaRepresentation
+            );
+        }
     );
 
     cmsCIELCh lch;

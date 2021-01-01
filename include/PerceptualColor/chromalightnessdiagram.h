@@ -27,13 +27,8 @@
 #ifndef CHROMALIGHTNESSDIAGRAM_H
 #define CHROMALIGHTNESSDIAGRAM_H
 
-#include <QImage>
-#include <QPointer>
-#include <QWidget>
-
-#include <lcms2.h>
-
 #include "PerceptualColor/abstractdiagram.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -60,8 +55,7 @@ namespace PerceptualColor {
  * accepted for clicks within the actual display gamut, but also for clicks
  * within the surrounding rectangle.
  * 
- * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE
- */
+ * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */
 class ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT
@@ -70,8 +64,7 @@ class ChromaLightnessDiagram : public AbstractDiagram
      * 
      * @sa color()
      * @sa setColor()
-     * @sa colorChanged()
-     */
+     * @sa colorChanged() */
     Q_PROPERTY(FullColorDescription color READ color WRITE setColor NOTIFY colorChanged USER true)
 
 public:
@@ -79,8 +72,7 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
-    /** @brief Default destructor */
-    virtual ~ChromaLightnessDiagram() noexcept override = default;
+    virtual ~ChromaLightnessDiagram() noexcept override;
     FullColorDescription color() const;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
@@ -103,52 +95,20 @@ protected:
     virtual void resizeEvent(QResizeEvent* event) override;
 
 private:
-
     Q_DISABLE_COPY(ChromaLightnessDiagram)
 
-    /** @brief The border between the widget outer border and the diagram itself.
+    class ChromaLightnessDiagramPrivate;
+    /** @brief Declare the private implementation as friend class.
      * 
-     * The diagram is not painted on the whole extend of the widget. A border is
-     * left to allow that the selection marker can be painted completely even when
-     * a pixel on the border of the diagram is selected. The border is
-     * determined automatically, its value depends on @ref markerRadius and
-     * @ref markerThickness.
-     * 
-     * @sa updateBorder()
-     */
-    int m_border;
-    /** @brief Internal storage of the chromaLightness() property */
-//     QPointF m_chromaLightness;
-    /** @brief Internal storage of the color() property */
-    FullColorDescription m_color;
-    /** @brief A cache for the diagram as QImage. @sa updateDiagramCache() */
-    QImage m_diagramImage;
-    /** True if the m_diagramImage cache is up-to-date. False otherwise.
-     * @sa m_diagramImage
-     * @sa updateDiagramCache */
-    bool m_diagramCacheReady = false;
-    /** @brief If a mouse event is active
-     * 
-     * Holds if currently a mouse event is active or not.
-     * @sa mousePressEvent()
-     * @sa mouseMoveEvent()
-     * @sa mouseReleaseEvent()
-     */
-    bool m_mouseEventActive;
-    /** @brief Pointer to RgbColorSpace() object */
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class ChromaLightnessDiagramPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<ChromaLightnessDiagramPrivate> d_pointer;
+    
+    /** @brief Only for unit tests. */
+    friend class TestChromaLightnessDiagram;
 
-    QImage generateDiagramImage(
-        const qreal imageHue,
-        const QSize imageSize) const;
-    QPoint currentImageCoordinates();
-    QPointF fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates);
-    QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
-    bool imageCoordinatesInGamut(const QPoint imageCoordinates);
-    static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
-    void updateDiagramCache();
-    void setImageCoordinates(const QPoint newImageCoordinates);
-    void updateBorder();
 };
 
 }

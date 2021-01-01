@@ -28,11 +28,9 @@
 #define GRADIENTSELECTOR_H
 
 #include <PerceptualColor/abstractdiagram.h>
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 #include <PerceptualColor/fullcolordescription.h>
 #include <PerceptualColor/rgbcolorspace.h>
-
-#include <QPointer>
-#include <QWidget>
 
 namespace PerceptualColor {
 
@@ -107,8 +105,7 @@ public:
         Qt::Orientation orientation,
         QWidget *parent = nullptr
     );
-    /** @brief Default destructor */
-    virtual ~GradientSelector() noexcept override = default;
+    virtual ~GradientSelector() noexcept override;
 
     virtual QSize sizeHint() const override;
 
@@ -149,57 +146,16 @@ protected:
 
 private:
     Q_DISABLE_COPY(GradientSelector)
-    int m_gradientThickness = 20;
-    int m_gradientMinimumLength = 84;
-    Qt::Orientation m_orientation;
-    void initialize(RgbColorSpace* colorSpace, Qt::Orientation orientation);
-    FullColorDescription m_firstColor;
-    FullColorDescription m_secondColor;
-    QPointer<RgbColorSpace> m_rgbColorSpace;
-    void setOrientationAndForceUpdate(const Qt::Orientation newOrientation);
-    void updateGradientImage();
-    QPair<cmsCIELCh, qreal> intermediateColor(
-        const cmsCIELCh &firstColor,
-        const cmsCIELCh &secondColor,
-        qreal fraction
-    );
-    /** @brief Cache for the gradient image
+
+    class GradientSelectorPrivate;
+    /** @brief Declare the private implementation as friend class.
      * 
-     * Holds the current gradient image (without the selection cursor).
-     * Always at the left is the first color, always at the right is the
-     * second color. So when painting, it might be necessary to rotate
-     * the image.
-     * 
-     * This is a cache. Before using it, check if it's up-to-date with
-     * m_gradientImageReady(). If not, use updateGradientImage() to
-     * update it.
-     * 
-     * If something in the widget makes a new m_gradienImage() necessary,
-     * do not directly call updateGradientImage() but just set
-     * m_gradientImageReady to @e false. So it can be re-generated next time
-     * it's actually used, and we do not waste CPU power for updating for
-     * example invisible widgets.
-     * 
-     * \sa m_transform()
-     * \sa updateGradientImage()
-     * \sa m_gradientImageReady()
-     */
-    QImage m_gradientImage;
-    /** If the m_gradienImage() is up-to-date. If false, you have to call
-     *  updateGradientImage() before using m_gradienImage(). 
-     * \sa m_transform()
-     * \sa updateGradientImage()
-     * \sa m_gradientImage() */
-    bool m_gradientImageReady = false;
-    /** @brief The transform for painting on the widget.
-     * 
-     * Depends on layoutDirection() and orientation() */
-    QTransform m_transform;
-    QTransform getTransform() const;
-    qreal m_fraction = 0.5;
-    qreal fromWindowCoordinatesToFraction(QPoint windowCoordinates);
-    qreal m_singleStep = 0.01;
-    qreal m_pageStep = 0.1;
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class GradientSelectorPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<GradientSelectorPrivate> d_pointer;
+
 };
 
 }

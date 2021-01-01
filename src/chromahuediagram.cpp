@@ -75,7 +75,8 @@ ChromaHueDiagram::ChromaHueDiagram(
     );
 }
 
-ChromaHueDiagram::~ChromaHueDiagram()
+/** @brief Default destructor */
+ChromaHueDiagram::~ChromaHueDiagram() noexcept
 {
 }
 

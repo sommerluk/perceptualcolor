@@ -116,9 +116,28 @@
  * @ref PerceptualColor::ConstPropagatingRawPointer. And, at difference
  * to Qt’s pimpl idiom, it keeps private code strictly private.
  * Note however, that switching later from our current pimpl idiom to
- * the polymorph Qt pimpl idiom would break the binary compatibility. See also
- * https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B
- * and https://accu.org/journals/overload/18/100/love_1718/ for details.
+ * the polymorph Qt pimpl idiom would break the binary
+ * compatibility. See also the document <em>
+ * <a href="https://accu.org/journals/overload/18/100/love_1718/">Interface
+ * Versioning in C++</a></em> and KDE’s information document <em>
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
+ * Binary Compatibility Issues With C++</a></em> and for details.
+ * 
+ * @todo Use <tt>explicit</tt> on all constructors?
+ * 
+ * @todo More members (like <tt>m_rgbColorSpace</tt> could be <tt>const</tt>?!
+ * And maybe some return types of functions could be made const?
+ * 
+ * @todo Inherit the private pimpl implementations from QObject (thought
+ * this might be worse for performance?) to allow easier
+ * <tt>QObject::connect()</tt>?
+ * 
+ * @todo Substitute all pointers by smart pointers?
+ * 
+ * @todo Would it be better to avoid default arguments like
+ * <tt>void test(int i = 0)</tt> as changes require recompilation which
+ * breaks to a certain degree ABI? It the problem for default functions like
+ * <tt>Test() = default</tt> as default constructor similar?
  * 
  * @todo Review all static class functions: Which should be made non-static?
  * (Maybe in the future, it might be necessary to access object data, so
@@ -157,6 +176,7 @@
  *   should the steps simply be bigger?
  * 
  * @todo KDE Frameworks / https://marketplace.qt.io/ ?
+ * https://community.kde.org/Incubator
  * 
  * @todo Provide property bindings as described in 
  * https://www.qt.io/blog/property-bindings-in-qt-6 or not? It is worth
@@ -197,12 +217,7 @@
  * 
  * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
  * be better to require the last LTS release (5.15), just to be compatible if
- * in the future we depend on this? */
-
-/** @brief The namespace of this library.
- * 
- * Everything that is provides in this library is encapsulated within this
- * namespace.
+ * in the future we depend on this?
  * 
  * 
  * @todo This library provides some constexpr in the public API. If now we
@@ -214,40 +229,59 @@
  * with version 1.1.0, doest’t then constexpr x have different values
  * within the library code and within the program code, which might
  * lead to undefined behaviour?
+ * 
  * @todo Test well the scaling for all widgets from 106.25% up to 200%.
+ * 
  * @todo When scaling is used, the icons on the OK button and the
  * Cancel button are ugly. Why isn’t this handled automatically correctly,
  * though on other Qt apps it seems to be handled automatically correctly?
+ * 
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
+ * 
  * @todo Provide more than 8 bit per channel for more precision? 10 bit?
  * 12 bit?
+ * 
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
+ * 
  * @todo Switch to the pimpl idiom? Export symbols like in
  * https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
  * See also http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
  * and https://labjack.com/news/simple-cpp-symbol-visibility-demo
+ * 
  * @todo A program that uses our library could also use LittleCMS itself. If
  * it would use LittleCMS without thread-save API, but using it always in the
  * very same thread which is <em>not</em> the main thread, this could make
  * problems for our library if we use non-thread-save LittleCMS APIs. So
  * best would be that our library uses exclusively <em>thread-save</em>
  * APIs of LittleCMS.
+ * 
  * @todo Qt Designer support for the widgets
+ * 
  * @todo It might be useful to support for all widgets grayed out appearance
  * when they are disabled. Just fade out, maybe with some transparency, and
  * let colors still be visible, would be a bad idea: It would be highly
- * confusing seeing colors, but colors that are wrong. So everything would
- * have to be gray. For @ref ColorPatch and @ref GradientSelector this could
- * be simply the default background, similar to grayed out spin boxes. And for
- * the diagram widgets, only the shape would stay visible, with uniform
- * standard gray colors coming from <tt>QStyle</tt>. The markers might not
+ * confusing seeing colors, but colors that are wrong. So everything
+ * would have to be gray. For @ref PerceptualColor::ColorPatch and
+ * @ref PerceptualColor::GradientSelector this could be simply the default
+ * background, similar to grayed out spin boxes. And for the diagram
+ * widgets, only the shape would stay visible, with uniform standard
+ * gray colors coming from <tt>QStyle</tt>. The markers might not
  * even be displayed at all.
+ * 
  * @todo Follow KDE's <b><a href="https://hig.kde.org/index.html">HIG</a></b>
+ * 
  * @todo Add screenshots of widgets to the documentation
+ * 
  * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
  * also https://phabricator.kde.org/T12359
+ * 
  * @todo Spell checking for the documentation */
+
+/** @brief The namespace of this library.
+ * 
+ * Everything that is provides in this library is encapsulated within this
+ * namespace. */
 namespace PerceptualColor {
 }
 

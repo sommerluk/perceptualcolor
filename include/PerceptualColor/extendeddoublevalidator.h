@@ -29,6 +29,8 @@
 
 #include <QDoubleValidator>
 
+#include "PerceptualColor/constpropagatinguniquepointer.h"
+
 namespace PerceptualColor {
 
 /** @brief The @ref ExtendedDoubleValidator class provides range checking
@@ -46,7 +48,7 @@ class ExtendedDoubleValidator : public QDoubleValidator
      * @sa @ref prefix()
      * @sa @ref setPrefix()
      * @sa @ref prefixChanged()
-     * @sa @ref m_prefix */
+     * @sa @ref ExtendedDoubleValidatorPrivate::m_prefix */
     Q_PROPERTY(QString prefix READ prefix WRITE setPrefix NOTIFY prefixChanged)
 
     /** @brief The suffix of the number.
@@ -54,13 +56,12 @@ class ExtendedDoubleValidator : public QDoubleValidator
      * @sa @ref suffix()
      * @sa @ref setSuffix()
      * @sa @ref suffixChanged()
-     * @sa @ref m_suffix */
+     * @sa @ref ExtendedDoubleValidatorPrivate::m_suffix */
     Q_PROPERTY(QString suffix READ suffix WRITE setSuffix NOTIFY suffixChanged)
 
 public:
     Q_INVOKABLE ExtendedDoubleValidator(QObject *parent = nullptr);
-    /** @brief Default destructor */
-    virtual ~ExtendedDoubleValidator() noexcept override = default;
+    virtual ~ExtendedDoubleValidator() noexcept override;
     /** @brief Getter for property @ref prefix
      *  @returns the property @ref prefix */
     QString prefix() const;
@@ -98,12 +99,18 @@ Q_SIGNALS:
     
 private:
     Q_DISABLE_COPY(ExtendedDoubleValidator)
+
+    class ExtendedDoubleValidatorPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class ExtendedDoubleValidatorPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<ExtendedDoubleValidatorPrivate> d_pointer;
+
     /** @brief Only for unit tests. */
     friend class TestExtendedDoubleValidator;
-    /** @brief Internal storage for property @ref prefix */
-    QString m_prefix;
-    /** @brief Internal storage for property @ref suffix */
-    QString m_suffix;
 };
 
 }

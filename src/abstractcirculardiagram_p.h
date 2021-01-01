@@ -27,6 +27,9 @@
 #ifndef ABSTRACTCIRCULARDIAGRAM_P_H
 #define ABSTRACTCIRCULARDIAGRAM_P_H
 
+// Include the header of the public class of this private implementation.
+#include "PerceptualColor/abstractcirculardiagram.h"
+
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to

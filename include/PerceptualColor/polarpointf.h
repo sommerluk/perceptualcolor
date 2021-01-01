@@ -66,7 +66,13 @@ namespace PerceptualColor {
  * 
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
- */
+ * 
+ * @todo This class is rather a data type than a functional class. Currently,
+ * it does not provide pimpl idiom. And: It is copyable and <tt>final</tt>.
+ * Should it be switched to pimpl or not? Pimpl would be bad for performance,
+ * which matters as this class will get instanciated a lot. On the other
+ * hand, this class has not been often changed during code development,
+ * but you never know? */
 class PolarPointF final
 {
 public:

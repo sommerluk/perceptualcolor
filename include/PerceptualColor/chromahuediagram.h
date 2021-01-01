@@ -110,7 +110,7 @@ public:
         QWidget *parent = nullptr
     );
     /** @brief Default destructor */
-    virtual ~ChromaHueDiagram() override;
+    virtual ~ChromaHueDiagram() noexcept override;
     /** @brief Getter for property @ref color
      *  @returns the property @ref color */
     FullColorDescription color() const;

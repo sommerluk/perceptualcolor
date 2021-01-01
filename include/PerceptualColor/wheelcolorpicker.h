@@ -27,9 +27,10 @@
 #ifndef WHEELCOLORPICKER_H
 #define WHEELCOLORPICKER_H
 
-#include "PerceptualColor/chromalightnessdiagram.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/simplecolorwheel.h"
 
+#include "PerceptualColor/chromalightnessdiagram.h"
 #include <QDebug>
 #include <QPointer>
 
@@ -69,14 +70,15 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
-    /** @brief Default destructor */
-    virtual ~WheelColorPicker() noexcept override = default;
+    virtual ~WheelColorPicker() noexcept override;
     FullColorDescription currentColor();
     void setCurrentColor(const FullColorDescription &newCurrentColorRgb);
 
 Q_SIGNALS:
     /** @brief Signal for currentColor() property */
-    void currentColorChanged(const PerceptualColor::FullColorDescription &newCurrentColor);
+    void currentColorChanged(
+        const PerceptualColor::FullColorDescription &newCurrentColor
+    );
     
 protected:
     virtual void resizeEvent(QResizeEvent* event) override;
@@ -84,13 +86,19 @@ protected:
 
 private:
     Q_DISABLE_COPY(WheelColorPicker)
-    /** @brief A pointer to the inner ChromaLightnessDiagram() widget. */
-    QPointer<ChromaLightnessDiagram> m_chromaLightnessDiagram;
-    void resizeChildWidget();
-    static QSize scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal);
-    
-private Q_SLOTS:
-    void scheduleUpdate();
+
+    class WheelColorPickerPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class WheelColorPickerPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<WheelColorPickerPrivate> d_pointer;
+
+    /** @brief Only for unit tests. */
+    friend class TestWheelColorPicker;
+
 };
 
 }

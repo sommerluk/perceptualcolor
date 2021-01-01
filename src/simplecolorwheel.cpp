@@ -27,8 +27,11 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
-// Own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/simplecolorwheel.h"
+// Second, the private implementation.
+#include "simplecolorwheel_p.h"
 
 #include "PerceptualColor/helper.h"
 #include "PerceptualColor/polarpointf.h"
@@ -36,26 +39,44 @@
 #include <math.h>
 
 #include <QDebug>
+#include <QElapsedTimer>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
 
-#include <QElapsedTimer>
+#include <lcms2.h>
 
 namespace PerceptualColor {
 
 /** @brief Constructor */
-SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) : AbstractCircularDiagram(parent)
+SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
+    AbstractCircularDiagram(parent),
+    d_pointer(new SimpleColorWheelPrivate(this))
 {
     // Setup LittleCMS (must be first thing because other operations rely on working LittleCMS)
-    m_rgbColorSpace = colorSpace;
+    d_pointer->m_rgbColorSpace = colorSpace;
 
     // Simple initialization
     // We don't use the reset methods as they would update the image/pixmap
     // each time, and this could crash if done before everything is
     // initialized.
-    m_hue = Helper::LchDefaults::defaultHue;
-    m_mouseEventActive = false;
+    d_pointer->m_hue = Helper::LchDefaults::defaultHue;
+    d_pointer->m_mouseEventActive = false;
+}
+
+/** @brief Default destructor */
+SimpleColorWheel::~SimpleColorWheel() noexcept
+{
+}
+
+/** @brief Constructor
+ * 
+ * @param backLink Pointer to the object from which <em>this</em> object
+ * is the private implementation. */
+SimpleColorWheel::SimpleColorWheelPrivate::SimpleColorWheelPrivate(
+    SimpleColorWheel *backLink
+) : q_pointer(backLink)
+{
 }
 
 /** @brief The diameter of the widget content
@@ -77,9 +98,11 @@ int SimpleColorWheel::contentDiameter() const
  * @returns “wheel” coordinates: Coordinates in a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel.
  */
-PolarPointF SimpleColorWheel::fromWidgetCoordinatesToWheelCoordinates(const QPoint widgetCoordinates) const
+PolarPointF SimpleColorWheel::SimpleColorWheelPrivate::fromWidgetCoordinatesToWheelCoordinates(
+    const QPoint widgetCoordinates
+) const
 {
-    qreal radius = contentDiameter() / static_cast<qreal>(2);
+    qreal radius = q_pointer->contentDiameter() / static_cast<qreal>(2);
     return PolarPointF(
         QPointF(widgetCoordinates.x() - radius, radius - widgetCoordinates.y())
     );
@@ -91,9 +114,11 @@ PolarPointF SimpleColorWheel::fromWidgetCoordinatesToWheelCoordinates(const QPoi
  * center is exactly in the middle of the displayed wheel.
  * @returns coordinates in the coordinate system of this widget
  */
-QPointF SimpleColorWheel::fromWheelCoordinatesToWidgetCoordinates(const PolarPointF wheelCoordinates) const
+QPointF SimpleColorWheel::SimpleColorWheelPrivate::fromWheelCoordinatesToWidgetCoordinates(
+    const PolarPointF wheelCoordinates
+) const
 {
-    qreal radius = contentDiameter() / static_cast<qreal>(2);
+    qreal radius = q_pointer->contentDiameter() / static_cast<qreal>(2);
     QPointF temp = wheelCoordinates.toCartesian();
     temp.setX(temp.x() + radius);
     temp.setY(radius - temp.y());
@@ -113,13 +138,15 @@ QPointF SimpleColorWheel::fromWheelCoordinatesToWidgetCoordinates(const PolarPoi
 void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
 {
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
-    PolarPointF myPolarPoint = fromWidgetCoordinatesToWheelCoordinates(event->pos());
+    PolarPointF myPolarPoint =
+        d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if ( Helper::inRange<qreal>(radius-m_wheelThickness, myPolarPoint.radial(), radius) ) {
         setFocus(Qt::MouseFocusReason);
-        m_mouseEventActive = true;
+        d_pointer->m_mouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window
+        // in KDE's Breeze widget style works
         event->ignore();
     }
 }
@@ -137,9 +164,11 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
  */
 void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_mouseEventActive) {
+    if (d_pointer->m_mouseEventActive) {
         setHue(
-            fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree()
+            d_pointer->fromWidgetCoordinatesToWheelCoordinates(
+                event->pos()
+            ).angleDegree()
         );
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze widget style works
@@ -155,10 +184,12 @@ void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
  */
 void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_mouseEventActive) {
-        m_mouseEventActive = false;
+    if (d_pointer->m_mouseEventActive) {
+        d_pointer->m_mouseEventActive = false;
         setHue(
-            fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree()
+            d_pointer->fromWidgetCoordinatesToWheelCoordinates(
+                event->pos()
+            ).angleDegree()
         );
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze widget style works
@@ -182,16 +213,19 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
     // TODO What is a reasonable value for this?
     static constexpr qreal wheelStep = 5;
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
-    PolarPointF myPolarPoint = fromWidgetCoordinatesToWheelCoordinates(event->pos());
+    PolarPointF myPolarPoint =
+        d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
         /* Do nothing while mouse movement is tracked anyway. This would be confusing. */
-        (!m_mouseEventActive) &&
+        (!d_pointer->m_mouseEventActive) &&
         /* Only react on wheel events when its in the wheel ribbon or in the inner hole. */
         (myPolarPoint.radial() <= radius) &&
         /* Only react on good old vertical wheels, and not on horizontal wheels */
         (event->angleDelta().y() != 0)
     ) {
-        setHue(m_hue + Helper::standardWheelSteps(event) * wheelStep);
+        setHue(
+            d_pointer->m_hue + Helper::standardWheelSteps(event) * wheelStep
+        );
     } else {
         event->ignore();
     }
@@ -217,16 +251,16 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
     constexpr qreal bigWheelStep = 15;
     switch (event->key()) {
         case Qt::Key_Plus: 
-            setHue(m_hue + wheelStep);
+            setHue(d_pointer->m_hue + wheelStep);
             break;
         case Qt::Key_Minus:
-            setHue(m_hue - wheelStep);
+            setHue(d_pointer->m_hue - wheelStep);
             break;
         case Qt::Key_Insert:
-            setHue(m_hue + bigWheelStep);
+            setHue(d_pointer->m_hue + bigWheelStep);
             break;
         case Qt::Key_Delete:
-            setHue(m_hue - bigWheelStep);
+            setHue(d_pointer->m_hue - bigWheelStep);
             break;
         default:
             /* Quote from Qt documentation:
@@ -295,24 +329,24 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     QPainter painter(&paintBuffer);
 
     // paint the wheel from the cache
-    if (!m_wheelImageReady) {
-        updateWheelImage();
+    if (!d_pointer->m_wheelImageReady) {
+        d_pointer->updateWheelImage();
     }
-    painter.drawImage(0, 0, m_wheelImage);
+    painter.drawImage(0, 0, d_pointer->m_wheelImage);
 
     // paint the marker
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
     // get widget coordinates for our marker
-    QPointF myMarkerInner = fromWheelCoordinatesToWidgetCoordinates(
+    QPointF myMarkerInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
         PolarPointF(
             radius - m_wheelThickness,
-            m_hue
+            d_pointer->m_hue
         )
     );
-    QPointF myMarkerOuter = fromWheelCoordinatesToWidgetCoordinates(
+    QPointF myMarkerOuter = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
         PolarPointF(
             radius,
-            m_hue
+            d_pointer->m_hue
         )
     );
     // draw the line
@@ -356,7 +390,7 @@ void SimpleColorWheel::resizeEvent(QResizeEvent* event)
     // ChromaLightnessDiagram’s resize() call done here within the child class
     // WheelColorPicker. This situation is relevant for the real-world usage,
     // when the user scales the window only horizontally or only vertically.
-    m_wheelImageReady = false;
+    d_pointer->m_wheelImageReady = false;
     /* As by Qt documentation:
      *     “The widget will be erased and receive a paint event immediately
      *      after processing the resize event. No drawing need be (or should
@@ -365,7 +399,7 @@ void SimpleColorWheel::resizeEvent(QResizeEvent* event)
 
 qreal SimpleColorWheel::hue() const
 {
-    return m_hue;
+    return d_pointer->m_hue;
 }
 
 qreal SimpleColorWheel::wheelRibbonChroma() const
@@ -390,9 +424,9 @@ qreal SimpleColorWheel::wheelRibbonChroma() const
 void SimpleColorWheel::setHue(const qreal newHue)
 {
     qreal temp = PolarPointF::normalizedAngleDegree(newHue);
-    if (m_hue != temp) {
-        m_hue = temp;
-        Q_EMIT hueChanged(m_hue);
+    if (d_pointer->m_hue != temp) {
+        d_pointer->m_hue = temp;
+        Q_EMIT hueChanged(d_pointer->m_hue);
         update();
     }
 }
@@ -446,7 +480,7 @@ QSize SimpleColorWheel::minimumSizeHint() const
  * This function does not repaint the widget! After calling this function,
  * you have to call manually <tt>update()</tt> to schedule a re-paint of the
  * widget, if you wish so. */
-void SimpleColorWheel::updateWheelImage()
+void SimpleColorWheel::SimpleColorWheelPrivate::updateWheelImage()
 {
     if (m_wheelImageReady) {
         return;
@@ -455,11 +489,11 @@ void SimpleColorWheel::updateWheelImage()
     m_wheelImage = generateWheelImage(
         m_rgbColorSpace,
         // TODO How to treat QSize(0, 0)? Also in ChromaLightnessDiagram!!
-        qMin(size().width(), size().height()),
-        border(),
+        qMin(q_pointer->size().width(), q_pointer->size().height()),
+        q_pointer->border(),
         m_wheelThickness,
         Helper::LchDefaults::defaultLightness,
-        wheelRibbonChroma()
+        q_pointer->wheelRibbonChroma()
     );
     m_wheelImageReady = true;
 }

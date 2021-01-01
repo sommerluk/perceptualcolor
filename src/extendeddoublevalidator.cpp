@@ -27,15 +27,23 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
-// Own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/extendeddoublevalidator.h"
+// Second, the private implementation.
+#include "extendeddoublevalidator_p.h"
 
 namespace PerceptualColor {
 
 /** @brief Default constructor */
-ExtendedDoubleValidator::ExtendedDoubleValidator(
-    QObject *parent
-) : QDoubleValidator(parent)
+ExtendedDoubleValidator::ExtendedDoubleValidator(QObject *parent) :
+    QDoubleValidator(parent),
+    d_pointer(new ExtendedDoubleValidatorPrivate)
+{
+}
+
+/** @brief Destructor */
+ExtendedDoubleValidator::~ExtendedDoubleValidator() noexcept
 {
 }
 
@@ -43,14 +51,14 @@ ExtendedDoubleValidator::ExtendedDoubleValidator(
 // and its getters are in the header)
 QString ExtendedDoubleValidator::prefix() const
 {
-    return m_prefix;
+    return d_pointer->m_prefix;
 }
 
 /** @brief Set the @ref prefix property. */
 void ExtendedDoubleValidator::setPrefix(const QString &prefix)
 {
-    if (prefix != m_prefix) {
-        m_prefix = prefix;
+    if (prefix != d_pointer->m_prefix) {
+        d_pointer->m_prefix = prefix;
         Q_EMIT prefixChanged(prefix);
     }
 }
@@ -58,8 +66,8 @@ void ExtendedDoubleValidator::setPrefix(const QString &prefix)
 /** @brief Set the @ref suffix property. */
 void ExtendedDoubleValidator::setSuffix(const QString &suffix)
 {
-    if (suffix != m_suffix) {
-        m_suffix = suffix;
+    if (suffix != d_pointer->m_suffix) {
+        d_pointer->m_suffix = suffix;
         Q_EMIT suffixChanged(suffix);
     }
 }
@@ -68,7 +76,7 @@ void ExtendedDoubleValidator::setSuffix(const QString &suffix)
 // and its getters are in the header)
 QString ExtendedDoubleValidator::suffix() const
 {
-    return m_suffix;
+    return d_pointer->m_suffix;
 }
 
 QValidator::State ExtendedDoubleValidator::validate(
@@ -92,17 +100,17 @@ QValidator::State ExtendedDoubleValidator::validate(
     //     “All functions except isNull() treat null strings the same
     //      as empty strings.”
     // This is apparently wrong (at least for Qt 5).
-    if (!m_prefix.isEmpty()) {
-        if (myInput.startsWith(m_prefix)) {
-            myInput.remove(0, m_prefix.size());
-            myPos -= m_prefix.size();
+    if (!d_pointer->m_prefix.isEmpty()) {
+        if (myInput.startsWith(d_pointer->m_prefix)) {
+            myInput.remove(0, d_pointer->m_prefix.size());
+            myPos -= d_pointer->m_prefix.size();
         } else {
             return QValidator::State::Invalid;
         }
     }
-    if (!m_suffix.isEmpty()) {
-        if (myInput.endsWith(m_suffix)) {
-            myInput.chop(m_suffix.size());
+    if (!d_pointer->m_suffix.isEmpty()) {
+        if (myInput.endsWith(d_pointer->m_suffix)) {
+            myInput.chop(d_pointer->m_suffix.size());
         } else {
             return QValidator::State::Invalid;
         }
@@ -112,8 +120,8 @@ QValidator::State ExtendedDoubleValidator::validate(
     // Following the Qt documentation, QDoubleValidator::validate() is allowed
     // and intended to make changes the arguments passed by reference. We
     // have to write back these changes also in this reimplemented function.
-    input = m_prefix + myInput + m_suffix;
-    pos = myPos + m_prefix.size();
+    input = d_pointer->m_prefix + myInput + d_pointer->m_suffix;
+    pos = myPos + d_pointer->m_prefix.size();
     
     return result;
 }

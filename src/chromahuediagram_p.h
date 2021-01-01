@@ -27,6 +27,8 @@
 #ifndef CHROMAHUEDIAGRAM_P_H
 #define CHROMAHUEDIAGRAM_P_H
 
+// Include the header of the public class of this private implementation.
+#include "PerceptualColor/chromahuediagram.h"
 #include "constpropagatingrawpointer.h"
 
 namespace PerceptualColor {
@@ -42,7 +44,6 @@ public:
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~ChromaHueDiagramPrivate() noexcept = default;
-
 
     // Member variables
     /** @brief The border around the round diagram.

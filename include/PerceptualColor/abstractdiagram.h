@@ -28,6 +28,7 @@
 #define ABSTRACTDIAGRAM_H
 
 #include <QFrame>
+
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor {

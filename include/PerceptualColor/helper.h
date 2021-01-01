@@ -53,6 +53,8 @@ namespace PerceptualColor {
  * This namespace groups together various smaller elements that are used
  * across the library but do not belong strictly to one of the classes.
  * 
+ * @todo pimpl idiom for the classes/structs of this namespace?
+ * 
  * @todo Decide for each member of this namespace if it can be moved into
  * a class because it’s only used in this single class.
  * 

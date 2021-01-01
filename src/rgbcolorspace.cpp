@@ -27,8 +27,11 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
-// Own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/rgbcolorspace.h"
+// Second, the private implementation.
+#include "rgbcolorspace_p.h"
 
 #include "PerceptualColor/helper.h"
 
@@ -40,7 +43,9 @@ namespace PerceptualColor {
  * 
  * Creates an sRGB color space.
  */
-RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
+RgbColorSpace::RgbColorSpace(QObject *parent) :
+    QObject(parent),
+    d_pointer(new RgbColorSpacePrivate)
 {
     // TODO The creation of profiles and transforms might fail!
     // TODO How to handle that?
@@ -52,19 +57,19 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
     );
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-    m_cmsInfoDescription = getInformationFromProfile(
+    d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(
         rgbProfileHandle,
         cmsInfoDescription
     );
-    m_cmsInfoCopyright = getInformationFromProfile(
+    d_pointer->m_cmsInfoCopyright = d_pointer->getInformationFromProfile(
         rgbProfileHandle,
         cmsInfoCopyright
     );
-    m_cmsInfoManufacturer = getInformationFromProfile(
+    d_pointer->m_cmsInfoManufacturer = d_pointer->getInformationFromProfile(
         rgbProfileHandle,
         cmsInfoManufacturer
     );
-    m_cmsInfoModel = getInformationFromProfile(
+    d_pointer->m_cmsInfoModel = d_pointer->getInformationFromProfile(
         rgbProfileHandle,
         cmsInfoModel
     );
@@ -72,7 +77,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
     // used, not when an actual external ICC profile is used.
 //    m_cmsInfoDescription = tr("sRGB"); // TODO ???
     // Create the transforms
-    m_transformLabToRgbHandle = cmsCreateTransform(
+    d_pointer->m_transformLabToRgbHandle = cmsCreateTransform(
         labProfileHandle,             // input profile handle
         TYPE_Lab_DBL,                 // input buffer format
         rgbProfileHandle,             // output profile handle
@@ -80,7 +85,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
         0                             // flags
     );
-    m_transformLabToRgb16Handle = cmsCreateTransform(
+    d_pointer->m_transformLabToRgb16Handle = cmsCreateTransform(
         labProfileHandle,             // input profile handle
         TYPE_Lab_DBL,                 // input buffer format
         rgbProfileHandle,             // output profile handle
@@ -88,7 +93,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
         0                             // flags
     );
-    m_transformRgbToLabHandle = cmsCreateTransform(
+    d_pointer->m_transformRgbToLabHandle = cmsCreateTransform(
         rgbProfileHandle,             // input profile handle
         TYPE_RGB_DBL,                 // input buffer format
         labProfileHandle,             // output profile handle
@@ -109,13 +114,13 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
     while (!inGamut(candidate) && (candidate.L < 100)) {
         candidate.L += Helper::gamutPrecision;
     }
-    m_blackpointL = candidate.L;
+    d_pointer->m_blackpointL = candidate.L;
     candidate.L = 100;
     while (!inGamut(candidate) && (candidate.L > 0)) {
         candidate.L -= Helper::gamutPrecision;
     }
-    m_whitepointL = candidate.L;
-    if (m_whitepointL <= m_blackpointL) {
+    d_pointer->m_whitepointL = candidate.L;
+    if (d_pointer->m_whitepointL <= d_pointer->m_blackpointL) {
         qCritical() << "Unable to find blackpoint and whitepoint on gray axis.";
         throw 0;
     }
@@ -124,9 +129,9 @@ RgbColorSpace::RgbColorSpace(QObject *parent) : QObject(parent)
 /** @brief Destructor */
 RgbColorSpace::~RgbColorSpace() noexcept
 {
-    cmsDeleteTransform(m_transformLabToRgb16Handle);
-    cmsDeleteTransform(m_transformLabToRgbHandle);
-    cmsDeleteTransform(m_transformRgbToLabHandle);
+    cmsDeleteTransform(d_pointer->m_transformLabToRgb16Handle);
+    cmsDeleteTransform(d_pointer->m_transformLabToRgbHandle);
+    cmsDeleteTransform(d_pointer->m_transformRgbToLabHandle);
 }
 
 /** @brief The darkest in-gamut point on the L* axis.
@@ -134,7 +139,7 @@ RgbColorSpace::~RgbColorSpace() noexcept
  * @sa whitepointL */
 qreal RgbColorSpace::blackpointL() const
 {
-    return m_blackpointL;
+    return d_pointer->m_blackpointL;
 }
 
 /** @brief The lightest in-gamut point on the L* axis.
@@ -142,7 +147,7 @@ qreal RgbColorSpace::blackpointL() const
  * @sa blackpointL() */
 qreal RgbColorSpace::whitepointL() const
 {
-    return m_whitepointL;
+    return d_pointer->m_whitepointL;
 }
 
 /** @brief Calculates the Lab value
@@ -168,7 +173,12 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
 cmsCIELab RgbColorSpace::colorLab(const Helper::cmsRGB &rgb) const
 {
     cmsCIELab lab;
-    cmsDoTransform(m_transformRgbToLabHandle, &rgb, &lab, 1); // convert exactly 1 value
+    cmsDoTransform(
+        d_pointer->m_transformRgbToLabHandle, // handle to transform function
+        &rgb,                                 // input
+        &lab,                                 // output
+        1                                     // convert exactly 1 value
+    ); 
     return lab;
 }
 
@@ -182,7 +192,12 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 {
     QColor temp; // By default, without initialization this is an invalid color
     Helper::cmsRGB rgb;
-    cmsDoTransform(m_transformLabToRgbHandle, &Lab, &rgb, 1); // convert exactly 1 value
+    cmsDoTransform(
+        d_pointer->m_transformLabToRgbHandle, // handle to transform function
+        &Lab,                                 // input
+        &rgb,                                 // output
+        1                                     // convert exactly 1 value
+    );
     if (Helper::inRange<cmsFloat64Number>(0, rgb.red, 1) &&
         Helper::inRange<cmsFloat64Number>(0, rgb.green, 1) &&
         Helper::inRange<cmsFloat64Number>(0, rgb.blue, 1)) {
@@ -209,7 +224,12 @@ QColor RgbColorSpace::colorRgb(const cmsCIELCh &LCh) const
 Helper::cmsRGB RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
 {
     cmsUInt16Number rgb_int[3];
-    cmsDoTransform(m_transformLabToRgb16Handle, &Lab, rgb_int, 1); // convert exactly 1 value
+    cmsDoTransform(
+        d_pointer->m_transformLabToRgb16Handle, // handle to transform function
+        &Lab,                                   // input
+        rgb_int,                                // output
+        1                                       // convert exactly 1 value
+    );
     Helper::cmsRGB temp;
     temp.red = rgb_int[0] / static_cast<qreal>(65535);
     temp.green = rgb_int[1] / static_cast<qreal>(65535);
@@ -289,7 +309,12 @@ bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
 {
     Helper::cmsRGB rgb;
     
-    cmsDoTransform(m_transformLabToRgbHandle, &Lab, &rgb, 1); // convert exactly 1 value
+    cmsDoTransform(
+        d_pointer->m_transformLabToRgbHandle, // handle to transform function
+        &Lab,                                 // input
+        &rgb,                                 // output
+        1                                     // convert exactly 1 value
+    );
 
     return (
         Helper::inRange<cmsFloat64Number>(0, rgb.red, 1) &&
@@ -300,23 +325,23 @@ bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
 
 QString RgbColorSpace::profileInfoCopyright() const
 {
-    return m_cmsInfoCopyright;
+    return d_pointer->m_cmsInfoCopyright;
 }
 
 /** Returns the description of the RGB color space. */
 QString RgbColorSpace::profileInfoDescription() const
 {
-    return m_cmsInfoDescription;
+    return d_pointer->m_cmsInfoDescription;
 }
 
 QString RgbColorSpace::profileInfoManufacturer() const
 {
-    return m_cmsInfoManufacturer;
+    return d_pointer->m_cmsInfoManufacturer;
 }
 
 QString RgbColorSpace::profileInfoModel() const
 {
-    return m_cmsInfoModel;
+    return d_pointer->m_cmsInfoModel;
 }
 
 /** @brief Get information from an ICC profile via LittleCMS
@@ -329,7 +354,7 @@ QString RgbColorSpace::profileInfoModel() const
  * available in this locale, it silently falls back to another available
  * localization. Note that the returned QString() might be empty if the
  * requested information is not available in the ICC profile. */
-QString RgbColorSpace::getInformationFromProfile(
+QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     cmsHPROFILE profileHandle,
     cmsInfoType infoType
 )
@@ -358,7 +383,6 @@ QString RgbColorSpace::getInformationFromProfile(
             // because the array was yet initialized
         }
     }
-
     // Calculate the size of the buffer that we have to provide for
     // cmsGetProfileInfo in order to return a value.
     cmsUInt32Number resultLength = cmsGetProfileInfo(

@@ -24,52 +24,39 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#ifndef EXTENDEDDOUBLEVALIDATOR_P_H
+#define EXTENDEDDOUBLEVALIDATOR_P_H
 
-// First included header is the public header of the class we are testing;
-// this forces the header to be self-contained.
-#include "PerceptualColor/xxx.h"
-#include "xxx_p.h"
-
-#include <QtTest>
+// Include the header of the public class of this private implementation.
+#include "PerceptualColor/extendeddoublevalidator.h"
+#include "constpropagatingrawpointer.h"
 
 namespace PerceptualColor {
 
-class TestXXX : public QObject
+/** @brief Private implementation within the <em>Pointer to
+ *  implementation</em> idiom */
+class ExtendedDoubleValidator::ExtendedDoubleValidatorPrivate final
 {
 
-    Q_OBJECT
-
 public:
-    TestXXX(QObject *parent = nullptr) : QObject(parent) {
-    }
+    /** @brief Constructor */
+    ExtendedDoubleValidatorPrivate() = default;
+    /** @brief Default destructor
+     * 
+     * The destructor is non-<tt>virtual</tt> because
+     * the class as a whole is <tt>final</tt>. */
+    ~ExtendedDoubleValidatorPrivate() noexcept = default;
 
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first test function is executed
-    }
+    /** @brief Internal storage for property @ref prefix */
+    QString m_prefix;
+    /** @brief Internal storage for property @ref suffix */
+    QString m_suffix;
 
-    void cleanupTestCase() {
-        // Called after the last test function was executed
-    }
+private:
+    Q_DISABLE_COPY(ExtendedDoubleValidatorPrivate)
 
-    void init() {
-        // Called before each test function is executed
-    }
-
-    void cleanup() {
-        // Called after every test function
-    }
-
-    void testDef() {
-        // TODO implement me!
-    }
 };
 
 }
 
-QTEST_MAIN(PerceptualColor::TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+#endif // EXTENDEDDOUBLEVALIDATOR_P_H

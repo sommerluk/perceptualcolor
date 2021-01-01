@@ -28,14 +28,11 @@
 #define SIMPLECOLORWHEEL_H
 
 #include <QImage>
-#include <QPointer>
 #include <QWidget>
 
 #include "PerceptualColor/abstractcirculardiagram.h"
-#include "PerceptualColor/polarpointf.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/rgbcolorspace.h"
-
-#include <lcms2.h>
 
 namespace PerceptualColor {
 
@@ -74,8 +71,7 @@ public:
         PerceptualColor::RgbColorSpace *colorSpace,
         QWidget *parent = nullptr
     );
-    /** @brief Default destructor */
-    virtual ~SimpleColorWheel() noexcept override = default;
+    virtual ~SimpleColorWheel() noexcept override;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
@@ -114,38 +110,17 @@ protected:
 private:
     Q_DISABLE_COPY(SimpleColorWheel)
 
-    /** @brief If a mouse event is active
+    class SimpleColorWheelPrivate;
+    /** @brief Declare the private implementation as friend class.
      * 
-     * Holds if currently a mouse event is active or not.
-     * @sa mousePressEvent()
-     * @sa mouseMoveEvent()
-     * @sa mouseReleaseEvent()
-     */ 
-    bool m_mouseEventActive;
-    /** @brief A cache for the wheel picture as QImage. Might be outdated!
-     *  @sa updateWheelImage() 
-     *  @sa m_wheelImageReady() */
-    QImage m_wheelImage;
-    /** Holds whether or not m_wheelImage is up-to-date.
-     *  @sa refreshWheelImage()
-     *  @sa updateWheelImage
-     * @todo It might be better to erase m_wheelImageReady when it gets
-     * invalid (and get rid of m_wheelImageReady). So memory can be
-     * freed more quickly, without having outdated data taking space
-     * on the heap. */
-    bool m_wheelImageReady = false;
-    /** @brief Internal storage of the hue() property */
-    qreal m_hue;
-    /** @brief Pointer to RgbColorSpace() object */
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class SimpleColorWheelPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<SimpleColorWheelPrivate> d_pointer;
 
-    QPointF fromWheelCoordinatesToWidgetCoordinates(
-        const PolarPointF wheelCoordinates
-    ) const;
-    PolarPointF fromWidgetCoordinatesToWheelCoordinates(
-        const QPoint widgetCoordinates
-    ) const;
-    void updateWheelImage();
+    /** @brief Only for unit tests. */
+    friend class TestColorDialog;
 
 };
 

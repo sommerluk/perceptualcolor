@@ -28,9 +28,8 @@
 #define MULTISPINBOX_H
 
 #include <QAbstractSpinBox>
-#include <QPointer>
 
-#include "PerceptualColor/extendeddoublevalidator.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor {
     
@@ -148,7 +147,7 @@ public:
     
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
     /** @brief Default destructor */
-    virtual ~MultiSpinBox() noexcept override = default;
+    virtual ~MultiSpinBox() noexcept override;
     virtual QSize minimumSizeHint() const override;
     Q_INVOKABLE QList<MultiSpinBox::SectionData> sections() const;
     Q_INVOKABLE void setSections (
@@ -166,66 +165,18 @@ protected:
 private:
     Q_DISABLE_COPY(MultiSpinBox)
 
+    class MultiSpinBoxPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class MultiSpinBoxPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<MultiSpinBoxPrivate> d_pointer;
+
     /** @brief Only for unit tests. */
     friend class TestMultiSpinBox;
 
-    /** @brief Holds the data for the sections.
-     * 
-     * This list is guaranteed to contain at least <em>one</em> section.
-     * 
-     * @sa @ref sections()
-     * @sa @ref setSections() */
-    QList<MultiSpinBox::SectionData> m_sections;
-    /** @brief Holds the index of the currently selected section.
-     * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue
-     * @sa @ref setCurrentIndexWithoutUpdatingText */
-    int m_currentIndex = 0;
-    /** @brief The string of everything <em>after</em> the value of the
-     * current section.
-     * 
-     * This includes the suffix of the current section and everything
-     * (prefixes, values and suffixes) of all sections that come after
-     * the current sections. */
-    QString m_textAfterCurrentValue;
-    /** @brief The string of everything <em>before</em> the value of the
-     * current section.
-     * 
-     * This includes everything (prefixes, values and suffixes) of all
-     * sections that come before the current section, and the prefix
-     * of the current section. */
-    QString m_textBeforeCurrentValue;
-    /** @brief The string of the value of the current section. */
-    QString m_textOfCurrentValue;
-    /** @brief The validator for the <tt>QLineEdit</tt>.
-     * 
-     * This validator allows changes only to the <em>current</em> section.
-     * 
-     * If the current section changes, also this validator’s configuration
-     * will be adapted to cover the new current section.
-     * 
-     * @note It is <em>not</em> possible to change various values at the
-     * same time, for example by marking all the current text and use
-     * Ctrl-V to past a complete new value from the clipbord. This would
-     * be impossible to parse reliably, because the prefixes and suffixes
-     * of each section might contain (localized) digits that would be
-     * difficult to differenciate from the actual value. */
-    QPointer<ExtendedDoubleValidator> m_validator;
-
-    static MultiSpinBox::SectionData fixedSection(
-        const MultiSpinBox::SectionData &section
-    );
-    QString formattedValue(const SectionData &mySection) const;
-    bool isCursorPositionAtCurrentSectionValue(
-        const int cursorPosition
-    ) const;
-    void setCurrentIndexAndUpdateTextAndSelectValue(int newIndex = 0);
-    void setCurrentIndexToZeroAndUpdateTextAndSelectValue();
-    void setCurrentIndexWithoutUpdatingText(int newIndex);
-    void updatePrefixValueSuffixText();
-
-private Q_SLOTS:
-    void reactOnCursorPositionChange(const int oldPos, const int newPos);
-    void updateCurrentValueFromText(const QString &lineEditText);
 };
 
 QDebug operator<<(

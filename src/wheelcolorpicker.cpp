@@ -27,8 +27,11 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
-// Own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/wheelcolorpicker.h"
+// Second, the private implementation.
+#include "wheelcolorpicker_p.h"
 
 #include <math.h>
 
@@ -43,23 +46,40 @@ namespace PerceptualColor {
 WheelColorPicker::WheelColorPicker(
     PerceptualColor::RgbColorSpace *colorSpace,
     QWidget *parent
-) : SimpleColorWheel(colorSpace, parent)
+) :
+    SimpleColorWheel(colorSpace, parent),
+    d_pointer(new WheelColorPickerPrivate(this))
 {
     
-    m_chromaLightnessDiagram = new ChromaLightnessDiagram(colorSpace, this);
-    resizeChildWidget();
-    m_chromaLightnessDiagram->setHue(hue());
-    m_chromaLightnessDiagram->show();
-    m_chromaLightnessDiagram->setFocusPolicy(Qt::FocusPolicy::ClickFocus); // TODO Why not just inherit TabFocus? But apparently it works! Why?
-    m_chromaLightnessDiagram->setFocusProxy(this);
+    d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(colorSpace, this);
+    d_pointer->resizeChildWidget();
+    d_pointer->m_chromaLightnessDiagram->setHue(hue());
+    d_pointer->m_chromaLightnessDiagram->show();
+    d_pointer->m_chromaLightnessDiagram->setFocusPolicy(Qt::FocusPolicy::ClickFocus); // TODO Why not just inherit TabFocus? But apparently it works! Why?
+    d_pointer->m_chromaLightnessDiagram->setFocusProxy(this);
     connect(
         this, &WheelColorPicker::hueChanged,
-        m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue
+        d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue
     );
     connect(
-        m_chromaLightnessDiagram, &ChromaLightnessDiagram::colorChanged,
+        d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::colorChanged,
         this, &WheelColorPicker::currentColorChanged
     );
+}
+
+/** @brief Default destructor */
+WheelColorPicker::~WheelColorPicker() noexcept
+{
+}
+
+/** @brief Constructor
+ * 
+ * @param backLink Pointer to the object from which <em>this</em> object
+ * is the private implementation. */
+WheelColorPicker::WheelColorPickerPrivate::WheelColorPickerPrivate(
+    WheelColorPicker *backLink
+) : q_pointer(backLink)
+{
 }
 
 // TODO This widget and its child should be a unit: Only one focus, and all keyboard and mouse events apply to both widgets. But not two focus indicators! The current solution has a focusInEvent and focusOutEvent reimplementation and a focusChanged() signal which does not connect to update() and requires scheduleUpdate() and still shows two focus indicators. Quite a hack. Find a better solution!
@@ -73,13 +93,17 @@ WheelColorPicker::WheelColorPicker(
 void WheelColorPicker::resizeEvent(QResizeEvent* event)
 {
     SimpleColorWheel::resizeEvent(event);
-    resizeChildWidget();
+    d_pointer->resizeChildWidget();
 }
 
-/** Convenience slot that calls update() on the base implementation. */
-void WheelColorPicker::scheduleUpdate()
+/** Convenience slot that calls update() on the base implementation.
+ * 
+ * @todo This slot exists as a workaround because connecting directly
+ * didn’t work before using pimpl idiom. Now that we use pimpl idiom,
+ * maybe it works without this class! */
+void WheelColorPicker::WheelColorPickerPrivate::scheduleUpdate()
 {
-    update();
+    q_pointer->update();
 }
 
 /** @brief Scale a rectangle to a given diagonal line length
@@ -92,7 +116,10 @@ void WheelColorPicker::scheduleUpdate()
  * invalid size if oldRectangle had a surface of 0. The result is rounded
  * the next smaller integer!
  */
-QSize WheelColorPicker::scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal)
+QSize WheelColorPicker::WheelColorPickerPrivate::scaleRectangleToDiagonal(
+    const QSize oldRectangle,
+    const qreal newDiagonal
+)
 {
     if (oldRectangle.isEmpty()) {
         return QSize();
@@ -126,7 +153,7 @@ void WheelColorPicker::keyPressEvent(QKeyEvent *event)
              * because ChromaLightnessDiagram() leaves treatment of non-handled
              * keys up to the parent widget, which is _this_ widget. This would
              * make an infinite recursion. */
-            QCoreApplication::sendEvent(m_chromaLightnessDiagram, event);
+            QCoreApplication::sendEvent(d_pointer->m_chromaLightnessDiagram, event);
             break;
         default:
             SimpleColorWheel::keyPressEvent(event);
@@ -139,10 +166,10 @@ void WheelColorPicker::keyPressEvent(QKeyEvent *event)
  * Updates the size of the ChromaLightnessDiagram() child widget: m_chromaLightnessDiagram.
  * It stays in the interior of the color wheel.
  */
-void WheelColorPicker::resizeChildWidget()
+void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidget()
 {
     int diagonal = qMax(
-        contentDiameter() - 2 * (m_wheelThickness + border()),
+        q_pointer->contentDiameter() - 2 * (m_wheelThickness + q_pointer->border()),
         0
     );
     // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to
@@ -152,7 +179,7 @@ void WheelColorPicker::resizeChildWidget()
         diagonal
     );
     m_chromaLightnessDiagram->resize(newChromaLightnessDiagramSize);
-    qreal radius = static_cast<qreal>(contentDiameter()) / 2;
+    qreal radius = static_cast<qreal>(q_pointer->contentDiameter()) / 2;
     m_chromaLightnessDiagram->move(
         // TODO Does qRound make sense here? Does it the right thing (pixel-wise)?
         qRound(radius - newChromaLightnessDiagramSize.width() / 2.0),
@@ -162,13 +189,15 @@ void WheelColorPicker::resizeChildWidget()
 
 FullColorDescription WheelColorPicker::currentColor()
 {
-    return m_chromaLightnessDiagram->color();
+    return d_pointer->m_chromaLightnessDiagram->color();
 }
 
 /** @brief Setter for currentColorRgb() property */
-void WheelColorPicker::setCurrentColor(const FullColorDescription &newCurrentColor)
+void WheelColorPicker::setCurrentColor(
+    const FullColorDescription &newCurrentColor
+)
 {
-    m_chromaLightnessDiagram->setColor(newCurrentColor);
+    d_pointer->m_chromaLightnessDiagram->setColor(newCurrentColor);
     setHue(newCurrentColor.toLch().h);
 }
 

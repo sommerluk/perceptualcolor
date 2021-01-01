@@ -24,50 +24,51 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ALPHASELECTOR_P_H
-#define ALPHASELECTOR_P_H
+#ifndef WHEELCOLORPICKER_P_H
+#define WHEELCOLORPICKER_P_H
 
 // Include the header of the public class of this private implementation.
-#include "PerceptualColor/alphaselector.h"
-#include "constpropagatingrawpointer.h"
-
-#include "PerceptualColor/gradientselector.h"
-
-#include <QDoubleSpinBox>
-#include <QPointer>
+#include "PerceptualColor/wheelcolorpicker.h"
+#include "wheelcolorpicker_p.h"
 
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class AlphaSelector::AlphaSelectorPrivate final
+class WheelColorPicker::WheelColorPickerPrivate final
 {
 public:
-    AlphaSelectorPrivate(AlphaSelector *backLink);
+    WheelColorPickerPrivate(WheelColorPicker *backLink);
     /** @brief Default destructor
      * 
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
-    ~AlphaSelectorPrivate() noexcept = default;
+    ~WheelColorPickerPrivate() noexcept = default;
 
-    qreal m_alpha;
-    FullColorDescription m_color;
-    QPointer<QDoubleSpinBox> m_doubleSpinBox;
-    QPointer<GradientSelector> m_gradientSelector;
-    NumberFormat m_representation;
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+    /** @brief A pointer to the inner ChromaLightnessDiagram() widget. */
+    QPointer<ChromaLightnessDiagram> m_chromaLightnessDiagram;
 
+    void resizeChildWidget();
+    static QSize scaleRectangleToDiagonal(
+        const QSize oldRectangle,
+        const qreal newDiagonal
+    );
+    
 public Q_SLOTS:
-    void setAlphaFromRepresentationFormat(qreal newAlphaRepresentation);
+    void scheduleUpdate();
 
 private:
-    Q_DISABLE_COPY(AlphaSelectorPrivate)
+    Q_DISABLE_COPY(WheelColorPickerPrivate)
     
     /** @brief Pointer to the object from which <em>this</em> object
-     *  is the private implementation. */
-    ConstPropagatingRawPointer<AlphaSelector> q_pointer;
+     *  is the private implementation.
+     * 
+     * @todo This pointer should have the type
+     * @ref ConstPropagatingRawPointer to make sure <tt>const</tt> is
+     * always respected. */
+    WheelColorPicker *q_pointer;
 };
 
 }
 
-#endif // ALPHASELECTOR_P_H
+#endif // WHEELCOLORPICKER_P_H

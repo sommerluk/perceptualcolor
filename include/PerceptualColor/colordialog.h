@@ -27,24 +27,9 @@
 #ifndef COLORDIALOG_H
 #define COLORDIALOG_H
 
-#include "PerceptualColor/alphaselector.h"
-#include "PerceptualColor/colorpatch.h"
-#include "PerceptualColor/chromahuediagram.h"
-#include "PerceptualColor/fullcolordescription.h"
-#include "PerceptualColor/gradientselector.h"
-#include "PerceptualColor/multispinbox.h"
-#include "PerceptualColor/wheelcolorpicker.h"
-
-#include <QByteArray>
 #include <QColorDialog>
-#include <QDialog>
-#include <QDialogButtonBox>
-#include <QDoubleSpinBox>
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QObject>
-#include <QPointer>
-#include <QTabWidget>
+
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor {
 
@@ -119,6 +104,8 @@ namespace PerceptualColor {
  *   for <tt>QColor::Spec::Rgb</tt> types with floating point precision:
  *   While QColorDialog would round to full integers, <em>this</em> dialog
  *   preserves the floating point precision.
+ * - When the default constructor is used, unlike QColorDialog, the default
+ *   color is not <tt>Qt::white</tt>.
  * 
  * @warning The graphical display in @ref WheelColorPicker jumps when you
  * choose a gray color like HSV 20 0 125 and then increment or decrement the
@@ -137,9 +124,10 @@ namespace PerceptualColor {
  * behave like this?
  * 
  * @todo Update the colors while typing a number in a field? Example:
- * You type in @ref m_hlcSpinBox the value 301°, 60%  129 which will be
- * out of sRGB gamut. Currently, no changes are applied until either the
- * focus leaves @ref m_hlcSpinBox or the enter key is hit. When changes
+ * You type in @ref ColorDialogPrivate::m_hlcSpinBox the value
+ * <tt>301°  60%  129</tt> which will be out of sRGB gamut. Currently,
+ * no changes are applied until either the focus leaves
+ * @ref ColorDialogPrivate::m_hlcSpinBox or the enter key is hit. When changes
  * are applied, the value is corrected to an in-gamut value. Should this
  * same behaviour also apply during typing?
  * 
@@ -249,7 +237,7 @@ class ColorDialog : public QDialog
      * @sa READ @ref currentColor()
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged()
-     * @sa @ref m_currentOpaqueColor */
+     * @sa @ref ColorDialogPrivate::m_currentOpaqueColor */
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
     /** @brief Various options that affect the look and feel of the dialog
@@ -286,7 +274,7 @@ class ColorDialog : public QDialog
      * @sa WRITE @ref setOptions()
      * @sa @ref setOption()
      * @sa @ref optionsChanged()
-     * @sa @ref m_options */
+     * @sa @ref ColorDialogPrivate::m_options */
     Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
 
     /** @brief Layout dimensions
@@ -405,102 +393,18 @@ protected:
 private:
     Q_DISABLE_COPY(ColorDialog)
 
+    class ColorDialogPrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class ColorDialogPrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<ColorDialogPrivate> d_pointer;
+
     /** @brief Only for unit tests. */
     friend class TestColorDialog;
 
-    /** @brief Pointer to the @ref GradientSelector for alpha. */
-    QPointer<AlphaSelector> m_alphaSelector;
-    /** @brief Pointer to the QLabel for @ref m_alphaSelector().
-     * 
-     * We store this in a
-     * pointer to allow toggle the visibility later. */
-    QPointer<QLabel> m_alphaSelectorLabel;
-    /** @brief Pointer to the QButtonBox of this dialog.
-     * 
-     * We store this in a pointer
-     * to allow toggle the visibility later. */
-    QPointer<QDialogButtonBox> m_buttonBox;
-    /** @brief Pointer to the @ref ChromaHueDiagram. */
-    QPointer<ChromaHueDiagram> m_chromaHueDiagram;
-    /** @brief Pointer to the @ref ColorPatch widget. */
-    QPointer<ColorPatch> m_colorPatch;
-    /** @brief Holds the current color without alpha information
-     * 
-     * @note The alpha information within this data member is meaningless.
-     * Ignore it. The information about the alpha channel is actually stored
-     * within @ref m_alphaSelector.
-     * 
-     * @sa @ref currentColor() */
-    FullColorDescription m_currentOpaqueColor;
-    /** @brief Pointer to the @ref GradientSelector for LCh lightness. */
-    QPointer<GradientSelector> m_lchLightnessSelector;
-    /** @brief Pointer to the @ref MultiSpinBox for HLC. */
-    QPointer<MultiSpinBox> m_hlcSpinBox;
-    /** @brief Pointer to the @ref MultiSpinBox for HSV. */
-    QPointer<MultiSpinBox> m_hsvSpinBox;
-    /** @brief Holds whether currently a color change is ongoing, or not.
-     * 
-     * Used to avoid infinite recursions when updating the different widgets
-     * within this dialog.
-     * @sa @ref setCurrentOpaqueColor() */
-    bool m_isColorChangeInProgress = false;
-    /** @brief Internal storage for property @ref layoutDimensions */
-    PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions =
-        ColorDialog::DialogLayoutDimensions::collapsed;
-    /** @brief Pointer to the graphical selector widget that groups lightness
-     *  and chroma-hue selector. */
-    QPointer<QWidget> m_lightnessFirstWidget;
-    /** @brief Holds the receiver slot (if any) to be disconnected
-     *  automatically after closing the dialog.
-     * 
-     * Its value is only meaningful if
-     * @ref m_receiverToBeDisconnected is not null.
-     * @sa @ref m_receiverToBeDisconnected
-     * @sa @ref open() */
-    QByteArray m_memberToBeDisconnected;
-    /** @brief Pointer to the widget that holds the numeric color
-     *         representation. */
-    QPointer<QWidget> m_numericalWidget;
-    /** @brief Holds the receiver object (if any) to be disconnected
-     *  automatically after closing the dialog.
-     * 
-     * @sa @ref m_memberToBeDisconnected
-     * @sa @ref open() */
-    QPointer<QObject> m_receiverToBeDisconnected;
-    /** @brief Internal storage for property @ref options */
-    ColorDialogOptions m_options;
-    /** @brief Pointer to the RgbColorSpace object. */
-    QPointer<RgbColorSpace> m_rgbColorSpace;
-    /** @brief Pointer to the QLineEdit that represents the hexadecimal
-     *  RGB value. */
-    QPointer<QLineEdit> m_rgbLineEdit;
-    /** @brief Pointer to the @ref MultiSpinBox for RGB. */
-    QPointer<MultiSpinBox> m_rgbSpinBox;
-    /** @brief Internal storage for selectedColor(). */
-    QColor m_selectedColor;
-    /** @brief Layout that holds the graphical and numeric selectors. */
-    QPointer<QHBoxLayout> m_selectorLayout;
-    /** @brief Pointer to the tab widget. */
-    QPointer<QTabWidget> m_tabWidget;
-    /** @brief Pointer to the @ref WheelColorPicker widget. */
-    QPointer<WheelColorPicker> m_wheelColorPicker;
-
-    void applyLayoutDimensions();
-    void initialize();
-    QWidget* initializeNumericPage();
-    void setCurrentFullColor(const FullColorDescription& color);
-
-private Q_SLOTS:
-    void readHlcNumericValues();
-    void readHsvNumericValues();
-    void readLightnessValue();
-    void readRgbHexValues();
-    void readRgbNumericValues();
-    void setCurrentOpaqueColor(
-        const PerceptualColor::FullColorDescription &color
-    );
-    void setCurrentOpaqueQColor(const QColor &color);
-    void updateColorPatch();
 };
 
 }

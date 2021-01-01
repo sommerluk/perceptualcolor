@@ -27,9 +27,15 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
+// First included header is the public header of the class we are testing;
+// this forces the header to be self-contained.
 #include "PerceptualColor/colordialog.h"
+// Second, the private implementation.
+#include "colordialog_p.h"
 
 #include <QtTest>
+
+#include <PerceptualColor/multispinbox.h>
 
 namespace PerceptualColor {
 
@@ -1726,10 +1732,10 @@ private Q_SLOTS:
     
     void testReadLightnessValues() {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
-        myDialog->m_lchLightnessSelector->setFraction(0.6);
-        myDialog->readLightnessValue();
+        myDialog->d_pointer->m_lchLightnessSelector->setFraction(0.6);
+        myDialog->d_pointer->readLightnessValue();
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toLch().L,
+            myDialog->d_pointer->m_currentOpaqueColor.toLch().L,
             60
         );
     }
@@ -1737,22 +1743,22 @@ private Q_SLOTS:
     void testReadHlcNumericValues() {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
         QList<MultiSpinBox::SectionData> mySections =
-            myDialog->m_hlcSpinBox->sections();
+            myDialog->d_pointer->m_hlcSpinBox->sections();
         mySections[0].value = 10;
         mySections[1].value = 11;
         mySections[2].value = 12;
-        myDialog->m_hlcSpinBox->setSections(mySections);
-        myDialog->readHlcNumericValues();
+        myDialog->d_pointer->m_hlcSpinBox->setSections(mySections);
+        myDialog->d_pointer->readHlcNumericValues();
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toLch().h,
+            myDialog->d_pointer->m_currentOpaqueColor.toLch().h,
             10
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toLch().L,
+            myDialog->d_pointer->m_currentOpaqueColor.toLch().L,
             11
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toLch().C,
+            myDialog->d_pointer->m_currentOpaqueColor.toLch().C,
             12
         );
     }
@@ -1760,40 +1766,40 @@ private Q_SLOTS:
     void testReadHsvNumericValues() {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
         QList<MultiSpinBox::SectionData> mySections =
-            myDialog->m_hsvSpinBox->sections();
+            myDialog->d_pointer->m_hsvSpinBox->sections();
         mySections[0].value = 10;
         mySections[1].value = 11;
         mySections[2].value = 12;
-        myDialog->m_hsvSpinBox->setSections(mySections);
-        myDialog->readHsvNumericValues();
+        myDialog->d_pointer->m_hsvSpinBox->setSections(mySections);
+        myDialog->d_pointer->readHsvNumericValues();
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toHsvQColor().hue(),
+            myDialog->d_pointer->m_currentOpaqueColor.toHsvQColor().hue(),
             10
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toHsvQColor().saturation(),
+            myDialog->d_pointer->m_currentOpaqueColor.toHsvQColor().saturation(),
             11
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toHsvQColor().value(),
+            myDialog->d_pointer->m_currentOpaqueColor.toHsvQColor().value(),
             12
         );
     }
     
     void testReadRgbHexValues() {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
-        myDialog->m_rgbLineEdit->setText(QStringLiteral("#010203"));
-        myDialog->readRgbHexValues();
+        myDialog->d_pointer->m_rgbLineEdit->setText(QStringLiteral("#010203"));
+        myDialog->d_pointer->readRgbHexValues();
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().red(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().red(),
             1
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().green(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().green(),
             2
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().blue(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().blue(),
             3
         );
     }
@@ -1801,22 +1807,22 @@ private Q_SLOTS:
     void testReadRgbNumericValues() {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
         QList<MultiSpinBox::SectionData> mySections =
-            myDialog->m_rgbSpinBox->sections();
+            myDialog->d_pointer->m_rgbSpinBox->sections();
         mySections[0].value = 10;
         mySections[1].value = 11;
         mySections[2].value = 12;
-        myDialog->m_rgbSpinBox->setSections(mySections);
-        myDialog->readRgbNumericValues();
+        myDialog->d_pointer->m_rgbSpinBox->setSections(mySections);
+        myDialog->d_pointer->readRgbNumericValues();
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().red(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().red(),
             10
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().green(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().green(),
             11
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().blue(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().blue(),
             12
         );
     }
@@ -1828,21 +1834,21 @@ private Q_SLOTS:
             &myColorSpace,
             QColor(1, 2, 3)
         };
-        myDialog->setCurrentOpaqueColor(myFullColor);
+        myDialog->d_pointer->setCurrentOpaqueColor(myFullColor);
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().red(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().red(),
             1
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().green(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().green(),
             2
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().blue(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().blue(),
             3
         );
         QList<MultiSpinBox::SectionData> mySections =
-            myDialog->m_rgbSpinBox->sections();
+            myDialog->d_pointer->m_rgbSpinBox->sections();
         QCOMPARE(
             mySections.at(0).value,
             1
@@ -1859,21 +1865,21 @@ private Q_SLOTS:
 
     void testSetCurrentOpaqueQColor() {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
-        myDialog->setCurrentOpaqueQColor(QColor(1, 2, 3));
+        myDialog->d_pointer->setCurrentOpaqueQColor(QColor(1, 2, 3));
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().red(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().red(),
             1
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().green(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().green(),
             2
         );
         QCOMPARE(
-            myDialog->m_currentOpaqueColor.toRgbQColor().blue(),
+            myDialog->d_pointer->m_currentOpaqueColor.toRgbQColor().blue(),
             3
         );
         QList<MultiSpinBox::SectionData> mySections =
-            myDialog->m_rgbSpinBox->sections();
+            myDialog->d_pointer->m_rgbSpinBox->sections();
         QCOMPARE(
             mySections.at(0).value,
             1
@@ -1895,23 +1901,23 @@ private Q_SLOTS:
             &myColorSpace,
             QColor(1, 2, 3)
         };
-        myDialog->m_currentOpaqueColor = myFullColor;
-        myDialog->updateColorPatch();
+        myDialog->d_pointer->m_currentOpaqueColor = myFullColor;
+        myDialog->d_pointer->updateColorPatch();
         QCOMPARE(
-            myDialog->m_colorPatch->color().red(),
+            myDialog->d_pointer->m_colorPatch->color().red(),
             1
         );
         QCOMPARE(
-            myDialog->m_colorPatch->color().green(),
+            myDialog->d_pointer->m_colorPatch->color().green(),
             2
         );
         QCOMPARE(
-            myDialog->m_colorPatch->color().blue(),
+            myDialog->d_pointer->m_colorPatch->color().blue(),
             3
         );
         QCOMPARE(
-            myDialog->m_colorPatch->color().alphaF(),
-            myDialog->m_alphaSelector->alpha()
+            myDialog->d_pointer->m_colorPatch->color().alphaF(),
+            myDialog->d_pointer->m_alphaSelector->alpha()
         );
     }
 
@@ -2011,14 +2017,14 @@ private Q_SLOTS:
             PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed
         );
         
-        m_perceptualDialog->m_layoutDimensions =
+        m_perceptualDialog->d_pointer->m_layoutDimensions =
             PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed;
-        m_perceptualDialog->applyLayoutDimensions();
+        m_perceptualDialog->d_pointer->applyLayoutDimensions();
         int collapsedWidth = m_perceptualDialog->width();
         
-        m_perceptualDialog->m_layoutDimensions =
+        m_perceptualDialog->d_pointer->m_layoutDimensions =
             PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded;
-        m_perceptualDialog->applyLayoutDimensions();
+        m_perceptualDialog->d_pointer->applyLayoutDimensions();
         int expandedWidth = m_perceptualDialog->width();
         
         QVERIFY2(

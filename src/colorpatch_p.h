@@ -27,6 +27,10 @@
 #ifndef COLORPATCH_P_H
 #define COLORPATCH_P_H
 
+// Include the header of the public class of this private implementation.
+#include "PerceptualColor/colorpatch.h"
+#include "constpropagatingrawpointer.h"
+
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to

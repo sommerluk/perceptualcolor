@@ -27,6 +27,9 @@
 #ifndef ABSTRACTDIAGRAM_P_H
 #define ABSTRACTDIAGRAM_P_H
 
+// Include the header of the public class of this private implementation.
+#include "PerceptualColor/abstractdiagram.h"
+
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to

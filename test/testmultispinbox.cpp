@@ -27,7 +27,11 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
+// First included header is the public header of the class we are testing;
+// this forces the header to be self-contained.
 #include "PerceptualColor/multispinbox.h"
+// Second, the private implementation.
+#include "multispinbox_p.h"
 
 #include <QtTest>
 
@@ -92,7 +96,7 @@ private Q_SLOTS:
         PerceptualColor::MultiSpinBox myMulti;
         // Test basic constructor results
         QVERIFY2(
-            myMulti.m_sections.length() > 0,
+            myMulti.d_pointer->m_sections.length() > 0,
             "Make sure the default configuration has at least 1 section."
         );
     }
@@ -182,27 +186,27 @@ private Q_SLOTS:
     void testCurrentSectionIndex() {
         MultiSpinBox test;
         // Test default index
-        QCOMPARE(test.m_currentIndex, 0);
+        QCOMPARE(test.d_pointer->m_currentIndex, 0);
         
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if setting negative value is ignored
         QVERIFY_EXCEPTION_THROWN(
-            test.setCurrentIndexAndUpdateTextAndSelectValue(-1),
+            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-1),
             int
         );
-        QCOMPARE(test.m_currentIndex, 0);
+        QCOMPARE(test.d_pointer->m_currentIndex, 0);
         QVERIFY_EXCEPTION_THROWN(
-            test.setCurrentIndexAndUpdateTextAndSelectValue(-100),
+            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-100),
             int
         );
-        QCOMPARE(test.m_currentIndex, 0);
+        QCOMPARE(test.d_pointer->m_currentIndex, 0);
         // Test setting too high values is ignored
         QVERIFY_EXCEPTION_THROWN(
-            test.setCurrentIndexAndUpdateTextAndSelectValue(100),
+            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(100),
             int
         );
-        QCOMPARE(test.m_currentIndex, 0);
+        QCOMPARE(test.d_pointer->m_currentIndex, 0);
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
         
@@ -212,8 +216,8 @@ private Q_SLOTS:
         mySectionList.append(MultiSpinBox::SectionData());
         mySectionList.append(MultiSpinBox::SectionData());
         test.setSections (mySectionList);
-        test.setCurrentIndexAndUpdateTextAndSelectValue(2);
-        QCOMPARE(test.m_currentIndex, 2);
+        test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(2);
+        QCOMPARE(test.d_pointer->m_currentIndex, 2);
     }
     
     void testSetConfiguration() {
@@ -239,18 +243,18 @@ private Q_SLOTS:
         mySectionList.append(myInvalidSection);
         test.setSections (mySectionList);
         QVERIFY2(
-            test.m_sections.at(0).minimum
-                <= test.m_sections.at(0).maximum,
+            test.d_pointer->m_sections.at(0).minimum
+                <= test.d_pointer->m_sections.at(0).maximum,
             "minimum <= maximum"
         );
         QVERIFY2(
-            test.m_sections.at(0).minimum
-                <= test.m_sections.at(0).value,
+            test.d_pointer->m_sections.at(0).minimum
+                <= test.d_pointer->m_sections.at(0).value,
             "minimum <= value"
         );
         QVERIFY2(
-            test.m_sections.at(0).value
-                <= test.m_sections.at(0).maximum,
+            test.d_pointer->m_sections.at(0).value
+                <= test.d_pointer->m_sections.at(0).maximum,
             "value <= maximum"
         );
 
@@ -262,18 +266,18 @@ private Q_SLOTS:
         mySectionList.append(myInvalidSection);
         test.setSections (mySectionList);
         QVERIFY2(
-            test.m_sections.at(0).minimum
-                <= test.m_sections.at(0).maximum,
+            test.d_pointer->m_sections.at(0).minimum
+                <= test.d_pointer->m_sections.at(0).maximum,
             "minimum <= maximum"
         );
         QVERIFY2(
-            test.m_sections.at(0).minimum
-                <= test.m_sections.at(0).value,
+            test.d_pointer->m_sections.at(0).minimum
+                <= test.d_pointer->m_sections.at(0).value,
             "minimum <= value"
         );
         QVERIFY2(
-            test.m_sections.at(0).value
-                <= test.m_sections.at(0).maximum,
+            test.d_pointer->m_sections.at(0).value
+                <= test.d_pointer->m_sections.at(0).maximum,
             "value <= maximum"
         );
     }
@@ -357,18 +361,18 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setSections (config);
-        myMulti.m_currentIndex = 1;
-        myMulti.updatePrefixValueSuffixText();
+        myMulti.d_pointer->m_currentIndex = 1;
+        myMulti.d_pointer->updatePrefixValueSuffixText();
         QCOMPARE(
-            myMulti.m_textBeforeCurrentValue,
+            myMulti.d_pointer->m_textBeforeCurrentValue,
             QStringLiteral(u"abc8defghi")
         );
         QCOMPARE(
-            myMulti.m_textOfCurrentValue,
+            myMulti.d_pointer->m_textOfCurrentValue,
             QStringLiteral(u"80")
         );
         QCOMPARE(
-            myMulti.m_textAfterCurrentValue,
+            myMulti.d_pointer->m_textAfterCurrentValue,
             QStringLiteral(u"jkl")
         );
     }
@@ -390,9 +394,9 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setSections (config);
-        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(1);
+        myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(
-            myMulti.m_currentIndex,
+            myMulti.d_pointer->m_currentIndex,
             1
         );
         QVERIFY2(
@@ -404,16 +408,16 @@ private Q_SLOTS:
     void testSetCurrentSectionIndex() {
         PerceptualColor::MultiSpinBox myMulti;
         myMulti.setSections (myConfiguration);
-        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(2);
-        QCOMPARE(myMulti.m_currentIndex, 2);
-        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(0);
-        QCOMPARE(myMulti.m_currentIndex, 0);
-        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(1);
-        QCOMPARE(myMulti.m_currentIndex, 1);
-        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(2);
-        QCOMPARE(myMulti.m_currentIndex, 2);
-        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(0);
-        QCOMPARE(myMulti.m_currentIndex, 0);
+        myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(2);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 2);
+        myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
+        myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
+        myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(2);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 2);
+        myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
         QList<MultiSpinBox::SectionData> config;
         MultiSpinBox::SectionData section;
         section.minimum = 1;
@@ -429,9 +433,9 @@ private Q_SLOTS:
         section.suffix = QStringLiteral(u"jkl");
         config.append(section);
         myMulti.setSections (config);
-        myMulti.setCurrentIndexAndUpdateTextAndSelectValue(1);
+        myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(
-            myMulti.m_currentIndex,
+            myMulti.d_pointer->m_currentIndex,
             1
         );
         QVERIFY2(
@@ -557,7 +561,7 @@ private Q_SLOTS:
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections (specialConfiguration);
-        widget->setCurrentIndexAndUpdateTextAndSelectValue(
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -591,19 +595,31 @@ private Q_SLOTS:
         }
         flags = widget->stepEnabled();
         QCOMPARE(
-            widget->m_currentIndex,
+            widget->d_pointer->m_currentIndex,
             sectionIndex
         );
         QCOMPARE(
-            widget->m_sections.at(widget->m_currentIndex).minimum,
+            widget
+                ->d_pointer
+                ->m_sections
+                .at(widget->d_pointer->m_currentIndex)
+                .minimum,
             minimum
         );
         QCOMPARE(
-            widget->m_sections.at(widget->m_currentIndex).value,
+            widget
+                ->d_pointer
+                ->m_sections
+                .at(widget->d_pointer->m_currentIndex)
+                .value,
             value
         );
         QCOMPARE(
-            widget->m_sections.at(widget->m_currentIndex).maximum,
+            widget
+                ->d_pointer
+                ->m_sections
+                .at(widget->d_pointer->m_currentIndex)
+                .maximum,
             maximum
         );
         QCOMPARE(
@@ -688,7 +704,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_sections.count() != 3) {
+        if (widget2->d_pointer->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -705,19 +721,19 @@ private Q_SLOTS:
         // Move focus from widget1 to widget2/section0
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 0);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget2/section1
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 1);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget2/section2
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
         // Move focus from widget2/section2 to widget3
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget3);
-        QCOMPARE(widget2->m_currentIndex, 0);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
     }
 
     void testFocusIntegrationBackwardTab() {
@@ -767,7 +783,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_sections.count() != 3) {
+        if (widget2->d_pointer->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -781,7 +797,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 2);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
         // Move focus from widget2/section2 to widget2/section1
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -789,7 +805,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 1);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget2/section0
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -797,7 +813,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 0);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget1
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -805,7 +821,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::ShiftModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget1);
-        QCOMPARE(widget2->m_currentIndex, 0);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
     }
 
     void testFocusIntegrationOther() {
@@ -821,7 +837,7 @@ private Q_SLOTS:
             new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setSections (myConfiguration);
-        widget2->setCurrentIndexAndUpdateTextAndSelectValue(1);
+        widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QSpinBox *widget3 =
             new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -861,12 +877,12 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_sections.count() != 3) {
+        if (widget2->d_pointer->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_currentIndex != 1) {
+        if (widget2->d_pointer->m_currentIndex != 1) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -880,11 +896,11 @@ private Q_SLOTS:
             Qt::KeyboardModifier::AltModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 0);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget2/section1
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 1);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget3
         QTest::keyClick(
             QApplication::focusWidget(),
@@ -901,7 +917,7 @@ private Q_SLOTS:
             Qt::KeyboardModifier::AltModifier
         );
         QCOMPARE(QApplication::focusWidget(), widget2);
-        QCOMPARE(widget2->m_currentIndex, 0);
+        QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
     }
 
     void testFocusIntegrationFocusPolicy() {
@@ -956,7 +972,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_sections.count() != 3) {
+        if (widget2->d_pointer->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -991,19 +1007,19 @@ private Q_SLOTS:
         );
         widget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget->setSections (myConfiguration);
-        widget->setCurrentIndexWithoutUpdatingText(0);
+        widget->d_pointer->setCurrentIndexWithoutUpdatingText(0);
         widget->stepBy(13);
         QCOMPARE(
             widget->sections().at(0).value,
             13
         );
-        widget->setCurrentIndexWithoutUpdatingText(1);
+        widget->d_pointer->setCurrentIndexWithoutUpdatingText(1);
         widget->stepBy(130);
         QCOMPARE(
             widget->sections().at(1).value,
             100
         );
-        widget->setCurrentIndexWithoutUpdatingText(2);
+        widget->d_pointer->setCurrentIndexWithoutUpdatingText(2);
         widget->stepBy(-260);
         QCOMPARE(
             widget->sections().at(2).value,
@@ -1017,7 +1033,7 @@ private Q_SLOTS:
         );
         widget->setSections (myConfiguration);
         const quint8 sampleSectionNumber = 1;
-        widget->setCurrentIndexAndUpdateTextAndSelectValue(
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -1026,7 +1042,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        widget->updateCurrentValueFromText(
+        widget->d_pointer->updateCurrentValueFromText(
             QStringLiteral(u"0°  9%  0")
         );
         QCOMPARE(
@@ -1045,7 +1061,7 @@ private Q_SLOTS:
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections (specialConfiguration);
-        widget->setCurrentIndexAndUpdateTextAndSelectValue(
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -1064,7 +1080,7 @@ private Q_SLOTS:
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Execute the tested function (with an invalid argument)
-        widget->updateCurrentValueFromText(
+        widget->d_pointer->updateCurrentValueFromText(
             QStringLiteral(u"abcdef")
         );
         // do not suppress warning for generating invalid QColor anymore
@@ -1087,7 +1103,7 @@ private Q_SLOTS:
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections (specialConfiguration);
-        widget->setCurrentIndexAndUpdateTextAndSelectValue(
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
             sampleSectionNumber
         );
         // Assert that the setup is okay.
@@ -1106,21 +1122,21 @@ private Q_SLOTS:
         
         // Do testing
         widget->lineEdit()->setCursorPosition(0);
-        QCOMPARE(widget->m_currentIndex, 0);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 0);
         widget->lineEdit()->setCursorPosition(1);
-        QCOMPARE(widget->m_currentIndex, 0);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 0);
         widget->lineEdit()->setCursorPosition(2);
-        QCOMPARE(widget->m_currentIndex, 0);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 0);
         widget->lineEdit()->setCursorPosition(4);
-        QCOMPARE(widget->m_currentIndex, 1);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 1);
         widget->lineEdit()->setCursorPosition(5);
-        QCOMPARE(widget->m_currentIndex, 1);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 1);
         widget->lineEdit()->setCursorPosition(6);
-        QCOMPARE(widget->m_currentIndex, 1);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 1);
         widget->lineEdit()->setCursorPosition(8);
-        QCOMPARE(widget->m_currentIndex, 2);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 2);
         widget->lineEdit()->setCursorPosition(9);
-        QCOMPARE(widget->m_currentIndex, 2);
+        QCOMPARE(widget->d_pointer->m_currentIndex, 2);
     }
 
     void testInitialLineEditValue() {
@@ -1150,7 +1166,7 @@ private Q_SLOTS:
         widget2->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         parentWidget->show();
-        widget2->setCurrentIndexAndUpdateTextAndSelectValue(1);
+        widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         // The following statement make focus and widget events working.
         QApplication::setActiveWindow(parentWidget.data());
         // Assert that the setup is okay.
@@ -1164,7 +1180,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        if (widget2->m_sections.count() != 3) {
+        if (widget2->d_pointer->m_sections.count() != 3) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
@@ -1226,12 +1242,12 @@ private Q_SLOTS:
         mySection.value = value;
         mySection.isWrapping = false;
         QCOMPARE(
-            MultiSpinBox::fixedSection(mySection).value,
+            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
             expectedOnIsWrappigFalse
         );
         mySection.isWrapping = true;
         QCOMPARE(
-            MultiSpinBox::fixedSection(mySection).value,
+            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
             expectedOnIsWrappigTrue
         );
     }
@@ -1264,12 +1280,12 @@ private Q_SLOTS:
         mySection.value = value;
         mySection.isWrapping = false;
         QCOMPARE(
-            MultiSpinBox::fixedSection(mySection).value,
+            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
             expectedOnIsWrappigFalse
         );
         mySection.isWrapping = true;
         QCOMPARE(
-            MultiSpinBox::fixedSection(mySection).value,
+            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
             expectedOnIsWrappigTrue
         );
     }

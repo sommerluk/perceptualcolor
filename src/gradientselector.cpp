@@ -27,8 +27,11 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
-// own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/gradientselector.h"
+// Second, the private implementation.
+#include "gradientselector_p.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -41,29 +44,47 @@ namespace PerceptualColor {
 GradientSelector::GradientSelector(
     PerceptualColor::RgbColorSpace *colorSpace,
     QWidget *parent
-)
-: AbstractDiagram(parent)
+) :
+    AbstractDiagram(parent),
+    d_pointer(new GradientSelectorPrivate(this))
 {
-    initialize(colorSpace, Qt::Orientation::Vertical);
+    d_pointer->initialize(colorSpace, Qt::Orientation::Vertical);
 }
 
 GradientSelector::GradientSelector(
     PerceptualColor::RgbColorSpace* colorSpace,
     Qt::Orientation orientation,
     QWidget* parent
-) : AbstractDiagram(parent)
+) :
+    AbstractDiagram(parent),
+    d_pointer(new GradientSelectorPrivate(this))
 {
-    initialize(colorSpace, orientation);
+    d_pointer->initialize(colorSpace, orientation);
 }
 
-void GradientSelector::initialize(
+/** @brief Default destructor */
+GradientSelector::~GradientSelector() noexcept
+{
+}
+
+/** @brief Constructor
+ * 
+ * @param backLink Pointer to the object from which <em>this</em> object
+ * is the private implementation. */
+GradientSelector::GradientSelectorPrivate::GradientSelectorPrivate(
+    GradientSelector *backLink
+) : q_pointer(backLink)
+{
+}
+
+void GradientSelector::GradientSelectorPrivate::initialize(
     RgbColorSpace* colorSpace,
     Qt::Orientation orientation
 )
 {
-    setFocusPolicy(Qt::StrongFocus);
+    q_pointer->setFocusPolicy(Qt::StrongFocus);
     m_rgbColorSpace = colorSpace;
-    setOrientation(orientation); // also updates the size policy
+    q_pointer->setOrientation(orientation); // also updates the size policy
     cmsCIELCh one;
     one.L = 50;
     one.C = 65;
@@ -72,7 +93,7 @@ void GradientSelector::initialize(
     two.L = 60;
     two.C = 85;
     two.h = 300;
-    setColors(
+    q_pointer->setColors(
         FullColorDescription(
             m_rgbColorSpace,
             one,
@@ -97,26 +118,35 @@ QSize GradientSelector::sizeHint() const
 QSize GradientSelector::minimumSizeHint() const
 {
     QSize temp;
-    if (m_orientation == Qt::Orientation::Vertical) {
-        temp = QSize(m_gradientThickness, m_gradientMinimumLength);
+    if (d_pointer->m_orientation == Qt::Orientation::Vertical) {
+        temp = QSize(
+            d_pointer->m_gradientThickness,
+            d_pointer->m_gradientMinimumLength
+        );
     } else {
-        temp = QSize(m_gradientMinimumLength, m_gradientThickness);
+        temp = QSize(
+            d_pointer->m_gradientMinimumLength,
+            d_pointer->m_gradientThickness
+        );
     }
     return temp;
 }
 
-qreal GradientSelector::fromWindowCoordinatesToFraction(
+qreal GradientSelector::GradientSelectorPrivate::fromWindowCoordinatesToFraction(
     QPoint windowCoordinates
 )
 {
     qreal temp;
     if (m_orientation == Qt::Orientation::Vertical) {
-        temp = (size().height() - windowCoordinates.y()) / static_cast<qreal>(size().height());
+        temp = (q_pointer->size().height() - windowCoordinates.y())
+            / static_cast<qreal>(q_pointer->size().height());
     } else {
-        if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-            temp = windowCoordinates.x() / static_cast<qreal>(size().width());
+        if (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) {
+            temp = windowCoordinates.x()
+                / static_cast<qreal>(q_pointer->size().width());
         } else {
-            temp = (size().width() - windowCoordinates.x()) / static_cast<qreal>(size().width());
+            temp = (q_pointer->size().width() - windowCoordinates.x())
+                / static_cast<qreal>(q_pointer->size().width());
         }
     }
     return qBound<qreal>(0, temp, 1);
@@ -125,7 +155,7 @@ qreal GradientSelector::fromWindowCoordinatesToFraction(
 void GradientSelector::mousePressEvent(QMouseEvent* event)
 {
     setFraction(
-        fromWindowCoordinatesToFraction(
+        d_pointer->fromWindowCoordinatesToFraction(
             event->pos()
         )
     );
@@ -134,7 +164,7 @@ void GradientSelector::mousePressEvent(QMouseEvent* event)
 void GradientSelector::mouseReleaseEvent(QMouseEvent* event)
 {
     setFraction(
-        fromWindowCoordinatesToFraction(
+        d_pointer->fromWindowCoordinatesToFraction(
             event->pos()
         )
     );
@@ -143,7 +173,7 @@ void GradientSelector::mouseReleaseEvent(QMouseEvent* event)
 void GradientSelector::mouseMoveEvent(QMouseEvent* event)
 {
     setFraction(
-        fromWindowCoordinatesToFraction(
+        d_pointer->fromWindowCoordinatesToFraction(
             event->pos()
         )
     );
@@ -151,14 +181,14 @@ void GradientSelector::mouseMoveEvent(QMouseEvent* event)
 
 qreal GradientSelector::fraction()
 {
-    return m_fraction;
+    return d_pointer->m_fraction;
 }
 
 void GradientSelector::setFraction(qreal newFraction)
 {
     qreal temp = qBound<qreal>(0, newFraction, 1);
-    if (m_fraction != temp) {
-        m_fraction = temp;
+    if (d_pointer->m_fraction != temp) {
+        d_pointer->m_fraction = temp;
         update();
         Q_EMIT fractionChanged(temp);
     }
@@ -169,7 +199,7 @@ void GradientSelector::wheelEvent(QWheelEvent* event)
     qreal steps = Helper::standardWheelSteps(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
-        setFraction(m_fraction + steps * m_singleStep);
+        setFraction(d_pointer->m_fraction + steps * d_pointer->m_singleStep);
     } else {
         event->ignore(); // don't accept the event and let it up to the default treatment
     }
@@ -180,31 +210,31 @@ void GradientSelector::keyPressEvent(QKeyEvent* event)
     switch (event->key()) {
         case Qt::Key_Up:
         case Qt::Key_Plus: 
-            setFraction(m_fraction + m_singleStep);
+            setFraction(d_pointer->m_fraction + d_pointer->m_singleStep);
             break;
         case Qt::Key_Down:
         case Qt::Key_Minus: 
-            setFraction(m_fraction - m_singleStep);
+            setFraction(d_pointer->m_fraction - d_pointer->m_singleStep);
             break;
         case Qt::Key_Left:
             if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                setFraction(m_fraction - m_singleStep);
+                setFraction(d_pointer->m_fraction - d_pointer->m_singleStep);
             } else {
-                setFraction(m_fraction + m_singleStep);
+                setFraction(d_pointer->m_fraction + d_pointer->m_singleStep);
             }
             break;
         case Qt::Key_Right:
             if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                setFraction(m_fraction + m_singleStep);
+                setFraction(d_pointer->m_fraction + d_pointer->m_singleStep);
             } else {
-                setFraction(m_fraction - m_singleStep);
+                setFraction(d_pointer->m_fraction - d_pointer->m_singleStep);
             }
             break;
         case Qt::Key_PageUp:
-            setFraction(m_fraction + m_pageStep);
+            setFraction(d_pointer->m_fraction + d_pointer->m_pageStep);
             break;
         case Qt::Key_PageDown:
-            setFraction(m_fraction - m_pageStep);
+            setFraction(d_pointer->m_fraction - d_pointer->m_pageStep);
             break;
         case Qt::Key_Home:
             setFraction(0);
@@ -229,27 +259,27 @@ void GradientSelector::keyPressEvent(QKeyEvent* event)
 
 qreal GradientSelector::singleStep()
 {
-    return m_singleStep;
+    return d_pointer->m_singleStep;
 }
 
 qreal GradientSelector::pageStep()
 {
-    return m_pageStep;
+    return d_pointer->m_pageStep;
 }
 
 void GradientSelector::setSingleStep(qreal newSingleStep)
 {
-    if (newSingleStep != m_singleStep) {
-        m_singleStep = newSingleStep;
-        Q_EMIT singleStepChanged(m_singleStep);
+    if (newSingleStep != d_pointer->m_singleStep) {
+        d_pointer->m_singleStep = newSingleStep;
+        Q_EMIT singleStepChanged(d_pointer->m_singleStep);
     }
 }
 
 void GradientSelector::setPageStep(qreal newPageStep)
 {
-    if (newPageStep != m_pageStep) {
-        m_pageStep = newPageStep;
-        Q_EMIT pageStepChanged(m_pageStep);
+    if (newPageStep != d_pointer->m_pageStep) {
+        d_pointer->m_pageStep = newPageStep;
+        Q_EMIT pageStepChanged(d_pointer->m_pageStep);
     }
 }
 
@@ -282,22 +312,22 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
 
-    painter.setTransform(getTransform());
-    if (!m_gradientImageReady) {
-        updateGradientImage();
+    painter.setTransform(d_pointer->getTransform());
+    if (!d_pointer->m_gradientImageReady) {
+        d_pointer->updateGradientImage();
     }
-    painter.drawImage(0, 0, m_gradientImage);
+    painter.drawImage(0, 0, d_pointer->m_gradientImage);
     
 
     int actualLength;
-    if (m_orientation == Qt::Orientation::Vertical) {
+    if (d_pointer->m_orientation == Qt::Orientation::Vertical) {
         actualLength = size().height();
     } else {
         actualLength = size().width();
     }
     
     QPolygonF arrowPolygon;
-    const qreal cursorPosition = actualLength * m_fraction;
+    const qreal cursorPosition = actualLength * d_pointer->m_fraction;
     const qreal arrowSize = 6;
     arrowPolygon
         << QPointF(cursorPosition, arrowSize)
@@ -310,9 +340,9 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     painter.drawPolygon(arrowPolygon);
     arrowPolygon = QPolygonF(); // re-initialize
     arrowPolygon
-        << QPointF(cursorPosition, m_gradientThickness - arrowSize)
-        << QPointF(cursorPosition + arrowSize, m_gradientThickness)
-        << QPointF(cursorPosition - arrowSize, m_gradientThickness);
+        << QPointF(cursorPosition, d_pointer-> m_gradientThickness - arrowSize)
+        << QPointF(cursorPosition + arrowSize, d_pointer->m_gradientThickness)
+        << QPointF(cursorPosition - arrowSize, d_pointer->m_gradientThickness);
     painter.setBrush(QBrush(Qt::white));
     painter.drawPolygon(arrowPolygon);
     if (hasFocus()) {
@@ -325,13 +355,13 @@ void GradientSelector::paintEvent(QPaintEvent* event)
             qRound(cursorPosition + arrowSize + 1),
             0,
             qRound(cursorPosition + arrowSize + 1),
-            m_gradientThickness
+            d_pointer->m_gradientThickness
         );
         painter.drawLine(
             qRound(cursorPosition - arrowSize),
             0,
             qRound(cursorPosition - arrowSize),
-            m_gradientThickness
+            d_pointer->m_gradientThickness
         );
     }
 
@@ -341,51 +371,57 @@ void GradientSelector::paintEvent(QPaintEvent* event)
 
 Qt::Orientation	GradientSelector::orientation() const
 {
-    return m_orientation;
+    return d_pointer->m_orientation;
 }
 
-void GradientSelector::setOrientationAndForceUpdate(Qt::Orientation newOrientation)
+void GradientSelector::GradientSelectorPrivate::setOrientationAndForceUpdate(
+    Qt::Orientation newOrientation
+)
 {
     if (newOrientation == Qt::Orientation::Vertical) {
-        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        q_pointer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     } else {
-        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        q_pointer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     }
     m_orientation = newOrientation;
     m_gradientImageReady = false;
-    updateGeometry(); // notify the layout system the the geometry has changed
+    q_pointer->updateGeometry(); // notify the layout system the the geometry has changed
 }
 
 void GradientSelector::setOrientation(Qt::Orientation newOrientation)
 {
-    if (newOrientation != m_orientation) {
-        setOrientationAndForceUpdate(newOrientation);
-        Q_EMIT orientationChanged(m_orientation);
+    if (newOrientation != d_pointer->m_orientation) {
+        d_pointer->setOrientationAndForceUpdate(newOrientation);
+        Q_EMIT orientationChanged(d_pointer->m_orientation);
     }
 }
 
 void GradientSelector::setColors(const FullColorDescription &col1, const FullColorDescription &col2)
 {
-    if (col1 == m_firstColor && col2 == m_secondColor) {
+    if (col1 == d_pointer->m_firstColor && col2 == d_pointer->m_secondColor) {
         return;
     }
-    m_firstColor = col1;
-    m_secondColor = col2;
-    m_gradientImageReady = false;
+    d_pointer->m_firstColor = col1;
+    d_pointer->m_secondColor = col2;
+    d_pointer->m_gradientImageReady = false;
     update();
 }
 
 void GradientSelector::setFirstColor(const FullColorDescription &col)
 {
-    setColors(col, m_secondColor);
+    setColors(col, d_pointer->m_secondColor);
 }
 
 void GradientSelector::setSecondColor(const FullColorDescription &col)
 {
-    setColors(m_firstColor, col);
+    setColors(d_pointer->m_firstColor, col);
 }
 
-QPair<cmsCIELCh, qreal> GradientSelector::intermediateColor(const cmsCIELCh &firstColor, const cmsCIELCh &secondColor, qreal fraction)
+QPair<cmsCIELCh, qreal> GradientSelector::GradientSelectorPrivate::intermediateColor(
+    const cmsCIELCh &firstColor,
+    const cmsCIELCh &secondColor,
+    qreal fraction
+)
 {
     cmsCIELCh color;
     qreal alpha;
@@ -396,29 +432,29 @@ QPair<cmsCIELCh, qreal> GradientSelector::intermediateColor(const cmsCIELCh &fir
     return QPair<cmsCIELCh, qreal>(color, alpha);
 }
 
-QTransform GradientSelector::getTransform() const
+QTransform GradientSelector::GradientSelectorPrivate::getTransform() const
 {
     QTransform transform;
     if (m_orientation == Qt::Orientation::Vertical) {
-        transform.translate(0, size().height());
+        transform.translate(0, q_pointer->size().height());
         transform.rotate(270);
     } else {
-        if (layoutDirection() == Qt::RightToLeft) {
-            transform.translate(size().width(), 0);
+        if (q_pointer->layoutDirection() == Qt::RightToLeft) {
+            transform.translate(q_pointer->size().width(), 0);
             transform.scale(-1, 1);
         }
     }
     return transform;
 }
 
-void GradientSelector::updateGradientImage()
+void GradientSelector::GradientSelectorPrivate::updateGradientImage()
 {
     int actualLength;
     int i;
     if (m_orientation == Qt::Orientation::Vertical) {
-        actualLength = size().height();
+        actualLength = q_pointer->size().height();
     } else {
-        actualLength = size().width();
+        actualLength = q_pointer->size().width();
     }
     QImage temp(actualLength, 1, QImage::Format_ARGB32_Premultiplied);
     temp.fill(Qt::transparent); // Initialize the image with transparency.
@@ -462,7 +498,7 @@ void GradientSelector::updateGradientImage()
         0,
         actualLength,
         m_gradientThickness,
-        QBrush(transparencyBackground())
+        QBrush(q_pointer->transparencyBackground())
     );
     for (i = 0; i < m_gradientThickness; ++i) {
         painter.drawImage(0, i, temp);
@@ -474,7 +510,7 @@ void GradientSelector::updateGradientImage()
 void GradientSelector::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    m_gradientImageReady = false;
+    d_pointer->m_gradientImageReady = false;
 }
 
 }

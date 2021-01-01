@@ -27,8 +27,11 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 
-// Own header
+// Own headers
+// First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/chromalightnessdiagram.h"
+// Second, the private implementation.
+#include "chromalightnessdiagram_p.h"
 
 #include "PerceptualColor/helper.h"
 #include "PerceptualColor/polarpointf.h"
@@ -39,6 +42,9 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
+#include <QImage>
+#include <QPointer>
+#include <QWidget>
 
 #include <lcms2.h>
 
@@ -52,12 +58,14 @@ namespace PerceptualColor {
  */
 ChromaLightnessDiagram::ChromaLightnessDiagram(
     PerceptualColor::RgbColorSpace *colorSpace,
-    QWidget *parent)
-: AbstractDiagram(parent)
+    QWidget *parent
+) :
+    AbstractDiagram(parent),
+    d_pointer(new ChromaLightnessDiagramPrivate(this))
 {
     // Setup LittleCMS (must be first thing because other operations
     // rely on working LittleCMS)
-    m_rgbColorSpace = colorSpace;
+    d_pointer->m_rgbColorSpace = colorSpace;
 
     // Simple initialization
     // We don't use the reset methods as they rely on refreshDiagram()
@@ -67,12 +75,12 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     temp.h = Helper::LchDefaults::defaultHue;
     temp.C = Helper::LchDefaults::versatileSrgbChroma;
     temp.L = Helper::LchDefaults::defaultLightness;
-    m_color = FullColorDescription(
-        m_rgbColorSpace,
+    d_pointer->m_color = FullColorDescription(
+        d_pointer->m_rgbColorSpace,
         temp,
         FullColorDescription::outOfGamutBehaviour::sacrifyChroma
     );
-    updateBorder();
+    d_pointer->updateBorder();
 
     // Other initialization
     // Accept focus only by keyboard tabbing and not by mouse click
@@ -82,12 +90,27 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
+/** @brief Default destructor */
+ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
+{
+}
+
+/** @brief Constructor
+ * 
+ * @param backLink Pointer to the object from which <em>this</em> object
+ * is the private implementation. */
+ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(
+    ChromaLightnessDiagram *backLink
+) : q_pointer(backLink)
+{
+}
+
 /** @brief Updates the border() property.
  * 
  * This function can be called after changes to markerRadius() or markerThickness() to
  * update the border() property.
  */
-void ChromaLightnessDiagram::updateBorder()
+void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
 {
     // Code
     m_border = qRound(markerRadius + (markerThickness / static_cast<qreal>(2)));
@@ -109,7 +132,7 @@ void ChromaLightnessDiagram::updateBorder()
  * are outside the gamut diagram, then a nearest-neighbor-search is done,
  * searching for the pixel that is less far from the cursor.
  */
-void ChromaLightnessDiagram::setImageCoordinates(const QPoint newImageCoordinates)
+void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(const QPoint newImageCoordinates)
 {
     updateDiagramCache();
     QPoint correctedImageCoordinates = nearestNeighborSearch(newImageCoordinates, m_diagramImage);
@@ -120,7 +143,7 @@ void ChromaLightnessDiagram::setImageCoordinates(const QPoint newImageCoordinate
         lch.C = chromaLightness.x();
         lch.L = chromaLightness.y();
         lch.h = m_color.toLch().h;
-        setColor(
+        q_pointer->setColor(
             FullColorDescription(
                 m_rgbColorSpace,
                 lch,
@@ -144,10 +167,10 @@ void ChromaLightnessDiagram::setImageCoordinates(const QPoint newImageCoordinate
  */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
-    QPoint imageCoordinates = fromWidgetCoordinatesToImageCoordinates(
+    QPoint imageCoordinates = d_pointer->fromWidgetCoordinatesToImageCoordinates(
         event->pos()
     );
-    if (imageCoordinatesInGamut(imageCoordinates)) { // TODO also accept out-of-gamut clicks when they are covered by the current marker.
+    if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) { // TODO also accept out-of-gamut clicks when they are covered by the current marker.
         // Mouse focus is handled manually because so we can accept focus only
         // on mouse clicks within the displayed gamut, while rejecting focus
         // otherwise. In the constructor, therefore Qt::FocusPolicy::TabFocus
@@ -157,9 +180,9 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         // of this class behaves as expected, and not as a dirty hack that
         // accepts mouse focus even when set to Qt::FocusPolicy::TabFocus.
         setFocus(Qt::MouseFocusReason);
-        m_mouseEventActive = true;
+        d_pointer->m_mouseEventActive = true;
         setCursor(Qt::BlankCursor);
-        setImageCoordinates(imageCoordinates);
+        d_pointer->setImageCoordinates(imageCoordinates);
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
@@ -182,16 +205,16 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  */
 void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint imageCoordinates = fromWidgetCoordinatesToImageCoordinates(
+    QPoint imageCoordinates = d_pointer->fromWidgetCoordinatesToImageCoordinates(
         event->pos()
     );
-    if (m_mouseEventActive) {
-        if (imageCoordinatesInGamut(imageCoordinates)) {
+    if (d_pointer->m_mouseEventActive) {
+        if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
         }
-        setImageCoordinates(imageCoordinates);
+        d_pointer->setImageCoordinates(imageCoordinates);
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
@@ -209,12 +232,12 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
  */
 void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_mouseEventActive) {
-        setImageCoordinates(
-            fromWidgetCoordinatesToImageCoordinates(event->pos())
+    if (d_pointer->m_mouseEventActive) {
+        d_pointer->setImageCoordinates(
+            d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos())
         );
         unsetCursor();
-        m_mouseEventActive = false;
+        d_pointer->m_mouseEventActive = false;
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze widget style works
         event->ignore();
@@ -261,8 +284,8 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     QPen pen;
 
     // Paint the diagram itself as available in the cache.
-    updateDiagramCache();
-    painter.drawImage(m_border, m_border, m_diagramImage);
+    d_pointer->updateDiagramCache();
+    painter.drawImage(d_pointer->m_border, d_pointer->m_border, d_pointer->m_diagramImage);
 
     /* Paint a focus indicator.
      * 
@@ -297,9 +320,9 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
         painter.setPen(pen);
         painter.drawLine(
             markerThickness / 2, // 0.5 is rounded down to 0.0
-            0 + m_border,
+            0 + d_pointer->m_border,
             markerThickness / 2, // 0.5 is rounded down to 0.0
-            size().height() - m_border
+            size().height() - d_pointer->m_border
         );
     }
 
@@ -317,17 +340,17 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     // QImage as paint device; i.e. using QImage will ensure that the result has an identical pixel
     // representation on any platform.
     painter.setRenderHint(QPainter::Antialiasing);
-    QPoint imageCoordinates = currentImageCoordinates();
+    QPoint imageCoordinates = d_pointer->currentImageCoordinates();
     pen.setWidth(markerThickness);
-    if (m_color.toLch().L >= 50  /* range: 0..100 */) {
+    if (d_pointer->m_color.toLch().L >= 50  /* range: 0..100 */) {
         pen.setColor(Qt::black);
     } else {
         pen.setColor(Qt::white);
     }
     painter.setPen(pen);
     painter.drawEllipse(
-        imageCoordinates.x() + m_border - markerRadius,
-        imageCoordinates.y() + m_border - markerRadius,
+        imageCoordinates.x() + d_pointer->m_border - markerRadius,
+        imageCoordinates.y() + d_pointer->m_border - markerRadius,
         2 * markerRadius + 1,
         2 * markerRadius + 1
     );
@@ -343,7 +366,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
  * @returns the corresponding coordinate pair within m_diagramImage’s
  * coordinate system
  */
-QPoint ChromaLightnessDiagram::fromWidgetCoordinatesToImageCoordinates(
+QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetCoordinatesToImageCoordinates(
     const QPoint widgetCoordinates
 ) const
 {
@@ -376,50 +399,50 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // TODO singleStep & pageStep for ALL graphical widgets expressed in LCh
     // values, not in pixel. Use values as inherited from base class!
     
-    QPoint newImageCoordinates = currentImageCoordinates();
-    updateDiagramCache();
+    QPoint newImageCoordinates = d_pointer->currentImageCoordinates();
+    d_pointer->updateDiagramCache();
     switch (event->key()) {
         case Qt::Key_Up: 
-            if (imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
+            if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
                 newImageCoordinates += QPoint(0, -1);
             }
             break;
         case Qt::Key_Down:
-            if (imageCoordinatesInGamut(newImageCoordinates + QPoint(0, 1))) {
+            if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, 1))) {
                 newImageCoordinates += QPoint(0, 1);
             }
             break;
         case Qt::Key_Left:
-            if (imageCoordinatesInGamut(newImageCoordinates + QPoint(-1, 0))) {
+            if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(-1, 0))) {
                 newImageCoordinates += QPoint(-1, 0);
             }
             break;
         case Qt::Key_Right:
-            if (imageCoordinatesInGamut(newImageCoordinates + QPoint(1, 0))) {
+            if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(1, 0))) {
                 newImageCoordinates += QPoint(1, 0);
             }
             break;
         case Qt::Key_PageUp:
             newImageCoordinates.setY(0);
-            while (!imageCoordinatesInGamut(newImageCoordinates + QPoint(0, 1))) {
+            while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, 1))) {
                 newImageCoordinates += QPoint(0, 1);
             }
             break;
         case Qt::Key_PageDown:
-            newImageCoordinates.setY(m_diagramImage.height() - 1);
-            while (!imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
+            newImageCoordinates.setY(d_pointer->m_diagramImage.height() - 1);
+            while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
                 newImageCoordinates += QPoint(0, -1);
             }
             break;
         case Qt::Key_Home:
             newImageCoordinates.setX(0);
-            while (!imageCoordinatesInGamut(newImageCoordinates + QPoint(1, 0))) {
+            while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(1, 0))) {
                 newImageCoordinates += QPoint(1, 0);
             }
             break;
         case Qt::Key_End:
-            newImageCoordinates.setX(m_diagramImage.width() - 1);
-            while (!imageCoordinatesInGamut(newImageCoordinates + QPoint(-1, 0))) {
+            newImageCoordinates.setX(d_pointer->m_diagramImage.width() - 1);
+            while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(-1, 0))) {
                 newImageCoordinates += QPoint(-1, 0);
             }
             break;
@@ -439,14 +462,14 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // Here we reach only if the key has been recognized. If not, in the default branch of the
     // switch statement, we would have passed the keyPressEvent yet to the parent and returned.
     // Set the new image coordinates (only takes effect when image coordinates are indeed different)
-    setImageCoordinates(newImageCoordinates);
+    d_pointer->setImageCoordinates(newImageCoordinates);
 }
 
 /**
  * @param imageCoordinates the image coordinates
  * @returns the chroma-lightness value for given image coordinates
  */
-QPointF ChromaLightnessDiagram::fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates)
+QPointF ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates)
 {
     updateDiagramCache();
     return QPointF(
@@ -458,7 +481,7 @@ QPointF ChromaLightnessDiagram::fromImageCoordinatesToChromaLightness(const QPoi
 /**
  * @returns the coordinates for m_color
  */
-QPoint ChromaLightnessDiagram::currentImageCoordinates()
+QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordinates()
 {
     updateDiagramCache();
     return QPoint(
@@ -476,7 +499,7 @@ QPoint ChromaLightnessDiagram::currentImageCoordinates()
 /** @brief Tests if image coordinates are in gamut.
  *  @returns <tt>true</tt> if the image coordinates are within the
  *  displayed gamut. Otherwise <tt>false</tt>. */
-bool ChromaLightnessDiagram::imageCoordinatesInGamut(
+bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::imageCoordinatesInGamut(
     const QPoint imageCoordinates
 )
 {
@@ -496,7 +519,7 @@ bool ChromaLightnessDiagram::imageCoordinatesInGamut(
 
 qreal ChromaLightnessDiagram::hue() const
 {
-    return m_color.toLch().h;
+    return d_pointer->m_color.toLch().h;
 }
 
 /** @brief Set the hue
@@ -507,16 +530,16 @@ qreal ChromaLightnessDiagram::hue() const
  */
 void ChromaLightnessDiagram::setHue(const qreal newHue)
 {
-    if (newHue == m_color.toLch().h) {
+    if (newHue == d_pointer->m_color.toLch().h) {
         return;
     }
     cmsCIELCh lch;
     lch.h = newHue;
-    lch.C = m_color.toLch().C;
-    lch.L = m_color.toLch().L;
+    lch.C = d_pointer->m_color.toLch().C;
+    lch.L = d_pointer->m_color.toLch().L;
     setColor(
         FullColorDescription(
-            m_rgbColorSpace,
+            d_pointer->m_rgbColorSpace,
             lch,
             FullColorDescription::outOfGamutBehaviour::sacrifyChroma
         )
@@ -526,16 +549,16 @@ void ChromaLightnessDiagram::setHue(const qreal newHue)
 /** @brief Setter for the color() property */
 void ChromaLightnessDiagram::setColor(const FullColorDescription &newColor)
 {
-    if (newColor == m_color) {
+    if (newColor == d_pointer->m_color) {
         return;
     }
 
-    FullColorDescription oldColor = m_color;
-    m_color = newColor;
+    FullColorDescription oldColor = d_pointer->m_color;
+    d_pointer->m_color = newColor;
 
     // update if necessary, the diagram
-    if (m_color.toLch().h != oldColor.toLch().h) {
-        m_diagramCacheReady = false;;
+    if (d_pointer->m_color.toLch().h != oldColor.toLch().h) {
+        d_pointer->m_diagramCacheReady = false;;
     }
 
     // schedule a paint event
@@ -552,7 +575,7 @@ void ChromaLightnessDiagram::setColor(const FullColorDescription &newColor)
 void ChromaLightnessDiagram::resizeEvent(QResizeEvent* event)
 {
     Q_UNUSED(event);
-    m_diagramCacheReady = false;
+    d_pointer->m_diagramCacheReady = false;
     // As by Qt documentation: The widget will be erased and receive a paint event immediately after processing the resize event. No drawing need be (or should be) done inside this handler.
 }
 
@@ -596,7 +619,7 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
  */
 FullColorDescription ChromaLightnessDiagram::color() const
 {
-    return m_color;
+    return d_pointer->m_color;
 }
 
 /** @brief Generates an image of a chroma-lightness diagram.
@@ -656,7 +679,7 @@ void testChromaLightnessDiagramm() {
     QCOMPARE(mImage.pixelColor(0, 101).isValid(), false); // position within the QImage is invalid
 }
 */
-QImage ChromaLightnessDiagram::generateDiagramImage(
+QImage ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::generateDiagramImage(
         const qreal imageHue,
         const QSize imageSize) const
 {
@@ -728,7 +751,7 @@ qDebug() << "Generating chroma-lightness gamut image took" << myTimer.restart() 
  * This function does not repaint the widget! After calling this function,
  * you have to call manually <tt>update()</tt> to schedule a re-paint of
  * the widget, if you wish so. */
-void ChromaLightnessDiagram::updateDiagramCache()
+void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
 {
     if (m_diagramCacheReady) {
         return;
@@ -737,7 +760,7 @@ void ChromaLightnessDiagram::updateDiagramCache()
     // Update QImage
     m_diagramImage = generateDiagramImage(
         m_color.toLch().h,
-        QSize(size().width() - 2 * m_border, size().height() - 2 * m_border)
+        QSize(q_pointer->size().width() - 2 * m_border, q_pointer->size().height() - 2 * m_border)
     );
 
     // Mark cache as ready
@@ -764,7 +787,7 @@ void ChromaLightnessDiagram::updateDiagramCache()
 *     neighbors at the same distance, it is undefined which one is returned.)
 * \li Else there are no non-transparent pixels, and simply the point
 *     <tt>0, 0</tt> is returned, but this is a very slow case. */
-QPoint ChromaLightnessDiagram::nearestNeighborSearch(
+QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::nearestNeighborSearch(
     const QPoint originalPoint,
     const QImage &image
 ) {

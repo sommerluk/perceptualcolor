@@ -29,8 +29,12 @@
 
 #include <QObject>
 
+#include "PerceptualColor/constpropagatinguniquepointer.h"
+
+// Include directive for cmsCIELab and cmsCIELCh
 #include <lcms2.h>
 
+// Include directive for data type Helper::cmsRGB
 #include <PerceptualColor/helper.h>
 
 namespace PerceptualColor {
@@ -70,19 +74,19 @@ public:
 
 private:
     Q_DISABLE_COPY(RgbColorSpace)
-    qreal m_blackpointL;
-    QString m_cmsInfoCopyright;
-    QString m_cmsInfoDescription;
-    QString m_cmsInfoManufacturer;
-    QString m_cmsInfoModel;
-    cmsHTRANSFORM m_transformLabToRgb16Handle;
-    cmsHTRANSFORM m_transformLabToRgbHandle;
-    cmsHTRANSFORM m_transformRgbToLabHandle;
-    qreal m_whitepointL;
-    static QString getInformationFromProfile(
-        cmsHPROFILE profileHandle,
-        cmsInfoType infoType
-    );
+
+    class RgbColorSpacePrivate;
+    /** @brief Declare the private implementation as friend class.
+     * 
+     * This allows the private class to access the protected members and
+     * functions of instances of <em>this</em> class. */
+    friend class RgbColorSpacePrivate;
+    /** @brief Pointer to implementation (pimpl) */
+    ConstPropagatingUniquePointer<RgbColorSpacePrivate> d_pointer;
+
+    /** @brief Only for unit tests. */
+    friend class TestRgbColorSpace;
+
 };
 
 }
