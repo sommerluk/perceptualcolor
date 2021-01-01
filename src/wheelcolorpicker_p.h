@@ -31,6 +31,10 @@
 #include "PerceptualColor/wheelcolorpicker.h"
 #include "wheelcolorpicker_p.h"
 
+#include <QPointer>
+
+#include "PerceptualColor/chromalightnessdiagram.h"
+
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to

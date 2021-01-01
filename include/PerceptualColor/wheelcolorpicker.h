@@ -27,12 +27,9 @@
 #ifndef WHEELCOLORPICKER_H
 #define WHEELCOLORPICKER_H
 
+#include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/simplecolorwheel.h"
-
-#include "PerceptualColor/chromalightnessdiagram.h"
-#include <QDebug>
-#include <QPointer>
 
 // TODO Add whatsThis value explaining the accepted keys and mouse movements
 
