@@ -81,6 +81,7 @@ Q_UNUSED(myColor);
 
 void testSnippet04() {
 //! [ColorDialog Get color]
+// Show a modal color dialog and get the color that the user has chosen
 QColor myColor = PerceptualColor::ColorDialog::getColor();
 //! [ColorDialog Get color]
 Q_UNUSED(myColor);

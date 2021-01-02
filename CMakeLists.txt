@@ -278,8 +278,14 @@ add_test (NAME testcolorpatch COMMAND testcolorpatch)
 add_executable (testconstpropagatinguniquepointer
     test/testconstpropagatinguniquepointer.cpp)
 target_link_libraries (testconstpropagatinguniquepointer
-    ${LIBS} Qt5::Test perceptualcolor)
+    ${LIBS} Qt5::Test)
 add_test (NAME testconstpropagatinguniquepointer COMMAND testconstpropagatinguniquepointer)
+
+add_executable (testconstpropagatingrawpointer
+    test/testconstpropagatingrawpointer.cpp)
+target_link_libraries (testconstpropagatingrawpointer
+    ${LIBS} Qt5::Test)
+add_test (NAME testconstpropagatingrawpointer COMMAND testconstpropagatingrawpointer)
 
 add_executable (testextendeddoublevalidator
     test/testextendeddoublevalidator.cpp)

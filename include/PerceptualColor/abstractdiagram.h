@@ -58,12 +58,12 @@ protected:
      * 
      * Measured in Device Independent Pixels: Pixels used by application (user
      * space), subject to scaling by the operating system or Qt. */
-    static constexpr qreal markerRadius = 4;
+    static constexpr int markerRadius = 4;
     /** @brief The line thickness for markers.
      * 
      * Measured in Device Independent Pixels: Pixels used by application (user
      * space), subject to scaling by the operating system or Qt. */
-    static constexpr qreal markerThickness = 2;
+    static constexpr int markerThickness = 2;
     /** @brief Amount of single step for chroma.
      * 
      * Measured in LCh chroma units.
@@ -74,7 +74,7 @@ protected:
      * value.
      *
      * @sa @ref pageStepChroma */
-    static constexpr qreal singleStepChroma = 1;
+    static constexpr int singleStepChroma = 1;
     /** @brief Amount of single step for hue.
      * 
      * Measured in degree.
@@ -94,7 +94,7 @@ protected:
      * user. And it might be better that the user this way also notices
      * intuitively that hue changes are not linear across chroma. Anyway:
      * What would be a sensible default step? */
-    static constexpr qreal singleStepHue = static_cast<qreal>(360) / 100;
+    static constexpr int singleStepHue = 360 / 100;
     /** @brief Amount of page step for chroma.
      * 
      * Measured in LCh chroma units.
@@ -107,7 +107,7 @@ protected:
      * The value is 10 times @ref singleStepChroma. This behavior
      * corresponds to QAbstractSlider, who’s page step is also 10  bigger than
      * its single step. */
-    static constexpr qreal pageStepChroma = 10 * singleStepChroma;
+    static constexpr int pageStepChroma = 10 * singleStepChroma;
     /** @brief Amount of page step for hue.
      * 
      * Measured in degree.
@@ -120,7 +120,7 @@ protected:
      * The value is 10 times @ref singleStepHue. This behavior
      * corresponds to QAbstractSlider, who’s page step is also 10  bigger than
      * its single step. */
-    static constexpr qreal pageStepHue = 10 * singleStepHue;
+    static constexpr int pageStepHue = 10 * singleStepHue;
 
     // methods
     QColor focusIndicatorColor() const;

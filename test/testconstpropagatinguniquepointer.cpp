@@ -29,11 +29,11 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include <PerceptualColor/constpropagatinguniquepointer.h>
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 
 #include <QtTest>
 
-#include <QObject>
+#include <QRectF>
 
 namespace PerceptualColor {
 
@@ -44,8 +44,14 @@ class TestConstPropagatingUniquePointer : public QObject
 public:
     TestConstPropagatingUniquePointer(
         QObject *parent = nullptr
-    ) : QObject(parent) {
+    ) :
+        QObject(parent),
+        pointerToQRectF(new QRectF)
+    {
     }
+
+private:
+    ConstPropagatingUniquePointer<QRectF> pointerToQRectF;
 
 private Q_SLOTS:
 
@@ -72,6 +78,52 @@ PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
 );
 //! [ConstPropagatingUniquePointer Example]
 }
+
+    void testConstructorDestructor() {
+        ConstPropagatingUniquePointer<QObject> test;
+    }
+
+    void testDefaultConstructor() {
+        ConstPropagatingUniquePointer<QObject> test;
+        QCOMPARE(
+            test,
+            nullptr
+        );
+    }
+
+    // NOTE Should break on compile time when the function is const.
+    void testNonConstAccess() {
+        // The following line should not break
+        pointerToQRectF->setHeight(5);
+    }
+
+    // NOTE Should break on compile time when the function is const.
+    void testBackCopy01() {
+        QRectF temp;
+        *pointerToQRectF = temp;
+    }
+    
+    void testConstAccess01() const {
+        // The following line should not break
+        qreal height = pointerToQRectF->height();
+        Q_UNUSED(height)
+    }
+    
+    void testConstAccess02() {
+        // The following line should not break
+        qreal height = pointerToQRectF->height();
+        Q_UNUSED(height)
+    }
+
+    void testCopy01() const {
+        QRectF temp = *pointerToQRectF;
+        Q_UNUSED(temp);
+    }
+
+    void testCopy02() {
+        QRectF temp = *pointerToQRectF;
+        Q_UNUSED(temp);
+    }
 
 };
 

@@ -158,15 +158,8 @@ private:
     Q_DISABLE_COPY(ColorDialogPrivate)
     
     /** @brief Pointer to the object from which <em>this</em> object
-     *  is the private implementation.
-     * 
-     * @todo This pointer should have the type
-     * @ref ConstPropagatingRawPointer to make sure <tt>const</tt> is
-     * always respected. But this does not work because the function
-     * @ref ColorDialog::ColorDialogPrivate::initialize() makes the call
-     * <tt>@ref m_rgbColorSpace = new @ref RgbColorSpace(@ref q_pointer);</tt>
-     * which fails when using @ref ConstPropagatingRawPointer */
-    ColorDialog *q_pointer;
+     *  is the private implementation. */
+    ConstPropagatingRawPointer<ColorDialog> q_pointer;
 };
 
 }

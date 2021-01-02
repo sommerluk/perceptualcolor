@@ -86,12 +86,8 @@ private:
     Q_DISABLE_COPY(SimpleColorWheelPrivate)
     
     /** @brief Pointer to the object from which <em>this</em> object
-     *  is the private implementation.
-     * 
-     * @todo This pointer should have the type
-     * @ref ConstPropagatingRawPointer to make sure <tt>const</tt> is
-     * always respected.  */
-    SimpleColorWheel *q_pointer;
+     *  is the private implementation. */
+    ConstPropagatingRawPointer<SimpleColorWheel> q_pointer;
 };
 
 }

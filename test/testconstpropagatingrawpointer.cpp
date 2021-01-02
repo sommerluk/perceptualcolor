@@ -29,11 +29,11 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include <PerceptualColor/constpropagatingrawpointer.h>
+#include "constpropagatingrawpointer.h"
 
 #include <QtTest>
 
-#include <QObject>
+#include <QRectF>
 
 namespace PerceptualColor {
 
@@ -44,8 +44,14 @@ class TestConstPropagatingRawPointer : public QObject
 public:
     TestConstPropagatingRawPointer(
         QObject *parent = nullptr
-    ) : QObject(parent) {
+    ) :
+        QObject(parent),
+        pointerToQRectF(new QRectF)
+    {
     }
+
+private:
+    ConstPropagatingRawPointer<QRectF> pointerToQRectF;
 
 private Q_SLOTS:
 
@@ -55,6 +61,7 @@ private Q_SLOTS:
 
     void cleanupTestCase() {
         // Called after the last test function was executed
+        delete pointerToQRectF;
     }
 
     void init() {
@@ -64,13 +71,84 @@ private Q_SLOTS:
         // Called after every test function
     }
 
+    void testConstructorDestructor() {
+        ConstPropagatingRawPointer<QObject> test;
+    }
+
+    void testDefaultConstructor() {
+        ConstPropagatingRawPointer<QObject> test;
+        QVERIFY2(
+            !test,
+            "Verify that default constructor produced an invalid pointer."
+        );
+    }
+
+    // NOTE Should break on compile time if the method is const.
+    void testNonConstAccess() {
+        pointerToQRectF->setHeight(5);
+    }
+
+    // NOTE Should break on compile time if the method is const.
+    void testBackCopy01() {
+        QRectF temp;
+        *pointerToQRectF = temp;
+    }
+
+    // NOTE Should break on compile time if the method is const.
+    void testCastToNormalRawPointer() {
+        QRectF *temp;
+        temp = pointerToQRectF;
+        Q_UNUSED(temp)
+    }
+    
+    void testConstAccess01() const {
+        // The following line should not break
+        qreal height = pointerToQRectF->height();
+        Q_UNUSED(height)
+    }
+    
+    void testConstAccess02() {
+        // The following line should not break
+        qreal height = pointerToQRectF->height();
+        Q_UNUSED(height)
+    }
+
+    void testCopy01() const {
+        QRectF temp = *pointerToQRectF;
+        Q_UNUSED(temp);
+    }
+
+    void testCopy02() {
+        QRectF temp = *pointerToQRectF;
+        Q_UNUSED(temp);
+    }
+
 void testSnippet() {
 //! [ConstPropagatingRawPointer Example]
-// A ConstPropagatingRawPointer pointing to a new QObject
-PerceptualColor::ConstPropagatingRawPointer<QObject> myPointer(
-    new QObject()
-);
+// Assuming you have a
+// ConstPropagatingRawPointer<QSize> pointerToQRectF
+// as member variable in your class.
+    
+// Now, you access this member variable from a method within your class:
+
+// Helper variables
+QRectF myRectF;
+qreal myHeight;
+QRectF * normalCppPointerToQRectF;
+
+// The following code works within both, const and non-const contexts:
+myHeight = pointerToQRectF->height();
+myRectF = *pointerToQRectF;
+
+// The following code works only within const contexts.
+// Within non-cost contexts, you will get an error at compile time.
+pointerToQRectF->setHeight(5);
+*pointerToQRectF = myRectF;
+normalCppPointerToQRectF = pointerToQRectF;
 //! [ConstPropagatingRawPointer Example]
+Q_UNUSED(myRectF)
+Q_UNUSED(myHeight)
+Q_UNUSED(normalCppPointerToQRectF)
 }
 
 };

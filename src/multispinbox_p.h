@@ -115,12 +115,8 @@ private:
     Q_DISABLE_COPY(MultiSpinBoxPrivate)
     
     /** @brief Pointer to the object from which <em>this</em> object
-     *  is the private implementation.
-     * 
-     * @todo This pointer should have the type
-     * @ref ConstPropagatingRawPointer to make sure <tt>const</tt> is
-     * always respected. */
-    MultiSpinBox *q_pointer;
+     *  is the private implementation. */
+    ConstPropagatingRawPointer<MultiSpinBox> q_pointer;
 };
 
 }

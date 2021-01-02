@@ -29,7 +29,7 @@
 
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/wheelcolorpicker.h"
-#include "wheelcolorpicker_p.h"
+#include "constpropagatingrawpointer.h"
 
 #include <QPointer>
 
@@ -65,12 +65,8 @@ private:
     Q_DISABLE_COPY(WheelColorPickerPrivate)
     
     /** @brief Pointer to the object from which <em>this</em> object
-     *  is the private implementation.
-     * 
-     * @todo This pointer should have the type
-     * @ref ConstPropagatingRawPointer to make sure <tt>const</tt> is
-     * always respected. */
-    WheelColorPicker *q_pointer;
+     *  is the private implementation. */
+    ConstPropagatingRawPointer<WheelColorPicker> q_pointer;
 };
 
 }

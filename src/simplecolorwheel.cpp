@@ -537,8 +537,8 @@ int SimpleColorWheel::border() const
 QImage SimpleColorWheel::generateWheelImage(
     RgbColorSpace *colorSpace,
     const int outerDiameter,
-    const int border,
-    const int thickness,
+    const qreal border,
+    const qreal thickness,
     const qreal lightness,
     const qreal chroma)
 {
@@ -610,10 +610,12 @@ myTimer.start();
     myPainter.setPen(QPen(Qt::NoPen));
     myPainter.setBrush(QBrush(rawWheel));
     myPainter.drawEllipse(
-        border,
-        border,
-        outerDiameter - 2 * border,
-        outerDiameter - 2 * border
+        QRectF(
+            border,
+            border,
+            outerDiameter - 2 * border,
+            outerDiameter - 2 * border
+        )
     );
     
     // set the inner circle of the wheel to anti-aliased transparency
@@ -622,10 +624,12 @@ myTimer.start();
     myPainter.setPen(QPen(Qt::NoPen));
     myPainter.setBrush(QBrush(Qt::SolidPattern));
     myPainter.drawEllipse(
-        thickness + border,
-        thickness + border,
-        outerDiameter - 2 * (thickness + border),
-        outerDiameter - 2 * (thickness + border)
+        QRectF(
+            thickness + border,
+            thickness + border,
+            outerDiameter - 2 * (thickness + border),
+            outerDiameter - 2 * (thickness + border)
+        )
     );
 
 qDebug() << "Generating simple color wheel image took" << myTimer.restart() << "ms.";    

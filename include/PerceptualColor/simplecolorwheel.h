@@ -78,8 +78,8 @@ public:
     static QImage generateWheelImage(
         RgbColorSpace *colorSpace,
         const int outerDiameter,
-        const int border,
-        const int thickness,
+        const qreal border,
+        const qreal thickness,
         const qreal lightness,
         const qreal chroma
     );

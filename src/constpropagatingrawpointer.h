@@ -39,7 +39,9 @@ namespace PerceptualColor {
  * the object members and propagates them to the call through the pointer;
  * it will trigger a compiler error if non-cost access to object members
  * or methods is done from within const functions. Apart from that, it
- * behaves similar to raw pointers.
+ * behaves similar to raw pointers. For compatibility with raw pointers,
+ * it also casts implicitly to the corresponding raw pointer (but only
+ * within non-<tt>const</tt> contexts).
  * 
  * Think of this template as a simple alternative to
  * <tt>std::experimental::propagate_const&lt; T* &gt;</tt>
@@ -105,6 +107,14 @@ public:
     const T & operator*() const
     {
         return *m_pointer;
+    }
+
+    /** @brief Cast to a normal raw pointer.
+     * 
+     * This cast is only available within non-<tt>const</tt> contexts. */
+    operator T*()
+    {
+        return m_pointer;
     }
 
 private:
