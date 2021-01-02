@@ -156,4 +156,5 @@ Q_UNUSED(normalCppPointerToQRectF)
 }
 
 QTEST_MAIN(PerceptualColor::TestConstPropagatingRawPointer)
-#include "testconstpropagatingrawpointer.moc" // necessary because we do not use a header file
+// The following “include” is necessary because we do not use a header file:
+#include "testconstpropagatingrawpointer.moc"

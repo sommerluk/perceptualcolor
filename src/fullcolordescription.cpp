@@ -59,7 +59,10 @@ FullColorDescription::FullColorDescription()
  * Only needed during constructor call. Can be deleted afterwards.
  * @param rgb color (in RGB mode)
  * @param alpha the alpha channel for color */
-FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const Helper::cmsRGB &rgb, qreal alpha)
+FullColorDescription::FullColorDescription(
+    RgbColorSpace *colorSpace,
+    const Helper::cmsRGB &rgb,
+    qreal alpha)
 {
     m_rgb = rgb;
     m_rgbQColor = QColor::fromRgbF(m_rgb.red, m_rgb.green, m_rgb.blue, alpha);
@@ -74,12 +77,15 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const Help
 
 /** @brief Constructor
  *
- * @param colorSpace The color space in which the color description is created.
- * Only needed during constructor call. Can be deleted afterwards.
- * @param color either an RGB color, a HSV color or an invalid color. (If it is
- * another type, it will be converted.)
+ * @param colorSpace The color space in which the color description is
+ * created. Only needed during constructor call. Can be deleted afterwards.
+ * @param color either an RGB color, a HSV color or an invalid color. (If it
+ * is another type, it will be converted.)
  */
-FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor color)
+FullColorDescription::FullColorDescription(
+    RgbColorSpace *colorSpace,
+    QColor color
+)
 {
     switch (color.spec()) {
         case QColor::Spec::Invalid:
@@ -116,9 +122,13 @@ FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, QColor col
  * @param lab lab color (if out-of-gamut, it will be maintained as-is, but the
  * RGB value will be forced into the gamut.
  * @param coordinates how to treat out-of-gamut values
- * @param alpha the alpha channel of the color
- */
-FullColorDescription::FullColorDescription(RgbColorSpace *colorSpace, const cmsCIELab &lab, outOfGamutBehaviour coordinates, qreal alpha)
+ * @param alpha the alpha channel of the color */
+FullColorDescription::FullColorDescription(
+    RgbColorSpace *colorSpace,
+    const cmsCIELab &lab,
+    outOfGamutBehaviour coordinates,
+    qreal alpha
+)
 {
     m_lch = toLch(lab);
     normalizeLch();
@@ -178,10 +188,12 @@ void FullColorDescription::moveChromaIntoGamut(RgbColorSpace *colorSpace)
     cmsCIELCh upperChroma {m_lch};
     cmsCIELCh candidate;
     if (colorSpace->inGamut(lowerChroma)) {
-        // Now we know for sure that lowerChroma is in-gamut and upperChroma is out-of-gamut…
+        // Now we know for sure that lowerChroma is in-gamut
+        // and upperChroma is out-of-gamut…
         candidate = upperChroma;
         while (upperChroma.C - lowerChroma.C > Helper::gamutPrecision) {
-            // Our test candidate is half the way between lowerChroma and upperChroma:
+            // Our test candidate is half the way between lowerChroma
+            // and upperChroma:
             candidate.C = (
                 (lowerChroma.C + upperChroma.C) / 2
             );
@@ -237,24 +249,22 @@ bool FullColorDescription::operator==(const FullColorDescription& other) const
 
 
 /**
- * @returns true if unequal, otherwise false.
- */
+ * @returns true if unequal, otherwise false. */
 bool FullColorDescription::operator!=(const FullColorDescription& other) const
 {
     return !(*this == other);
 }
 
 /**
- * @returns if this object is valid, the color as RGB, otherwise an arbitrary value
- */
+ * @returns if this object is valid, the color as RGB, otherwise an
+ * arbitrary value */
 Helper::cmsRGB FullColorDescription::toRgb() const
 {
     return m_rgb;
 }
 
 /**
- * @returns QColor object corresponding at rgb()
- */
+ * @returns QColor object corresponding at rgb() */
 QColor FullColorDescription::toRgbQColor() const
 {
     return m_rgbQColor;
@@ -262,24 +272,23 @@ QColor FullColorDescription::toRgbQColor() const
 
 
 /**
- * @returns QColor object corresponding at HSV
- */
+ * @returns QColor object corresponding at HSV */
 QColor FullColorDescription::toHsvQColor() const
 {
     return m_hsvQColor;
 }
 
 /**
- * @returns if this object is valid, the color as Lab, otherwise an arbitrary value
- */
+ * @returns if this object is valid, the color as Lab, otherwise an
+ * arbitrary value */
 cmsCIELab FullColorDescription::toLab() const
 {
     return m_lab;
 }
 
 /**
- * @returns if this object is valid, the color as LCh, otherwise an arbitrary value
- */
+ * @returns if this object is valid, the color as LCh, otherwise an
+ * arbitrary value */
 cmsCIELCh FullColorDescription::toLch() const
 {
     return m_lch;
@@ -306,15 +315,43 @@ bool FullColorDescription::isValid() const
 }
 
 /** @brief Adds QDebug() support for this data type. */
-QDebug operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value)
+QDebug operator<<(
+    QDebug dbg,
+    const PerceptualColor::FullColorDescription &value
+)
 {
-    dbg.nospace() << "FullColorDescription(\n"
-        << " - RGB: " << value.toRgb().red << " " << value.toRgb().green << " " << value.toRgb().blue << "\n"
-        << " - RGBQColor: " << value.toRgbQColor() << "\n"
-        << " - HSVQColor: " << value.toHsvQColor() << "\n"
-        << " - Lab: " << value.toLab().L << " " << value.toLab().a << " " << value.toLab().b << "\n"
-        << " - LCh: " << value.toLch().L << " " << value.toLch().C << " " << value.toLch().h << "°\n"
-        << " - Alpha: " << value.alpha() << "\n"
+    dbg.nospace()
+        << "FullColorDescription(\n"
+        << " - RGB: "
+            << value.toRgb().red
+            << " "
+            << value.toRgb().green
+            << " "
+            << value.toRgb().blue
+            << "\n"
+        << " - RGBQColor: "
+            << value.toRgbQColor()
+            << "\n"
+        << " - HSVQColor: "
+            << value.toHsvQColor()
+            << "\n"
+        << " - Lab: "
+            << value.toLab().L
+            << " "
+            << value.toLab().a
+            << " "
+            << value.toLab().b
+            << "\n"
+        << " - LCh: "
+            << value.toLch().L
+            << " "
+            << value.toLch().C
+            << " "
+            << value.toLch().h
+            << "°\n"
+        << " - Alpha: "
+            << value.alpha()
+            << "\n"
         << ")";
     return dbg.maybeSpace();
 }
@@ -369,6 +406,7 @@ cmsCIELab FullColorDescription::toLab(const cmsCIELCh &lch)
     return temp;
 }
 
-// TODO Isn't it inconsistent if toRgbHexString is generated on-the-fly while all others are generated previously?
+// TODO Isn't it inconsistent if toRgbHexString is generated on-the-fly
+// while all others are generated previously?
 
 } // namespace PerceptualColor

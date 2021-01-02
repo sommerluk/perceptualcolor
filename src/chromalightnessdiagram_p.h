@@ -45,13 +45,14 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~ChromaLightnessDiagramPrivate() noexcept = default;
 
-    /** @brief The border between the widget outer border and the diagram itself.
+    /** @brief The border between the widget outer border and the
+     * diagram itself.
      * 
-     * The diagram is not painted on the whole extend of the widget. A border is
-     * left to allow that the selection marker can be painted completely even when
-     * a pixel on the border of the diagram is selected. The border is
-     * determined automatically, its value depends on @ref markerRadius and
-     * @ref markerThickness.
+     * The diagram is not painted on the whole extend of the widget.
+     * A border is left to allow that the selection marker can be painted
+     * completely even when a pixel on the border of the diagram is
+     * selected. The border is determined automatically, its value
+     * depends on @ref markerRadius and @ref markerThickness.
      * 
      * @sa updateBorder()
      */

@@ -107,7 +107,8 @@ bool PolarPointF::operator==(const PolarPointF other) const
     return (
         // radial has to be identical
         (m_radial == other.m_radial) &&
-        // angle has to be identical (except when radial is 0, because then angle is meaningless)
+        // angle has to be identical (except when radial is 0, because
+        // then angle is meaningless)
         ( (m_angleDegree == other.m_angleDegree) || (m_radial == 0) )
     );
 }

@@ -58,9 +58,6 @@ class WheelColorPicker : public SimpleColorWheel
         NOTIFY currentColorChanged
         USER true
     )
-     // TODO The base class has yet a property with "USER true": the hue property.
-     // Now currentColorRgb is added.
-     // Can more than one USER property co-exist?
 
 public:
     Q_INVOKABLE explicit WheelColorPicker(

@@ -53,7 +53,8 @@ SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
     AbstractCircularDiagram(parent),
     d_pointer(new SimpleColorWheelPrivate(this))
 {
-    // Setup LittleCMS (must be first thing because other operations rely on working LittleCMS)
+    // Setup LittleCMS (must be first thing because other operations
+    // rely on working LittleCMS)
     d_pointer->m_rgbColorSpace = colorSpace;
 
     // Simple initialization
@@ -98,7 +99,10 @@ int SimpleColorWheel::contentDiameter() const
  * @returns “wheel” coordinates: Coordinates in a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel.
  */
-PolarPointF SimpleColorWheel::SimpleColorWheelPrivate::fromWidgetCoordinatesToWheelCoordinates(
+PolarPointF SimpleColorWheel
+    ::SimpleColorWheelPrivate
+    ::fromWidgetCoordinatesToWheelCoordinates
+(
     const QPoint widgetCoordinates
 ) const
 {
@@ -114,7 +118,10 @@ PolarPointF SimpleColorWheel::SimpleColorWheelPrivate::fromWidgetCoordinatesToWh
  * center is exactly in the middle of the displayed wheel.
  * @returns coordinates in the coordinate system of this widget
  */
-QPointF SimpleColorWheel::SimpleColorWheelPrivate::fromWheelCoordinatesToWidgetCoordinates(
+QPointF SimpleColorWheel
+    ::SimpleColorWheelPrivate
+    ::fromWheelCoordinatesToWidgetCoordinates
+(
     const PolarPointF wheelCoordinates
 ) const
 {
@@ -130,8 +137,8 @@ QPointF SimpleColorWheel::SimpleColorWheelPrivate::fromWheelCoordinatesToWidgetC
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
- * If the mouse is clicked within the wheel ribbon, than the marker is placed here and further
- * mouse movements are tracked.
+ * If the mouse is clicked within the wheel ribbon, than the marker is placed
+ * here and further mouse movements are tracked.
  * 
  * @param event The corresponding mouse event
  */
@@ -140,7 +147,13 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
-    if ( Helper::inRange<qreal>(radius-m_wheelThickness, myPolarPoint.radial(), radius) ) {
+    if (
+        Helper::inRange<qreal>(
+            radius-m_wheelThickness,
+            myPolarPoint.radial(),
+            radius
+        ) 
+    ) {
         setFocus(Qt::MouseFocusReason);
         d_pointer->m_mouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
@@ -158,7 +171,8 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
  * Reacts only on mouse move events if previously there had been a mouse press
  * event that had been accepted.
  * 
- * If previously there had not been a mouse press event, the mouse move event is ignored.
+ * If previously there had not been a mouse press event, the mouse move event
+ * is ignored.
  * 
  * @param event The corresponding mouse event
  */
@@ -171,14 +185,16 @@ void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
             ).angleDegree()
         );
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze
+        // widget style works
         event->ignore();
     }
 }
 
 /** @brief React on a mouse release event.
  *
- * Reimplemented from base class. Does not differentiate between left, middle and right mouse click.
+ * Reimplemented from base class. Does not differentiate between left,
+ * middle and right mouse click.
  * 
  * @param event The corresponding mouse event
  */
@@ -192,7 +208,8 @@ void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
             ).angleDegree()
         );
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze
+        // widget style works
         event->ignore();
     }
 }
@@ -216,11 +233,13 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
-        /* Do nothing while mouse movement is tracked anyway. This would be confusing. */
+        // Do nothing while mouse movement is tracked anyway. This would
+        // be confusing.
         (!d_pointer->m_mouseEventActive) &&
-        /* Only react on wheel events when its in the wheel ribbon or in the inner hole. */
+        // Only react on wheel events when its in the wheel ribbon or in
+        // the inner hole.
         (myPolarPoint.radial() <= radius) &&
-        /* Only react on good old vertical wheels, and not on horizontal wheels */
+        // Only react on good old vertical wheels, and not on horizontal wheels.
         (event->angleDelta().y() != 0)
     ) {
         setHue(
@@ -231,7 +250,8 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
     }
 }
 
-// TODO How to catch and treat invalid ranges? For QImage creation for example? Use also minimalSize()?
+// TODO How to catch and treat invalid ranges? For QImage creation for
+// example? Use also minimalSize()?
 
 // TODO deliver also arrow keys to the child widget! WARNING DANGER
 
@@ -265,13 +285,14 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
         default:
             /* Quote from Qt documentation:
              * 
-             * If you reimplement this handler, it is very important that you call the base class
-             * implementation if you do not act upon the key.
+             * If you reimplement this handler, it is very important
+             * that you call the base class implementation if you do not
+             * act upon the key.
              * 
-             * The default implementation closes popup widgets if the user presses the key sequence
-             * for QKeySequence::Cancel (typically the Escape key). Otherwise the event is ignored,
-             * so that the widget's parent can interpret it.
-             */
+             * The default implementation closes popup widgets if the user
+             * presses the key sequence for QKeySequence::Cancel (typically
+             * the Escape key). Otherwise the event is ignored, so that the
+             * widget's parent can interpret it. */
             QWidget::keyPressEvent(event);
             break;
     }
@@ -283,10 +304,12 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  * flags Qt::MouseButtons
  * 
  * Qt::BackButton	0x00000008
- * The 'Back' button. (Typically present on the 'thumb' side of a mouse with extra buttons. This is NOT the tilt wheel.)
+ * The 'Back' button. (Typically present on the 'thumb' side of a mouse
+ * with extra buttons. This is NOT the tilt wheel.)
  * 
  * Qt::ForwardButton	0x00000010
- * The 'Forward' Button. (Typically present beside the 'Back' button, and also pressed by the thumb.)
+ * The 'Forward' Button. (Typically present beside the 'Back' button, and
+ * also pressed by the thumb.)
  */
 
 /** @brief Paint the widget.
@@ -294,8 +317,8 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  * Reimplemented from base class.
  * 
  * Paints the widget. Takes the existing m_wheelPixmap and paints
- * them on the widget. Paints, if appropriate, the focus indicator. Paints the marker.
- * Relies on that m_wheelPixmap are up to date.
+ * them on the widget. Paints, if appropriate, the focus indicator.
+ * Paints the marker. Relies on that @ref m_wheelPixmap are up to date.
  * 
  * @param event the paint event
  * 
@@ -313,17 +336,17 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     //       may not be respected by any given engine.”
     //
     // Painting here directly on the widget might lead to different
-    // anti-aliasing results depending on the underlying window system. This is
-    // especially problematic as anti-aliasing might shift or not a pixel to the
-    // left or to the right. So we paint on a QImage first. As QImage (at
-    // difference to QPixmap and a QWidget) is independent of native platform
-    // rendering, it guarantees identical anti-aliasing results on all
-    // platforms. Here the quote from QPainter class documentation:
+    // anti-aliasing results depending on the underlying window system. This
+    // is especially problematic as anti-aliasing might shift or not a pixel
+    // to the left or to the right. So we paint on a QImage first. As QImage
+    // (at difference to QPixmap and a QWidget) is independent of native
+    // platform rendering, it guarantees identical anti-aliasing results on
+    // all platforms. Here the quote from QPainter class documentation:
     //
-    //      “To get the optimal rendering result using QPainter, you should use
-    //       the platform independent QImage as paint device; i.e. using QImage
-    //       will ensure that the result has an identical pixel representation
-    //       on any platform.”
+    //      “To get the optimal rendering result using QPainter, you should
+    //       use the platform independent QImage as paint device; i.e. using
+    //       QImage will ensure that the result has an identical pixel
+    //       representation on any platform.”
     QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
@@ -408,8 +431,9 @@ qreal SimpleColorWheel::wheelRibbonChroma() const
 }
 
 /**
- * Set the hue property. The hue property is the hue angle degree in the range from 0 to 360, where the
- * circle is again at its beginning. The value is gets normalized to this range. So
+ * Set the hue property. The hue property is the hue angle degree in the
+ * range from 0 to 360, where the circle is again at its beginning. The
+ * value is gets normalized to this range. So
  * \li 0 gets 0
  * \li 359.9 gets 359.9
  * \li 360 gets 0
@@ -632,7 +656,10 @@ myTimer.start();
         )
     );
 
-qDebug() << "Generating simple color wheel image took" << myTimer.restart() << "ms.";    
+    qDebug()
+        << "Generating simple color wheel image took"
+        << myTimer.restart()
+        << "ms.";
     // return
     return finalWheel;
 }

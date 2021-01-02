@@ -99,26 +99,37 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
  * 
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
-ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(
+ChromaLightnessDiagram
+    ::ChromaLightnessDiagramPrivate
+    ::ChromaLightnessDiagramPrivate
+(
     ChromaLightnessDiagram *backLink
-) : q_pointer(backLink)
+) :
+    q_pointer(backLink)
 {
 }
 
 /** @brief Updates the border() property.
  * 
- * This function can be called after changes to markerRadius() or markerThickness() to
- * update the border() property.
+ * This function can be called after changes to @ref markerRadius() or
+ * @ref markerThickness() to
+ * update the @ref border() property.
  */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
 {
     // Code
-    m_border = qRound(markerRadius + (markerThickness / static_cast<qreal>(2)));
+    m_border = qRound(
+        markerRadius + (markerThickness / static_cast<qreal>(2))
+    );
 }
 
 // TODO high-dpi support
 
-// TODO reasonable boundary for markerWidth and markerRadius and minimumSizeHint: How to make sure the diagram has at least a few pixels? And if it's very low: For precision wouldn't it be better to internally calculate with a higher-resolution pixmap for more precision? Alternative: for the border() property: better quint16? No, that's not a good idea...
+// TODO reasonable boundary for markerWidth and markerRadius and
+// minimumSizeHint: How to make sure the diagram has at least a few pixels?
+// And if it's very low: For precision wouldn't it be better to internally
+// calculate with a higher-resolution pixmap for more precision? Alternative:
+// for the border() property: better quint16? No, that's not a good idea...
 
 /** Sets the color values corresponding to image coordinates.
  * 
@@ -132,14 +143,21 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
  * are outside the gamut diagram, then a nearest-neighbor-search is done,
  * searching for the pixel that is less far from the cursor.
  */
-void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(const QPoint newImageCoordinates)
+void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(
+    const QPoint newImageCoordinates
+)
 {
     updateDiagramCache();
-    QPoint correctedImageCoordinates = nearestNeighborSearch(newImageCoordinates, m_diagramImage);
+    QPoint correctedImageCoordinates = nearestNeighborSearch(
+        newImageCoordinates,
+        m_diagramImage
+    );
     QPointF chromaLightness;
     cmsCIELCh lch;
     if (correctedImageCoordinates != currentImageCoordinates()) {
-        chromaLightness = fromImageCoordinatesToChromaLightness(correctedImageCoordinates);
+        chromaLightness = fromImageCoordinatesToChromaLightness(
+            correctedImageCoordinates
+        );
         lch.C = chromaLightness.x();
         lch.L = chromaLightness.y();
         lch.h = m_color.toLch().h;
@@ -153,24 +171,28 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(
     }
 }
 
-// TODO Do not use nearest neighbor or other pixel based search algorithms, but work directly with LittleCMS, maybe with a limited, but well-defined, precision.
+// TODO Do not use nearest neighbor or other pixel based search algorithms,
+// but work directly with LittleCMS, maybe with a limited, but well-defined,
+// precision.
 
 /** @brief React on a mouse press event.
  * 
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
- * If the mouse is clicked within the <em>displayed</em> gamut, than the marker is placed here and further
+ * If the mouse is clicked within the <em>displayed</em> gamut, than the
+ * marker is placed here and further
  * mouse movements are tracked.
  * 
  * @param event The corresponding mouse event
  */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
-    QPoint imageCoordinates = d_pointer->fromWidgetCoordinatesToImageCoordinates(
-        event->pos()
-    );
-    if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) { // TODO also accept out-of-gamut clicks when they are covered by the current marker.
+    QPoint imageCoordinates =
+        d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos());
+    // TODO In the following “if” condition, also accept out-of-gamut clicks
+    // when they are covered by the current marker.
+    if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) { 
         // Mouse focus is handled manually because so we can accept focus only
         // on mouse clicks within the displayed gamut, while rejecting focus
         // otherwise. In the constructor, therefore Qt::FocusPolicy::TabFocus
@@ -184,7 +206,8 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         setCursor(Qt::BlankCursor);
         d_pointer->setImageCoordinates(imageCoordinates);
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze
+        // widget style works
         event->ignore();
     }
 }
@@ -193,21 +216,21 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  *
  * Reimplemented from base class.
  *
- * Reacts only on mouse move events if previously there had been a mouse press
- * event within the displayed gamut. If the mouse moves inside the <em>displayed</em>
- * gamut, the marker is displaced there. If the mouse moves outside the
- * <em>displayed</em> gamut, the marker is displaced to the nearest neighbor pixel
- * within gamut.
+ * Reacts only on mouse move events if previously there had been a mouse
+ * press event within the displayed gamut. If the mouse moves inside the
+ * <em>displayed</em> gamut, the marker is displaced there. If the mouse
+ * moves outside the <em>displayed</em> gamut, the marker is displaced to
+ * the nearest neighbor pixel within gamut.
  * 
- * If previously there had not been a mouse press event, the mouse move event is ignored.
+ * If previously there had not been a mouse press event, the mouse move
+ * event is ignored.
  * 
  * @param event The corresponding mouse event
  */
 void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint imageCoordinates = d_pointer->fromWidgetCoordinatesToImageCoordinates(
-        event->pos()
-    );
+    QPoint imageCoordinates =
+        d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos());
     if (d_pointer->m_mouseEventActive) {
         if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) {
             setCursor(Qt::BlankCursor);
@@ -216,17 +239,20 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
         }
         d_pointer->setImageCoordinates(imageCoordinates);
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze
+        // widget style works
         event->ignore();
     }
 }
 
 /** @brief React on a mouse release event.
  *
- * Reimplemented from base class. Does not differentiate between left, middle and right mouse click.
+ * Reimplemented from base class. Does not differentiate between left,
+ * middle and right mouse click.
  *
- * If the mouse is inside the <em>displayed</em> gamut, the marker is displaced there. If the mouse is
- * outside the <em>displayed</em> gamut, the marker is displaced to the nearest neighbor pixel within gamut.
+ * If the mouse is inside the <em>displayed</em> gamut, the marker is
+ * displaced there. If the mouse is outside the <em>displayed</em> gamut,
+ * the marker is displaced to the nearest neighbor pixel within gamut.
  * 
  * @param event The corresponding mouse event
  */
@@ -239,20 +265,23 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
         unsetCursor();
         d_pointer->m_mouseEventActive = false;
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze widget style works
+        // Make sure default coordinates like drag-window in KDE's Breeze
+        // widget style works
         event->ignore();
     }
 }
 
-// TODO What when @ref m_color has a valid in-gamut color, but this color is out of the _displayed_ diagram? How to handle that?
+// TODO What when @ref m_color has a valid in-gamut color, but this color
+// is out of the _displayed_ diagram? How to handle that?
 
 /** @brief Paint the widget.
  * 
  * Reimplemented from base class.
  * 
- * Paints the widget. Takes the existing m_diagramImage and m_diagramPixmap and paints
- * them on the widget. Paints, if appropriate, the focus indicator. Paints the marker.
- * Relies on that m_diagramImage and m_diagramPixmap are up to date.
+ * Paints the widget. Takes the existing m_diagramImage and m_diagramPixmap
+ * and paints them on the widget. Paints, if appropriate, the focus indicator.
+ * Paints the marker. Relies on that m_diagramImage and m_diagramPixmap are
+ * up to date.
  * 
  * @param event the paint event
  */
@@ -266,17 +295,17 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     //       may not be respected by any given engine.”
     //
     // Painting here directly on the widget might lead to different
-    // anti-aliasing results depending on the underlying window system. This is
-    // especially problematic as anti-aliasing might shift or not a pixel to the
-    // left or to the right. So we paint on a QImage first. As QImage (at
-    // difference to QPixmap and a QWidget) is independent of native platform
-    // rendering, it guarantees identical anti-aliasing results on all
-    // platforms. Here the quote from QPainter class documentation:
+    // anti-aliasing results depending on the underlying window system. This
+    // is especially problematic as anti-aliasing might shift or not a pixel
+    // to the left or to the right. So we paint on a QImage first. As QImage
+    // (at difference to QPixmap and a QWidget) is independent of native
+    // platform rendering, it guarantees identical anti-aliasing results on
+    // all platforms. Here the quote from QPainter class documentation:
     //
-    //      “To get the optimal rendering result using QPainter, you should use
-    //       the platform independent QImage as paint device; i.e. using QImage
-    //       will ensure that the result has an identical pixel representation
-    //       on any platform.”
+    //      “To get the optimal rendering result using QPainter, you should
+    //       use the platform independent QImage as paint device; i.e. using
+    //       QImage will ensure that the result has an identical pixel
+    //       representation on any platform.”
     QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
@@ -285,34 +314,46 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
 
     // Paint the diagram itself as available in the cache.
     d_pointer->updateDiagramCache();
-    painter.drawImage(d_pointer->m_border, d_pointer->m_border, d_pointer->m_diagramImage);
+    painter.drawImage(
+        d_pointer->m_border,
+        d_pointer->m_border,
+        d_pointer->m_diagramImage
+    );
 
     /* Paint a focus indicator.
      * 
-     * We could paint a focus indicator (round or rectangular) around the marker.
-     * Depending on the currently selected hue for the diagram, it looks ugly
-     * because the colors of focus indicator and diagram do not harmonize, or
-     * it is mostly invisible the the colors are similar. So this approach does
-     * not work well.
+     * We could paint a focus indicator (round or rectangular) around the
+     * marker. Depending on the currently selected hue for the diagram,
+     * it looks ugly because the colors of focus indicator and diagram
+     * do not harmonize, or it is mostly invisible the the colors are
+     * similar. So this approach does not work well.
      * 
      * It seems better to paint a focus indicator for the whole widget.
-     * We could use the style primitives to paint a rectangular focus indicator
-     * around the whole widget:
-     * style()->drawPrimitive(QStyle::PE_FrameFocusRect, &option, &painter, this);
-     * However, this does not work well because the chroma-lightness diagram has
-     * usually a triangular shape. The style primitive, however, often paints
-     * just a line at the bottom of the widget. That does not look good. An
-     * alternative approach is that we paint ourselves a focus indicator only
-     * on the left of the diagram (which is the place of black/gray/white,
-     * so the won't be any problems with non-harmonic colors).
+     * We could use the style primitives to paint a rectangular focus
+     * indicator around the whole widget:
      * 
-     * Then we have to design the line that we want to display. It is better to
-     * do that ourselves instead of relying on generic QStyle::PE_Frame or similar
-     * solutions as their result seems to be quite unpredictable across various
-     * styles. So we use markerThickness as line width and paint it at the
-     * left-most possible position. As the border() property accommodates also to
-     * markerRadius, the distance of the focus line to the real diagram also
-     * does, which looks nice.
+     * style()->drawPrimitive(
+     *     QStyle::PE_FrameFocusRect,
+     *     &option,
+     *     &painter,
+     *     this
+     * );
+     * 
+     * However, this does not work well because the chroma-lightness
+     * diagram has usually a triangular shape. The style primitive, however,
+     * often paints just a line at the bottom of the widget. That does not
+     * look good. An alternative approach is that we paint ourselves a focus
+     * indicator only on the left of the diagram (which is the place of
+     * black/gray/white, so the won't be any problems with non-harmonic
+     * colors).
+     * 
+     * Then we have to design the line that we want to display. It is better
+     * to do that ourselves instead of relying on generic QStyle::PE_Frame
+     * or similar solutions as their result seems to be quite unpredictable
+     * across various styles. So we use markerThickness as line width and
+     * paint it at the left-most possible position. As the border() property
+     * accommodates also to @ref markerRadius, the distance of the focus line
+     * to the real diagram also does, which looks nice.
      */
     if (hasFocus()) {
         pen.setWidth(markerThickness);
@@ -327,18 +368,23 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     }
 
     // Paint the marker on-the-fly.
-    // Render anti-aliased looks better. But as Qt documentation says: “Renderhints are used to
-    // specify flags to QPainter that may or may not be respected by any given engine.” Now, we
-    // are painting here directly on the widget, which might lead to different anti-aliasing
-    // results depending on the underlying window system. An alternative approach might be to
-    // do the rendering on a QImage first. As QImage (at difference to QPixmap and widgets) is
-    // independent of native platform rendering, it would guarantee identical results on all
-    // platforms. But it seems a little overkill, so we don't do that here. Anyway here the
-    // quote from QPainter class documentation:
+    // Render anti-aliased looks better. But as Qt documentation says:
     //
-    // To get the optimal rendering result using QPainter, you should use the platform independent
-    // QImage as paint device; i.e. using QImage will ensure that the result has an identical pixel
-    // representation on any platform.
+    //      “Renderhints are used to specify flags to QPainter that may or
+    //       may not be respected by any given engine.”
+    //
+    // Painting here directly on the widget might lead to different
+    // anti-aliasing results depending on the underlying window system. This
+    // is especially problematic as anti-aliasing might shift or not a pixel
+    // to the left or to the right. So we paint on a QImage first. As QImage
+    // (at difference to QPixmap and a QWidget) is independent of native
+    // platform rendering, it guarantees identical anti-aliasing results on
+    // all platforms. Here the quote from QPainter class documentation:
+    //
+    //      “To get the optimal rendering result using QPainter, you should
+    //       use the platform independent QImage as paint device; i.e. using
+    //       QImage will ensure that the result has an identical pixel
+    //       representation on any platform.”
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint imageCoordinates = d_pointer->currentImageCoordinates();
     pen.setWidth(markerThickness);
@@ -366,7 +412,10 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
  * @returns the corresponding coordinate pair within m_diagramImage’s
  * coordinate system
  */
-QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetCoordinatesToImageCoordinates(
+QPoint ChromaLightnessDiagram
+    ::ChromaLightnessDiagramPrivate
+    ::fromWidgetCoordinatesToImageCoordinates
+(
     const QPoint widgetCoordinates
 ) const
 {
@@ -388,8 +437,8 @@ QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetCoordina
  * 
  * @warning This function might have an infinite loop if called when the
  * currently selected color has no non-transparent pixel on its row or line.
- * @todo This is a problem because it is well possible this will arrive because
- * of possible rounding errors!
+ * @todo This is a problem because it is well possible this will arrive
+ * because of possible rounding errors!
  * 
  * @todo Still the darkest color is far from RGB zero on usual widget size.
  * This has to get better to allow choosing RGB 0, 0, 0!!!
@@ -449,19 +498,23 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         default:
             /* Quote from Qt documentation:
              * 
-             * If you reimplement this handler, it is very important that you call the base class
-             * implementation if you do not act upon the key.
+             *     “If you reimplement this handler, it is very important that
+             *      you call the base class implementation if you do not act
+             *      upon the key.
              * 
-             * The default implementation closes popup widgets if the user presses the key sequence
-             * for QKeySequence::Cancel (typically the Escape key). Otherwise the event is ignored,
-             * so that the widget's parent can interpret it.
-             */
+             *      The default implementation closes popup widgets if the
+             *      user presses the key sequence for QKeySequence::Cancel
+             *      (typically the Escape key). Otherwise the event is
+             *      ignored, so that the widget's parent can interpret it.“ */
             QWidget::keyPressEvent(event);
             return;
     }
-    // Here we reach only if the key has been recognized. If not, in the default branch of the
-    // switch statement, we would have passed the keyPressEvent yet to the parent and returned.
-    // Set the new image coordinates (only takes effect when image coordinates are indeed different)
+    // Here we reach only if the key has been recognized. If not, in the
+    // default branch of the switch statement, we would have passed the
+    // keyPressEvent yet to the parent and returned.
+    
+    // Set the new image coordinates (only takes effect when image
+    // coordinates are indeed different)
     d_pointer->setImageCoordinates(newImageCoordinates);
 }
 
@@ -469,19 +522,29 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
  * @param imageCoordinates the image coordinates
  * @returns the chroma-lightness value for given image coordinates
  */
-QPointF ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates)
+QPointF ChromaLightnessDiagram
+    ::ChromaLightnessDiagramPrivate
+    ::fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates)
 {
     updateDiagramCache();
     return QPointF(
-        static_cast<qreal>(imageCoordinates.x()) * 100 / (m_diagramImage.height() - 1),
-        static_cast<qreal>(imageCoordinates.y()) * 100 / (m_diagramImage.height() - 1) * (-1) + 100
+        static_cast<qreal>(imageCoordinates.x())
+            * 100
+            / (m_diagramImage.height() - 1),
+        static_cast<qreal>(imageCoordinates.y())
+            * 100
+            / (m_diagramImage.height() - 1)
+            * (-1)
+            + 100
     );
 }
 
 /**
  * @returns the coordinates for m_color
  */
-QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordinates()
+QPoint ChromaLightnessDiagram
+    ::ChromaLightnessDiagramPrivate
+    ::currentImageCoordinates()
 {
     updateDiagramCache();
     return QPoint(
@@ -499,7 +562,9 @@ QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordi
 /** @brief Tests if image coordinates are in gamut.
  *  @returns <tt>true</tt> if the image coordinates are within the
  *  displayed gamut. Otherwise <tt>false</tt>. */
-bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::imageCoordinatesInGamut(
+bool ChromaLightnessDiagram
+    ::ChromaLightnessDiagramPrivate
+    ::imageCoordinatesInGamut(
     const QPoint imageCoordinates
 )
 {
@@ -576,10 +641,14 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent* event)
 {
     Q_UNUSED(event);
     d_pointer->m_diagramCacheReady = false;
-    // As by Qt documentation: The widget will be erased and receive a paint event immediately after processing the resize event. No drawing need be (or should be) done inside this handler.
+    // As by Qt documentation:
+    //     “The widget will be erased and receive a paint event
+    //      immediately after processing the resize event. No drawing
+    //      need be (or should be) done inside this handler.”
 }
 
-// TODO how to treat empty images because the color profile does not work or the resolution is too small?
+// TODO how to treat empty images because the color profile does not
+// work or the resolution is too small?
 
 /** @brief Provide the size hint.
  *
@@ -607,7 +676,8 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
     return QSize(100, 100);
 }
 
-// TODO rework all "throw" statements (also these in comments) and the qDebug() statements
+// TODO rework all "throw" statements (also these in comments) and
+// the qDebug() statements
 
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
 
@@ -660,28 +730,52 @@ void testChromaLightnessDiagramm() {
     QImage mImage;
 
     // Testing extremely small images
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(0, 0));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
+        0,
+        QSize(0, 0)
+    );
     QCOMPARE(mImage.size(), QSize(0, 0));
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(1, 1));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
+        0,
+        QSize(1, 1)
+    );
     QCOMPARE(mImage.size(), QSize(1, 1));
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(2, 2));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
+        0,
+        QSize(2, 2)
+    );
     QCOMPARE(mImage.size(), QSize(2, 2));
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(-1, -1));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
+        0,
+        QSize(-1, -1)
+    );
     QCOMPARE(mImage.size(), QSize(0, 0));
 
     // Start testing for a normal size image
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(0, QSize(201, 101));
+    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
+        0,
+        QSize(201, 101)
+    );
     QCOMPARE(mImage.height(), 101);
     QCOMPARE(mImage.width(), 201);
-    QCOMPARE(mImage.pixelColor(0, 0).isValid(), true); // position within the QImage is valid
-    QCOMPARE(mImage.pixelColor(0, 100).isValid(), true); // position within the QImage is valid
-    QTest::ignoreMessage(QtWarningMsg, "QImage::pixelColor: coordinate (0,101) out of range");
-    QCOMPARE(mImage.pixelColor(0, 101).isValid(), false); // position within the QImage is invalid
+    // Test if position within the QImage is valid:
+    QCOMPARE(mImage.pixelColor(0, 0).isValid(), true);
+    // Test if position within the QImage is valid:
+    QCOMPARE(mImage.pixelColor(0, 100).isValid(), true);
+    QTest::ignoreMessage(
+        QtWarningMsg,
+        "QImage::pixelColor: coordinate (0,101) out of range"
+    );
+    // Test if position within the QImage is invalid:
+    QCOMPARE(mImage.pixelColor(0, 101).isValid(), false);
 }
 */
-QImage ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::generateDiagramImage(
-        const qreal imageHue,
-        const QSize imageSize) const
+QImage ChromaLightnessDiagram
+    ::ChromaLightnessDiagramPrivate
+    ::generateDiagramImage
+(
+    const qreal imageHue,
+    const QSize imageSize) const
 {
 QElapsedTimer myTimer;
 myTimer.start();
@@ -696,7 +790,8 @@ myTimer.start();
     // Test if image size is too small.
     if ((maxHeight < 1) || (maxWidth < 1)) {
         // TODO How to react correctly here? Exception?
-        // maxHeight and maxWidth must be at least >= 1 for our algorithm. If they are 0, this would crash (division by 0).
+        // maxHeight and maxWidth must be at least >= 1 for our
+        // algorithm. If they are 0, this would crash (division by 0).
         return temp_image;
     }
 
@@ -706,7 +801,7 @@ myTimer.start();
     // Paint the gamut.
     LCh.h = PolarPointF::normalizedAngleDegree(imageHue);
     for (y = 0; y <= maxHeight; ++y) {
-        LCh.L = y * static_cast<cmsFloat64Number>(100) / maxHeight; // floating point division thanks to 100 which is a "cmsFloat64Number"
+        LCh.L = y * static_cast<cmsFloat64Number>(100) / maxHeight;
         for (x = 0; x <= maxWidth; ++x) {
             // Using the same scale as on the y axis. floating point
             // division thanks to 100 which is a "cmsFloat64Number"
@@ -733,7 +828,10 @@ myTimer.start();
         }
     }
 
-qDebug() << "Generating chroma-lightness gamut image took" << myTimer.restart() << "ms.";
+qDebug()
+    << "Generating chroma-lightness gamut image took"
+    << myTimer.restart()
+    << "ms.";
     return temp_image;
 }
 
@@ -760,7 +858,10 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
     // Update QImage
     m_diagramImage = generateDiagramImage(
         m_color.toLch().h,
-        QSize(q_pointer->size().width() - 2 * m_border, q_pointer->size().height() - 2 * m_border)
+        QSize(
+            q_pointer->size().width() - 2 * m_border,
+            q_pointer->size().height() - 2 * m_border
+        )
     );
 
     // Mark cache as ready
@@ -787,7 +888,10 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
 *     neighbors at the same distance, it is undefined which one is returned.)
 * \li Else there are no non-transparent pixels, and simply the point
 *     <tt>0, 0</tt> is returned, but this is a very slow case. */
-QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::nearestNeighborSearch(
+QPoint ChromaLightnessDiagram
+    ::ChromaLightnessDiagramPrivate
+    ::nearestNeighborSearch
+(
     const QPoint originalPoint,
     const QImage &image
 ) {
@@ -799,7 +903,8 @@ QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::nearestNeighborSea
         }
     }
 
-    // No special case. So we have to actually perform a nearest-neighbor-search.
+    // No special case. So we have to actually perform
+    // a nearest-neighbor-search.
     int x;
     int y;
     int currentBestX = 0; // 0 is the fallback value

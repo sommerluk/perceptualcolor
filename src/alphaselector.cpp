@@ -84,17 +84,20 @@ AlphaSelector::AlphaSelector(
         lch,
         FullColorDescription::outOfGamutBehaviour::preserve
     );
-    /* setRepresentation does only do something if the new value is different from the old one.
-     * As we rely on it for initialization, we set it first to some other value, and second
-     * to the really desired default value. */
-    setRepresentation(NumberFormat::one); // first set to an unwanted value
-    setRepresentation(NumberFormat::percent); // second set to the really wanted value
+    /* setRepresentation does only do something if the new value is
+     * different from the old one. As we rely on it for initialization,
+     * we set it first to some other value, and second to the really
+     * desired default value. */
+    // First, set to an unwanted value:
+    setRepresentation(NumberFormat::one);
+    // Second, set to the really wanted value:
+    setRepresentation(NumberFormat::percent);
     /** Same procedure for alpha() property */
     setAlpha(0); // first set to an unwanted value
     setAlpha(1); // second set to the really wanted value
-    /* Not necessary to do the same for color() because the default constructor of this object
-     * constructs an invalid color anyway, and because our new value is valid, it will be set
-     * correctly. */
+    /* Not necessary to do the same for color() because the default
+     * constructor of this object constructs an invalid color anyway,
+     * and because our new value is valid, it will be set correctly. */
     setColor(temp);
 }
 

@@ -36,23 +36,26 @@ namespace PerceptualColor {
     
 /** @brief A widget that displays a chroma-lightness diagram.
  *
- * This widget displays a chroma-lightness diagram in the LCh color model for a given hue, in a
- * Cartesian coordinate system.
+ * This widget displays a chroma-lightness diagram in the LCh color model
+ * for a given hue, in a Cartesian coordinate system.
  * 
- * The widget shows the chroma-lightness diagram at the whole widget extend. At the
- * y axis the diagram always shows the lightness values of 0 at the bottom pixel
- * and the lightness value of 100 at the top pixel. For the x (chroma) axis is
- * automatically used the same scale as for the y axis. So if the widget size
- * is a square, both x range and y range are from 0 to 100. If the widget
- * width is larger than the widget height, the x range goes beyond 100.
+ * The widget shows the chroma-lightness diagram at the whole widget extend.
+ * At the y axis the diagram always shows the lightness values of 0 at the
+ * bottom pixel and the lightness value of 100 at the top pixel. For the
+ * x (chroma) axis is automatically used the same scale as for the y axis.
+ * So if the widget size is a square, both x range and y range are from
+ * 0 to 100. If the widget width is larger than the widget height, the
+ * x range goes beyond 100.
  * 
- * The widget reacts on mouse events and on keyboard events (see keyPressEvent() for details).
+ * The widget reacts on mouse events and on keyboard events
+ * (see keyPressEvent() for details).
  * 
- * @note This widget <em>always</em> accepts focus by a mouse click within
- * the displayed gamut. This happens regardless of the <tt>QWidget::focusPolicy</tt>
- * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
- * value that accepts focus by mouse click, the focus will not only be
- * accepted for clicks within the actual display gamut, but also for clicks
+ * @note This widget <em>always</em> accepts focus by a mouse
+ * click within the displayed gamut. This happens regardless of the
+ * <tt>QWidget::focusPolicy</tt> property. If you set the
+ * <tt>QWidget::focusPolicy</tt> property to a value that accepts
+ * focus by mouse click, the focus will not only be accepted for
+ * clicks within the actual display gamut, but also for clicks
  * within the surrounding rectangle.
  * 
  * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */

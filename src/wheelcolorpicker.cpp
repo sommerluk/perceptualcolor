@@ -51,19 +51,28 @@ WheelColorPicker::WheelColorPicker(
     d_pointer(new WheelColorPickerPrivate(this))
 {
     
-    d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(colorSpace, this);
+    d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(
+        colorSpace,
+        this
+    );
     d_pointer->resizeChildWidget();
     d_pointer->m_chromaLightnessDiagram->setHue(hue());
     d_pointer->m_chromaLightnessDiagram->show();
-    d_pointer->m_chromaLightnessDiagram->setFocusPolicy(Qt::FocusPolicy::ClickFocus); // TODO Why not just inherit TabFocus? But apparently it works! Why?
+    d_pointer->m_chromaLightnessDiagram->setFocusPolicy(
+        Qt::FocusPolicy::ClickFocus
+    ); // TODO Why not just inherit TabFocus? But apparently it works! Why?
     d_pointer->m_chromaLightnessDiagram->setFocusProxy(this);
     connect(
-        this, &WheelColorPicker::hueChanged,
-        d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue
+        this,
+        &WheelColorPicker::hueChanged,
+        d_pointer->m_chromaLightnessDiagram,
+        &ChromaLightnessDiagram::setHue
     );
     connect(
-        d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::colorChanged,
-        this, &WheelColorPicker::currentColorChanged
+        d_pointer->m_chromaLightnessDiagram,
+        &ChromaLightnessDiagram::colorChanged,
+        this,
+        &WheelColorPicker::currentColorChanged
     );
 }
 
@@ -82,7 +91,12 @@ WheelColorPicker::WheelColorPickerPrivate::WheelColorPickerPrivate(
 {
 }
 
-// TODO This widget and its child should be a unit: Only one focus, and all keyboard and mouse events apply to both widgets. But not two focus indicators! The current solution has a focusInEvent and focusOutEvent reimplementation and a focusChanged() signal which does not connect to update() and requires scheduleUpdate() and still shows two focus indicators. Quite a hack. Find a better solution!
+// TODO This widget and its child should be a unit: Only one focus, and
+// all keyboard and mouse events apply to both widgets. But not two focus
+// indicators! The current solution has a focusInEvent and focusOutEvent
+// reimplementation and a focusChanged() signal which does not connect
+// to update() and requires scheduleUpdate() and still shows two focus
+// indicators. Quite a hack. Find a better solution!
 
 /** @brief React on a resize event.
  *
@@ -147,13 +161,17 @@ void WheelColorPicker::keyPressEvent(QKeyEvent *event)
         case Qt::Key_PageDown:
         case Qt::Key_Home:
         case Qt::Key_End:
-            /** These keys are guaranteed to be handled by ChromaLightnessDiagram().
-             * This guarantee is important. If we would pass a key that is _not_
-             * handled by ChromaLightnessDiagram(), this event would return here
-             * because ChromaLightnessDiagram() leaves treatment of non-handled
-             * keys up to the parent widget, which is _this_ widget. This would
-             * make an infinite recursion. */
-            QCoreApplication::sendEvent(d_pointer->m_chromaLightnessDiagram, event);
+            /* These keys are guaranteed to be handled by
+             * ChromaLightnessDiagram(). This guarantee is important.
+             * If we would pass a key that is _not_ handled by
+             * ChromaLightnessDiagram(), this event would return here
+             * because ChromaLightnessDiagram() leaves treatment of
+             * non-handled keys up to the parent widget, which
+             * is _this_ widget. This would make an infinite recursion. */
+            QCoreApplication::sendEvent(
+                d_pointer->m_chromaLightnessDiagram,
+                event
+            );
             break;
         default:
             SimpleColorWheel::keyPressEvent(event);
@@ -163,13 +181,14 @@ void WheelColorPicker::keyPressEvent(QKeyEvent *event)
 
 /** @brief Update the size of the child widget.
  *
- * Updates the size of the ChromaLightnessDiagram() child widget: m_chromaLightnessDiagram.
- * It stays in the interior of the color wheel.
- */
+ * Updates the size of the @ref ChromaLightnessDiagram() child widget:
+ * m_chromaLightnessDiagram. It stays in the interior of the color wheel. */
 void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidget()
 {
     int diagonal = qMax(
-        q_pointer->contentDiameter() - 2 * (m_wheelThickness + q_pointer->border()),
+        q_pointer->contentDiameter()
+            - 2
+            * (m_wheelThickness + q_pointer->border()),
         0
     );
     // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to
@@ -181,7 +200,8 @@ void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidget()
     m_chromaLightnessDiagram->resize(newChromaLightnessDiagramSize);
     qreal radius = static_cast<qreal>(q_pointer->contentDiameter()) / 2;
     m_chromaLightnessDiagram->move(
-        // TODO Does qRound make sense here? Does it the right thing (pixel-wise)?
+        // TODO Does qRound make sense here? Does it the right
+        // thing (pixel-wise)?
         qRound(radius - newChromaLightnessDiagramSize.width() / 2.0),
         qRound(radius - newChromaLightnessDiagramSize.height() / 2.0)
     );

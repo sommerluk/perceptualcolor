@@ -103,11 +103,16 @@ int main(int argc, char *argv[])
 //         true
 //     );
 //     m_colorDialog.setLayoutDimensions(
-//         PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
+//         PerceptualColor
+//             ::ColorDialog
+//             ::DialogLayoutDimensions
+//             ::screenSizeDependent
 //     );
     m_colorDialog.show();
     
-//     m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
+//     m_colorDialog.setStyleSheet(
+//         "background: yellow; color: red; border: 15px solid #FF0000;"
+//     );
     
     // Run
     return app.exec();

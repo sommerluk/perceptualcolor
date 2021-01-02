@@ -1778,7 +1778,11 @@ private Q_SLOTS:
             10
         );
         QCOMPARE(
-            myDialog->d_pointer->m_currentOpaqueColor.toHsvQColor().saturation(),
+            myDialog
+                ->d_pointer
+                ->m_currentOpaqueColor
+                .toHsvQColor()
+                .saturation(),
             11
         );
         QCOMPARE(
@@ -1977,11 +1981,17 @@ private Q_SLOTS:
             PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded
         );
         m_perceptualDialog->setLayoutDimensions(
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
+            PerceptualColor
+                ::ColorDialog
+                ::DialogLayoutDimensions
+                ::screenSizeDependent
         );
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
+            PerceptualColor
+                ::ColorDialog
+                ::DialogLayoutDimensions
+                ::screenSizeDependent
         );
         
         // Test if values are correctly stored after showing
@@ -2001,11 +2011,17 @@ private Q_SLOTS:
             PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded
         );
         m_perceptualDialog->setLayoutDimensions(
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
+            PerceptualColor
+                ::ColorDialog
+                ::DialogLayoutDimensions
+                ::screenSizeDependent
         );
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
-            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent
+            PerceptualColor
+                ::ColorDialog
+                ::DialogLayoutDimensions
+                ::screenSizeDependent
         );
         delete m_perceptualDialog;
     }
@@ -2077,7 +2093,10 @@ private Q_SLOTS:
             throw 0;
         }
         constexpr int myIndex = 1;
-        if (theTabWidget->tabText(myIndex) != QStringLiteral("&Lightness first")) {
+        if (
+            theTabWidget->tabText(myIndex)
+                != QStringLiteral("&Lightness first")
+        ) {
             throw 0;
         }
         theTabWidget->setCurrentIndex(myIndex);
@@ -2144,4 +2163,5 @@ delete myDialog;
 }
 
 QTEST_MAIN(PerceptualColor::TestColorDialog)
-#include "testcolordialog.moc" // necessary because we do not use a header file
+// The following “include” is necessary because we do not use a header file:
+#include "testcolordialog.moc"

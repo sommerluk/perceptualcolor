@@ -53,10 +53,7 @@ namespace PerceptualColor {
  *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation? Or remove propagate_const header from this library?
- * 
- * @todo This class breaks @ref ColorDialog::ColorDialogPrivate::q_pointer
- * when it is used as type for this member. It should not break! */
+ * implementation? Or remove propagate_const header from this library? */
 template <typename T>
 class ConstPropagatingRawPointer final
 {

@@ -121,7 +121,8 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
     }
     d_pointer->m_whitepointL = candidate.L;
     if (d_pointer->m_whitepointL <= d_pointer->m_blackpointL) {
-        qCritical() << "Unable to find blackpoint and whitepoint on gray axis.";
+        qCritical()
+            << "Unable to find blackpoint and whitepoint on gray axis.";
         throw 0;
     }
 }
@@ -152,9 +153,10 @@ qreal RgbColorSpace::whitepointL() const
 
 /** @brief Calculates the Lab value
  * 
- * @param rgbColor the color that will be converted. (If this is not an RGB color, it
- * will be converted first into an RGB color by QColor methods.)
- * @returns If the color is valid, the corresponding LCh value might also be invalid.
+ * @param rgbColor the color that will be converted. (If this is not an
+ * RGB color, it will be converted first into an RGB color by QColor methods.)
+ * @returns If the color is valid, the corresponding LCh value might also
+ * be invalid.
  */
 cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
 {
@@ -168,8 +170,8 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
 /** @brief Calculates the Lab value
  * 
  * @param rgb the color that will be converted.
- * @returns If the color is valid, the corresponding LCh value might also be invalid.
- */
+ * @returns If the color is valid, the corresponding LCh value might also
+ * be invalid. */
 cmsCIELab RgbColorSpace::colorLab(const Helper::cmsRGB &rgb) const
 {
     cmsCIELab lab;
@@ -263,14 +265,16 @@ QColor RgbColorSpace::colorRgbBound(const cmsCIELCh &LCh) const
     return colorRgbBound(Lab);
 }
 
-// TODO What to do with in-gamut tests if LittleCMS has fallen back to bounded mode because of too complicate profiles? Out in-gamut detection would not work anymore!
+// TODO What to do with in-gamut tests if LittleCMS has fallen back to
+// bounded mode because of too complicate profiles? Out in-gamut detection
+// would not work anymore!
 
 /** @brief check if an LCh value is within a specific RGB gamut
  * @param lightness The lightness value
  * @param chroma The chroma value
  * @param hue The hue value (angle in degree)
- * @returns Returns true if lightness/chroma/hue is in the specified RGB gamut. Returns false otherwise.
- */
+ * @returns Returns true if lightness/chroma/hue is in the specified
+ * RGB gamut. Returns false otherwise. */
 bool RgbColorSpace::inGamut(
     const cmsFloat64Number lightness,
     const cmsFloat64Number chroma,
@@ -289,8 +293,8 @@ bool RgbColorSpace::inGamut(
 
 /** @brief check if an LCh value is within a specific RGB gamut
  * @param LCh the LCh color
- * @returns Returns true if lightness/chroma/hue is in the specified RGB gamut. Returns false otherwise.
- */
+ * @returns Returns true if lightness/chroma/hue is in the specified
+ * RGB gamut. Returns false otherwise. */
 bool RgbColorSpace::inGamut(const cmsCIELCh &LCh)
 {
     // variables
@@ -303,8 +307,8 @@ bool RgbColorSpace::inGamut(const cmsCIELCh &LCh)
 
 /** @brief check if a Lab value is within a specific RGB gamut
  * @param Lab the Lab color
- * @returns Returns true if it is in the specified RGB gamut. Returns false otherwise.
- */
+ * @returns Returns true if it is in the specified RGB gamut. Returns
+ * false otherwise. */
 bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
 {
     Helper::cmsRGB rgb;

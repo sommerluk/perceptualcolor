@@ -26,3 +26,8 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 cppcheck
+cpplint src/*
+cpplint include/*
+cpplint test/*
+kwstyle
+vera++ --help

@@ -130,4 +130,5 @@ PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
 }
 
 QTEST_MAIN(PerceptualColor::TestConstPropagatingUniquePointer)
-#include "testconstpropagatinguniquepointer.moc" // necessary because we do not use a header file
+// The following “include” is necessary because we do not use a header file:
+#include "testconstpropagatinguniquepointer.moc"

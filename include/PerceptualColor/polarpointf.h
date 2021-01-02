@@ -94,7 +94,16 @@ public:
 
     /** @brief Default assignment operator
      *
-     * @param other the object to assign */    
+     * @param other the object to assign */
+    // Clazy, our static code checker, compains about the next line of code
+    // as follows:
+    //     “Pass small and trivially-copyable type by value”
+    // However, this is a copy constructor. We cannot pass the argument
+    // by value, because teh compiler would complain as follows:
+    //     “the parameter for an explicitly-defaulted copy assignment
+    //      operator must be an lvalue reference type”
+    // Therefore, we exclude the following line from this specific clazy check,
+    // by adding a magic comment after it.
     PolarPointF& operator=(const PolarPointF &other) = default; // clazy:exclude=function-args-by-value
 
     /** @brief Default move assignment operator

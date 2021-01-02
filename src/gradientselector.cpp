@@ -132,7 +132,10 @@ QSize GradientSelector::minimumSizeHint() const
     return temp;
 }
 
-qreal GradientSelector::GradientSelectorPrivate::fromWindowCoordinatesToFraction(
+qreal GradientSelector
+    ::GradientSelectorPrivate
+    ::fromWindowCoordinatesToFraction
+(
     QPoint windowCoordinates
 )
 {
@@ -201,7 +204,8 @@ void GradientSelector::wheelEvent(QWheelEvent* event)
     if (steps != 0) {
         setFraction(d_pointer->m_fraction + steps * d_pointer->m_singleStep);
     } else {
-        event->ignore(); // don't accept the event and let it up to the default treatment
+        // Don’t accept the event and let it up to the default treatment:
+        event->ignore();
     }
 }
 
@@ -297,17 +301,17 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     //       may not be respected by any given engine.”
     //
     // Painting here directly on the widget might lead to different
-    // anti-aliasing results depending on the underlying window system. This is
-    // especially problematic as anti-aliasing might shift or not a pixel to the
-    // left or to the right. So we paint on a QImage first. As QImage (at
-    // difference to QPixmap and a QWidget) is independent of native platform
-    // rendering, it guarantees identical anti-aliasing results on all
-    // platforms. Here the quote from QPainter class documentation:
+    // anti-aliasing results depending on the underlying window system. This
+    // is especially problematic as anti-aliasing might shift or not a pixel
+    // to the left or to the right. So we paint on a QImage first. As QImage
+    // (at difference to QPixmap and a QWidget) is independent of native
+    // platform rendering, it guarantees identical anti-aliasing results on
+    // all platforms. Here the quote from QPainter class documentation:
     //
-    //      “To get the optimal rendering result using QPainter, you should use
-    //       the platform independent QImage as paint device; i.e. using QImage
-    //       will ensure that the result has an identical pixel representation
-    //       on any platform.”
+    //      “To get the optimal rendering result using QPainter, you should
+    //       use the platform independent QImage as paint device; i.e. using
+    //       QImage will ensure that the result has an identical pixel
+    //       representation on any platform.”
     QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
@@ -385,7 +389,8 @@ void GradientSelector::GradientSelectorPrivate::setOrientationAndForceUpdate(
     }
     m_orientation = newOrientation;
     m_gradientImageReady = false;
-    q_pointer->updateGeometry(); // notify the layout system the the geometry has changed
+    // Notify the layout system the the geometry has changed
+    q_pointer->updateGeometry();
 }
 
 void GradientSelector::setOrientation(Qt::Orientation newOrientation)
@@ -396,7 +401,10 @@ void GradientSelector::setOrientation(Qt::Orientation newOrientation)
     }
 }
 
-void GradientSelector::setColors(const FullColorDescription &col1, const FullColorDescription &col2)
+void GradientSelector::setColors(
+    const FullColorDescription &col1,
+    const FullColorDescription &col2
+)
 {
     if (col1 == d_pointer->m_firstColor && col2 == d_pointer->m_secondColor) {
         return;
@@ -417,7 +425,10 @@ void GradientSelector::setSecondColor(const FullColorDescription &col)
     setColors(d_pointer->m_firstColor, col);
 }
 
-QPair<cmsCIELCh, qreal> GradientSelector::GradientSelectorPrivate::intermediateColor(
+QPair<cmsCIELCh, qreal> GradientSelector
+    ::GradientSelectorPrivate
+    ::intermediateColor
+(
     const cmsCIELCh &firstColor,
     const cmsCIELCh &secondColor,
     qreal fraction
@@ -428,7 +439,10 @@ QPair<cmsCIELCh, qreal> GradientSelector::GradientSelectorPrivate::intermediateC
     color.L = firstColor.L + (secondColor.L - firstColor.L) * fraction;
     color.C = firstColor.C + (secondColor.C - firstColor.C) * fraction;
     color.h = firstColor.h + (secondColor.h - firstColor.h) * fraction;
-    alpha = m_firstColor.alpha() + (m_secondColor.alpha() - m_firstColor.alpha()) * fraction;
+    alpha =
+        m_firstColor.alpha()
+        + (m_secondColor.alpha() - m_firstColor.alpha())
+        * fraction;
     return QPair<cmsCIELCh, qreal>(color, alpha);
 }
 

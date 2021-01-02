@@ -375,4 +375,5 @@ cmsDeleteTransform(m_transformRgbToLabHandle);
 }
 
 QTEST_MAIN(PerceptualColor::TestHelper)
-#include "testhelper.moc" // necessary because we do not use a header file
+// The following “include” is necessary because we do not use a header file:
+#include "testhelper.moc"
