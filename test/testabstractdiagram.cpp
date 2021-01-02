@@ -178,15 +178,6 @@ private Q_SLOTS:
             "Radius is bigger than thickness. "
             "(Otherwise, there would be no hole in the middle.)"
         );
-        QVERIFY2(
-            std::is_floating_point<decltype(temp.markerRadius)>::value,
-            "markerRadius is floating point (important for high-dpi support)"
-        );
-        QVERIFY2(
-            std::is_floating_point<decltype(temp.markerThickness)>::value,
-            "markerThickness is floating point (important for "
-                "high-dpi support)"
-        );
     }
     
     void testSteps() {
