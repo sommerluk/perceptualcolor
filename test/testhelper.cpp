@@ -63,65 +63,6 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testCmsRgb() {
-        cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
-        cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-        cmsHTRANSFORM m_transformLabToRgbHandle = cmsCreateTransform(
-            labProfileHandle,             // input profile handle
-            TYPE_Lab_DBL,                 // input buffer format
-            rgbProfileHandle,             // output profile handle
-            TYPE_RGB_DBL,                 // output buffer format
-            INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-            0                             // flags
-        );
-        cmsCloseProfile(labProfileHandle);
-        cmsCloseProfile(rgbProfileHandle);
-        PerceptualColor::Helper::cmsRGB rgb;
-        cmsCIELab lab;
-        lab.L = 50;
-        lab.a = 0;
-        lab.b = 0;
-        // Test if the following line does not produce
-        // a memory error on the heap.
-        // Convert exactly 1 value.
-        cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        // Test if the result is okay (so it has to be neutral gray: red,
-        // green and blue should be roughly the same)
-        QCOMPARE(qRound(rgb.red * 255), qRound(rgb.blue * 255));
-        QCOMPARE(qRound(rgb.green * 255), qRound(rgb.blue * 255));
-        // Test if Red, Green, Blue are at the correct position in memory
-        lab.L = 53;
-        lab.a = 80;
-        lab.b = 67;
-        // Convert exactly 1 value.
-        cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(
-            rgb.red > 0.8,
-            "Test if Red is at the correct position in memory"
-        );
-        lab.L = 87;
-        lab.a = -86;
-        lab.b = 83;
-        // Convert exactly 1 value.
-        cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(
-            rgb.green > 0.8,
-            "Test if Green is at the correct position in memory"
-        );
-        lab.L = 32;
-        lab.a = 79;
-        lab.b = -107;
-        // Convert exactly 1 value.
-        cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(
-            rgb.blue > 0.8,
-            "Test if Blue is at the correct position in memory"
-        );
-        
-        // Clean up
-        cmsDeleteTransform(m_transformLabToRgbHandle);
-    }
-     
     void testInRangeInt() {
         QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 3, 2), false);
         QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 2, 2), false);
@@ -344,31 +285,6 @@ private Q_SLOTS:
         );
         QCOMPARE(PerceptualColor::Helper::standardWheelSteps(&temp), 1);
     }
-
-void testSnippet01() {
-cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
-cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(
-    rgbProfileHandle,             // input profile handle
-    TYPE_RGB_DBL,                 // input buffer format
-    labProfileHandle,             // output profile handle
-    TYPE_Lab_DBL,                 // output buffer format
-    INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-    0                             // flags
-);
-cmsCloseProfile(labProfileHandle);
-cmsCloseProfile(rgbProfileHandle);
-//! [Helper Use cmsRGB]
-PerceptualColor::Helper::cmsRGB rgb;
-rgb.red = 1;
-rgb.green = 0;
-rgb.blue = 0;
-cmsCIELab lab;
-// Convert exactly 1 value:
-cmsDoTransform(m_transformRgbToLabHandle, &rgb, &lab, 1);
-//! [Helper Use cmsRGB]
-cmsDeleteTransform(m_transformRgbToLabHandle);
-}
 
 };
 

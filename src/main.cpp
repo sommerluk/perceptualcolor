@@ -113,7 +113,10 @@ int main(int argc, char *argv[])
 //     m_colorDialog.setStyleSheet(
 //         "background: yellow; color: red; border: 15px solid #FF0000;"
 //     );
-    
+
+
+
+
     // Run
     return app.exec();
 }

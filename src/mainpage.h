@@ -34,7 +34,14 @@
  * the human perception much better than RGB or its transforms like HSV.
  * However, the widgets do not require the user itself to know anything
  * about LCh at all, because the graphical representations is
- * intuitive enough. This library lives in the namespace #PerceptualColor.
+ * intuitive enough.
+ * 
+ * This library itself lives in the namespace @ref PerceptualColor. However,
+ * it also includes headers from LittleCMS which lives in the <em>global
+ * namespace</em>, but has functions and types typically prefixed
+ * with <tt>cms</tt>. The library relies internally on LittleCMS for all
+ * the color management. However, you can uses this library without knowing
+ * about the internals of LittleCMS.
  * 
  * How to get started? @ref PerceptualColor::ColorDialog provides a perceptual
  * replacement for QColorDialog:
@@ -55,7 +62,7 @@
  * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
  * used in this library.</em>
  *
- * This library requires minimum C++11.
+ * This library requires minimum C++17.
  * <!--
  *      Qt 5.6 (which is the mimimum Qt version required
  *      by this library) only requires C++03. Only starting
@@ -69,10 +76,9 @@
  *      Our library code uses C++11 features, for example “constexpr”.
  * 
  *      In the CMakeLists.txt file, we set -std=c++17 and we set
- *      also -Wpedantic and -pedantic-errors to enforce it.
- *      That might be an option for this library,
- *      if we decide to make it Qt-6-only. But it might
- *      even be useful if we support Qt 5, so we have future-proof
+ *      also -Wpedantic and -pedantic-errors to enforce it. That is
+ *      a useful option for this library if we decide to make it Qt-6-only.
+ *      But it is even be useful if we support Qt 5, so we have future-proof
  *      requirements that we do not have to raise soon, and that are a
  *      good base for LTS.
  * -->

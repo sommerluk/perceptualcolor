@@ -2061,6 +2061,15 @@ private Q_SLOTS:
         }
     }
 
+    void benchmarkCreateAndShowMaximizedPerceptualDialog() {
+        QBENCHMARK {
+            m_perceptualDialog = new PerceptualColor::ColorDialog;
+            m_perceptualDialog->showMaximized();
+            m_perceptualDialog->repaint();
+            delete m_perceptualDialog;
+        }
+    }
+
     void benchmarkCreateAndShowQColorDialog() {
         QBENCHMARK {
             m_qDialog = new QColorDialog;
@@ -2070,7 +2079,7 @@ private Q_SLOTS:
         }
     }
 
-    void benchmarkChangeColorPerceptual() {
+    void benchmarkChangeColorPerceptualFirstTab() {
         m_perceptualDialog = new PerceptualColor::ColorDialog;
         m_perceptualDialog->show();
         QBENCHMARK {

@@ -1336,7 +1336,7 @@ private Q_SLOTS:
         );
     }
 
-    void testSnippet01() {
+    void testSnippet02() {
 //! [MultiSpinBox Basic example]
 PerceptualColor::MultiSpinBox *myHsvSpinBox =
     new PerceptualColor::MultiSpinBox();
@@ -1373,6 +1373,36 @@ myHsvSpinBox->setSections(hsvSections);
             QStringLiteral("310,0°  200,0  100,0")
         );
     }
+
+private:
+class testSnippet02 {
+//! [MultiSpinBox Full-featured interface]
+void addSection(MultiSpinBox::SectionData newSection);
+void addSections(QList<MultiSpinBox::SectionData> newSections);
+void append(MultiSpinBox::SectionData newSection);
+void append(QList<MultiSpinBox::SectionData> newSections);
+void clearSections();
+int currentIndex() const;
+MultiSpinBox::SectionData currentSection() const;
+MultiSpinBox::SectionData firstSection() const;
+void insertSection(int index, MultiSpinBox::SectionData newSection);
+void insertSection(int index, QList<MultiSpinBox::SectionData> newSections);
+MultiSpinBox::SectionData lastSection() const;
+void moveSection(int from, int to);
+void prependSection(MultiSpinBox::SectionData newSection);
+void prependSections(QList<MultiSpinBox::SectionData> newSections);
+void removeFirstSection();
+void removeLastSection();
+void removeSection(int index);
+void replaceSection(int index, MultiSpinBox::SectionData newSection);
+MultiSpinBox::SectionData sectionAt(int index) const;
+int sectionCount() const;
+QList<MultiSpinBox::SectionData> sections() const;
+void setCurrentIndex(int newIndex);
+void setSections(const QList<MultiSpinBox::SectionData> &newSections);
+void swapSections(int i, int j);
+//! [MultiSpinBox Full-featured interface]
+};
 
 };
 

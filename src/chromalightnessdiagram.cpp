@@ -111,9 +111,8 @@ ChromaLightnessDiagram
 
 /** @brief Updates the border() property.
  * 
- * This function can be called after changes to @ref markerRadius() or
- * @ref markerThickness() to
- * update the @ref border() property.
+ * This function can be called after changes to markerRadius or
+ * markerThickness to update the border() property.
  */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
 {
@@ -779,7 +778,7 @@ QImage ChromaLightnessDiagram
 {
 QElapsedTimer myTimer;
 myTimer.start();
-    cmsCIELCh LCh; // uses cmsFloat64Number internally
+    LchDouble LCh; // uses cmsFloat64Number internally
     QColor rgbColor;
     int x;
     int y;

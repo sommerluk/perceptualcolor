@@ -32,7 +32,7 @@
 #include <QtGlobal>
 #include <QWheelEvent>
 
-#include <lcms2.h>
+#include "PerceptualColor/lchdouble.h"
 
 // Test if the compiler treats the source code actually as UTF8.
 // A test string is converted to UTF8 code units (u8"") and each
@@ -47,7 +47,7 @@ static_assert(
 );
 
 namespace PerceptualColor {
-
+    
 /** @brief Various smaller help elements.
  * 
  * This namespace groups together various smaller elements that are used
@@ -61,26 +61,6 @@ namespace PerceptualColor {
  * @todo Maybe, get rid of this namespace completely, integrating the
  * available functionality into the abstract base classes? */
 namespace Helper {
-
-    /** @brief An RGB color.
-     * 
-     * Storage of floating point RGB values in a format that is practical
-     * for working with <a href="http://www.littlecms.com/">LittleCMS</a>
-     * (can be treated as buffer). The valid range for each component is 0‥1.
-     * 
-     * Example:
-     * @snippet test/testhelper.cpp Helper Use cmsRGB
-     * 
-     * @todo What about the structs within this namespace? They can be
-     * constructed. Shouldn’t their destructor be virtual noexcept override? */
-    struct cmsRGB {
-        /** @brief The red value. */
-        cmsFloat64Number red;
-        /** @brief The green value. */
-        cmsFloat64Number green;
-        /** @brief The blue value. */
-        cmsFloat64Number blue;
-    };
 
     /** @brief Precision for gamut boundary search
      * 
@@ -128,7 +108,8 @@ namespace Helper {
      *   than Pythagoras of the biggest possible absolute value on a axis and
      *   b axis: √[(−170)² + 150²] ≈ 227. Very likely the real range is
      *   smaller, but we do not know exactly how much. At least, we can be
-     *   sure that this range is big enough: <b>0‥227</b>
+     *   sure that this range is big enough: <b>0‥227</b> However, in practice,
+     *   it might be better to use 255 as maximum chroma for usability reasons.
      * - @b Hue: As the angle in a polar coordinate system, it has to
      *   be: <b>0°‥360°</b>
      * 
@@ -187,7 +168,7 @@ namespace Helper {
          * Neutral gray is a good choice for the background, as it is equally
          * distant from black and white, and also quite distant from any
          * saturated color. */
-        static constexpr cmsCIELCh neutralGray {50, 0, 0};
+        static constexpr LchDouble neutralGray {50, 0, 0};
     };
 
     qreal standardWheelSteps(QWheelEvent *event);

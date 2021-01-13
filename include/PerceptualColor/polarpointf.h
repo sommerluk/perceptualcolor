@@ -76,7 +76,7 @@ namespace PerceptualColor {
 class PolarPointF final
 {
 public:
-    explicit PolarPointF();
+    explicit PolarPointF() = default;
 
     /** @brief Default copy constructor
      *
@@ -126,10 +126,10 @@ public:
 private:
 
     /** @brief Holds the @ref angleDegree() value. */
-    qreal m_angleDegree;
+    qreal m_angleDegree = {0};
 
     /** @brief Holds the @ref radial() value. */
-    qreal m_radial;
+    qreal m_radial = {0};
 };
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf);

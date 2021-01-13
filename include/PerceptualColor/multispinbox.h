@@ -88,13 +88,32 @@ namespace PerceptualColor {
  * editing (or do not allow text selection at all)?
  * 
  * @todo Do unit tests for correct localization, also
- * when using locales with non-latin numerals. */
+ * when using locales with non-latin numerals.
+ * 
+ * @todo Full-featured interface to work with @ref MultiSpinBox::SectionData?
+ * It might be possible to add more access functions. The interface can
+ * be oriented to other Qt classes that offer similar concepts: QComboBox,
+ * QHeaderView, QDateTimeEdit, QList – of course with consistent naming.
+ * The question is: Would it be worth the pain? Currently, we only allow
+ * to get and set all the sections as whole, and for our own usage, that’s
+ * enought. Allowing changes to individual sections requires a lot of code
+ * so that the text cursor does not move unexpectedly and so on. However,
+ * a full-featured interface could look like that:
+ * 
+ * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
+ * 
+ * @todo Splitting @ref MultiSpinBox::SectionData into
+ * <tt>SectionConfiguration</tt> and <tt>value</tt>? Disadvantage: Requires
+ * to double all access functions. Advantage: Often, you only want the value,
+ * and not the <tt>SectionConfiguration</tt>. But this change is probably
+ * not worth all the work for little benefit…
+ */
 class MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
 
 public:
-    /** @brief The data of a section within a @ref MultiSpinBox.
+    /** @brief The data of a single section within a @ref MultiSpinBox.
      * 
      * For a specific section within a @ref MultiSpinBox, this data structure
      * contains on the one hand the @ref value itself, and on the other hand

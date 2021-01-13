@@ -38,11 +38,11 @@ namespace PerceptualColor {
 /** @brief Constructor
  * 
  * Constructs an object with @ref radial() = 0 and @ref angleDegree() = 0 */
-PolarPointF::PolarPointF()
-{
-    m_radial = 0;
-    m_angleDegree = 0;
-}
+// PolarPointF::PolarPointF()
+// {
+//     m_radial = 0;
+//     m_angleDegree = 0;
+// }
 
 /** @brief Constructor
  * 
@@ -186,5 +186,9 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
         << "°)";
     return dbg.maybeSpace();
 }
+
+static_assert(
+    std::is_standard_layout_v<PolarPointF>
+);
 
 } // namespace PerceptualColor

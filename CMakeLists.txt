@@ -63,6 +63,8 @@ set(PROJECT_VERSION
 
 
 ################# Compiler settings #################
+# TODO Available compiler warnings change incompatible from version to version.
+#      For a release build, no seldom extra options should be used!
 # TODO Only force this in debug, not in production
 # set(CMAKE_C_COMPILER   "/usr/bin/clang"  )
 # set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
@@ -94,10 +96,6 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
         -Wconversion\
         -Wsign-conversion\
     ")
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        # Add additional flags for GCC
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
-    endif()
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         # TODO Do not enable -Weverything (and the following excluded checks)
         #      on non-debug builds
@@ -159,9 +157,12 @@ set(perceptualcolor_SRC
   src/fullcolordescription.cpp
   src/gradientselector.cpp
   src/helper.cpp
+  src/labdouble.cpp
+  src/lchdouble.cpp
   src/multispinbox.cpp
   src/polarpointf.cpp
   src/rgbcolorspace.cpp
+  src/rgbdouble.cpp
   src/simplecolorwheel.cpp
   src/wheelcolorpicker.cpp
 )
@@ -180,9 +181,12 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientselector.h
   include/PerceptualColor/helper.h
+  include/PerceptualColor/labdouble.h
+  include/PerceptualColor/lchdouble.h
   include/PerceptualColor/multispinbox.h
   include/PerceptualColor/polarpointf.h
   include/PerceptualColor/rgbcolorspace.h
+  include/PerceptualColor/rgbdouble.h
   include/PerceptualColor/simplecolorwheel.h
   include/PerceptualColor/wheelcolorpicker.h
 )
@@ -299,6 +303,18 @@ target_link_libraries (testhelper
     ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testhelper COMMAND testhelper)
 
+add_executable (testlabdouble
+    test/testlabdouble.cpp)
+target_link_libraries (testlabdouble
+    ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testlabdouble COMMAND testlabdouble)
+
+add_executable (testlchdouble
+    test/testlchdouble.cpp)
+target_link_libraries (testlchdouble
+    ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testlchdouble COMMAND testlchdouble)
+
 add_executable (testmultispinbox
     test/testmultispinbox.cpp)
 target_link_libraries (testmultispinbox
@@ -310,3 +326,9 @@ add_executable (testpolarpointf
 target_link_libraries (testpolarpointf
     ${LIBS} Qt5::Test perceptualcolor)
 add_test (NAME testpolarpointf COMMAND testpolarpointf)
+
+add_executable (testrgbdouble
+    test/testrgbdouble.cpp)
+target_link_libraries (testrgbdouble
+    ${LIBS} Qt5::Test perceptualcolor)
+add_test (NAME testrgbdouble COMMAND testrgbdouble)

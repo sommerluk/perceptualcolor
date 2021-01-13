@@ -38,7 +38,7 @@ namespace PerceptualColor {
 class RgbColorSpace::RgbColorSpacePrivate final
 {
 public:
-    RgbColorSpacePrivate() = default;
+    RgbColorSpacePrivate(RgbColorSpace *backLink);
     /** @brief Default destructor
      * 
      * The destructor is non-<tt>virtual</tt> because
@@ -54,6 +54,7 @@ public:
     cmsHTRANSFORM m_transformLabToRgbHandle;
     cmsHTRANSFORM m_transformRgbToLabHandle;
     qreal m_whitepointL;
+
     static QString getInformationFromProfile(
         cmsHPROFILE profileHandle,
         cmsInfoType infoType
@@ -61,6 +62,10 @@ public:
 
 private:
     Q_DISABLE_COPY(RgbColorSpacePrivate)
+    
+    /** @brief Pointer to the object from which <em>this</em> object
+     *  is the private implementation. */
+    ConstPropagatingRawPointer<RgbColorSpace> q_pointer;
 
 };
 

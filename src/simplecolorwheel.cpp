@@ -33,6 +33,7 @@
 // Second, the private implementation.
 #include "simplecolorwheel_p.h"
 
+#include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/helper.h"
 #include "PerceptualColor/polarpointf.h"
 
@@ -318,7 +319,7 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  * 
  * Paints the widget. Takes the existing m_wheelPixmap and paints
  * them on the widget. Paints, if appropriate, the focus indicator.
- * Paints the marker. Relies on that @ref m_wheelPixmap are up to date.
+ * Paints the marker. Relies on that m_wheelPixmap are up to date.
  * 
  * @param event the paint event
  * 
@@ -582,7 +583,7 @@ myTimer.start();
     int x;
     int y;
     QColor rgbColor;
-    cmsCIELCh LCh; // uses cmsFloat64Number internally
+    LchDouble LCh; // uses cmsFloat64Number internally
     // Calculate maximum value for x index and y index
     int maxExtension = outerDiameter - 1; 
     qreal center = maxExtension / static_cast<qreal>(2);

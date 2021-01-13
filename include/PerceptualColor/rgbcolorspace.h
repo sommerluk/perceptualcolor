@@ -30,16 +30,17 @@
 #include <QObject>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/labdouble.h"
+#include "PerceptualColor/lchdouble.h"
 
-// Include directive for cmsCIELab and cmsCIELCh
-#include <lcms2.h>
-
-// Include directive for data type Helper::cmsRGB
-#include <PerceptualColor/helper.h>
+#include <PerceptualColor/rgbdouble.h>
 
 namespace PerceptualColor {
 
 /** @brief Interface to LittleCMS for working with an RGB color space
+ * 
+ * @todo (Optionally) use the fast-float plug-in for faster caluculation?
+ * Is this possible as a run-time choise?
  * 
  * @todo Declare Q_PROPERTY for @ref profileInfoCopyright(),
  * @ref profileInfoDescription(), @ref profileInfoManufacturer(),
@@ -52,20 +53,30 @@ public:
     Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
     virtual ~RgbColorSpace() noexcept override;
     qreal blackpointL() const;
-    Q_INVOKABLE QColor colorRgb(const cmsCIELab &Lab) const;
-    Q_INVOKABLE QColor colorRgb(const cmsCIELCh &LCh) const;
-    Q_INVOKABLE Helper::cmsRGB colorRgbBoundSimple(const cmsCIELab &Lab) const;
-    Q_INVOKABLE QColor colorRgbBound(const cmsCIELab &Lab) const;
-    Q_INVOKABLE QColor colorRgbBound(const cmsCIELCh &LCh) const;
-    Q_INVOKABLE cmsCIELab colorLab(const QColor &rgbColor) const;
-    Q_INVOKABLE cmsCIELab colorLab(const Helper::cmsRGB &rgb) const;
-    Q_INVOKABLE bool inGamut(const cmsCIELab &Lab);
+    Q_INVOKABLE QColor colorRgb(const PerceptualColor::LabDouble &Lab) const;
+    Q_INVOKABLE QColor colorRgb(const PerceptualColor::LchDouble &lch) const;
+    Q_INVOKABLE PerceptualColor::RgbDouble colorRgbBoundSimple(
+        const PerceptualColor::LabDouble &Lab
+    ) const;
+    Q_INVOKABLE QColor colorRgbBound(
+        const PerceptualColor::LabDouble &Lab
+    ) const;
+    Q_INVOKABLE QColor colorRgbBound(
+        const PerceptualColor::LchDouble &lch
+    ) const;
+    Q_INVOKABLE PerceptualColor::LabDouble colorLab(
+        const QColor &rgbColor
+    ) const;
+    Q_INVOKABLE PerceptualColor::LabDouble colorLab(
+        const PerceptualColor::RgbDouble &rgb
+    ) const;
+    Q_INVOKABLE bool inGamut(const PerceptualColor::LabDouble &Lab);
     Q_INVOKABLE bool inGamut(
-        const cmsFloat64Number lightness,
-        const cmsFloat64Number chroma,
-        const cmsFloat64Number hue
+        const double lightness,
+        const double chroma,
+        const double hue
     );
-    Q_INVOKABLE bool inGamut(const cmsCIELCh &LCh);
+    Q_INVOKABLE bool inGamut(const PerceptualColor::LchDouble &LCh);
     QString profileInfoCopyright() const;
     QString profileInfoDescription() const;
     QString profileInfoManufacturer() const;

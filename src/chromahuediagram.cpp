@@ -451,7 +451,7 @@ void ChromaHueDiagram::setColor(const FullColorDescription &color)
 
     // Update, if necessary, the diagram.
     if (d_pointer->m_color.toLch().L != oldColor.toLch().L) {
-        d_pointer->m_diagramCacheReady = false;
+        d_pointer->m_isDiagramCacheReady = false;
     }
 
     // Schedule a paint event:
@@ -489,12 +489,13 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
     if (newWidgetDiameter < 0) {
         newWidgetDiameter = 0;
     }
+
     // Update the widget
     if (newWidgetDiameter != d_pointer->m_widgetDiameter) {
         d_pointer->m_widgetDiameter = newWidgetDiameter;
         d_pointer->m_diagramOffset =
             (d_pointer->m_widgetDiameter - 1) / static_cast<qreal>(2);
-        d_pointer->m_diagramCacheReady = false;
+        d_pointer->m_isDiagramCacheReady = false;
         d_pointer->m_isWheelCacheReady = false;
         // As by Qt documentation: The widget will be erased and receive a
         // paint event immediately after processing the resize event. No
@@ -765,7 +766,7 @@ QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage(
  * widget, if you wish so. */
 void ChromaHueDiagram::ChromaHueDiagramPrivate::updateDiagramCache()
 {
-    if (m_diagramCacheReady) {
+    if (m_isDiagramCacheReady) {
         return;
     }
 
@@ -774,19 +775,18 @@ void ChromaHueDiagram::ChromaHueDiagramPrivate::updateDiagramCache()
     // new memory for the new image
     m_diagramImage = QImage();
     // Get the new image
-    constexpr cmsCIELCh backgroundColor = Helper::LchDefaults::neutralGray;
     m_diagramImage = generateDiagramImage(
         m_rgbColorSpace,
         q_pointer->physicalPixelWidgetDiameter(),
         m_maxChroma,
         m_color.toLch().L,
         diagramBorder * q_pointer->devicePixelRatioF(),
-        m_rgbColorSpace->colorRgbBound(backgroundColor)
+        m_rgbColorSpace->colorRgbBound(Helper::LchDefaults::neutralGray)
     );
     m_diagramImage.setDevicePixelRatio(q_pointer->devicePixelRatioF());
 
     // Mark cache as ready
-    m_diagramCacheReady = true;
+    m_isDiagramCacheReady = true;
 }
 
 /** @brief Refresh the wheel and associated data
@@ -815,7 +815,7 @@ void ChromaHueDiagram::ChromaHueDiagramPrivate::updateWheelCache()
     // new memory for the new image
     m_wheelImage = QImage();
     m_wheelImage = SimpleColorWheel::generateWheelImage(
-        m_rgbColorSpace,
+        m_rgbColorSpace,                                      // color space
         q_pointer->physicalPixelWidgetDiameter(),             // diameter
         2 * markerThickness * q_pointer->devicePixelRatioF(), // border
         4 * markerThickness * q_pointer->devicePixelRatioF(), // thickness

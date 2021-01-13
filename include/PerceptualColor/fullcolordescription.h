@@ -55,6 +55,9 @@ namespace PerceptualColor {
  * This data type can be passed to QDebug thanks to
  * operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value)
  * 
+ * @todo Conversion HSV-RGB with Qt’s QColor: Can we get a higher precison
+ * with our own implementation?
+ * 
  * @todo This class is rather a data type than a functional class. Currently,
  * it does not provide pimpl idiom. And: It is copyable and <tt>final</tt>.
  * Should it be switched to pimpl or not? Pimpl would be bad for performance,
@@ -86,7 +89,7 @@ public:
     FullColorDescription();
     FullColorDescription(
         RgbColorSpace *colorSpace,
-        const Helper::cmsRGB &rgb,
+        const PerceptualColor::RgbDouble &rgb,
         qreal alpha = 1
     );
     FullColorDescription(
@@ -95,13 +98,13 @@ public:
     );
     FullColorDescription(
         RgbColorSpace *colorSpace,
-        const cmsCIELab &lab,
+        const LabDouble &lab,
         outOfGamutBehaviour coordinates,
         qreal alpha = 1
     );
     FullColorDescription(
         RgbColorSpace *colorSpace,
-        const cmsCIELCh &lch,
+        const LchDouble &lch,
         outOfGamutBehaviour coordinates,
         qreal alpha = 1
     );
@@ -132,25 +135,25 @@ public:
 
     bool operator!=(const FullColorDescription& other) const;
 
-    Helper::cmsRGB toRgb() const;
+    PerceptualColor::RgbDouble toRgb() const;
     QColor toRgbQColor() const;
     QColor toHsvQColor() const;
     QString toRgbHexString() const;
-    cmsCIELab toLab() const;
-    cmsCIELCh toLch() const;
+    LabDouble toLab() const;
+    LchDouble toLch() const;
     qreal alpha() const;
     bool isValid() const;
     void setAlpha(qreal alpha);
 
 private:
     /** RGB representation. */
-    Helper::cmsRGB m_rgb;
+    PerceptualColor::RgbDouble m_rgb;
     /** RGB representation within a QColor object */
     QColor m_rgbQColor;
     /** Lab representation. */
-    cmsCIELab m_lab;
+    LabDouble m_lab;
     /** LCh representation. */
-    cmsCIELCh m_lch;
+    LchDouble m_lch;
     /** HSV representation within a QColor object */
     QColor m_hsvQColor;
     /** The range is 0 (fully transparent) to 1 (fully opaque). */
@@ -160,8 +163,8 @@ private:
 
     void moveChromaIntoGamut(RgbColorSpace *colorSpace);
     void normalizeLch();
-    static cmsCIELab toLab(const cmsCIELCh &lch);
-    static cmsCIELCh toLch(const cmsCIELab &lab);
+    static LabDouble toLab(const LchDouble &lch);
+    static LchDouble toLch(const LabDouble &lab);
 };
 
 QDebug operator<<(

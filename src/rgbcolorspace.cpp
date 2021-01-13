@@ -45,7 +45,7 @@ namespace PerceptualColor {
  */
 RgbColorSpace::RgbColorSpace(QObject *parent) :
     QObject(parent),
-    d_pointer(new RgbColorSpacePrivate)
+    d_pointer(new RgbColorSpacePrivate(this))
 {
     // TODO The creation of profiles and transforms might fail!
     // TODO How to handle that?
@@ -107,7 +107,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
 
     // Now we know for sure that lowerChroma is in-gamut and upperChroma is
     // out-of-gamut…
-    cmsCIELCh candidate;
+    LchDouble candidate;
     candidate.L = 0;
     candidate.C = 0;
     candidate.h = 0;
@@ -135,6 +135,16 @@ RgbColorSpace::~RgbColorSpace() noexcept
     cmsDeleteTransform(d_pointer->m_transformRgbToLabHandle);
 }
 
+/** @brief Constructor
+ * 
+ * @param backLink Pointer to the object from which <em>this</em> object
+ * is the private implementation. */
+RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(
+    RgbColorSpace *backLink
+) : q_pointer(backLink)
+{
+}
+
 /** @brief The darkest in-gamut point on the L* axis.
  * 
  * @sa whitepointL */
@@ -160,7 +170,7 @@ qreal RgbColorSpace::whitepointL() const
  */
 cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
 {
-    Helper::cmsRGB my_rgb;
+    RgbDouble my_rgb;
     my_rgb.red = rgbColor.redF();
     my_rgb.green = rgbColor.greenF();
     my_rgb.blue = rgbColor.blueF();
@@ -172,7 +182,7 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
  * @param rgb the color that will be converted.
  * @returns If the color is valid, the corresponding LCh value might also
  * be invalid. */
-cmsCIELab RgbColorSpace::colorLab(const Helper::cmsRGB &rgb) const
+cmsCIELab RgbColorSpace::colorLab(const PerceptualColor::RgbDouble &rgb) const
 {
     cmsCIELab lab;
     cmsDoTransform(
@@ -193,7 +203,7 @@ cmsCIELab RgbColorSpace::colorLab(const Helper::cmsRGB &rgb) const
 QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 {
     QColor temp; // By default, without initialization this is an invalid color
-    Helper::cmsRGB rgb;
+    RgbDouble rgb;
     cmsDoTransform(
         d_pointer->m_transformLabToRgbHandle, // handle to transform function
         &Lab,                                 // input
@@ -211,19 +221,19 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 
 /** @brief Calculates the RGB value
  * 
- * @param LCh an LCh color
+ * @param lch an LCh color
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * An invalid QColor otherwise.
  */
-QColor RgbColorSpace::colorRgb(const cmsCIELCh &LCh) const
+QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
 {
-    cmsCIELab Lab; // uses cmsFloat64Number internally
+    cmsCIELab lab; // uses cmsFloat64Number internally
     // convert from LCh to Lab
-    cmsLCh2Lab(&Lab, &LCh); 
-    return colorRgb(Lab);
+    cmsLCh2Lab(&lab, &lch); 
+    return colorRgb(lab);
 }
 
-Helper::cmsRGB RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
+PerceptualColor::RgbDouble RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
 {
     cmsUInt16Number rgb_int[3];
     cmsDoTransform(
@@ -232,7 +242,7 @@ Helper::cmsRGB RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
         rgb_int,                                // output
         1                                       // convert exactly 1 value
     );
-    Helper::cmsRGB temp;
+    RgbDouble temp;
     temp.red = rgb_int[0] / static_cast<qreal>(65535);
     temp.green = rgb_int[1] / static_cast<qreal>(65535);
     temp.blue = rgb_int[2] / static_cast<qreal>(65535);
@@ -247,22 +257,24 @@ Helper::cmsRGB RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
  */
 QColor RgbColorSpace::colorRgbBound(const cmsCIELab &Lab) const
 {
-    Helper::cmsRGB temp = colorRgbBoundSimple(Lab);
+    RgbDouble temp = colorRgbBoundSimple(Lab);
     return QColor::fromRgbF(temp.red, temp.green, temp.blue);
 }
 
 /** @brief Calculates the RGB value
  * 
- * @param LCh an LCh color
+ * @param lch an LCh color
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
  */
-QColor RgbColorSpace::colorRgbBound(const cmsCIELCh &LCh) const
+QColor RgbColorSpace::colorRgbBound(
+    const LchDouble &lch
+) const
 {
-    cmsCIELab Lab; // uses cmsFloat64Number internally
+    cmsCIELab lab; // uses cmsFloat64Number internally
     // convert from LCh to Lab
-    cmsLCh2Lab(&Lab, &LCh); 
-    return colorRgbBound(Lab);
+    cmsLCh2Lab(&lab, &lch); 
+    return colorRgbBound(lab);
 }
 
 // TODO What to do with in-gamut tests if LittleCMS has fallen back to
@@ -276,13 +288,13 @@ QColor RgbColorSpace::colorRgbBound(const cmsCIELCh &LCh) const
  * @returns Returns true if lightness/chroma/hue is in the specified
  * RGB gamut. Returns false otherwise. */
 bool RgbColorSpace::inGamut(
-    const cmsFloat64Number lightness,
-    const cmsFloat64Number chroma,
-    const cmsFloat64Number hue
+    const double lightness,
+    const double chroma,
+    const double hue
 )
 {
     // variables
-    cmsCIELCh LCh; // uses cmsFloat64Number internally
+    LchDouble LCh;
 
     // code
     LCh.L = lightness;
@@ -295,7 +307,7 @@ bool RgbColorSpace::inGamut(
  * @param LCh the LCh color
  * @returns Returns true if lightness/chroma/hue is in the specified
  * RGB gamut. Returns false otherwise. */
-bool RgbColorSpace::inGamut(const cmsCIELCh &LCh)
+bool RgbColorSpace::inGamut(const LchDouble &LCh)
 {
     // variables
     cmsCIELab Lab; // uses cmsFloat64Number internally
@@ -311,7 +323,7 @@ bool RgbColorSpace::inGamut(const cmsCIELCh &LCh)
  * false otherwise. */
 bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
 {
-    Helper::cmsRGB rgb;
+    RgbDouble rgb;
     
     cmsDoTransform(
         d_pointer->m_transformLabToRgbHandle, // handle to transform function

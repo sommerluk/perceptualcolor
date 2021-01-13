@@ -181,7 +181,7 @@ void WheelColorPicker::keyPressEvent(QKeyEvent *event)
 
 /** @brief Update the size of the child widget.
  *
- * Updates the size of the @ref ChromaLightnessDiagram() child widget:
+ * Updates the size of the @ref ChromaLightnessDiagram child widget:
  * m_chromaLightnessDiagram. It stays in the interior of the color wheel. */
 void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidget()
 {

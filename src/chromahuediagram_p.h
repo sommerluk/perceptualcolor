@@ -57,24 +57,17 @@ public:
     static constexpr qreal diagramBorder = 8 * markerThickness;
     /** @brief Internal storage of the @ref color() property */
     FullColorDescription m_color;
-    /** Holds whether or not @ref m_diagramImage() is up-to-date.
-     *  @sa @ref updateDiagramCache() */
-    bool m_diagramCacheReady = false;
     /** @brief A cache for the diagram as QImage. Might be outdated.
      *  @sa @ref updateDiagramCache()
-     *  @sa @ref m_diagramCacheReady */
+     *  @sa @ref m_isDiagramCacheReady */
     QImage m_diagramImage;
     /** @brief Position of the center of the diagram coordinate system
      * 
      * This value is measured in widget coordinates. */
     qreal m_diagramOffset = 0;
-    /** @brief Diameter of the widget.
-     * 
-     * This is different from <tt>size()</tt>. It is the maximum possible
-     * diameter that is available within the current <tt>size()</tt>. */
-    int m_widgetDiameter = 0;
-    /** @todo This should not be hard-coded sRGB. */
-    qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
+    /** Holds whether or not @ref m_diagramImage() is up-to-date.
+     *  @sa @ref updateDiagramCache() */
+    bool m_isDiagramCacheReady = false;
     /** @brief Holds if currently a mouse event is active or not.
      * 
      * Default value is <tt>false</tt>.
@@ -91,16 +84,22 @@ public:
     /** Holds whether or not @ref m_wheelImage() is up-to-date.
      *  @sa @ref updateWheelCache() */
     bool m_isWheelCacheReady = false;
+    /** @todo This should not be hard-coded sRGB. */
+    qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
     /** @brief A cache for the wheel as QImage. Might be outdated.
      *  @sa @ref updateWheelCache()
      *  @sa @ref m_isWheelCacheReady */
     QImage m_wheelImage;
+    /** @brief Diameter of the widget.
+     * 
+     * This is different from <tt>size()</tt>. It is the maximum possible
+     * diameter that is available within the current <tt>size()</tt>. */
+    int m_widgetDiameter = 0;
 
     // Member functions
     bool areImageCoordinatesWithinDiagramSurface(
         const QPoint imageCoordinates
     );
-    QPoint imageCoordinatesFromColor();
     QPointF fromImageCoordinatesToAB(const QPoint imageCoordinates);
     static QImage generateDiagramImage(
         const RgbColorSpace *colorSpace,
@@ -124,6 +123,7 @@ public:
         const qreal lightness,
         const int border
     );
+    QPoint imageCoordinatesFromColor();
     void setColorFromImageCoordinates(const QPoint imageCoordinates);
     void updateDiagramCache();
     void updateWheelCache();

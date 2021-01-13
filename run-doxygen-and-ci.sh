@@ -34,14 +34,15 @@
 # This check needs the “reuse” application installed in your local bin
 # directory. If you do not have that, you can install it with:
 # pip3 install --user reuse
-$HOME/.local/bin/reuse lint > /dev/null
+# Then, you have to make available $HOME/.local/bin/reuse in your path.
+reuse lint > /dev/null
 if [ $? -eq 0 ];
 then
     # Everything is fine. No message is printed.
     echo
 else
     # “reuse lint” found problems. We call it again to print its messages.
-    $HOME/.local/bin/reuse lint
+    reuse lint
 fi
 
 
@@ -61,6 +62,24 @@ CODEDIRECTORIES="include src test"
 # Search for some patterns that should not be used in the source code. If
 # these patterns are found, a message is displayed. Otherwise, nothing is
 # displayed. Pattern list:
+
+# We do not include LittleCMS headers like lcms2.h in the public API of our
+# library. But it is only be an internal dependency; library users should
+# not need to care about that. Therefore, we grab all lines that contain
+# identifiers starting with “cms” (except when in lines starting with
+# “using”). This search is not done for all code directories, but only
+# for files within the include directory (public API).
+grep \
+    --recursive \
+    --perl-regexp "^cms" \
+    "include"
+grep \
+    --recursive \
+    --perl-regexp "[^a-zA-Z]cms[a-zA-Z0-9]" \
+    "include" \
+    | grep \
+        --perl-regexp "(:using)|(\<tt\>cms)" \
+        --invert-match
 
 # -> Do not use the “code” and “endcode” tags for Doxygen documentation. Use
 #    @snippet instead! That allows that the example code is actually compiled

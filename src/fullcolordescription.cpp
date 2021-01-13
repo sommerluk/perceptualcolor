@@ -61,7 +61,7 @@ FullColorDescription::FullColorDescription()
  * @param alpha the alpha channel for color */
 FullColorDescription::FullColorDescription(
     RgbColorSpace *colorSpace,
-    const Helper::cmsRGB &rgb,
+    const PerceptualColor::RgbDouble &rgb,
     qreal alpha)
 {
     m_rgb = rgb;
@@ -154,7 +154,7 @@ FullColorDescription::FullColorDescription(
  */
 FullColorDescription::FullColorDescription(
     RgbColorSpace *colorSpace,
-    const cmsCIELCh &lch,
+    const LchDouble &lch,
     outOfGamutBehaviour coordinates,
     qreal alpha
 )
@@ -184,9 +184,9 @@ void FullColorDescription::moveChromaIntoGamut(RgbColorSpace *colorSpace)
     }
 
     // Now we know: We are out-of-gamut…
-    cmsCIELCh lowerChroma {m_lch.L, 0, m_lch.h};
-    cmsCIELCh upperChroma {m_lch};
-    cmsCIELCh candidate;
+    LchDouble lowerChroma {m_lch.L, 0, m_lch.h};
+    LchDouble upperChroma {m_lch};
+    LchDouble candidate;
     if (colorSpace->inGamut(lowerChroma)) {
         // Now we know for sure that lowerChroma is in-gamut
         // and upperChroma is out-of-gamut…
@@ -258,7 +258,7 @@ bool FullColorDescription::operator!=(const FullColorDescription& other) const
 /**
  * @returns if this object is valid, the color as RGB, otherwise an
  * arbitrary value */
-Helper::cmsRGB FullColorDescription::toRgb() const
+RgbDouble FullColorDescription::toRgb() const
 {
     return m_rgb;
 }
@@ -289,7 +289,7 @@ cmsCIELab FullColorDescription::toLab() const
 /**
  * @returns if this object is valid, the color as LCh, otherwise an
  * arbitrary value */
-cmsCIELCh FullColorDescription::toLch() const
+LchDouble FullColorDescription::toLch() const
 {
     return m_lch;
 }
@@ -388,9 +388,9 @@ QString FullColorDescription::toRgbHexString() const
  * 
  * @param lab a point in Lab representation
  * @returns the same point in LCh representation */
-cmsCIELCh FullColorDescription::toLch(const cmsCIELab &lab)
+LchDouble FullColorDescription::toLch(const cmsCIELab &lab)
 {
-    cmsCIELCh temp;
+    LchDouble temp;
     cmsLab2LCh(&temp, &lab);
     return temp;
 }
@@ -399,12 +399,16 @@ cmsCIELCh FullColorDescription::toLch(const cmsCIELab &lab)
  * 
  * @param lch a point in LCh representation
  * @returns the same point in Lab representation */
-cmsCIELab FullColorDescription::toLab(const cmsCIELCh &lch)
+cmsCIELab FullColorDescription::toLab(const LchDouble &lch)
 {
     cmsCIELab temp;
     cmsLCh2Lab(&temp, &lch);
     return temp;
 }
+
+static_assert(
+    std::is_standard_layout_v<FullColorDescription>
+);
 
 // TODO Isn't it inconsistent if toRgbHexString is generated on-the-fly
 // while all others are generated previously?
