@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -44,7 +43,7 @@ namespace PerceptualColor {
 
 /** @brief Constructor */
 WheelColorPicker::WheelColorPicker(
-    PerceptualColor::RgbColorSpace *colorSpace,
+    const QSharedPointer<RgbColorSpace> &colorSpace,
     QWidget *parent
 ) :
     SimpleColorWheel(colorSpace, parent),

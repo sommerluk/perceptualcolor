@@ -76,7 +76,7 @@ public:
      */
     bool m_mouseEventActive;
     /** @brief Pointer to RgbColorSpace() object */
-    RgbColorSpace *m_rgbColorSpace;
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
     QImage generateDiagramImage(
         const qreal imageHue,

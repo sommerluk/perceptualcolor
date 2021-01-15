@@ -70,7 +70,7 @@ class AlphaSelector : public QWidget
 public:
     /** Constructor */
     Q_INVOKABLE AlphaSelector(
-        PerceptualColor::RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
     /** @brief Default destructor */

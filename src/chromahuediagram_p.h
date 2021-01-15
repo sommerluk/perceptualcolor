@@ -80,7 +80,7 @@ public:
      *   anymore. */
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
-    RgbColorSpace *m_rgbColorSpace;
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
     /** Holds whether or not @ref m_wheelImage() is up-to-date.
      *  @sa @ref updateWheelCache() */
     bool m_isWheelCacheReady = false;
@@ -102,7 +102,7 @@ public:
     );
     QPointF fromImageCoordinatesToAB(const QPoint imageCoordinates);
     static QImage generateDiagramImage(
-        const RgbColorSpace *colorSpace,
+        const QSharedPointer<RgbColorSpace> &colorSpace,
         const int imageSize,
         const qreal maxChroma,
         const qreal lightness,
@@ -110,14 +110,14 @@ public:
         const QColor backgroundColor
     );
     static QImage generateDiagramImage2(
-        const RgbColorSpace *colorSpace,
+        const QSharedPointer<RgbColorSpace> &colorSpace,
         const int imageSize,
         const qreal maxChroma,
         const qreal lightness,
         const int border
     );
     static QImage generateDiagramImage3(
-        const RgbColorSpace *colorSpace,
+        const QSharedPointer<RgbColorSpace> &colorSpace,
         const int imageSize,
         const qreal maxChroma,
         const qreal lightness,

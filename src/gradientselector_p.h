@@ -50,10 +50,13 @@ public:
     int m_gradientThickness = 20;
     int m_gradientMinimumLength = 84;
     Qt::Orientation m_orientation;
-    void initialize(RgbColorSpace* colorSpace, Qt::Orientation orientation);
+    void initialize(
+        const QSharedPointer<RgbColorSpace> &colorSpace,
+        Qt::Orientation orientation
+    );
     FullColorDescription m_firstColor;
     FullColorDescription m_secondColor;
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
     void setOrientationAndForceUpdate(const Qt::Orientation newOrientation);
     void updateGradientImage();
     QPair<cmsCIELCh, qreal> intermediateColor(

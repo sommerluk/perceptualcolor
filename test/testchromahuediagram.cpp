@@ -44,7 +44,9 @@ public:
     }
 
 private:
-    PerceptualColor::RgbColorSpace m_rgbColorSpace;
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace {
+        new RgbColorSpace() 
+    };
 
 private Q_SLOTS:
     void initTestCase() {
@@ -64,22 +66,22 @@ private Q_SLOTS:
     }
 
     void testConstructorAndDestructor() {
-        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
     }
 
     void testShow() {
-        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         myDiagram.show();
     }
 
     void testKeyPressEvent() {
-        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         cmsCIELCh referenceColorLch;
         referenceColorLch.L = 50;
         referenceColorLch.C = 0;
         referenceColorLch.h = 180;
         FullColorDescription referenceColor = FullColorDescription(
-            &m_rgbColorSpace,
+            m_rgbColorSpace,
             referenceColorLch,
             FullColorDescription::outOfGamutBehaviour::sacrifyChroma
         );
@@ -95,7 +97,7 @@ private Q_SLOTS:
         referenceColorChromaLch.C = 10;
         referenceColorChromaLch.h = 180;
         FullColorDescription referenceColorChroma = FullColorDescription(
-            &m_rgbColorSpace,
+            m_rgbColorSpace,
             referenceColorChromaLch,
             FullColorDescription::outOfGamutBehaviour::sacrifyChroma
         );
@@ -233,7 +235,7 @@ private Q_SLOTS:
     }
     
     void testMinimalSizeHint() {
-        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         QVERIFY2(
             myDiagram.minimumSizeHint().width() > 0,
             "minimalSizeHint width is implemented."
@@ -245,7 +247,7 @@ private Q_SLOTS:
     }
     
     void testSizeHint() {
-        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         QVERIFY2(
             myDiagram.sizeHint().width()
                 > myDiagram.minimumSizeHint().width(),
@@ -259,7 +261,7 @@ private Q_SLOTS:
     }
     
     void testColorProperty() {
-        PerceptualColor::ChromaHueDiagram myDiagram(&m_rgbColorSpace);
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         QVERIFY2(
             myDiagram.color().isValid(),
             "Initialization with a valid value."
@@ -273,7 +275,7 @@ private Q_SLOTS:
         referenceColorLch.C = 10;
         referenceColorLch.h = 180;
         FullColorDescription referenceColor = FullColorDescription(
-            &m_rgbColorSpace,
+            m_rgbColorSpace,
             referenceColorLch,
             FullColorDescription::outOfGamutBehaviour::sacrifyChroma
         );

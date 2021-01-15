@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "qtconfiguration.h"
 
 // own header
 #include "PerceptualColor/fullcolordescription.h"
@@ -60,7 +59,7 @@ FullColorDescription::FullColorDescription()
  * @param rgb color (in RGB mode)
  * @param alpha the alpha channel for color */
 FullColorDescription::FullColorDescription(
-    RgbColorSpace *colorSpace,
+    const QSharedPointer<RgbColorSpace> &colorSpace,
     const PerceptualColor::RgbDouble &rgb,
     qreal alpha)
 {
@@ -83,7 +82,7 @@ FullColorDescription::FullColorDescription(
  * is another type, it will be converted.)
  */
 FullColorDescription::FullColorDescription(
-    RgbColorSpace *colorSpace,
+    const QSharedPointer<RgbColorSpace> &colorSpace,
     QColor color
 )
 {
@@ -124,7 +123,7 @@ FullColorDescription::FullColorDescription(
  * @param coordinates how to treat out-of-gamut values
  * @param alpha the alpha channel of the color */
 FullColorDescription::FullColorDescription(
-    RgbColorSpace *colorSpace,
+    const QSharedPointer<RgbColorSpace> &colorSpace,
     const cmsCIELab &lab,
     outOfGamutBehaviour coordinates,
     qreal alpha
@@ -153,7 +152,7 @@ FullColorDescription::FullColorDescription(
  * @param alpha the alpha channel
  */
 FullColorDescription::FullColorDescription(
-    RgbColorSpace *colorSpace,
+    const QSharedPointer<RgbColorSpace> &colorSpace,
     const LchDouble &lch,
     outOfGamutBehaviour coordinates,
     qreal alpha
@@ -176,7 +175,9 @@ FullColorDescription::FullColorDescription(
 
 /** Makes sure that m_lch() will be within the gamut.
  * Implements outOfGamutBehaviour::sacrifyChroma */
-void FullColorDescription::moveChromaIntoGamut(RgbColorSpace *colorSpace)
+void FullColorDescription::moveChromaIntoGamut(
+    const QSharedPointer<RgbColorSpace> &colorSpace
+)
 {
     // Test special case: If we are yet in-gamut…
     if (colorSpace->inGamut(m_lch)) {

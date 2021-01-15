@@ -122,7 +122,7 @@ public:
     /** @brief Internal storage for property @ref options */
     ColorDialogOptions m_options;
     /** @brief Pointer to the RgbColorSpace object. */
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
     /** @brief Pointer to the QLineEdit that represents the hexadecimal
      *  RGB value. */
     QPointer<QLineEdit> m_rgbLineEdit;

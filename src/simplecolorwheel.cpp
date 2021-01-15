@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -50,7 +49,10 @@
 namespace PerceptualColor {
 
 /** @brief Constructor */
-SimpleColorWheel::SimpleColorWheel(RgbColorSpace *colorSpace, QWidget *parent) :
+SimpleColorWheel::SimpleColorWheel(
+    const QSharedPointer<RgbColorSpace> &colorSpace,
+    QWidget *parent
+) :
     AbstractCircularDiagram(parent),
     d_pointer(new SimpleColorWheelPrivate(this))
 {
@@ -560,7 +562,7 @@ int SimpleColorWheel::border() const
 * Out-of-gamut situations should automatically be handled.
 */
 QImage SimpleColorWheel::generateWheelImage(
-    RgbColorSpace *colorSpace,
+    const QSharedPointer<RgbColorSpace> &colorSpace,
     const int outerDiameter,
     const qreal border,
     const qreal thickness,

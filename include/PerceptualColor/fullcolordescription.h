@@ -88,22 +88,22 @@ public:
 
     FullColorDescription();
     FullColorDescription(
-        RgbColorSpace *colorSpace,
+        const QSharedPointer<RgbColorSpace> &colorSpace,
         const PerceptualColor::RgbDouble &rgb,
         qreal alpha = 1
     );
     FullColorDescription(
-        RgbColorSpace *colorSpace,
+        const QSharedPointer<RgbColorSpace> &colorSpace,
         QColor rgb
     );
     FullColorDescription(
-        RgbColorSpace *colorSpace,
+        const QSharedPointer<RgbColorSpace> &colorSpace,
         const LabDouble &lab,
         outOfGamutBehaviour coordinates,
         qreal alpha = 1
     );
     FullColorDescription(
-        RgbColorSpace *colorSpace,
+        const QSharedPointer<RgbColorSpace> &colorSpace,
         const LchDouble &lch,
         outOfGamutBehaviour coordinates,
         qreal alpha = 1
@@ -161,7 +161,7 @@ private:
     /** Validity of this object. */
     bool m_valid;
 
-    void moveChromaIntoGamut(RgbColorSpace *colorSpace);
+    void moveChromaIntoGamut(const QSharedPointer<RgbColorSpace> &colorSpace);
     void normalizeLch();
     static LabDouble toLab(const LchDouble &lch);
     static LchDouble toLch(const LabDouble &lab);

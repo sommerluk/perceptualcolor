@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "qtconfiguration.h"
 
 #include "PerceptualColor/colordialog.h"
 
@@ -42,8 +41,6 @@
 #include <memory>// Other includes
 #include <QtMath>
 
-// TODO code analysis clazy cppcheck clazy
-
 // TODO Anti-aliasing the gamut diagrams? Wouldn't this be bad for performance?
 
 // Test if the compiler treats the source code actually as UTF8.
@@ -57,6 +54,8 @@ static_assert(
         (static_cast<quint8>(*((u8"🖌")+4)) == 0x00),
     "This source code has to be read-in as UTF8 by the compiler."
 );
+
+
 
 /* TODO Make sure to always use u8"x" as string literals because L"x" and "x"
  * have compiler-dependent encoding. Alternative would be to make sure the
@@ -113,9 +112,6 @@ int main(int argc, char *argv[])
 //     m_colorDialog.setStyleSheet(
 //         "background: yellow; color: red; border: 15px solid #FF0000;"
 //     );
-
-
-
 
     // Run
     return app.exec();

@@ -106,7 +106,7 @@ class ChromaHueDiagram : public AbstractCircularDiagram
 
 public:
     Q_INVOKABLE explicit ChromaHueDiagram(
-        PerceptualColor::RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
     /** @brief Default destructor */

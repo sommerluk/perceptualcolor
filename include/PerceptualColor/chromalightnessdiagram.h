@@ -72,7 +72,7 @@ class ChromaLightnessDiagram : public AbstractDiagram
 
 public:
     Q_INVOKABLE explicit ChromaLightnessDiagram(
-        PerceptualColor::RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
     virtual ~ChromaLightnessDiagram() noexcept override;

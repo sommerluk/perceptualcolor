@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// #define QT_NO_CAST_FROM_ASCII
-// #define QT_NO_CAST_TO_ASCII
+#include "qtconfiguration.h"
 
 // Own header
 #include "PerceptualColor/lchdouble.h"

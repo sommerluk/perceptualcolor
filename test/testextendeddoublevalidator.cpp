@@ -72,8 +72,8 @@ private Q_SLOTS:
         delete myObject;
         QVERIFY2(
             myGuardedPointer.isNull(),
-            "Verify the guarded pointer becomes nullptr if the "
-                "parent is deleted."
+            "Verify that the guarded pointer “QPointer” becomes nullptr if "
+                "the parent is deleted."
         );
             
     }

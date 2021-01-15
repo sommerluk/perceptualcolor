@@ -55,7 +55,7 @@ public:
     QPointer<QDoubleSpinBox> m_doubleSpinBox;
     QPointer<GradientSelector> m_gradientSelector;
     NumberFormat m_representation;
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
 public Q_SLOTS:
     void setAlphaFromRepresentationFormat(qreal newAlphaRepresentation);

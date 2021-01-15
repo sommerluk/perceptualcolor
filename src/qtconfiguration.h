@@ -24,58 +24,37 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
-
-// Own header
-#include "PerceptualColor/rgbdouble.h"
-
-#include <type_traits>
-
-#include <lcms2.h>
-
 /** @file
  * 
- * This file defines some static asserts for the data type
- * @ref PerceptualColor::RgbDouble. */
+ * This file defines various macros, configuring Qt to disable
+ * some API functions that provide implicid casts. Therefore,
+ * by including this header in CPP files, the code has to
+ * use more explicit casts, which helps to reveal bugs.
+ * 
+ * @note This file does not contain include guards. But it
+ * checks individually for each macro <tt>define</tt> if it exists
+ * before defining it (again). */
 
-namespace PerceptualColor {
+#ifndef QT_NO_CAST_FROM_ASCII
+#define QT_NO_CAST_FROM_ASCII
+#endif // QT_NO_CAST_FROM_ASCII
 
-static_assert(
-    std::is_same_v<
-        cmsFloat64Number,
-        decltype(RgbDouble::red)
-    >
-);
+#ifndef QT_NO_CAST_FROM_BYTEARRAY
+#define QT_NO_CAST_FROM_BYTEARRAY
+#endif // QT_NO_CAST_FROM_BYTEARRAY
 
-static_assert(
-    std::is_same_v<
-        cmsFloat64Number,
-        decltype(RgbDouble::green)
-    >
-);
+#ifndef QT_NO_CAST_TO_ASCII
+#define QT_NO_CAST_TO_ASCII
+#endif // QT_NO_CAST_TO_ASCII
 
-static_assert(
-    std::is_same_v<
-        cmsFloat64Number,
-        decltype(RgbDouble::blue)
-    >
-);
+#ifndef QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
+#define QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
+#endif // QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
 
-static_assert(
-    sizeof(double) == sizeof(cmsFloat64Number)
-);
+#ifndef QT_NO_PROCESS_COMBINED_ARGUMENT_START
+#define QT_NO_PROCESS_COMBINED_ARGUMENT_START
+#endif // QT_NO_PROCESS_COMBINED_ARGUMENT_START
 
-// Assert that RgbDouble also works fine as buffer.
-static_assert(
-    sizeof(RgbDouble) == sizeof(cmsFloat64Number[3])
-);
-
-static_assert(
-    std::is_trivial_v<RgbDouble>
-);
-
-static_assert(
-    std::is_standard_layout_v<RgbDouble>
-);
-
-} // namespace PerceptualColor
+#ifndef QT_NO_URL_CAST_FROM_STRING
+#define QT_NO_URL_CAST_FROM_STRING
+#endif // QT_NO_URL_CAST_FROM_STRING

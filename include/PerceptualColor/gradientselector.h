@@ -97,11 +97,11 @@ class GradientSelector : public AbstractDiagram
 
 public:
     Q_INVOKABLE explicit GradientSelector(
-        PerceptualColor::RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
     Q_INVOKABLE explicit GradientSelector(
-        PerceptualColor::RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         Qt::Orientation orientation,
         QWidget *parent = nullptr
     );

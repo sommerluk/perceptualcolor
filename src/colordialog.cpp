@@ -24,6 +24,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include "qtconfiguration.h"
+
 // Own headers
 // First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/colordialog.h"
@@ -33,7 +35,6 @@
 #include <QApplication>
 #include <QByteArray>
 #include <QDialog>
-#include <QDoubleSpinBox>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QObject>
@@ -112,9 +113,9 @@ ColorDialog::~ColorDialog() noexcept
 {
     // All the layouts and widgets used here are automatically child widgets
     // of this dialog widget. Therefor they are deleted automatically.
-    // Also m_rgbColorSpace is of type RgbColorSpace(), which inherits from
-    // QObject, and is a child of this dialog widget, does not need to be
-    // deleted manually.
+    // Also m_rgbColorSpace is of type RgbColorSpace(), which
+    // inherits from QObject, and is a child of this dialog widget, does
+    // not need to be deleted manually.
 }
 
 /** @brief Constructor
@@ -205,7 +206,12 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(
     const QColor& color
 )
 {
-    setCurrentOpaqueColor(FullColorDescription(m_rgbColorSpace, color));
+    setCurrentOpaqueColor(
+        FullColorDescription(
+            m_rgbColorSpace,
+            color
+        )
+    );
 }
 
 /** @brief Updates the color patch widget
@@ -372,7 +378,9 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
 void ColorDialog::ColorDialogPrivate::initialize()
 {
     // initialize color space
-    m_rgbColorSpace = new RgbColorSpace(q_pointer);
+    m_rgbColorSpace.reset(
+        new RgbColorSpace()
+    );
 
     // create the graphical selectors
     m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);
@@ -889,11 +897,17 @@ void ColorDialog::done(int result)
     }
     QDialog::done(result);
     if (d_pointer->m_receiverToBeDisconnected) {
+        // This “disconnect” uses the old-style syntax, which does not
+        // detect errors on compile time. However, we do not see a
+        // possibility how to substitute it with the better new-style
+        // syntax, given that d_pointer->m_memberToBeDisconnected
+        // can contain different classes, which would be difficult
+        // it typing the class name directly in the new syntax.
         disconnect(
             this,
             SIGNAL(colorSelected(QColor)),
             d_pointer->m_receiverToBeDisconnected,
-            d_pointer->m_memberToBeDisconnected
+            d_pointer->m_memberToBeDisconnected.constData()
         );
         d_pointer->m_receiverToBeDisconnected = nullptr;
     }

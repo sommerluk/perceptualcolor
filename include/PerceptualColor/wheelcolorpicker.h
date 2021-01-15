@@ -61,7 +61,7 @@ class WheelColorPicker : public SimpleColorWheel
 
 public:
     Q_INVOKABLE explicit WheelColorPicker(
-        PerceptualColor::RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
     virtual ~WheelColorPicker() noexcept override;

@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -40,7 +39,7 @@
 namespace PerceptualColor {
 
 AlphaSelector::AlphaSelector(
-    PerceptualColor::RgbColorSpace *colorSpace,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     QWidget *parent
 ) :
     QWidget(parent),

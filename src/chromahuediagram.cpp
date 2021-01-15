@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -54,7 +53,7 @@ namespace PerceptualColor {
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the QWidget base class constructor. */
 ChromaHueDiagram::ChromaHueDiagram(
-    PerceptualColor::RgbColorSpace *colorSpace,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     QWidget *parent
 ) : AbstractCircularDiagram(parent),
     d_pointer(new ChromaHueDiagramPrivate(this))
@@ -463,6 +462,14 @@ void ChromaHueDiagram::setColor(const FullColorDescription &color)
 
 // TODO xxx Revision starting here
 
+// xxx // TODO shared_ptr or QSharedPointer or QScopedPointer instead of
+       // raw pointers. In headers, everything is fine yet. But in the
+       // CPP files (local variables), especially in the unit tests, nothing
+       // has been revised so far.
+
+// xxx // TODO document and test the internationalization features of
+       // MultiSpinBox.
+// xxx // TODO own class for image caches …
 
 /** @brief React on a resize event.
  *
@@ -578,7 +585,7 @@ bool ChromaHueDiagram
 /** @brief in image of a-b plane of the color space at a given lightness */
 // TODO How to make sure the diagram has at least a few pixels?
 QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage3(
-    const RgbColorSpace *colorSpace,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     const int imageSize,
     const qreal maxChroma,
     const qreal lightness,
@@ -677,7 +684,7 @@ QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage3(
 /** @brief in image of a-b plane of the color space at a given lightness */
 // How to make sure the diagram has at least a few pixels?
 QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage(
-    const RgbColorSpace *colorSpace,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     const int imageSize,
     const qreal maxChroma,
     const qreal lightness,

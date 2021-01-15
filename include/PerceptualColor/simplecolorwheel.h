@@ -69,7 +69,7 @@ class SimpleColorWheel : public AbstractCircularDiagram
 
 public:
     Q_INVOKABLE explicit SimpleColorWheel(
-        PerceptualColor::RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
     virtual ~SimpleColorWheel() noexcept override;
@@ -77,7 +77,7 @@ public:
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
     static QImage generateWheelImage(
-        RgbColorSpace *colorSpace,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         const int outerDiameter,
         const qreal border,
         const qreal thickness,

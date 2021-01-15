@@ -72,7 +72,7 @@ public:
     /** @brief Internal storage of the hue() property */
     qreal m_hue;
     /** @brief Pointer to RgbColorSpace() object */
-    QPointer<RgbColorSpace> m_rgbColorSpace;
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
     QPointF fromWheelCoordinatesToWidgetCoordinates(
         const PolarPointF wheelCoordinates
