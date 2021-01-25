@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -37,6 +37,8 @@
 #include <QStyle>
 #include <QStyleOption>
 #include <QMouseEvent>
+
+#include <helper.h>
 
 namespace PerceptualColor {
 
@@ -198,7 +200,7 @@ void GradientSelector::setFraction(qreal newFraction)
 
 void GradientSelector::wheelEvent(QWheelEvent* event)
 {
-    qreal steps = Helper::standardWheelSteps(event);
+    qreal steps = standardWheelSteps(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
         setFraction(d_pointer->m_fraction + steps * d_pointer->m_singleStep);

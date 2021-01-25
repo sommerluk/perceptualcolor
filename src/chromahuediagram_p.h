@@ -31,6 +31,10 @@
 #include "PerceptualColor/chromahuediagram.h"
 #include "constpropagatingrawpointer.h"
 
+#include "colorwheelimage.h"
+#include "chromahueimage.h"
+#include "lchvalues.h"
+
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to
@@ -38,7 +42,10 @@ namespace PerceptualColor {
 class ChromaHueDiagram::ChromaHueDiagramPrivate final
 {
 public:
-    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink);
+    ChromaHueDiagramPrivate(
+        ChromaHueDiagram *backLink,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
+    );
     /** @brief Default destructor
      * 
      * The destructor is non-<tt>virtual</tt> because
@@ -55,19 +62,14 @@ public:
      * applicable, the focus indicator is painted.
      * @sa @ref markerThickness */
     static constexpr qreal diagramBorder = 8 * markerThickness;
+    /** @brief The image of the chroma-hue diagram itself. */
+    ChromaHueImage m_chromaHueImage;
     /** @brief Internal storage of the @ref color() property */
     FullColorDescription m_color;
-    /** @brief A cache for the diagram as QImage. Might be outdated.
-     *  @sa @ref updateDiagramCache()
-     *  @sa @ref m_isDiagramCacheReady */
-    QImage m_diagramImage;
     /** @brief Position of the center of the diagram coordinate system
      * 
      * This value is measured in widget coordinates. */
     qreal m_diagramOffset = 0;
-    /** Holds whether or not @ref m_diagramImage() is up-to-date.
-     *  @sa @ref updateDiagramCache() */
-    bool m_isDiagramCacheReady = false;
     /** @brief Holds if currently a mouse event is active or not.
      * 
      * Default value is <tt>false</tt>.
@@ -81,15 +83,10 @@ public:
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
-    /** Holds whether or not @ref m_wheelImage() is up-to-date.
-     *  @sa @ref updateWheelCache() */
-    bool m_isWheelCacheReady = false;
     /** @todo This should not be hard-coded sRGB. */
-    qreal m_maxChroma = Helper::LchDefaults::maxSrgbChroma;
-    /** @brief A cache for the wheel as QImage. Might be outdated.
-     *  @sa @ref updateWheelCache()
-     *  @sa @ref m_isWheelCacheReady */
-    QImage m_wheelImage;
+    qreal m_maxChroma = LchValues::srgbMaximumChroma;
+    /** @brief The image of the color wheel. */
+    ColorWheelImage m_wheelImage;
     /** @brief Diameter of the widget.
      * 
      * This is different from <tt>size()</tt>. It is the maximum possible
@@ -101,32 +98,8 @@ public:
         const QPoint imageCoordinates
     );
     QPointF fromImageCoordinatesToAB(const QPoint imageCoordinates);
-    static QImage generateDiagramImage(
-        const QSharedPointer<RgbColorSpace> &colorSpace,
-        const int imageSize,
-        const qreal maxChroma,
-        const qreal lightness,
-        const qreal border,
-        const QColor backgroundColor
-    );
-    static QImage generateDiagramImage2(
-        const QSharedPointer<RgbColorSpace> &colorSpace,
-        const int imageSize,
-        const qreal maxChroma,
-        const qreal lightness,
-        const int border
-    );
-    static QImage generateDiagramImage3(
-        const QSharedPointer<RgbColorSpace> &colorSpace,
-        const int imageSize,
-        const qreal maxChroma,
-        const qreal lightness,
-        const int border
-    );
     QPoint imageCoordinatesFromColor();
     void setColorFromImageCoordinates(const QPoint imageCoordinates);
-    void updateDiagramCache();
-    void updateWheelCache();
 
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)

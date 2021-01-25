@@ -46,12 +46,13 @@ namespace PerceptualColor {
  * - L: Lightness, mesured in percent. The valid range  is 0‥100.
  * - C: Chroma. <tt>0</tt> means no chroma (grayscale). The maximum
  *   value depends on the gamut, for sRGB for example it’s
- *   @ref Helper::LchDefaults::maxSrgbChroma. Other gamuts can
- *   be bigger, but the final limit is the gamut of human perception. In
- *   humen perception, the chroma is always (much) smaller than <tt>255</tt>.
+ *   @ref LchValues::srgbMaximumChroma. Other gamuts can
+ *   be bigger, but the final limit is the gamut of human
+ *   perception, out of which a Chroma value does not make
+ *   sense: @ref LchValues::humanMaximumChroma
  * - h: Hue. The valid range  is 0‥360.
  * 
- * @sa @ref Helper::LchDefaults explains more details about the valid
+ * @sa @ref LchValues explains more details about the valid
  * range. */
 using LchDouble = cmsCIELCh;
 

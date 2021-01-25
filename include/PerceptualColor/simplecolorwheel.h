@@ -30,7 +30,7 @@
 #include <QImage>
 #include <QWidget>
 
-#include "PerceptualColor/abstractcirculardiagram.h"
+#include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -47,8 +47,12 @@ namespace PerceptualColor {
  * value that accepts focus by mouse click, the focus will not only be
  * accepted for clicks within the actual circle, but also for clicks
  * within the surrounding rectangle.
- */
-class SimpleColorWheel : public AbstractCircularDiagram
+ * 
+ * @note The diagram is not painted on the whole extend of the widget. A border
+ * is left to allow that the focus indicator can be painted completely
+ * even when the widget has the focus. The border is determined
+ * automatically, its value depends on markerThickness(). */
+class SimpleColorWheel : public AbstractDiagram
 {
     Q_OBJECT
 
@@ -76,14 +80,6 @@ public:
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
-    static QImage generateWheelImage(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        const int outerDiameter,
-        const qreal border,
-        const qreal thickness,
-        const qreal lightness,
-        const qreal chroma
-    );
 
 Q_SIGNALS:
     /** @brief Signal for hue() property. */
@@ -102,8 +98,12 @@ protected:
     virtual void resizeEvent(QResizeEvent* event) override;
     virtual void wheelEvent(QWheelEvent *event) override;
     int contentDiameter() const;
-    int border() const;
+    // TODO No const definition in public headers! Better use a function
+    // return value.
+    static constexpr int border = 2 * markerThickness;
     /** @brief the thickness of the wheel ribbon */
+    // TODO No const definition in public headers! Better use a function
+    // return value.
     static constexpr int m_wheelThickness = 20;
     /** @brief the chroma with which the wheel ribbon is painted. */
     qreal wheelRibbonChroma() const;

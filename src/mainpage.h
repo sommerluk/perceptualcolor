@@ -115,7 +115,7 @@
  * all formerly private elements of a class become protected know. Our class
  * hierarchy is not that deep, so the performance gain might not be worth
  * the additional code complexity. Therefore, this library uses a more simple
- * pimpl idiom without inheritance of the private implementation, It has
+ * pimpl idiom without inheritance of the private implementation. It has
  * however all the other features of the Qt pimpl idiom, including
  * <tt>const</tt> propagating access to the private implementation
  * thanks to @ref PerceptualColor::ConstPropagatingUniquePointer and
@@ -131,14 +131,17 @@
  * 
  * @todo Use <tt>explicit</tt> on all constructors?
  * 
- * @todo More members (like <tt>m_rgbColorSpace</tt> could be <tt>const</tt>?!
- * And maybe some return types of functions could be made const?
+ * @todo Do not use constexpr in public headers as when we change the value
+ * later, compile time value and run time value might be different, and
+ * that might be dangerous.
  * 
- * @todo Inherit the private pimpl implementations from QObject (thought
- * this might be worse for performance?) to allow easier
- * <tt>QObject::connect()</tt>?
+ * @todo Which symbols should finally be exported? Remove (most of) the other
+ * headers from the include directory!
  * 
- * @todo Substitute all pointers by smart pointers?
+ * @todo Check in all classes that take a @ref PerceptualColor::RgbColorSpace
+ * that the shared pointer is actually not a <tt>nullptr</tt>. If is
+ * <em>is</em> a <tt>nullptr</tt> than throw an exception. Throwing the
+ * exception early might make error detection easier for users of the library.
  * 
  * @todo Would it be better to avoid default arguments like
  * <tt>void test(int i = 0)</tt> as changes require recompilation which
@@ -203,16 +206,7 @@
  * Qt6 counterpart) we provide a source compatible alternative, like for
  * QColorWidget? Split the library in three parts (Common, Widgets, QML)?
  * 
- * @todo no constexpr should be exposted in any header as they are determined
- * on compile time. So if later we change the value, an application could
- * have a different value in the lib file (compile time of the library) and
- * the executable (compile time of the executable, which could be compoiled
- * against a different header/version).
- * 
  * @todo Comply with KDE policies: https://community.kde.org/Policies
- * 
- * @todo Decide is it’s better to raise C++ requirement to C++17 (see the
- * hidden comment above in this source file).
  * 
  * @todo Remove all qDebug calls from the source
  * 
@@ -236,16 +230,11 @@
  * within the library code and within the program code, which might
  * lead to undefined behaviour?
  * 
- * @todo Test well the scaling for all widgets from 106.25% up to 200%.
- * 
  * @todo When scaling is used, the icons on the OK button and the
  * Cancel button are ugly. Why isn’t this handled automatically correctly,
  * though on other Qt apps it seems to be handled automatically correctly?
  * 
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
- * 
- * @todo Provide more than 8 bit per channel for more precision? 10 bit?
- * 12 bit?
  * 
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.

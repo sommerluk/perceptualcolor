@@ -47,8 +47,7 @@ namespace PerceptualColor {
  * - a: a axis (red-green-axis).
  * - b: b_axis (yellow-blue-axis).
  * 
- * @sa @ref Helper::LchDefaults explains more details about the valid
- * range. */
+ * @sa @ref LchValues explains more details about the valid range. */
 using LabDouble = cmsCIELab;
 
 } // namespace PerceptualColor

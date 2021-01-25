@@ -24,14 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // own header
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/polarpointf.h"
 
 // other includes
-// #include "PerceptualColor/polarpointf.h"
+#include "helper.h"
 
 namespace PerceptualColor {
 
@@ -192,7 +192,7 @@ void FullColorDescription::moveChromaIntoGamut(
         // Now we know for sure that lowerChroma is in-gamut
         // and upperChroma is out-of-gamut…
         candidate = upperChroma;
-        while (upperChroma.C - lowerChroma.C > Helper::gamutPrecision) {
+        while (upperChroma.C - lowerChroma.C > gamutPrecision) {
             // Our test candidate is half the way between lowerChroma
             // and upperChroma:
             candidate.C = (

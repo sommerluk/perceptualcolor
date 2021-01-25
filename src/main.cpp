@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 #include "PerceptualColor/colordialog.h"
 

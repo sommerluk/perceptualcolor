@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.

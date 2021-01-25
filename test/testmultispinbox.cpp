@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -1336,7 +1335,7 @@ private Q_SLOTS:
         );
     }
 
-    void testSnippet02() {
+void testSnippet02() {
 //! [MultiSpinBox Basic example]
 PerceptualColor::MultiSpinBox *myHsvSpinBox =
     new PerceptualColor::MultiSpinBox();
@@ -1368,11 +1367,12 @@ hsvSections.append(mySection);
 myHsvSpinBox->setSections(hsvSections);
 // Initial content is:  310,0°  200,0  100,0
 //! [MultiSpinBox Basic example]
-        QCOMPARE(
-            myHsvSpinBox->lineEdit()->text(),
-            QStringLiteral("310,0°  200,0  100,0")
-        );
-    }
+QCOMPARE(
+    myHsvSpinBox->lineEdit()->text(),
+    QStringLiteral("310,0°  200,0  100,0")
+);
+delete myHsvSpinBox;
+}
 
 private:
 class testSnippet02 {

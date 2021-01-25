@@ -30,6 +30,7 @@
 #include <QColorDialog>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor {
 
@@ -218,7 +219,7 @@ namespace PerceptualColor {
  * which was deprecated somewhere at 5.12 following the source code from
  * Woboq, but much earlier following the online documentation.
  * Support them? Or document that we do not support them? */
-class ColorDialog : public QDialog
+class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
 {
     Q_OBJECT
 

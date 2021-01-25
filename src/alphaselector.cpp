@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -35,6 +35,8 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QSignalBlocker>
+
+#include "lchvalues.h"
 
 namespace PerceptualColor {
 
@@ -75,9 +77,9 @@ AlphaSelector::AlphaSelector(
     );
 
     cmsCIELCh lch;
-    lch.L = Helper::LchDefaults::defaultLightness;
-    lch.C = Helper::LchDefaults::defaultChroma;
-    lch.h = Helper::LchDefaults::defaultHue;
+    lch.L = LchValues::defaultLightness;
+    lch.C = LchValues::defaultChroma;
+    lch.h = LchValues::defaultHue;
     FullColorDescription temp = FullColorDescription(
         d_pointer->m_rgbColorSpace,
         lch,

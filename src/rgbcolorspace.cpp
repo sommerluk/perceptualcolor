@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -32,7 +32,7 @@
 // Second, the private implementation.
 #include "rgbcolorspace_p.h"
 
-#include "PerceptualColor/helper.h"
+#include "helper.h"
 
 #include <QDebug>
 
@@ -111,12 +111,12 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
     candidate.C = 0;
     candidate.h = 0;
     while (!inGamut(candidate) && (candidate.L < 100)) {
-        candidate.L += Helper::gamutPrecision;
+        candidate.L += gamutPrecision;
     }
     d_pointer->m_blackpointL = candidate.L;
     candidate.L = 100;
     while (!inGamut(candidate) && (candidate.L > 0)) {
-        candidate.L -= Helper::gamutPrecision;
+        candidate.L -= gamutPrecision;
     }
     d_pointer->m_whitepointL = candidate.L;
     if (d_pointer->m_whitepointL <= d_pointer->m_blackpointL) {
@@ -209,9 +209,9 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
         &rgb,                                 // output
         1                                     // convert exactly 1 value
     );
-    if (Helper::inRange<cmsFloat64Number>(0, rgb.red, 1) &&
-        Helper::inRange<cmsFloat64Number>(0, rgb.green, 1) &&
-        Helper::inRange<cmsFloat64Number>(0, rgb.blue, 1)) {
+    if (inRange<cmsFloat64Number>(0, rgb.red, 1) &&
+        inRange<cmsFloat64Number>(0, rgb.green, 1) &&
+        inRange<cmsFloat64Number>(0, rgb.blue, 1)) {
         // We are within the gamut
         temp = QColor::fromRgbF(rgb.red, rgb.green, rgb.blue);
     }
@@ -332,9 +332,9 @@ bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
     );
 
     return (
-        Helper::inRange<cmsFloat64Number>(0, rgb.red, 1) &&
-        Helper::inRange<cmsFloat64Number>(0, rgb.green, 1) &&
-        Helper::inRange<cmsFloat64Number>(0, rgb.blue, 1)
+        inRange<cmsFloat64Number>(0, rgb.red, 1) &&
+        inRange<cmsFloat64Number>(0, rgb.green, 1) &&
+        inRange<cmsFloat64Number>(0, rgb.blue, 1)
     );
 }
 

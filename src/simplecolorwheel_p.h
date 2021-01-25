@@ -34,6 +34,7 @@
 #include <QPointer>
 
 #include "PerceptualColor/polarpointf.h"
+#include "colorwheelimage.h"
 
 namespace PerceptualColor {
 
@@ -42,7 +43,10 @@ namespace PerceptualColor {
 class SimpleColorWheel::SimpleColorWheelPrivate final
 {
 public:
-    SimpleColorWheelPrivate(SimpleColorWheel *backLink);
+    SimpleColorWheelPrivate(
+        SimpleColorWheel *backLink,
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
+    );
     /** @brief Default destructor
      * 
      * The destructor is non-<tt>virtual</tt> because
@@ -57,18 +61,7 @@ public:
      * @sa mouseReleaseEvent()
      */ 
     bool m_mouseEventActive;
-    /** @brief A cache for the wheel picture as QImage. Might be outdated!
-     *  @sa updateWheelImage() 
-     *  @sa m_wheelImageReady() */
-    QImage m_wheelImage;
-    /** Holds whether or not m_wheelImage is up-to-date.
-     *  @sa refreshWheelImage()
-     *  @sa updateWheelImage
-     * @todo It might be better to erase m_wheelImageReady when it gets
-     * invalid (and get rid of m_wheelImageReady). So memory can be
-     * freed more quickly, without having outdated data taking space
-     * on the heap. */
-    bool m_wheelImageReady = false;
+    ColorWheelImage m_wheelImage;
     /** @brief Internal storage of the hue() property */
     qreal m_hue;
     /** @brief Pointer to RgbColorSpace() object */
@@ -80,7 +73,6 @@ public:
     PolarPointF fromWidgetCoordinatesToWheelCoordinates(
         const QPoint widgetCoordinates
     ) const;
-    void updateWheelImage();
 
 private:
     Q_DISABLE_COPY(SimpleColorWheelPrivate)

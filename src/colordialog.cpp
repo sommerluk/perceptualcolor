@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -42,6 +42,8 @@
 #include <QRegularExpressionValidator>
 #include <QScreen>
 #include <QVBoxLayout>
+
+#include "lchvalues.h"
 
 namespace PerceptualColor {
 
@@ -64,13 +66,15 @@ ColorDialog::ColorDialog(QWidget *parent) :
     // lightness and a middle chroma (a lightness-chroma-combination that
     // will be valid through the hole range of hue. For the hue, the natural
     // choice would be 0°, which is red. Why choosing something different
-    // from 0° without a technical reason?, Well, we chooe 270°, which is
-    // blue; blue feels more neutral than red for a pop-up dialog.
+    // from 0° without a technical reason? If the lightness is 50%, among 0°,
+    // 90°, 180° and 270°, it’s 180° that has the lowest possible maximum C.
+    // Therefore, we choose 180°, because at a given chroma, the resulting
+    // color is more vivid than those at 0°, 90° and 270°. Also, be choose
+    // 180° because the color seems clean and colorful.
     cmsCIELCh initialColor;
-    // TODO Would it be better to use a hue of 0°? See comment above…
-    initialColor.h = 270;
-    initialColor.L = Helper::LchDefaults::defaultLightness;
-    initialColor.C = Helper::LchDefaults::versatileSrgbChroma;
+    initialColor.h = 180; 
+    initialColor.L = LchValues::defaultLightness;
+    initialColor.C = LchValues::srgbVersatileChroma;
     // Calling setCurrentFullColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid

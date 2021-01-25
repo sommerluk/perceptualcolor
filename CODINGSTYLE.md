@@ -29,5 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 - Document your code.
 - Provide unit tests for your code.
-- If working with Qt’s object hierarchy, use raw pointers. If not, use
-  smart pointers. Prefer Qt’s smart pointers over the std smart pointers.
+- If working with children within Qt’s object hierarchy, allocate on the heap
+  and use raw pointers or guarded pointers (`QPointer`). If not, allocate on the
+  stack or use smart pointers. Prefer Qt’s smart pointers over the `std`
+  smart pointers of C++.

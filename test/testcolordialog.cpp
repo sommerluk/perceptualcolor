@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -43,6 +42,9 @@ namespace PerceptualColor {
 
 class TestColorDialogSnippetClass : public QWidget {
 Q_OBJECT
+public:
+// A constructor that is clazy-conform
+TestColorDialogSnippetClass(QWidget *parent = nullptr) : QWidget(parent) {}
 void testSnippet05() {
 //! [ColorDialog Open]
 PerceptualColor::ColorDialog *m_dialog = new PerceptualColor::ColorDialog;
@@ -309,13 +311,12 @@ private Q_SLOTS:
 
         // Test the constructor ColorDialog(QWidget * parent = nullptr)
         m_perceptualDialog.reset(new PerceptualColor::ColorDialog(color));
-        QWidget *tempWidget = new QWidget();
-        m_perceptualDialog2.reset(
+        QScopedPointer<QWidget> tempWidget { new QWidget() };
+        PerceptualColor::ColorDialog *tempPerceptualDialog2 =
             new PerceptualColor::ColorDialog(
                 color,
-                tempWidget
-            )
-        );
+                tempWidget.data()
+            );
         // Test post-condition: currentColor() is color
         QCOMPARE(
             m_perceptualDialog->currentColor().name(),
@@ -330,24 +331,24 @@ private Q_SLOTS:
             colorOpaque.spec()
         );
         QCOMPARE(
-            m_perceptualDialog2->currentColor().name(),
+            tempPerceptualDialog2->currentColor().name(),
             colorOpaque.name()
         );
         QCOMPARE(
-            m_perceptualDialog2->currentColor().alpha(),
+            tempPerceptualDialog2->currentColor().alpha(),
             colorOpaque.alpha()
         );
         QCOMPARE(
-            m_perceptualDialog2->currentColor().spec(),
+            tempPerceptualDialog2->currentColor().spec(),
             colorOpaque.spec()
         );
         QCOMPARE(
-            m_perceptualDialog2->parentWidget(),
-            tempWidget
+            tempPerceptualDialog2->parentWidget(),
+            tempWidget.data()
         );
         QCOMPARE(
-            m_perceptualDialog2->parent(),
-            tempWidget
+            tempPerceptualDialog2->parent(),
+            tempWidget.data()
         );
     }
     
@@ -415,7 +416,7 @@ private Q_SLOTS:
                         + QStringLiteral("/")
                         + QString(colorList.at(j).first)
                         + QStringLiteral("/ShowAlphaChannel/NoButtons")
-                    ).toLatin1()
+                    ).toLatin1().data()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
@@ -426,7 +427,7 @@ private Q_SLOTS:
                         + QStringLiteral("/")
                         + QString(colorList.at(j).first)
                         + QStringLiteral("/ShowAlphaChannel")
-                    ).toLatin1()
+                    ).toLatin1().data()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
@@ -437,7 +438,7 @@ private Q_SLOTS:
                         + QStringLiteral("/")
                         + QString(colorList.at(j).first)
                         + QStringLiteral("/NoButtons")
-                    ).toLatin1()
+                    ).toLatin1().data()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
@@ -448,7 +449,7 @@ private Q_SLOTS:
                         + QStringLiteral("/")
                         + QString(colorList.at(j).first)
                         + QLatin1String()
-                    ).toLatin1()
+                    ).toLatin1().data()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
@@ -548,9 +549,9 @@ private Q_SLOTS:
             PerceptualColor::ColorDialog::staticMetaObject;
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
         int testClassIndex =
-            testClass.indexOfProperty(propertyName.toLatin1());
+            testClass.indexOfProperty(propertyName.toLatin1().data());
         int referenceClassIndex =
-            referenceClass.indexOfProperty(propertyName.toLatin1());
+            referenceClass.indexOfProperty(propertyName.toLatin1().data());
         QMetaProperty referenceClassProperty =
             referenceClass.property(referenceClassIndex);
         QString message;
@@ -561,7 +562,7 @@ private Q_SLOTS:
             + QStringLiteral("\" is also available in \"")
             + QString::fromUtf8(testClass.className())
             + QStringLiteral("\".");
-        QVERIFY2(testClassIndex >= 0, message.toLatin1());
+        QVERIFY2(testClassIndex >= 0, message.toLatin1().data());
         QMetaProperty testClassProperty = testClass.property(testClassIndex);
         if (referenceClassProperty.hasNotifySignal()) {
             QVERIFY2(
@@ -719,9 +720,9 @@ private Q_SLOTS:
         for (int i = 0; i < referenceClass.methodCount(); ++i) {
             if (referenceClass.method(i).access() != QMetaMethod::Private) {
                 // Exclude private methods from conformance check
-                QTest::newRow(referenceClass.method(i).name())
+                QTest::newRow(referenceClass.method(i).name().data())
                     << QMetaObject::normalizedSignature(
-                        referenceClass.method(i).methodSignature()
+                        referenceClass.method(i).methodSignature().data()
                     )
                     << i;
             }
@@ -737,7 +738,7 @@ private Q_SLOTS:
         QFETCH(int, referenceClassIndex);
         QMetaObject testClass = PerceptualColor::ColorDialog::staticMetaObject;
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
-        int testClassIndex = testClass.indexOfMethod(methodSignature);
+        int testClassIndex = testClass.indexOfMethod(methodSignature.data());
         QMetaMethod referenceClassMethod = referenceClass.method(
             referenceClassIndex
         );
@@ -751,7 +752,7 @@ private Q_SLOTS:
             + QStringLiteral("\".");
         QVERIFY2(
             testClassIndex >= 0,
-            message.toLatin1()
+            message.toLatin1().data()
         );
         QMetaMethod testClassMethod = testClass.method(testClassIndex);
         QCOMPARE(
@@ -815,7 +816,7 @@ private Q_SLOTS:
             + QStringLiteral("\"'s superclass.");
         QVERIFY2(
             testClass.inherits(referenceClass.superClass()),
-            message.toLatin1()
+            message.toLatin1().data()
         );
     }
     
@@ -1936,9 +1937,9 @@ private Q_SLOTS:
         // widget invisible; nevertheless it reacts on mouse events. Other
         // widget styles indeed show the size grip widget, like Fusion or
         // QtCurve.
-        QScopedPointer<PerceptualColor::ColorDialog> m_perceptualDialog {
+        m_perceptualDialog.reset(
             new PerceptualColor::ColorDialog
-        };
+        );
         QCOMPARE(
             m_perceptualDialog->isSizeGripEnabled(),
             true
@@ -1956,9 +1957,9 @@ private Q_SLOTS:
     }
 
     void testLayoutDimensions() {
-        QScopedPointer<PerceptualColor::ColorDialog> m_perceptualDialog {
+        m_perceptualDialog.reset(
             new PerceptualColor::ColorDialog
-        };
+        );
         // Test default value
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
@@ -2026,9 +2027,9 @@ private Q_SLOTS:
     }
 
     void testApplyLayoutDimensions() {
-        QScopedPointer<PerceptualColor::ColorDialog> m_perceptualDialog {
+        m_perceptualDialog.reset(
             new PerceptualColor::ColorDialog
-        };
+        );
         // Test default value
         QCOMPARE(
             m_perceptualDialog->layoutDimensions(),
@@ -2134,6 +2135,11 @@ private Q_SLOTS:
             m_qDialog->setCurrentColor(Qt::yellow);
             m_qDialog->repaint();
         }
+    }
+    
+    void testSnippet05() {
+        TestColorDialogSnippetClass mySnippets;
+        mySnippets.testSnippet05();
     }
 
 void testSnippet02() {

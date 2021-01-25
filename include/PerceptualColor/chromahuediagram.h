@@ -27,7 +27,7 @@
 #ifndef CHROMAHUEDIAGRAM_H
 #define CHROMAHUEDIAGRAM_H
 
-#include "PerceptualColor/abstractcirculardiagram.h"
+#include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
@@ -76,8 +76,14 @@ namespace PerceptualColor {
  * or even various own threads in parallel), but this should only be
  * triggered when the widget is visible, and not while the widget is
  * hidden. While waiting for the result, an empty image could be used.
- * It might be useful to provide first a low-resolution version, and only
+ * Or it might be useful to provide first a low-resolution version, and only
  * later-on a high-resolution version.
+ * 
+ * @todo Multi-threaded application of color transforms. It seems okay to
+ * create the color transforms in one thread and use the same color
+ * transform (once created) from various other threads at the same time
+ * as long as the flag <tt>cmsFLAGS_NOCACHE</tt> is used to create the
+ * transform.
  * 
  * @todo High-dpi support.
  * 
@@ -89,7 +95,7 @@ namespace PerceptualColor {
  * the angel is controlled by the mouse wheel.
  *         
  * @todo Provide RESET functions for all properties around the library? */
-class ChromaHueDiagram : public AbstractCircularDiagram
+class ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT
 

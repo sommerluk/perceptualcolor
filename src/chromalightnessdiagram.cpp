@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -32,7 +32,7 @@
 // Second, the private implementation.
 #include "chromalightnessdiagram_p.h"
 
-#include "PerceptualColor/helper.h"
+#include "lchvalues.h"
 #include "PerceptualColor/polarpointf.h"
 
 #include <math.h>
@@ -71,9 +71,9 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     // (and refreshDiagram relies itself on m_hue, markerRadius and
     // markerThickness)
     cmsCIELCh temp;
-    temp.h = Helper::LchDefaults::defaultHue;
-    temp.C = Helper::LchDefaults::versatileSrgbChroma;
-    temp.L = Helper::LchDefaults::defaultLightness;
+    temp.h = LchValues::defaultHue;
+    temp.C = LchValues::srgbVersatileChroma;
+    temp.L = LchValues::defaultLightness;
     d_pointer->m_color = FullColorDescription(
         d_pointer->m_rgbColorSpace,
         temp,
@@ -692,11 +692,8 @@ FullColorDescription ChromaLightnessDiagram::color() const
 
 /** @brief Generates an image of a chroma-lightness diagram.
  * 
- * This function generates images of chroma-lightness diagrams in the
- * LCh color space. This function should be thread-save as long as you do
- * not use the same LittleCMS transform from different threads. (Also, out
- * of the Qt library, it uses only QImage, and not QPixmap, to make sure
- * the result can be passed around between threads.)
+ * (Also, out of the Qt library, it uses only QImage, and not QPixmap,
+ * to make sure the result can be passed around between threads.)
  * 
  * @param imageHue the (LCh) hue of the image
  * @param imageSize the size of the requested image

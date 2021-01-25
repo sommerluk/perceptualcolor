@@ -38,6 +38,26 @@ namespace PerceptualColor {
  * Provides some elements that are common for all LCh diagrams in this
  * library.
  * 
+ * @note Qt provides some possibilities to declare that a certain widget
+ * has a fixed ration between width and height. You can reimplement
+ * <tt>QWidget::hasHeightForWidth()</tt> (indicates that the widget's preferred
+ * height depends on its width) and <tt>QWidget::heightForWidth()</tt>
+ * (returns the preferred height for this widget, given the width <tt>w</tt>).
+ * However, Qt’s layout management makes only very limited use of this
+ * information. It is ignored, when the sourrounding window is resized by
+ * grapping the window border with the mouse. It is however considered when
+ * the sourrounding window is resized by grapping a <tt>QSizeGrip</tt>
+ * widget. This behavior is inconsistend and would be suprising for the
+ * user. Furthermore, if the widget is yet touching the border of the
+ * screen, then the policy cannot be honnored anyway; but it causes
+ * flickering. Another possibility is QSizePolicy::setHeightForWidth or
+ * QSizePolicy::setWidthForHeight wich seem both to be “only supported for
+ * QGraphicsLayout’s subclasses”. Therefore, it’s better not to use at all
+ * these features; that’s the only way to provide a consistent and good
+ * user experience.
+ * 
+ * @todo Circular diagrams should be right-aligned on RTL layouts.
+ * 
  * @todo Touchscreen support: Magnify the marker circle, when diagram is
  * used on a touch device?  */
 class AbstractDiagram : public QFrame

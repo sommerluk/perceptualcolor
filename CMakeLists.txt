@@ -28,7 +28,7 @@
 
 
 ################# General setup #################
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 project(perceptualcolor DESCRIPTION "Perceptual color tools")
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -63,11 +63,13 @@ set(PROJECT_VERSION
 
 
 ################# Compiler settings #################
+# Our choice for the required C++ standard is documented via Doxygen (main
+# page of the documentation).
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 # TODO Available compiler warnings change incompatible from version to version.
 #      For a release build, no seldom extra options should be used!
-# TODO Only force this in debug, not in production
-# set(CMAKE_C_COMPILER   "/usr/bin/clang"  )
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 # Enable compiler warings and optimization
 if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
     ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
@@ -75,9 +77,6 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
     # TODO It might be better not to enable warnings in production builds,
     # as the available parameters might change or go away in later
     # compiler releases.
-    
-    # Our choice for “-std” is documented via Doxygen (main page of the
-    # documentation).
 
     # The flag -Werror (treat all warnings as errors) is intentionally not
     # enabled: In new compiler versions, new warnings might be introduced.
@@ -86,7 +85,6 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
     # Set common flags for both, GCC and Clang.
     set(CMAKE_CXX_FLAGS "\
         -O3\
-        -std=c++17\
         -Wpedantic\
         -pedantic-errors\
         -Wall\
@@ -146,13 +144,14 @@ set(LIBS ${LIBS} Qt5::Core Qt5::Gui Qt5::Widgets ${LCMS2_LIBRARIES})
 ################# Setup source code #################
 # Set the sources for our library
 set(perceptualcolor_SRC
-  src/abstractcirculardiagram.cpp
   src/abstractdiagram.cpp
   src/alphaselector.cpp
   src/chromahuediagram.cpp
+  src/chromahueimage.cpp
   src/chromalightnessdiagram.cpp
   src/colordialog.cpp
   src/colorpatch.cpp
+  src/colorwheelimage.cpp
   src/extendeddoublevalidator.cpp
   src/fullcolordescription.cpp
   src/gradientselector.cpp
@@ -169,7 +168,6 @@ set(perceptualcolor_SRC
 # Set the headers for our library. This list only contains the headers
 # that are _not_ within the source directory.
 set(perceptualcolor_HEADERS
-  include/PerceptualColor/abstractcirculardiagram.h
   include/PerceptualColor/abstractdiagram.h
   include/PerceptualColor/alphaselector.h
   include/PerceptualColor/chromahuediagram.h
@@ -180,10 +178,10 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/extendeddoublevalidator.h
   include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientselector.h
-  include/PerceptualColor/helper.h
   include/PerceptualColor/labdouble.h
   include/PerceptualColor/lchdouble.h
   include/PerceptualColor/multispinbox.h
+  include/PerceptualColor/perceptualcolorlib_global.h
   include/PerceptualColor/polarpointf.h
   include/PerceptualColor/rgbcolorspace.h
   include/PerceptualColor/rgbdouble.h
@@ -206,6 +204,12 @@ add_library(perceptualcolor SHARED
     ${perceptualcolor_SRC}
     ${perceptualcolor_HEADERS}
 )
+set_target_properties(perceptualcolor PROPERTIES CXX_VISIBILITY_PRESET
+    hidden
+)
+target_compile_definitions(perceptualcolor PUBLIC
+    PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY
+)
 set_target_properties(perceptualcolor PROPERTIES VERSION
     ${PROJECT_VERSION}
 )
@@ -225,8 +229,8 @@ target_link_libraries(perceptualcolor ${LIBS})
 install(
     TARGETS perceptualcolor
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+# TODO Install headers to ${CMAKE_INSTALL_INCLUDEDIR}
 
 
 
@@ -249,86 +253,45 @@ install(TARGETS perceptualcolorpicker DESTINATION ${CMAKE_INSTALL_BINDIR})
 ################# Build unit tests #################
 enable_testing ()
 
-add_executable (testabstractcirculardiagram
-    test/testabstractcirculardiagram.cpp)
-target_link_libraries (testabstractcirculardiagram
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testabstractcirculardiagram COMMAND testabstractcirculardiagram)
+# The following library is like the target “perceptualcolor”, with the
+#following difference: It exports all symbols (also private ones), and it
+# does not install. This is used for the unit tests, because exporting all
+# symbols is nececery for whitebox testing.
+add_library(perceptualcolorexport SHARED
+    ${perceptualcolor_SRC}
+    ${perceptualcolor_HEADERS}
+)
+# Setting the symbol visibility to “visible”. Following GCC documentation,
+# indeed the option for “visible” is called “default” (Sounds strange, but
+# it's true.)
+set_target_properties(perceptualcolorexport PROPERTIES CXX_VISIBILITY_PRESET
+    default
+)
+target_link_libraries(perceptualcolorexport ${LIBS})
 
-add_executable (testabstractdiagram
-    test/testabstractdiagram.cpp)
-target_link_libraries (testabstractdiagram
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testabstractdiagram COMMAND testabstractdiagram)
+# Define how to add unit tests.
+# The argument “test_name” is expected to be the name of a .cpp test file
+# in the test directory. For adding the unit test “test/testsomething.cpp”,
+# you have to call “add_unit_test(testsomething)”.
+function(add_unit_test test_name)
+    add_executable (${test_name} test/${test_name}.cpp)
+    target_link_libraries (${test_name} ${LIBS} Qt5::Test perceptualcolorexport)
+    add_test (NAME ${test_name} COMMAND ${test_name})
+endfunction(add_unit_test)
 
-add_executable (testchromahuediagram
-    test/testchromahuediagram.cpp)
-target_link_libraries (testchromahuediagram
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testchromahuediagram COMMAND testchromahuediagram)
-
-add_executable (testcolordialog
-    test/testcolordialog.cpp)
-target_link_libraries (testcolordialog
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testcolordialog COMMAND testcolordialog)
-
-add_executable (testcolorpatch
-    test/testcolorpatch.cpp)
-target_link_libraries (testcolorpatch
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testcolorpatch COMMAND testcolorpatch)
-
-add_executable (testconstpropagatinguniquepointer
-    test/testconstpropagatinguniquepointer.cpp)
-target_link_libraries (testconstpropagatinguniquepointer
-    ${LIBS} Qt5::Test)
-add_test (NAME testconstpropagatinguniquepointer COMMAND testconstpropagatinguniquepointer)
-
-add_executable (testconstpropagatingrawpointer
-    test/testconstpropagatingrawpointer.cpp)
-target_link_libraries (testconstpropagatingrawpointer
-    ${LIBS} Qt5::Test)
-add_test (NAME testconstpropagatingrawpointer COMMAND testconstpropagatingrawpointer)
-
-add_executable (testextendeddoublevalidator
-    test/testextendeddoublevalidator.cpp)
-target_link_libraries (testextendeddoublevalidator
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testextendeddoublevalidator COMMAND testextendeddoublevalidator)
-
-add_executable (testhelper
-    test/testhelper.cpp)
-target_link_libraries (testhelper
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testhelper COMMAND testhelper)
-
-add_executable (testlabdouble
-    test/testlabdouble.cpp)
-target_link_libraries (testlabdouble
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testlabdouble COMMAND testlabdouble)
-
-add_executable (testlchdouble
-    test/testlchdouble.cpp)
-target_link_libraries (testlchdouble
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testlchdouble COMMAND testlchdouble)
-
-add_executable (testmultispinbox
-    test/testmultispinbox.cpp)
-target_link_libraries (testmultispinbox
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testmultispinbox COMMAND testmultispinbox)
-
-add_executable (testpolarpointf
-    test/testpolarpointf.cpp)
-target_link_libraries (testpolarpointf
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testpolarpointf COMMAND testpolarpointf)
-
-add_executable (testrgbdouble
-    test/testrgbdouble.cpp)
-target_link_libraries (testrgbdouble
-    ${LIBS} Qt5::Test perceptualcolor)
-add_test (NAME testrgbdouble COMMAND testrgbdouble)
+add_unit_test(testabstractdiagram)
+add_unit_test(testchromahuediagram)
+add_unit_test(testchromahueimage)
+add_unit_test(testcolordialog)
+add_unit_test(testcolorpatch)
+add_unit_test(testcolorwheelimage)
+add_unit_test(testconstpropagatinguniquepointer)
+add_unit_test(testconstpropagatingrawpointer)
+add_unit_test(testextendeddoublevalidator)
+add_unit_test(testhelper)
+add_unit_test(testlabdouble)
+add_unit_test(testlchdouble)
+add_unit_test(testlchvalues)
+add_unit_test(testmultispinbox)
+add_unit_test(testpolarpointf)
+add_unit_test(testrgbdouble)

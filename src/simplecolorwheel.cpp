@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -33,7 +33,8 @@
 #include "simplecolorwheel_p.h"
 
 #include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/helper.h"
+#include "helper.h"
+#include "lchvalues.h"
 #include "PerceptualColor/polarpointf.h"
 
 #include <math.h>
@@ -48,13 +49,17 @@
 
 namespace PerceptualColor {
 
-/** @brief Constructor */
+/** @brief Constructor
+ * 
+ * @param colorSpace The color spaces within this widget should operate.
+ * @param parent The widget’s parent widget. This parameter will be passed
+ * to the base class’s constructor. */
 SimpleColorWheel::SimpleColorWheel(
     const QSharedPointer<RgbColorSpace> &colorSpace,
     QWidget *parent
 ) :
-    AbstractCircularDiagram(parent),
-    d_pointer(new SimpleColorWheelPrivate(this))
+    AbstractDiagram(parent),
+    d_pointer(new SimpleColorWheelPrivate(this, colorSpace))
 {
     // Setup LittleCMS (must be first thing because other operations
     // rely on working LittleCMS)
@@ -64,8 +69,28 @@ SimpleColorWheel::SimpleColorWheel(
     // We don't use the reset methods as they would update the image/pixmap
     // each time, and this could crash if done before everything is
     // initialized.
-    d_pointer->m_hue = Helper::LchDefaults::defaultHue;
+    d_pointer->m_hue = LchValues::defaultHue;
     d_pointer->m_mouseEventActive = false;
+    d_pointer->m_wheelImage.setBorder(border);
+    d_pointer->m_wheelImage.setImageSize(
+        qMin(width(), height())
+    );
+    d_pointer->m_wheelImage.setWheelThickness(m_wheelThickness);
+
+    // Set focus policy
+    // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
+    // either not accepted at all or accepted always for the hole rectangular
+    // widget, depending on QWidget::focusPolicy(). This is not
+    // convenient and intuitive for big, circular-shaped widgets like this one.
+    // It would be nicer if the focus would only be accepted by mouse clicks
+    // <em>within the circle itself</em>. Qt does not provide a build-in way to
+    // do this. But a workaround to implement this behavior is possible: Set
+    // QWidget::focusPolicy() to <em>not</em> accept focus by mouse
+    // click. Then, reimplement mousePressEvent() and call
+    // setFocus(Qt::MouseFocusReason) if the mouse click is within the
+    // circle. Therefore, this class simply defaults to
+    // Qt::FocusPolicy::TabFocus for QWidget::focusPolicy().
+    setFocusPolicy(Qt::FocusPolicy::TabFocus);
 }
 
 /** @brief Default destructor */
@@ -76,10 +101,14 @@ SimpleColorWheel::~SimpleColorWheel() noexcept
 /** @brief Constructor
  * 
  * @param backLink Pointer to the object from which <em>this</em> object
- * is the private implementation. */
+ * is the private implementation.
+ * @param colorSpace The color spaces within this widget should operate. */
 SimpleColorWheel::SimpleColorWheelPrivate::SimpleColorWheelPrivate(
-    SimpleColorWheel *backLink
-) : q_pointer(backLink)
+    SimpleColorWheel *backLink,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
+) :
+    m_wheelImage(colorSpace),
+    q_pointer(backLink)
 {
 }
 
@@ -147,11 +176,11 @@ QPointF SimpleColorWheel
  */
 void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
 {
-    qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
+    qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
-        Helper::inRange<qreal>(
+        inRange<qreal>(
             radius-m_wheelThickness,
             myPolarPoint.radial(),
             radius
@@ -232,7 +261,7 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
     // a mouse wheel event occurs.
     // TODO What is a reasonable value for this?
     static constexpr qreal wheelStep = 5;
-    qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
+    qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
@@ -246,7 +275,7 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
         (event->angleDelta().y() != 0)
     ) {
         setHue(
-            d_pointer->m_hue + Helper::standardWheelSteps(event) * wheelStep
+            d_pointer->m_hue + standardWheelSteps(event) * wheelStep
         );
     } else {
         event->ignore();
@@ -355,13 +384,10 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     QPainter painter(&paintBuffer);
 
     // paint the wheel from the cache
-    if (!d_pointer->m_wheelImageReady) {
-        d_pointer->updateWheelImage();
-    }
-    painter.drawImage(0, 0, d_pointer->m_wheelImage);
+    painter.drawImage(0, 0, d_pointer->m_wheelImage.getImage());
 
     // paint the marker
-    qreal radius = contentDiameter() / static_cast<qreal>(2) - border();
+    qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
     // get widget coordinates for our marker
     QPointF myMarkerInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
         PolarPointF(
@@ -416,7 +442,9 @@ void SimpleColorWheel::resizeEvent(QResizeEvent* event)
     // ChromaLightnessDiagram’s resize() call done here within the child class
     // WheelColorPicker. This situation is relevant for the real-world usage,
     // when the user scales the window only horizontally or only vertically.
-    d_pointer->m_wheelImageReady = false;
+    d_pointer->m_wheelImage.setImageSize(
+        qMin(size().width(), size().height())
+    );
     /* As by Qt documentation:
      *     “The widget will be erased and receive a paint event immediately
      *      after processing the resize event. No drawing need be (or should
@@ -430,7 +458,7 @@ qreal SimpleColorWheel::hue() const
 
 qreal SimpleColorWheel::wheelRibbonChroma() const
 {
-    return Helper::LchDefaults::versatileSrgbChroma;
+    return LchValues::srgbVersatileChroma;
 }
 
 /**
@@ -488,183 +516,10 @@ QSize SimpleColorWheel::minimumSizeHint() const
 
 // TODO What when some of the wheel colors are out of gamut?
 
-/** @brief Refresh the wheel ribbon pixmap
- * 
- * This class has a cache for the pixmap of the wheel ribbon.
- * 
- * This data is cached because it is often needed and it would be expensive
- * to calculate it again and again on the fly.
- * 
- * Calling this function updates this cached data.
- * 
- * An update might be necessary if the data the pixmap relies on, has changed.
- * For example, if the wheelRibbonChroma() property or the widget size have
- * changed, this function has to be called. But do not call this function
- * directly. Rather set m_wheelPixmapReady to @e false, so that the update
- * is only calculated when really a paint event is done, and not when the
- * widget is invisible anyway.
- * 
- * This function does not repaint the widget! After calling this function,
- * you have to call manually <tt>update()</tt> to schedule a re-paint of the
- * widget, if you wish so. */
-void SimpleColorWheel::SimpleColorWheelPrivate::updateWheelImage()
-{
-    if (m_wheelImageReady) {
-        return;
-    }
-
-    m_wheelImage = generateWheelImage(
-        m_rgbColorSpace,
-        // TODO How to treat QSize(0, 0)? Also in ChromaLightnessDiagram!!
-        qMin(q_pointer->size().width(), q_pointer->size().height()),
-        q_pointer->border(),
-        m_wheelThickness,
-        Helper::LchDefaults::defaultLightness,
-        q_pointer->wheelRibbonChroma()
-    );
-    m_wheelImageReady = true;
-}
-
 /** @brief Reset the hue() property. */
 void SimpleColorWheel::resetHue()
 {
-    setHue(Helper::LchDefaults::defaultHue);
-}
-
-/** @brief The border between the outer border of the wheel ribbon and
-* the border of the widget.
-* 
-* The diagram is not painted on the whole extend of the widget. A border
-* is left to allow that the focus indicator can be painted completely
-* even when the widget has the focus. The border is determined
-* automatically, its value depends on markerThickness(). */
-int SimpleColorWheel::border() const
-{
-    return 2 * markerThickness;
-}
-
-
-/** @brief Generates an image of a color wheel
-* 
-* @param colorSpace the color space that is used
-* @param outerDiameter the outer diameter of the wheel in pixel
-* @param border the border that is left empty around the wheel
-* @param thickness the thickness of the wheel
-* @param lightness the  (LCh lightness, range 0..100)
-* @param chroma the LCh chroma value
-* @returns Generates a square image of a color wheel. Its size
-* is <tt>QSize(outerDiameter, outerDiameter)</tt>. All pixels
-* that do not belong to the wheel itself will be transparent.
-* Antialiasing is used, so there is no sharp border between
-* transparent and non-transparent parts. Depending on the
-* values for lightness and chroma, there may be some hue
-* who is out of gamut; if so, it will be transparent. TODO
-* Out-of-gamut situations should automatically be handled.
-*/
-QImage SimpleColorWheel::generateWheelImage(
-    const QSharedPointer<RgbColorSpace> &colorSpace,
-    const int outerDiameter,
-    const qreal border,
-    const qreal thickness,
-    const qreal lightness,
-    const qreal chroma)
-{
-QElapsedTimer myTimer;
-myTimer.start();
-    if (outerDiameter <= 0) {
-        return QImage();
-    }
-
-    // Firsts of all, generate a non-anti-aliased, intermediate, color wheel,
-    // but with some pixels extra at the inner and outer side. The overlap
-    // defines an overlap for the wheel, so there are some more pixels that
-    // are drawn at the outer and at the inner border of the wheel, to allow
-    // later clipping with anti-aliasing
-    constexpr int overlap = 1;
-    PolarPointF polarCoordinates;
-    int x;
-    int y;
-    QColor rgbColor;
-    LchDouble LCh; // uses cmsFloat64Number internally
-    // Calculate maximum value for x index and y index
-    int maxExtension = outerDiameter - 1; 
-    qreal center = maxExtension / static_cast<qreal>(2);
-    QImage rawWheel = QImage(
-        QSize(outerDiameter, outerDiameter),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    // Because there may be out-of-gamut colors for some hue (depending on the
-    // given lightness and chroma value) which are drawn transparent, it is
-    // important to initialize this image with a transparent background.
-    rawWheel.fill(Qt::transparent);
-    LCh.L = lightness;
-    LCh.C = chroma;
-    // minimalRadial: Adding "+ 1" would reduce the workload (less pixel to
-    // process) and still work mostly, but not completely. It creates sometimes
-    // artifacts in the anti-aliasing process. So we don't do that.
-    qreal minimumRadial = center - thickness - border - overlap;
-    qreal maximumRadial = center - border + overlap;
-    for (x = 0; x <= maxExtension; ++x) {
-        for (y = 0; y <= maxExtension; ++y) {
-            polarCoordinates = PolarPointF(QPointF(x - center, center - y));
-            if (Helper::inRange<qreal>(minimumRadial, polarCoordinates.radial(), maximumRadial)) {
-                // We are within the wheel
-                LCh.h = polarCoordinates.angleDegree();
-                rgbColor = colorSpace->colorRgb(LCh);
-                if (rgbColor.isValid())
-                {
-                    rawWheel.setPixelColor(
-                        x,
-                        y,
-                        rgbColor
-                    );
-                }
-            }
-        }
-    }
-
-    // construct our final QImage with transparent background
-    QImage finalWheel = QImage(
-        QSize(outerDiameter, outerDiameter),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    finalWheel.fill(Qt::transparent);
-    
-    // paint an anti-aliased circle with the raw (non-anti-aliased)
-    // color wheel as brush
-    QPainter myPainter(&finalWheel);
-    myPainter.setRenderHint(QPainter::Antialiasing, true);
-    myPainter.setPen(QPen(Qt::NoPen));
-    myPainter.setBrush(QBrush(rawWheel));
-    myPainter.drawEllipse(
-        QRectF(
-            border,
-            border,
-            outerDiameter - 2 * border,
-            outerDiameter - 2 * border
-        )
-    );
-    
-    // set the inner circle of the wheel to anti-aliased transparency
-    myPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-    myPainter.setRenderHint(QPainter::Antialiasing, true);
-    myPainter.setPen(QPen(Qt::NoPen));
-    myPainter.setBrush(QBrush(Qt::SolidPattern));
-    myPainter.drawEllipse(
-        QRectF(
-            thickness + border,
-            thickness + border,
-            outerDiameter - 2 * (thickness + border),
-            outerDiameter - 2 * (thickness + border)
-        )
-    );
-
-    qDebug()
-        << "Generating simple color wheel image took"
-        << myTimer.restart()
-        << "ms.";
-    // return
-    return finalWheel;
+    setHue(LchValues::defaultHue);
 }
 
 }

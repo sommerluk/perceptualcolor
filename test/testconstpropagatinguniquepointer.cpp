@@ -24,8 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -69,15 +68,6 @@ private Q_SLOTS:
     void cleanup() {
         // Called after every test function
     }
-
-void testSnippet() {
-//! [ConstPropagatingUniquePointer Example]
-// A ConstPropagatingUniquePointer pointing to a new QObject
-PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
-    new QObject()
-);
-//! [ConstPropagatingUniquePointer Example]
-}
 
     void testConstructorDestructor() {
         ConstPropagatingUniquePointer<QObject> test;
@@ -124,6 +114,15 @@ PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
         QRectF temp = *pointerToQRectF;
         Q_UNUSED(temp);
     }
+
+void testSnippet() {
+//! [ConstPropagatingUniquePointer Example]
+// A ConstPropagatingUniquePointer pointing to a new QObject
+PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
+    new QObject()
+);
+//! [ConstPropagatingUniquePointer Example]
+}
 
 };
 

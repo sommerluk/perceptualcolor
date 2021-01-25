@@ -24,12 +24,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define QT_NO_CAST_FROM_ASCII
-#define QT_NO_CAST_TO_ASCII
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include <PerceptualColor/helper.h>
+#include "helper.h"
 
 #include <QtTest>
 
@@ -64,73 +63,73 @@ private Q_SLOTS:
     }
 
     void testInRangeInt() {
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 3, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 2, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 0, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 4, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 3, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 4, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(3, 2, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(0, 1, 2), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(0, 0, 2), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(0, 2, 2), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(0, 3, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(0, -1, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(1, 2, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(1, 1, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(1, 3, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(1, 0, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(1, 4, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-1, 0, 1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-1, -1, 1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-1, 1, 1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-1, 2, 1), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-1, -2, 1), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-2, -1, 0), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-2, -2, 0), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-2, 0, 0), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-2, -3, 0), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-2, 1, 0), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-3, -2, -1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-3, -3, -1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-3, -1, -1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-3, -4, -1), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<int>(-3, 0, -1), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(3, 3, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(3, 2, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(3, 0, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(3, 4, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(3, 3, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(3, 4, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(3, 2, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(0, 1, 2), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(0, 0, 2), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(0, 2, 2), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(0, 3, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(0, -1, 2), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(1, 2, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(1, 1, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(1, 3, 3), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(1, 0, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(1, 4, 3), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-1, 0, 1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-1, -1, 1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-1, 1, 1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-1, 2, 1), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-1, -2, 1), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-2, -1, 0), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-2, -2, 0), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-2, 0, 0), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-2, -3, 0), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-2, 1, 0), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-3, -2, -1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-3, -3, -1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-3, -1, -1), true);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-3, -4, -1), false);
-        QCOMPARE(PerceptualColor::Helper::inRange<double>(-3, 0, -1), false);
+        QCOMPARE(PerceptualColor::inRange<int>(3, 3, 2), false);
+        QCOMPARE(PerceptualColor::inRange<int>(3, 2, 2), false);
+        QCOMPARE(PerceptualColor::inRange<int>(3, 0, 2), false);
+        QCOMPARE(PerceptualColor::inRange<int>(3, 4, 2), false);
+        QCOMPARE(PerceptualColor::inRange<int>(3, 3, 3), true);
+        QCOMPARE(PerceptualColor::inRange<int>(3, 4, 3), false);
+        QCOMPARE(PerceptualColor::inRange<int>(3, 2, 3), false);
+        QCOMPARE(PerceptualColor::inRange<int>(0, 1, 2), true);
+        QCOMPARE(PerceptualColor::inRange<int>(0, 0, 2), true);
+        QCOMPARE(PerceptualColor::inRange<int>(0, 2, 2), true);
+        QCOMPARE(PerceptualColor::inRange<int>(0, 3, 2), false);
+        QCOMPARE(PerceptualColor::inRange<int>(0, -1, 2), false);
+        QCOMPARE(PerceptualColor::inRange<int>(1, 2, 3), true);
+        QCOMPARE(PerceptualColor::inRange<int>(1, 1, 3), true);
+        QCOMPARE(PerceptualColor::inRange<int>(1, 3, 3), true);
+        QCOMPARE(PerceptualColor::inRange<int>(1, 0, 3), false);
+        QCOMPARE(PerceptualColor::inRange<int>(1, 4, 3), false);
+        QCOMPARE(PerceptualColor::inRange<int>(-1, 0, 1), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-1, -1, 1), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-1, 1, 1), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-1, 2, 1), false);
+        QCOMPARE(PerceptualColor::inRange<int>(-1, -2, 1), false);
+        QCOMPARE(PerceptualColor::inRange<int>(-2, -1, 0), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-2, -2, 0), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-2, 0, 0), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-2, -3, 0), false);
+        QCOMPARE(PerceptualColor::inRange<int>(-2, 1, 0), false);
+        QCOMPARE(PerceptualColor::inRange<int>(-3, -2, -1), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-3, -3, -1), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-3, -1, -1), true);
+        QCOMPARE(PerceptualColor::inRange<int>(-3, -4, -1), false);
+        QCOMPARE(PerceptualColor::inRange<int>(-3, 0, -1), false);
+        QCOMPARE(PerceptualColor::inRange<double>(3, 3, 2), false);
+        QCOMPARE(PerceptualColor::inRange<double>(3, 2, 2), false);
+        QCOMPARE(PerceptualColor::inRange<double>(3, 0, 2), false);
+        QCOMPARE(PerceptualColor::inRange<double>(3, 4, 2), false);
+        QCOMPARE(PerceptualColor::inRange<double>(3, 3, 3), true);
+        QCOMPARE(PerceptualColor::inRange<double>(3, 4, 3), false);
+        QCOMPARE(PerceptualColor::inRange<double>(3, 2, 3), false);
+        QCOMPARE(PerceptualColor::inRange<double>(0, 1, 2), true);
+        QCOMPARE(PerceptualColor::inRange<double>(0, 0, 2), true);
+        QCOMPARE(PerceptualColor::inRange<double>(0, 2, 2), true);
+        QCOMPARE(PerceptualColor::inRange<double>(0, 3, 2), false);
+        QCOMPARE(PerceptualColor::inRange<double>(0, -1, 2), false);
+        QCOMPARE(PerceptualColor::inRange<double>(1, 2, 3), true);
+        QCOMPARE(PerceptualColor::inRange<double>(1, 1, 3), true);
+        QCOMPARE(PerceptualColor::inRange<double>(1, 3, 3), true);
+        QCOMPARE(PerceptualColor::inRange<double>(1, 0, 3), false);
+        QCOMPARE(PerceptualColor::inRange<double>(1, 4, 3), false);
+        QCOMPARE(PerceptualColor::inRange<double>(-1, 0, 1), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-1, -1, 1), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-1, 1, 1), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-1, 2, 1), false);
+        QCOMPARE(PerceptualColor::inRange<double>(-1, -2, 1), false);
+        QCOMPARE(PerceptualColor::inRange<double>(-2, -1, 0), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-2, -2, 0), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-2, 0, 0), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-2, -3, 0), false);
+        QCOMPARE(PerceptualColor::inRange<double>(-2, 1, 0), false);
+        QCOMPARE(PerceptualColor::inRange<double>(-3, -2, -1), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-3, -3, -1), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-3, -1, -1), true);
+        QCOMPARE(PerceptualColor::inRange<double>(-3, -4, -1), false);
+        QCOMPARE(PerceptualColor::inRange<double>(-3, 0, -1), false);
         
         QCOMPARE(
-            PerceptualColor::Helper::inRange<double>(-3.1, 0.2, -1.3),
+            PerceptualColor::inRange<double>(-3.1, 0.2, -1.3),
             false
         );
     }
@@ -139,137 +138,9 @@ private Q_SLOTS:
         // The value is somewhat arbitrary.
         // Make sure that at least it is not too high.
         QVERIFY2(
-            PerceptualColor::Helper::gamutPrecision < 1,
+            PerceptualColor::gamutPrecision < 1,
             "Verify that gamut precision value is not too high"
         );
-    }
-
-    void testLchDefaults() {
-        // Is the value as documented?
-        QCOMPARE(
-            static_cast<qreal>(
-                PerceptualColor::Helper::LchDefaults::defaultChroma
-            ),
-            0
-        );
-        // Is the value as documented?
-        QCOMPARE(
-            static_cast<qreal>(
-                PerceptualColor::Helper::LchDefaults::defaultHue
-            ),
-            0
-        );
-        // Is the value as documented?
-        QCOMPARE(
-            static_cast<qreal>(
-                PerceptualColor::Helper::LchDefaults::defaultLightness
-            ),
-            50
-        );
-
-        PerceptualColor::RgbColorSpace temp;
-        cmsCIELCh color;
-        qreal presicion = 0.1;
-
-        // Test if maxSrgbChroma is big enough
-        qreal precisionDegreeMaxSrgbChroma =
-            presicion
-                / 360
-                * 2
-                * M_PI
-                * PerceptualColor::Helper::LchDefaults::maxSrgbChroma;
-        color.C = PerceptualColor::Helper::LchDefaults::maxSrgbChroma;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionDegreeMaxSrgbChroma
-        ) {
-            color.h = hue;
-            for (
-                qreal lightness = 0;
-                lightness < 100;
-                lightness += presicion
-            ) {
-                color.L = lightness;
-                QVERIFY2(
-                    !temp.inGamut(color),
-                    "Test if maxSrgbChroma is big enough"
-                );
-            }
-            
-        }
-        
-        // Test is maxSrgbChroma is as small as possible
-        color.C = PerceptualColor::Helper::LchDefaults::maxSrgbChroma - 1;
-        bool inGamutValueFound = false;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionDegreeMaxSrgbChroma
-        ) {
-            color.h = hue;
-            for (
-                qreal lightness = 0;
-                lightness < 100;
-                lightness += presicion
-            ) {
-                color.L = lightness;
-                if (temp.inGamut(color)) {
-                    inGamutValueFound = true;
-                    break;
-                }
-            }
-            if (inGamutValueFound) {
-                break;
-            }
-        }
-        QVERIFY2(
-            inGamutValueFound,
-            "Test is maxSrgbChroma is as small as possible"
-        );
-
-        // Test if versatile is small enough
-        qreal precisionVersatileSrgbChroma =
-            presicion
-                / 360
-                * 2
-                * M_PI
-                * PerceptualColor::Helper::LchDefaults::versatileSrgbChroma;
-        color.C = PerceptualColor::Helper::LchDefaults::versatileSrgbChroma;
-        color.L = 50;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionVersatileSrgbChroma
-        ) {
-            color.h = hue;
-            QVERIFY2(
-                temp.inGamut(color),
-                "Test if versatile is small enough"
-            );
-        }
-
-        // Test is versatile is as big as possible
-        color.C =
-            PerceptualColor::Helper::LchDefaults::versatileSrgbChroma + 1;
-        color.L = 50;
-        inGamutValueFound = true;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionVersatileSrgbChroma
-        ) {
-            color.h = hue;
-            if (!temp.inGamut(color)) {
-                inGamutValueFound = false;
-                break;
-            }
-        }
-        QVERIFY2(
-            !inGamutValueFound,
-            "Test is versatile is as big as possible"
-        );
-
     }
 
     void testStandardWheelSteps() {
@@ -283,7 +154,7 @@ private Q_SLOTS:
             Qt::MouseButton::MiddleButton,
             Qt::KeyboardModifier::NoModifier
         );
-        QCOMPARE(PerceptualColor::Helper::standardWheelSteps(&temp), 1);
+        QCOMPARE(PerceptualColor::standardWheelSteps(&temp), 1);
     }
 
 };

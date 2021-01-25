@@ -28,33 +28,48 @@
  * 
  * This file defines various macros, configuring Qt to disable
  * some API functions that provide implicid casts. Therefore,
- * by including this header in CPP files, the code has to
- * use more explicit casts, which helps to reveal bugs.
+ * by including this header in CPP files, the code of this library
+ * if forced to use explicit casts instead of relying implicit casta;
+ * this will helps to reveal bugs.
  * 
- * @note This file does not contain include guards. But it
- * checks individually for each macro <tt>define</tt> if it exists
- * before defining it (again). */
+ * This header should be included in all CPP files of this library
+ * (that means, in all translation units). It should <em>not</em> be
+ * included in header files; in public header files, this would
+ * change the Qt configuration of library uses (which is undesired),
+ * and in private headers, it is pointless as there is no code to
+ * translate. */
+
+#ifndef PERCEPTUALCOLORLIB_QTCONFIGURATION_H
+#define PERCEPTUALCOLORLIB_QTCONFIGURATION_H
 
 #ifndef QT_NO_CAST_FROM_ASCII
+/** @brief By defining this macro, this implicit cast of Qt is disabled. */
 #define QT_NO_CAST_FROM_ASCII
 #endif // QT_NO_CAST_FROM_ASCII
 
 #ifndef QT_NO_CAST_FROM_BYTEARRAY
+/** @brief By defining this macro, this implicit cast of Qt is disabled. */
 #define QT_NO_CAST_FROM_BYTEARRAY
 #endif // QT_NO_CAST_FROM_BYTEARRAY
 
 #ifndef QT_NO_CAST_TO_ASCII
+/** @brief By defining this macro, this implicit cast of Qt is disabled. */
 #define QT_NO_CAST_TO_ASCII
 #endif // QT_NO_CAST_TO_ASCII
 
 #ifndef QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
+/** @brief By defining this macro, this implicit cast of Qt is disabled. */
 #define QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
 #endif // QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
 
 #ifndef QT_NO_PROCESS_COMBINED_ARGUMENT_START
+/** @brief By defining this macro, this implicit cast of Qt is disabled. */
 #define QT_NO_PROCESS_COMBINED_ARGUMENT_START
 #endif // QT_NO_PROCESS_COMBINED_ARGUMENT_START
 
 #ifndef QT_NO_URL_CAST_FROM_STRING
+/** @brief By defining this macro, this implicit cast of Qt is disabled. */
 #define QT_NO_URL_CAST_FROM_STRING
 #endif // QT_NO_URL_CAST_FROM_STRING
+
+#endif // PERCEPTUALCOLORLIB_QTCONFIGURATION_H

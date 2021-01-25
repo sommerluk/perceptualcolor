@@ -39,6 +39,10 @@ namespace PerceptualColor {
  * 
  * This is a composite widget: It inherits from the SimpleColorWheel() widget
  * and adds a ChromaLightnessDiagram() in its center.
+ * 
+ * @todo This class should not derive from @ref SimpleColorWheel because it’s
+ * not really an IS-A relationship.
+ * 
  */
 class WheelColorPicker : public SimpleColorWheel
 {

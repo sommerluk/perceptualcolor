@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -187,7 +187,7 @@ void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidget()
     int diagonal = qMax(
         q_pointer->contentDiameter()
             - 2
-            * (m_wheelThickness + q_pointer->border()),
+            * (m_wheelThickness + q_pointer->border),
         0
     );
     // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to

@@ -24,18 +24,16 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own header
-#include "PerceptualColor/helper.h"
+#include "helper.h"
 
 #include <QPainter>
 
 #include <math.h>
 
 namespace PerceptualColor {
-
-namespace Helper {
 
     /** @brief Number of vertical <em>standard</em> wheel steps done by a
      *  wheel event
@@ -63,6 +61,5 @@ namespace Helper {
         // mouse, one wheel step results in (8 × 15) units.
         return event->angleDelta().y() / static_cast<qreal>(8 * 15);
     }
-}
 
 }

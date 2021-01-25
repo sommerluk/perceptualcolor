@@ -24,13 +24,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
 #include "PerceptualColor/abstractdiagram.h"
 // Second, the private implementation.
 #include "abstractdiagram_p.h"
+
+#include <cmath>
 
 #include <QPainter>
 
@@ -85,20 +87,30 @@ QColor AbstractDiagram::focusIndicatorColor() const
  * <tt>QPaintDevice::devicePixelRatioF()</tt>.
  * 
  * @note If <tt>QPaintDevice::devicePixelRatioF()</tt> is not an integer,
- * the result of this function is rounded. Qt’s widget geometry code seems
- * to round up starting with 0.5, at least on Linux/X11. Thought there is
- * no documentation about this, we assure this is general and provide the
- * same rounding behavior here.
+ * the result of this function is rounded down. Qt’s widget geometry code
+ * has no documentation about how this is handeled. However, Qt seems to
+ * round up starting with 0.5, at least on Linux/X11. But there are a few
+ * themes (for example the “Kvantum style engine” with the style
+ * “MildGradientKvantum”) that seem to round down: This becomes visible,
+ * as the corresponding last pixels are not automatically redrawn before
+ * executing the <tt>paintEvent()</tt> code. To avoid relying on undocumented
+ * behaviour and to avoid known problems with some styles, this function
+ * is concervative and always rounds down.
  * 
- * @returns The rounded size of the widget measured in <em>physical</em>
+ * @returns The size of the widget measured in <em>physical</em>
  * pixels, as recommended image size for calling
  * <tt>QPainter::drawImage()</tt> during a paint event. */
 QSize AbstractDiagram::physicalPixelSize() const
 {
-    // Multiply with the (floating point) scale factor and round:
+    // Assert that static_cast<int> always rounds down.
+    static_assert(static_cast<int>(1.9) == 1);
+    static_assert(static_cast<int>(1.5) == 1);
+    static_assert(static_cast<int>(1.0) == 1);
+    // Multiply the size with the (floating point) scale factor
+    // and than round down (by using static_cast<int>).
     return QSize(
-        qRound(size().width() * devicePixelRatioF()),
-        qRound(size().height() * devicePixelRatioF())
+        static_cast<int>(size().width() * devicePixelRatioF()),
+        static_cast<int>(size().height() * devicePixelRatioF())
     );
 }
 

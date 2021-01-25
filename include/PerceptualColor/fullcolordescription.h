@@ -27,8 +27,9 @@
 #ifndef FULLCOLORDESCRIPTION_H
 #define FULLCOLORDESCRIPTION_H
 
-#include "PerceptualColor/helper.h"
 #include "PerceptualColor/rgbcolorspace.h"
+
+#include <QColor>
 #include <QDebug>
 
 namespace PerceptualColor {

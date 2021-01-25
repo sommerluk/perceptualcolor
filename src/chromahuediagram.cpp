@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -32,7 +32,8 @@
 // Second, the private implementation.
 #include "chromahuediagram_p.h"
 
-#include "PerceptualColor/helper.h"
+#include "helper.h"
+#include "lchvalues.h"
 #include "PerceptualColor/polarpointf.h"
 #include <PerceptualColor/simplecolorwheel.h>
 
@@ -43,9 +44,6 @@
 
 #include <lcms2.h>
 
-// TODO Remove these headers that are only for development purposes:
-#include <QElapsedTimer>
-
 namespace PerceptualColor {
 
 /** @brief The constructor.
@@ -55,8 +53,8 @@ namespace PerceptualColor {
 ChromaHueDiagram::ChromaHueDiagram(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     QWidget *parent
-) : AbstractCircularDiagram(parent),
-    d_pointer(new ChromaHueDiagramPrivate(this))
+) : AbstractDiagram(parent),
+    d_pointer(new ChromaHueDiagramPrivate(this, colorSpace))
 {
     // Setup LittleCMS. This is the first thing to do, because other
     // operations rely on a working LittleCMS.
@@ -64,14 +62,29 @@ ChromaHueDiagram::ChromaHueDiagram(
 
     // Initialize the color
     cmsCIELCh initialColorLch;
-    initialColorLch.h = Helper::LchDefaults::defaultHue;
-    initialColorLch.C = Helper::LchDefaults::versatileSrgbChroma;
-    initialColorLch.L = Helper::LchDefaults::defaultLightness;
+    initialColorLch.h = LchValues::defaultHue;
+    initialColorLch.C = LchValues::srgbVersatileChroma;
+    initialColorLch.L = LchValues::defaultLightness;
     d_pointer->m_color = FullColorDescription(
         d_pointer->m_rgbColorSpace,
         initialColorLch,
         FullColorDescription::outOfGamutBehaviour::sacrifyChroma
     );
+
+    // Set focus policy
+    // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
+    // either not accepted at all or accepted always for the hole rectangular
+    // widget, depending on QWidget::focusPolicy(). This is not
+    // convenient and intuitive for big, circular-shaped widgets like this one.
+    // It would be nicer if the focus would only be accepted by mouse clicks
+    // <em>within the circle itself</em>. Qt does not provide a build-in way to
+    // do this. But a workaround to implement this behavior is possible: Set
+    // QWidget::focusPolicy() to <em>not</em> accept focus by mouse
+    // click. Then, reimplement mousePressEvent() and call
+    // setFocus(Qt::MouseFocusReason) if the mouse click is within the
+    // circle. Therefore, this class simply defaults to
+    // Qt::FocusPolicy::TabFocus for QWidget::focusPolicy().
+    setFocusPolicy(Qt::FocusPolicy::TabFocus);
 }
 
 /** @brief Default destructor */
@@ -82,10 +95,15 @@ ChromaHueDiagram::~ChromaHueDiagram() noexcept
 /** @brief Constructor
  * 
  * @param backLink Pointer to the object from which <em>this</em> object
- * is the private implementation. */
+ * is the private implementation.
+ * @param colorSpace The color spaces within this widget should operate. */
 ChromaHueDiagram::ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(
-    ChromaHueDiagram *backLink
-) : q_pointer(backLink)
+    ChromaHueDiagram *backLink,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
+) :
+    m_chromaHueImage(colorSpace),
+    m_wheelImage(colorSpace),
+    q_pointer(backLink)
 {
 }
     
@@ -293,7 +311,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
         // This may result in a hue smaller then 0° or bigger then 360°.
         // This is no problem because the constructor of FullColorDescription
         // will normalize the hue.
-        lch.h += Helper::standardWheelSteps(event) * singleStepHue;
+        lch.h += standardWheelSteps(event) * singleStepHue;
         setColor(
             FullColorDescription(
                 d_pointer->m_rgbColorSpace,
@@ -450,7 +468,9 @@ void ChromaHueDiagram::setColor(const FullColorDescription &color)
 
     // Update, if necessary, the diagram.
     if (d_pointer->m_color.toLch().L != oldColor.toLch().L) {
-        d_pointer->m_isDiagramCacheReady = false;
+        d_pointer->m_chromaHueImage.setLightness(
+            d_pointer->m_color.toLch().L
+        );
     }
 
     // Schedule a paint event:
@@ -462,21 +482,15 @@ void ChromaHueDiagram::setColor(const FullColorDescription &color)
 
 // TODO xxx Revision starting here
 
-// xxx // TODO shared_ptr or QSharedPointer or QScopedPointer instead of
-       // raw pointers. In headers, everything is fine yet. But in the
-       // CPP files (local variables), especially in the unit tests, nothing
-       // has been revised so far.
-
 // xxx // TODO document and test the internationalization features of
        // MultiSpinBox.
-// xxx // TODO own class for image caches …
+// xxx // TODO own class for image caches also for chroma-hue-image
 
 /** @brief React on a resize event.
  *
  * Reimplemented from base class.
  * 
- * @param event The corresponding resize event
- */
+ * @param event The corresponding resize event */
 void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
 {
     Q_UNUSED(event);
@@ -502,11 +516,18 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
         d_pointer->m_widgetDiameter = newWidgetDiameter;
         d_pointer->m_diagramOffset =
             (d_pointer->m_widgetDiameter - 1) / static_cast<qreal>(2);
-        d_pointer->m_isDiagramCacheReady = false;
-        d_pointer->m_isWheelCacheReady = false;
-        // As by Qt documentation: The widget will be erased and receive a
-        // paint event immediately after processing the resize event. No
-        // drawing need be (or should be) done inside this handler.
+        d_pointer->m_chromaHueImage.setImageSize(
+            // Rounding down by using static_cast<int>
+            static_cast<int>(d_pointer->m_widgetDiameter * devicePixelRatioF())
+        );
+        d_pointer->m_wheelImage.setImageSize(
+            // Consciously rounding down by using static_cast<int>
+            static_cast<int>(d_pointer->m_widgetDiameter * devicePixelRatioF())
+        );
+        // As Qt documentation says:
+        //     “The widget will be erased and receive a paint event
+        //      immediately after processing the resize event. No
+        //      drawing need be (or should be) done inside this handler.”
     }
 }
 
@@ -574,274 +595,12 @@ bool ChromaHueDiagram
 
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
 
-/** @brief Beta implementation based on LittleCMS Gamut Boundary Description.
- * 
- * LittleCMS out-of-gamut marking might fail on some profiles! (Without
- * warning…?) So what could be an alternative?
- * 
- * This function implements based on Gamut Boundary Descriptions.
- */
-
-/** @brief in image of a-b plane of the color space at a given lightness */
-// TODO How to make sure the diagram has at least a few pixels?
-QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage3(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    const int imageSize,
-    const qreal maxChroma,
-    const qreal lightness,
-    const int border
-)
-{
-    cmsContext ContextID = cmsCreateContext(nullptr, nullptr);
-    cmsHANDLE h_gamutBoundaryDescriptor = cmsGBDAlloc(ContextID);
-    qreal h;
-    qreal s;
-    qreal v;
-    constexpr qreal step = 1;
-    cmsCIELab lab; //     cmsCIELab lab;
-    for (h = 0; h < 359; h += step) {
-        s = 255;
-        for (v = 1; v <= 254; v += step) {
-            lab = colorSpace->colorLab(QColor::fromHsvF(h, s, v));
-            cmsGDBAddPoint(h_gamutBoundaryDescriptor, &lab);
-        }
-        v = 255;
-        for (s = 1; s <= 254; s += step) {
-            lab = colorSpace->colorLab(QColor::fromHsvF(h, s, v));
-            cmsGDBAddPoint(h_gamutBoundaryDescriptor, &lab);
-        }
-    }
-    cmsGDBCompute(
-        h_gamutBoundaryDescriptor,
-        0 // LittleCMS documentation: “dwFlags: reserved (unused). Set it to 0”
-    );
- 
-
-    const int maxIndex = imageSize - 1;
-    // Test if image size is too small.
-    if (maxIndex < 1) {
-        // maxIndex must be at least >= 1 for our algorithm. If they are 0,
-        // this would crash (division by 0). TODO how to solve this?
-        return QImage();
-    }
-    
-    // Setup
-    int x;
-    int y;
-    QColor tempColor;
-    QImage tempImage = QImage(
-        QSize(imageSize, imageSize),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    tempImage.fill(Qt::transparent); // Initialize the image with transparency
-    const qreal scaleFactor =
-        static_cast<qreal>(2 * maxChroma) / (imageSize - 2 * border);
- 
-    QElapsedTimer myTimer; // TODO remove me!
-    myTimer.start(); // TODO remove me!
-    // Paint the gamut.
-    lab.L = lightness;
-    for (y = border; y <= maxIndex - border; ++y) {
-        lab.b = maxChroma - (y - border) * scaleFactor;
-        for (x = border; x <= maxIndex - border; ++x) {
-            lab.a = (x - border) * scaleFactor - maxChroma;
-            if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= (qPow(maxChroma, 2))) {
-                tempColor = colorSpace->colorRgbBound(lab);
-                if (cmsGDBCheckPoint(h_gamutBoundaryDescriptor, &lab)) {
-                    // The  is within the gamut
-                    tempImage.setPixelColor(x, y, tempColor);
-                }
-            }
-        }
-    }
-    qDebug()
-        << "Generating chroma-hue gamut image took"
-        << myTimer.restart()
-        << "ms.";  // TODO remove me!
-
-    QImage result = QImage(
-        QSize(imageSize, imageSize),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    result.fill(Qt::transparent);
-    // Cut of everything outside the circle
-    QPainter myPainter(&result);
-    myPainter.setRenderHint(QPainter::Antialiasing, true);
-    myPainter.setPen(QPen(Qt::NoPen));
-    myPainter.setBrush(QBrush(tempImage));
-    myPainter.drawEllipse(
-        border,                 // x
-        border,                 // y
-        imageSize - 2 * border, // width
-        imageSize - 2 * border  // height
-    );
-
-    cmsGBDFree(h_gamutBoundaryDescriptor);
-
-    return result;
-}
-
-/** @brief in image of a-b plane of the color space at a given lightness */
-// How to make sure the diagram has at least a few pixels?
-QImage ChromaHueDiagram::ChromaHueDiagramPrivate::generateDiagramImage(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    const int imageSize,
-    const qreal maxChroma,
-    const qreal lightness,
-    const qreal border,
-    const QColor backgroundColor
-)
-{
-    const int maxIndex = imageSize - 1;
-    // Test if image size is too small.
-    if (maxIndex < 1) {
-        // maxIndex must be at least >= 1 for our algorithm. If they are 0,
-        // this would crash (division by 0). TODO how to solve this?
-        return QImage();
-    }
-
-    // Setup
-    cmsCIELab lab; // uses cmsFloat64Number internally
-    int x;
-    int y;
-    QColor tempColor;
-    QImage tempImage = QImage(
-        QSize(imageSize, imageSize),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    tempImage.fill(backgroundColor); // Initialize the image background
-    const qreal scaleFactor =
-        static_cast<qreal>(2 * maxChroma) / (imageSize - 2 * border);
- 
-    QElapsedTimer myTimer; // TODO remove me!
-    myTimer.start(); // TODO remove me!
-    // Paint the gamut.
-    lab.L = lightness;
-    for (y = 0; y <= maxIndex; ++y) {
-        lab.b = maxChroma - (y - border) * scaleFactor;
-        for (x = 0; x <= maxIndex; ++x) {
-            lab.a = (x - border) * scaleFactor - maxChroma;
-            if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= (qPow(maxChroma, 2))) {
-                tempColor = colorSpace->colorRgb(lab);
-                if (tempColor.isValid()) {
-                    // The pixel is within the gamut
-                    tempImage.setPixelColor(x, y, tempColor);
-                }
-            }
-        }
-    }
-    qDebug()
-        << "Generating chroma-hue gamut image took"
-        << myTimer.restart()
-        << "ms.";  // TODO remove me!
-
-    QImage result = QImage(
-        QSize(imageSize, imageSize),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    result.fill(Qt::transparent);
-    // Cut of everything outside the circle
-    QPainter myPainter(&result);
-    myPainter.setRenderHint(QPainter::Antialiasing, true);
-    myPainter.setPen(QPen(Qt::NoPen));
-    myPainter.setBrush(QBrush(tempImage));
-    myPainter.drawEllipse(
-        QPointF(
-            static_cast<qreal>(imageSize) / 2,
-            static_cast<qreal>(imageSize) / 2
-        ),                                      // center
-        (imageSize - 2 * border) / 2,           // width
-        (imageSize - 2 * border) / 2            // height
-    );
-
-    return result;
-}
-
-
-/** @brief Refresh the diagram and associated data
- * 
- * This class has a cache of for the diagram: @ref m_diagramImage. This data
- * is cached because it is often needed and it would be expensive to calculate
- * it again and again on the fly.
- * 
- * Calling this function updates this cached data. This is always necessary
- * when the data has changed, that the diagram relies on. Call this function
- * always before using the cached data!
- * 
- * This function does not repaint the widget! After calling this function,
- * you have to call manually <tt>update()</tt> to schedule a re-paint of the
- * widget, if you wish so. */
-void ChromaHueDiagram::ChromaHueDiagramPrivate::updateDiagramCache()
-{
-    if (m_isDiagramCacheReady) {
-        return;
-    }
-
-    // Update QImage
-    // Free memory of the old image before allocating
-    // new memory for the new image
-    m_diagramImage = QImage();
-    // Get the new image
-    m_diagramImage = generateDiagramImage(
-        m_rgbColorSpace,
-        q_pointer->physicalPixelWidgetDiameter(),
-        m_maxChroma,
-        m_color.toLch().L,
-        diagramBorder * q_pointer->devicePixelRatioF(),
-        m_rgbColorSpace->colorRgbBound(Helper::LchDefaults::neutralGray)
-    );
-    m_diagramImage.setDevicePixelRatio(q_pointer->devicePixelRatioF());
-
-    // Mark cache as ready
-    m_isDiagramCacheReady = true;
-}
-
-/** @brief Refresh the wheel and associated data
- * 
- * This class has a cache of various data related to the diagram
- * - @ref m_wheelImage
- * 
- * This data is cached because it is often needed and it would be
- * expensive to calculate it again and again on the fly.
- * 
- * Calling this function updates this cached data. This is always
- * necessary if the data the diagram relies on, has changed. Call
- * this function always before using the cached data!
- * 
- * This function does not repaint the widget! After calling this
- * function, you have to call manually <tt>update()</tt> to schedule
- * a re-paint of the widget, if you wish so. */
-void ChromaHueDiagram::ChromaHueDiagramPrivate::updateWheelCache()
-{
-    if (m_isWheelCacheReady) {
-        return;
-    }
-
-    // Update QImage
-    // Free memory of the old image before allocating
-    // new memory for the new image
-    m_wheelImage = QImage();
-    m_wheelImage = SimpleColorWheel::generateWheelImage(
-        m_rgbColorSpace,                                      // color space
-        q_pointer->physicalPixelWidgetDiameter(),             // diameter
-        2 * markerThickness * q_pointer->devicePixelRatioF(), // border
-        4 * markerThickness * q_pointer->devicePixelRatioF(), // thickness
-        Helper::LchDefaults::defaultLightness,                // lightness
-        Helper::LchDefaults::versatileSrgbChroma              // chroma
-    );
-    m_wheelImage.setDevicePixelRatio(q_pointer->devicePixelRatioF());
-
-    // Mark cache as ready
-    m_isWheelCacheReady = true;
-}
-
-
 /** @brief Paint the widget.
  * 
  * Reimplemented from base class.
  *
  * - Paints the widget. Takes the existing
- *   @ref ChromaHueDiagramPrivate::m_diagramImage and
+ *   @ref ChromaHueDiagramPrivate::m_chromaHueImage and
  *   @ref ChromaHueDiagramPrivate::m_wheelImage and paints them on the widget.
  * - Paints the markers.
  * - If the widget has focus, it also paints the focus indicator.
@@ -857,6 +616,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
 
+    int imageSize = qMin(
+            physicalPixelSize().width(),
+            physicalPixelSize().height()
+    );
     // We do not paint directly on the widget, but on a QImage buffer first:
     // Render anti-aliased looks better. But as Qt documentation says:
     //
@@ -876,14 +639,12 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     //       QImage will ensure that the result has an identical pixel
     //       representation on any platform.”
     QImage paintBuffer(
-        physicalPixelWidgetDiameter(),
-        physicalPixelWidgetDiameter(),
+        imageSize,
+        imageSize,
         QImage::Format_ARGB32_Premultiplied
     );
     paintBuffer.fill(Qt::transparent);
-    paintBuffer.fill(Qt::white); // TODO Remove this line!
     paintBuffer.setDevicePixelRatio(devicePixelRatioF());
-
     
     // Other initialization
     QPainter painter(&paintBuffer);
@@ -891,19 +652,44 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     QBrush brush;
 
     // Paint the gamut itself as available in the cache.
-    d_pointer->updateDiagramCache();
     painter.setRenderHint(QPainter::Antialiasing, false);
+    d_pointer->m_chromaHueImage.setBorder(
+        d_pointer->diagramBorder * devicePixelRatioF()
+    );
+    d_pointer->m_chromaHueImage.setImageSize(
+        // Rounding down by using static_cast<int>
+        static_cast<int>(d_pointer->m_widgetDiameter * devicePixelRatioF())
+    );
+    d_pointer->m_chromaHueImage.setChromaRange(
+        d_pointer->m_maxChroma
+    );
+    d_pointer->m_chromaHueImage.setLightness(
+        d_pointer->m_color.toLch().L
+    );
+    d_pointer->m_chromaHueImage.setDevicePixelRatioF(
+        devicePixelRatioF()
+    );
     painter.drawImage(
-        QPoint(0, 0),   // position of the image
-        d_pointer->m_diagramImage  // image
+        QPoint(0, 0),                          // position of the image
+        d_pointer->m_chromaHueImage.getImage() // image
     );
 
     // Paint a color wheel around
-    d_pointer->updateWheelCache();
     painter.setRenderHint(QPainter::Antialiasing, false);
+    // As devicePixelRatioF() might have changed, we make sure everything
+    // is update before painting.
+    d_pointer->m_wheelImage.setBorder(
+        2 * markerThickness * devicePixelRatioF()
+    );
+    d_pointer->m_wheelImage.setDevicePixelRatioF(devicePixelRatioF());
+    d_pointer->m_wheelImage.setImageSize(
+        // Consciously rounding down by using static_cast<int>
+        static_cast<int>(d_pointer->m_widgetDiameter * devicePixelRatioF())
+    );
+    d_pointer->m_wheelImage.setWheelThickness(4 * markerThickness);
     painter.drawImage(
-        QPoint(0, 0),   // position of the image
-        d_pointer->m_wheelImage    // image
+        QPoint(0, 0),                       // position of the image
+        d_pointer->m_wheelImage.getImage()  // the image itself
     );
 
     // Paint a marker on the color wheel

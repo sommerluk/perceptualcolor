@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "qtconfiguration.h"
+#include "perceptualcolorlib_qtconfiguration.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -33,7 +33,7 @@
 #include "multispinbox_p.h"
 
 #include "PerceptualColor/extendeddoublevalidator.h"
-#include "PerceptualColor/helper.h"
+#include "helper.h"
 
 #include <QApplication>
 #include <QLineEdit>
@@ -346,7 +346,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(
     int newIndex
 )
 {
-    if (!Helper::inRange(0, newIndex, m_sections.count() - 1)) {
+    if (!inRange(0, newIndex, m_sections.count() - 1)) {
         qWarning()
             << "The function"
             << __func__

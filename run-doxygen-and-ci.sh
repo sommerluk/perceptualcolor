@@ -58,10 +58,13 @@ doxygen > /dev/null
 
 
 ################# Static code check #################
-CODEDIRECTORIES="include src test"
+PUBLIC_HEADERS="include"
+CODE_WITHOUT_UNIT_TESTS="include src"
+CODE_AND_UNIT_TESTS="include src test"
+
 # Search for some patterns that should not be used in the source code. If
 # these patterns are found, a message is displayed. Otherwise, nothing is
-# displayed. Pattern list:
+# displayed.
 
 # We do not include LittleCMS headers like lcms2.h in the public API of our
 # library. But it is only be an internal dependency; library users should
@@ -72,11 +75,11 @@ CODEDIRECTORIES="include src test"
 grep \
     --recursive \
     --perl-regexp "^cms" \
-    "include"
+    $PUBLIC_HEADERS
 grep \
     --recursive \
     --perl-regexp "[^a-zA-Z]cms[a-zA-Z0-9]" \
-    "include" \
+    $PUBLIC_HEADERS \
     | grep \
         --perl-regexp "(:using)|(\<tt\>cms)" \
         --invert-match
@@ -87,19 +90,19 @@ grep \
 grep \
     --recursive \
     --fixed-strings "\\code" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 grep \
     --recursive \
     --fixed-strings "\\endcode" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 grep \
     --recursive \
     --fixed-strings "@code" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 grep \
     --recursive \
     --fixed-strings "@endcode" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 
 # -> Doxygen style: Do not use “@em xyz”. Prefer instead “<em>xyz</em>” which
 #    might be longer, but has a clearer start point and end point, which is
@@ -109,26 +112,26 @@ grep \
 grep \
     --recursive \
     --fixed-strings "\\em" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 grep \
     --recursive \
     --fixed-strings "@em" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 grep \
     --recursive \
     --fixed-strings "\\c" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 grep \
    --recursive  \
     --perl-regexp "@c(?=([^a-zA-Z]|$))" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 
 # -> Coding style: Do not use the “NULL” macro, but its counterpart “nullptr”
 #    which is more type save.
 grep \
     --recursive \
     --fixed-strings "NULL" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 
 # -> Coding style: Do not use inline functions. If used in a header,
 #    once exposed, they cannot be changed without breaking binary
@@ -139,7 +142,7 @@ grep \
 grep \
     --recursive \
     --fixed-strings "inline" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 
 # -> In some Qt classes, devicePixelRatio() returns in integer.
 #    Don’t do that and use floating point precision instead. Often,
@@ -148,7 +151,7 @@ grep \
 grep \
     --recursive \
     --perl-regexp "devicePixelRatio(?!F)" \
-    $CODEDIRECTORIES
+    $CODE_WITHOUT_UNIT_TESTS
 
 # Qt’s documentation about QImage::Format says: For optimal performance only
 # use the format types QImage::Format_ARGB32_Premultiplied,
@@ -157,7 +160,7 @@ grep \
 grep \
     --recursive \
     --perl-regexp "QImage::Format_(?!(ARGB32_Premultiplied|RGB32|RGB16))" \
-    $CODEDIRECTORIES
+    $CODE_AND_UNIT_TESTS
 
 
 
