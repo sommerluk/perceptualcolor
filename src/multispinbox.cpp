@@ -356,11 +356,11 @@ void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(
             << __LINE__
             << "was called with an invalid “newIndex“ argument of"
             << newIndex
-            << "while valid range is currently"
+            << "thought the valid range is currently ["
             << 0
-            << "‥"
+            << ", "
             << m_sections.count() - 1
-            << " This is a bug.";
+            << "]. This is a bug.";
         throw 0;
     }
 

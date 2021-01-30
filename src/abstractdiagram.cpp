@@ -139,8 +139,8 @@ QSize AbstractDiagram::physicalPixelSize() const
 ** neutral gray depending on the color profile of the monitor… */
 QImage AbstractDiagram::transparencyBackground() const
 {
-    constexpr int lightnessOne = 210; // 0‥255
-    constexpr int lightnessTwo = 240; // 0‥255
+    constexpr int lightnessOne = 210; // valid range is [0, 255]
+    constexpr int lightnessTwo = 240; // valid range is [0, 255]
     constexpr int squareSizeInLogicalPixel = 10;
     const int squareSize = qRound(
         squareSizeInLogicalPixel * devicePixelRatioF()

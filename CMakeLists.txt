@@ -28,8 +28,14 @@
 
 
 ################# General setup #################
-cmake_minimum_required(VERSION 3.12)
-project(perceptualcolor DESCRIPTION "Perceptual color tools")
+cmake_minimum_required(VERSION 3.15)
+# Project setup. We need only a C++ (CXX) compiler, and no C compiler.
+# Therefore, we set LANGUAGES explicitly.
+project(
+    perceptualcolor
+    DESCRIPTION "Perceptual color tools"
+    LANGUAGES CXX
+)
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Get directories for installation process
@@ -67,6 +73,7 @@ set(PROJECT_VERSION
 # page of the documentation).
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # TODO Available compiler warnings change incompatible from version to version.
 #      For a release build, no seldom extra options should be used!
@@ -197,60 +204,38 @@ include_directories("${CMAKE_SOURCE_DIR}/include/")
 
 
 ################# Build library #################
+# TODO enable this
 # The headers have to be added here explicitly because otherwise Qt's MOC
 # would not find them because they are not in the same directory as the
 # corresponding .cpp files
-add_library(perceptualcolor SHARED
-    ${perceptualcolor_SRC}
-    ${perceptualcolor_HEADERS}
-)
-set_target_properties(perceptualcolor PROPERTIES CXX_VISIBILITY_PRESET
-    hidden
-)
-target_compile_definitions(perceptualcolor PUBLIC
-    PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY
-)
-set_target_properties(perceptualcolor PROPERTIES VERSION
-    ${PROJECT_VERSION}
-)
-set_target_properties(perceptualcolor PROPERTIES SOVERSION
-    ${PROJECT_MAJOR_VERSION}
-)
-# TODO Do this only during development, not for release
-# # Find iwyu (include-what-you-use), a tool to check for unnecessary
-# # header includes:
-# find_program(iwyu_path NAMES include-what-you-use iwyu)
-# if(NOT iwyu_path)
-#   message(FATAL_ERROR "Could not find the program include-what-you-use")
-# endif()
-# set_target_properties(perceptualcolor
-#     PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-target_link_libraries(perceptualcolor ${LIBS})
-install(
-    TARGETS perceptualcolor
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-# TODO Install headers to ${CMAKE_INSTALL_INCLUDEDIR}
+# add_library(perceptualcolor SHARED
+#     ${perceptualcolor_SRC}
+#     ${perceptualcolor_HEADERS}
+# )
+# set_target_properties(perceptualcolor PROPERTIES CXX_VISIBILITY_PRESET
+#     hidden
+# )
+# target_compile_definitions(perceptualcolor PUBLIC
+#     PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY
+# )
+# set_target_properties(perceptualcolor PROPERTIES VERSION
+#     ${PROJECT_VERSION}
+# )
+# set_target_properties(perceptualcolor PROPERTIES SOVERSION
+#     ${PROJECT_MAJOR_VERSION}
+# )
+# target_link_libraries(perceptualcolor ${LIBS})
+# install(
+#     TARGETS perceptualcolor
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+# )
+# # TODO Install headers to ${CMAKE_INSTALL_INCLUDEDIR}
 
 
 
 
 
-################# Build application #################
-add_executable(perceptualcolorpicker src/main.cpp)
-# Get warnings when using features that have been deprecated during
-# the development cycle of Qt 5. So we can be sure to be well-prepared
-# for Qt 6. TODO It should be on debug only, and not on release build!
-target_compile_definitions(perceptualcolorpicker
-    PRIVATE QT_DEPRECATED_WARNINGS)
-target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolor)
-install(TARGETS perceptualcolorpicker DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-
-
-
-
-################# Build unit tests #################
+################# Test bed #################
 enable_testing ()
 
 # The following library is like the target “perceptualcolor”, with the
@@ -267,7 +252,28 @@ add_library(perceptualcolorexport SHARED
 set_target_properties(perceptualcolorexport PROPERTIES CXX_VISIBILITY_PRESET
     default
 )
+# Get warnings when using features that have been deprecated during
+# the development cycle of Qt 5. So we can be sure to be well-prepared
+# for Qt 6.
+target_compile_definitions(perceptualcolorexport PRIVATE QT_DEPRECATED_WARNINGS)
 target_link_libraries(perceptualcolorexport ${LIBS})
+# TODO Do this only during development, not for release
+# # Find iwyu (include-what-you-use), a tool to check for unnecessary
+# # header includes:
+# find_program(iwyu_path NAMES include-what-you-use iwyu)
+# if(NOT iwyu_path)
+#   message(FATAL_ERROR "Could not find the program include-what-you-use")
+# endif()
+# set_target_properties(perceptualcolor
+#     PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+
+# Build a standalone application lauching the color dialog
+add_executable(perceptualcolorpicker src/main.cpp)
+# Get warnings when using features that have been deprecated during
+# the development cycle of Qt 5. So we can be sure to be well-prepared
+# for Qt 6.
+target_compile_definitions(perceptualcolorpicker PRIVATE QT_DEPRECATED_WARNINGS)
+target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolorexport)
 
 # Define how to add unit tests.
 # The argument “test_name” is expected to be the name of a .cpp test file
@@ -275,6 +281,10 @@ target_link_libraries(perceptualcolorexport ${LIBS})
 # you have to call “add_unit_test(testsomething)”.
 function(add_unit_test test_name)
     add_executable (${test_name} test/${test_name}.cpp)
+    # Get warnings when using features that have been deprecated during
+    # the development cycle of Qt 5. So we can be sure to be well-prepared
+    # for Qt 6.
+    target_compile_definitions(${test_name} PRIVATE QT_DEPRECATED_WARNINGS)
     target_link_libraries (${test_name} ${LIBS} Qt5::Test perceptualcolorexport)
     add_test (NAME ${test_name} COMMAND ${test_name})
 endfunction(add_unit_test)

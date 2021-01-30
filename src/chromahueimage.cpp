@@ -30,10 +30,13 @@
 // First the interface, which forces the header to be self-contained.
 #include "chromahueimage.h"
 
+#include "helper.h"
 #include "lchvalues.h"
 
 #include <QPainter>
 #include <QtMath>
+
+#include <QDebug>
 
 namespace PerceptualColor {
 
@@ -104,7 +107,7 @@ void ChromaHueImage::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
 /** @brief Setter for the image size property.
  * 
  * This value fixes the size of the image. The image will be a square
- * of <tt>QSize(newImageSize, newImageSize</tt>.
+ * of <tt>QSize(newImageSize, newImageSize)</tt>.
  * 
  * @param newImageSize The new image size, measured in <em>physical</em>
  * pixels. */
@@ -123,11 +126,9 @@ void ChromaHueImage::setImageSize(const int newImageSize)
     }
 }
 
-// TODO xxx
-
 /** @brief Setter for the lightness property.
  * 
- * @param newLightness The new lightness. Valid range: 0‥100 */
+ * @param newLightness The new lightness. Valid range is <tt>[0, 100]</tt>. */
 void ChromaHueImage::setLightness(const qreal newLightness)
 {
     const qreal temp = qBound(
@@ -142,16 +143,15 @@ void ChromaHueImage::setLightness(const qreal newLightness)
     }
 }
 
-/** @brief Setter for the lightness property.
+/** @brief Setter for the chroma range property.
  * 
- * @param newChromaRange The new lightness. Valid
- * range: 0‥@ref LchValues::humanMaximumChroma */
+ * @param newChromaRange The new chroma range. Valid
+ * range is <tt>[0, @ref LchValues::humanMaximumChroma]</tt>. */
 void ChromaHueImage::setChromaRange(const qreal newChromaRange)
 {
-    // TODO Is 0 valid or will it crash our image generation code?
     const qreal temp = qBound(
         static_cast<qreal>(0),
-        newChromaRange,
+        static_cast<qreal>(newChromaRange),
         static_cast<qreal>(LchValues::humanMaximumChroma)
     );
     if (m_chromaRange != temp) {
@@ -161,98 +161,116 @@ void ChromaHueImage::setChromaRange(const qreal newChromaRange)
     }
 }
 
-/** @brief Delivers an image of a color wheel
+/** @brief Delivers an image of the chroma hue plane.
 * 
-* @returns Delivers a square image of a color wheel. Its size
-* is <tt>QSize(imageSize, imageSize)</tt>. All pixels
-* that do not belong to the wheel itself will be transparent.
-* Antialiasing is used, so there is no sharp border between
-* transparent and non-transparent parts. Depending on the
-* values for lightness and chroma and the available colors in
-* the current color space, there may be some hue who is out of
-*  gamut; if so, this part of the wheel will be transparent.
-* 
-* @todo Out-of-gamut situations should automatically be handled. */
+* @returns Delivers a square image of the chroma hue plane. It consists
+* of a circle with a background color. The circle has a distance of
+* @ref setBorder() to the border of the <tt>QImage</tt>. The <tt>QImage</tt>
+* itself has the size <tt>QSize(imageSize, imageSize)</tt>. All pixels
+* outside the circle will be transparent. Antialiasing is used, so there
+* is no sharp border between transparent and non-transparent parts. The
+* chroma hue plane is drawn within the background circle and will not exceed
+* it. */
 QImage ChromaHueImage::getImage()
 {
-    if (m_image.isNull()) {
-        generateNewImage();
-    }
-    return m_image;
-}
-
-/** @brief in image of a-b plane of the color space at a given lightness */
-// How to make sure the diagram has at least a few pixels?
-void ChromaHueImage::generateNewImage()
-{
-    const int maxIndex = m_imageSizePhysical - 1;
-    // Test if image size is too small.
-    if (maxIndex < 1) {
-        // maxIndex must be at least >= 1 for our algorithm. If they are 0,
-        // this would crash (division by 0). TODO how to solve this?
-        m_image = QImage();
-        return;
+    // If there is an image in cache, simply return the cache.
+    if (!m_image.isNull()) {
+        return m_image;
     }
 
-    // Setup
-    cmsCIELab lab; // uses cmsFloat64Number internally
-    int x;
-    int y;
-    QColor tempColor;
-    // TODO If the gamut does not touch the outline of the circle, than
-    // we could also paint directly on m_image, which would save memory.
-    // And the antialiasing result would be the same. If the gamut however
-    // touchs the outline, the antialiasing would be ugly there…
-    QImage tempImage = QImage(
+    // If no image is in cache, create a new one (in the cache) with
+    // correct image size.
+    m_image = QImage(
         QSize(m_imageSizePhysical, m_imageSizePhysical),
         QImage::Format_ARGB32_Premultiplied
     );
-    tempImage.fill(
+    // Calculate the radius of the circle we want to paint (and which will
+    // finally have the background color, while everything around will be
+    // transparent).
+    const qreal circleRadius =
+        (m_imageSizePhysical - 2 * m_borderPhysical) / 2;
+    if (circleRadius <= 0) {
+        // The border is too big the and image size too small: The size
+        // of the circle is zero. The image will therefore be transparent.
+        // Initialize the image as completly transparent and return.
+        m_image.fill(Qt::transparent);
+        // Set the correct scaling information for the image and return
+        m_image.setDevicePixelRatio(m_devicePixelRatioF);
+        return m_image;
+    }
+    // If we continue, the circle will at least be visible.
+    // Initialize the hole image background to the background color
+    // of the circle.
+    m_image.fill(
         m_rgbColorSpace->colorRgbBound(
             LchValues::neutralGray
         )
-    ); // Initialize the image background
+    );
+
+    // Prepare for gamut painting
+    cmsCIELab lab; // uses cmsFloat64Number internally
+    lab.L = m_lightness;
+    int x;
+    int y;
+    QColor tempColor;
     const qreal scaleFactor =
         static_cast<qreal>(2 * m_chromaRange)
-            / (m_imageSizePhysical - 2 * m_borderPhysical);
- 
+            // The following line will never be 0 because we have have
+            // tested above that circleRadius is > 0, so this line will
+            // we > 0 also.
+            / (m_imageSizePhysical - 2 * m_borderPhysical); 
+
     // Paint the gamut.
-    lab.L = m_lightness;
-    for (y = 0; y <= maxIndex; ++y) {
+    // TODO Could this be further optimized? For example not go from zero
+    // up to m_imageSizePhysical, but exclude the border (and add the 
+    // tolerance)? Tought anyway the color transform (which is the heavy
+    // work) is only done when within a given diameter, reducing loop runs
+    // itself might also increase performance at least a little bit…
+    for (y = 0; y < m_imageSizePhysical; ++y) {
         lab.b = m_chromaRange - (y - m_borderPhysical) * scaleFactor;
-        for (x = 0; x <= maxIndex; ++x) {
+        for (x = 0; x < m_imageSizePhysical; ++x) {
             lab.a = (x - m_borderPhysical) * scaleFactor - m_chromaRange;
-            if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= qPow(m_chromaRange, 2)) {
+            if (
+                (qPow(lab.a, 2) + qPow(lab.b, 2))
+                    <= (qPow(m_chromaRange + overlap, 2))
+            ) {
                 tempColor = m_rgbColorSpace->colorRgb(lab);
                 if (tempColor.isValid()) {
-                    // The pixel is within the gamut
-                    tempImage.setPixelColor(x, y, tempColor);
+                    // The pixel is within the gamut!
+                    m_image.setPixelColor(x, y, tempColor);
                 }
             }
         }
     }
 
-    m_image = QImage(
-        QSize(m_imageSizePhysical, m_imageSizePhysical),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    m_image.fill(Qt::transparent);
-    // Cut off everything outside the circle
+    // Cut off everything outside the circle.
+    // If the gamut does not touch the outline of the circle, than
+    // we could also paint directly on m_image, which would save memory.
+    // And the antialiasing result would be the same. If the gamut however
+    // touchs the outline, the antialiasing would be ugly there, therefore
+    // we cut everything outside the circle explicitly.
+    const qreal cutOffThickness =
+        qSqrt(qPow(m_imageSizePhysical, 2) * 2) / 2 // ½ of image diagonal
+            - circleRadius                          // circle radius
+            + overlap;                              // just to be sure
     QPainter myPainter(&m_image);
     myPainter.setRenderHint(QPainter::Antialiasing, true);
-    myPainter.setPen(QPen(Qt::NoPen));
-    myPainter.setBrush(QBrush(tempImage));
+    myPainter.setPen(
+        QPen(Qt::SolidPattern, cutOffThickness)
+    );
+    myPainter.setCompositionMode(QPainter::CompositionMode_Clear);
     myPainter.drawEllipse(
         QPointF(
             static_cast<qreal>(m_imageSizePhysical) / 2,
             static_cast<qreal>(m_imageSizePhysical) / 2
-        ),                                                // center
-        (m_imageSizePhysical - 2 * m_borderPhysical) / 2, // width
-        (m_imageSizePhysical - 2 * m_borderPhysical) / 2  // height
+        ),                                  // center
+        circleRadius + cutOffThickness / 2, // width
+        circleRadius + cutOffThickness / 2  // height
     );
 
-    // Set the correct scaling information for the image
+    // Set the correct scaling information for the image and return
     m_image.setDevicePixelRatio(m_devicePixelRatioF);
+    return m_image;
 }
 
 }

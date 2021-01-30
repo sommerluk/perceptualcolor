@@ -69,7 +69,7 @@ SimpleColorWheel::SimpleColorWheel(
     // We don't use the reset methods as they would update the image/pixmap
     // each time, and this could crash if done before everything is
     // initialized.
-    d_pointer->m_hue = LchValues::defaultHue;
+    d_pointer->m_hue = LchValues::neutralHue;
     d_pointer->m_mouseEventActive = false;
     d_pointer->m_wheelImage.setBorder(border);
     d_pointer->m_wheelImage.setImageSize(
@@ -519,7 +519,7 @@ QSize SimpleColorWheel::minimumSizeHint() const
 /** @brief Reset the hue() property. */
 void SimpleColorWheel::resetHue()
 {
-    setHue(LchValues::defaultHue);
+    setHue(LchValues::neutralHue);
 }
 
 }

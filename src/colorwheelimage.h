@@ -40,8 +40,8 @@ namespace PerceptualColor {
  * The image has properties that can be accessed by the corresponding setters
  * and getters.
  * 
- * This class has a cache. The data is cached because it is often needed and
- * it would be expensive to calculate it again and again on the fly.
+ * This class has a cache. The data is cached because it is expensive to
+ * calculate it again and again on the fly.
  * 
  * When changing one of the properties, the image is <em>not</em> calculated
  * inmediatly. But the old image in the cache is deleted, so that this
@@ -67,8 +67,8 @@ namespace PerceptualColor {
  * @note This class is not part of the public API, but just for internal
  * usage. Therefore, its interface is incomplete and contains only the
  * functions that are really used in the rest of the source code (property
- * setters are available, but getters are missing), and it does not use the
- * pimpl idiom either. */
+ * setters are available, but getters might be missing), and it does not use
+ * the pimpl idiom either. */
 class ColorWheelImage final
 {
 public:
@@ -87,8 +87,6 @@ private:
     /** @brief Only for unit tests. */
     friend class TestColorWheelImage;
 
-    void generateNewImage();
-
     /** @brief Internal store for the border size, measured in physical pixels.
      * 
      * @sa @ref setBorder() */
@@ -101,9 +99,8 @@ private:
      * 
      * - If <tt>m_image.isNull()</tt> than either no cache is available
      *   or @ref m_imageSizePhysical is <tt>0</tt>. Before using it,
-     *   @ref generateNewImage() has to be called to be sure to
-     *   have a valid image. (If @ref m_imageSizePhysical is <tt>0</tt>,
-     *   this will be extremly fast.)
+     *   a new image has to be rendered. (If @ref m_imageSizePhysical
+     *   is <tt>0</tt>, this will be extremly fast.)
      * - If <tt>m_image.isNull()</tt> is <tt>false</tt>, than the cache
      *   is valid and can be used directly. */
     QImage m_image;

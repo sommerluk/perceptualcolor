@@ -71,9 +71,9 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     // (and refreshDiagram relies itself on m_hue, markerRadius and
     // markerThickness)
     cmsCIELCh temp;
-    temp.h = LchValues::defaultHue;
+    temp.h = LchValues::neutralHue;
     temp.C = LchValues::srgbVersatileChroma;
-    temp.L = LchValues::defaultLightness;
+    temp.L = LchValues::neutralLightness;
     d_pointer->m_color = FullColorDescription(
         d_pointer->m_rgbColorSpace,
         temp,
@@ -850,7 +850,9 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
         return;
     }
 
-    // Update QImage
+    // Free the memory used by the old image.
+    m_diagramImage = QImage();
+    // Generate an update QImage
     m_diagramImage = generateDiagramImage(
         m_color.toLch().h,
         QSize(

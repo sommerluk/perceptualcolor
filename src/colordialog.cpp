@@ -73,7 +73,7 @@ ColorDialog::ColorDialog(QWidget *parent) :
     // 180° because the color seems clean and colorful.
     cmsCIELCh initialColor;
     initialColor.h = 180; 
-    initialColor.L = LchValues::defaultLightness;
+    initialColor.L = LchValues::neutralLightness;
     initialColor.C = LchValues::srgbVersatileChroma;
     // Calling setCurrentFullColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color

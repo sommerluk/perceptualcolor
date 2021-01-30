@@ -32,6 +32,8 @@
 
 #include <QtTest>
 
+#include <helper.h>
+
 namespace PerceptualColor {
 
 class TestChromaHueSnippetClass : public QWidget
@@ -67,6 +69,10 @@ class TestChromaHueImage : public QObject
 
     Q_OBJECT
 
+public:
+    TestChromaHueImage(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private:
     QSharedPointer<RgbColorSpace> colorSpace { new RgbColorSpace };
 
@@ -90,12 +96,27 @@ private Q_SLOTS:
     void testConstructor() {
         ChromaHueImage test(colorSpace);
     }
+
+    void testGetImage() {
+        ChromaHueImage test(colorSpace);
+        Q_UNUSED(test.getImage());
+    }
     
     void testImageSize() {
         ChromaHueImage test(colorSpace);
         QCOMPARE(
             test.getImage().size(),
             QSize(0, 0)
+        );
+        test.setImageSize(1);
+        QCOMPARE(
+            test.getImage().size(),
+            QSize(1, 1)
+        );
+        test.setImageSize(2);
+        QCOMPARE(
+            test.getImage().size(),
+            QSize(2, 2)
         );
         test.setImageSize(5);
         QCOMPARE(
@@ -341,7 +362,113 @@ private Q_SLOTS:
             }
         }
     }
+
+    void testSetLightness_data() {
+        QTest::addColumn<qreal>("lightness");
+        QTest::newRow("10") << 10.;
+        QTest::newRow("20") << 20.;
+        QTest::newRow("30") << 30.;
+        QTest::newRow("40") << 40.;
+        QTest::newRow("50") << 50.;
+        QTest::newRow("60") << 60.;
+        QTest::newRow("70") << 70.;
+        QTest::newRow("80") << 80.;
+        QTest::newRow("90") << 90.;
+    }
+
+    void testSetLightness() {
+        QFETCH(qreal, lightness);
+        ChromaHueImage test(colorSpace);
+        constexpr int imageSize = 20;
+        test.setImageSize(imageSize); // Set a non-zero image size
+        test.setLightness(lightness);
+        // Test the lightness. We are using QColor’s simple (non-color-managed)
+        // lightness property. Therefore, we allow a tolerance up to 10%.
+        QVERIFY2(
+            PerceptualColor::inRange(
+                lightness * 0.9,
+                test
+                    .getImage()
+                    .pixelColor(imageSize / 2, imageSize / 2)
+                    .lightnessF()
+                        * 100,
+                lightness * 1.1
+            ),
+            "Verify that the correct lightness is applied. "
+                "(10% tolerance is allowed.)"
+        );
+    }
+
+    void testSetLightnessInvalid() {
+        // Make sure that calling setLightness with invalid values
+        // does not crash.
+        ChromaHueImage test(colorSpace);
+        test.setImageSize(20); // Set a non-zero image size
+        test.setLightness(0);
+        Q_UNUSED(test.getImage());
+        test.setLightness(1);
+        Q_UNUSED(test.getImage());
+        test.setLightness(2);
+        Q_UNUSED(test.getImage());
+        test.setLightness(-10);
+        Q_UNUSED(test.getImage());
+        test.setLightness(-1000);
+        Q_UNUSED(test.getImage());
+        test.setLightness(100);
+        Q_UNUSED(test.getImage());
+        test.setLightness(110);
+        Q_UNUSED(test.getImage());
+        test.setLightness(250);
+        Q_UNUSED(test.getImage());
+    }
+
+    void testSetChromaRange() {
+        // Make sure that calling setChromaRange with strange values
+        // does not crash.
+        ChromaHueImage test(colorSpace);
+        test.setImageSize(20); // Set a non-zero image size
+        test.setChromaRange(-10);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(-1);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(0);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(1);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(10);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(100);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(1000);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(10000);
+        Q_UNUSED(test.getImage());
+        test.setChromaRange(100000);
+        Q_UNUSED(test.getImage());
+    }
+
+    void testSizeBorderCombinations() {
+        // Make sure this code does not crash.
+        ChromaHueImage test(colorSpace);
+        test.setImageSize(20); // Set a non-zero image size
+        test.setBorder(10); // Set exactly the half of image size as border
+        Q_UNUSED(test.getImage());
+    }
     
+    void testDevicePixelRatioFForExtremeCases() {
+        ChromaHueImage test(colorSpace);
+        // Testing with a (non-integer) scale factor
+        test.setDevicePixelRatioF(1.5);
+        // Test with fully transparent image (here, the border is too big
+        // for the given image size)
+        test.setImageSize(20);
+        test.setBorder(30);
+        QCOMPARE(
+            test.getImage().devicePixelRatio(),
+            1.5
+        );
+    }
+
     void testSnippet01() {
         TestChromaHueSnippetClass mySnippets;
         mySnippets.testSnippet01();

@@ -35,6 +35,9 @@
 # directory. If you do not have that, you can install it with:
 # pip3 install --user reuse
 # Then, you have to make available $HOME/.local/bin/reuse in your path.
+# Or, you can install it as root:
+# sudo pip3 install reuse
+# Then, you do not have to add it manually to the path.
 reuse lint > /dev/null
 if [ $? -eq 0 ];
 then

@@ -79,6 +79,18 @@ template<typename T> bool inRange(const T& low, const T& x, const T& high)
     );
 }
 
+
+/** @brief The overlap is a recommanded tolerance value, measured in physical
+ * pixels.
+ * 
+ * It can be used during the painting process to paint “a little bit more
+ * surface than requested”, just to be sure no pixel is missing. We
+ * choose <tt>2</tt> because this value might also be used for radius
+ * values, and at 45°, going from one edge of a pixel to the oppisite edge
+ * yet has a distance of √2 ≈ 1,41, which we round up to <tt>2</tt> just
+ * to be sure. */
+constexpr int overlap = 2;
+
 qreal standardWheelSteps(QWheelEvent *event);
 
 }

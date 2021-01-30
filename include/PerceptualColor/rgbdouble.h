@@ -33,8 +33,8 @@ namespace PerceptualColor {
  * 
  * Storage of floating point RGB values with <tt>double</tt> precision.
  * 
- * The valid range for each component is 0‥1, but you are free to set
- * also invalid values.
+ * The valid range for each component is <tt>[0, 1]</tt>, but you are free
+ * to set also invalid values.
  * 
  * The data is not default-initializad; it is undefined when the object
  * is created.

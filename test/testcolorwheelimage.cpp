@@ -68,6 +68,10 @@ class TestColorWheelImage : public QObject
 
     Q_OBJECT
 
+public:
+    TestColorWheelImage(QObject *parent = nullptr) : QObject(parent) {
+    }
+
 private:
     QSharedPointer<RgbColorSpace> colorSpace { new RgbColorSpace };
 
@@ -326,6 +330,20 @@ private Q_SLOTS:
                 QCOMPARE(test.getImage().pixelColor(x, y).alpha(), 0);
             }
         }
+    }
+    
+    void testDevicePixelRatioFForExtremeCases() {
+        ColorWheelImage test(colorSpace);
+        // Testing with a (non-integer) scale factor
+        test.setDevicePixelRatioF(1.5);
+        // Test with fully transparent image (here, the border is too big
+        // for the given image size)
+        test.setImageSize(20);
+        test.setBorder(30);
+        QCOMPARE(
+            test.getImage().devicePixelRatio(),
+            1.5
+        );
     }
     
     void testSnippet01() {

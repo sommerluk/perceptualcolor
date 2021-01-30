@@ -62,9 +62,9 @@ ChromaHueDiagram::ChromaHueDiagram(
 
     // Initialize the color
     cmsCIELCh initialColorLch;
-    initialColorLch.h = LchValues::defaultHue;
+    initialColorLch.h = LchValues::neutralHue;
     initialColorLch.C = LchValues::srgbVersatileChroma;
-    initialColorLch.L = LchValues::defaultLightness;
+    initialColorLch.L = LchValues::neutralLightness;
     d_pointer->m_color = FullColorDescription(
         d_pointer->m_rgbColorSpace,
         initialColorLch,

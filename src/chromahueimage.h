@@ -45,8 +45,8 @@ namespace PerceptualColor {
  * The image has properties that can be accessed by the corresponding setters
  * and getters.
  * 
- * This class has a cache. The data is cached because it is often needed and
- * it would be expensive to calculate it again and again on the fly.
+ * This class has a cache. The data is cached because it is expensive to
+ * calculate it again and again on the fly.
  * 
  * When changing one of the properties, the image is <em>not</em> calculated
  * inmediatly. But the old image in the cache is deleted, so that this
@@ -72,8 +72,8 @@ namespace PerceptualColor {
  * @note This class is not part of the public API, but just for internal
  * usage. Therefore, its interface is incomplete and contains only the
  * functions that are really used in the rest of the source code (property
- * setters are available, but getters are missing), and it does not use the
- * pimpl idiom either. */
+ * setters are available, but getters might be missing), and it does not use
+ * the pimpl idiom either. */
 class ChromaHueImage final
 {
 public:
@@ -93,13 +93,12 @@ private:
     /** @brief Only for unit tests. */
     friend class TestChromaHueImage;
 
-    void generateNewImage();
-
     /** @brief Internal store for the border size, measured in physical pixels.
      * 
      * @sa @ref setBorder() */
     qreal m_borderPhysical = 0;
-    /** @brief Internal storage of the device pixel ratio as floating point.
+    /** @brief Internal storage of the device pixel ratio property
+     * as floating point.
      * 
      * @sa @ref setDevicePixelRatioF() */
     qreal m_devicePixelRatioF = 1;
@@ -107,9 +106,8 @@ private:
      * 
      * - If <tt>m_image.isNull()</tt> than either no cache is available
      *   or @ref m_imageSizePhysical is <tt>0</tt>. Before using it,
-     *   @ref generateNewImage() has to be called to be sure to
-     *   have a valid image. (If @ref m_imageSizePhysical is <tt>0</tt>,
-     *   this will be extremly fast.)
+     *   a new image has to be rendered. (If @ref m_imageSizePhysical
+     *   is <tt>0</tt>, this will be extremly fast.)
      * - If <tt>m_image.isNull()</tt> is <tt>false</tt>, than the cache
      *   is valid and can be used directly. */
     QImage m_image;
@@ -118,14 +116,18 @@ private:
      * @sa @ref setImageSize() */
     int m_imageSizePhysical = 0;
     /** @brief Internal store for the lightness.
+     *
+     * This is the lightness (L) value in the LCH color model.
      * 
-     * Range: 0‥100
+     * Range: <tt>[0, 100]</tt>
      * 
      * @sa @ref setLightness() */
     qreal m_lightness = 50;
     /** @brief Internal store for the chroma range.
      *
-     * Only the range from <tt>0</tt> to this value will be visible
+     * This is the chroma (C) value in the LCH color model.
+     * 
+     * Only the range from <tt>0</tt> up to this value will be visible
      * in the diagram image.
      * 
      * @sa @ref setChromaRange() */

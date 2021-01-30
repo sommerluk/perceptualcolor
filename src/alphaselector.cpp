@@ -77,9 +77,9 @@ AlphaSelector::AlphaSelector(
     );
 
     cmsCIELCh lch;
-    lch.L = LchValues::defaultLightness;
-    lch.C = LchValues::defaultChroma;
-    lch.h = LchValues::defaultHue;
+    lch.L = LchValues::neutralLightness;
+    lch.C = LchValues::neutralChroma;
+    lch.h = LchValues::neutralHue;
     FullColorDescription temp = FullColorDescription(
         d_pointer->m_rgbColorSpace,
         lch,

@@ -43,7 +43,7 @@ namespace PerceptualColor {
  * 
  * Data members:
  * 
- * - L: Lightness, mesured in percent. The valid range  is 0‥100.
+ * - L: Lightness, mesured in percent. The valid range  is <tt>[0, 100]</tt>.
  * - a: a axis (red-green-axis).
  * - b: b_axis (yellow-blue-axis).
  * 

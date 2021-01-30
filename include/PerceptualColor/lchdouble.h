@@ -43,14 +43,14 @@ namespace PerceptualColor {
  * 
  * Data members:
  * 
- * - L: Lightness, mesured in percent. The valid range  is 0‥100.
+ * - L: Lightness, mesured in percent. The valid range is <tt>[0, 100]</tt>.
  * - C: Chroma. <tt>0</tt> means no chroma (grayscale). The maximum
  *   value depends on the gamut, for sRGB for example it’s
  *   @ref LchValues::srgbMaximumChroma. Other gamuts can
  *   be bigger, but the final limit is the gamut of human
  *   perception, out of which a Chroma value does not make
  *   sense: @ref LchValues::humanMaximumChroma
- * - h: Hue. The valid range  is 0‥360.
+ * - h: Hue, measured in degree. The valid range is <tt>[0, 360[</tt>.
  * 
  * @sa @ref LchValues explains more details about the valid
  * range. */

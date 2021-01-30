@@ -65,21 +65,21 @@ private Q_SLOTS:
         // Is the value as documented?
         QCOMPARE(
             static_cast<qreal>(
-                PerceptualColor::LchValues::defaultChroma
+                PerceptualColor::LchValues::neutralChroma
             ),
             0
         );
         // Is the value as documented?
         QCOMPARE(
             static_cast<qreal>(
-                PerceptualColor::LchValues::defaultHue
+                PerceptualColor::LchValues::neutralHue
             ),
             0
         );
         // Is the value as documented?
         QCOMPARE(
             static_cast<qreal>(
-                PerceptualColor::LchValues::defaultLightness
+                PerceptualColor::LchValues::neutralLightness
             ),
             50
         );
