@@ -34,17 +34,31 @@
 
 #include "PerceptualColor/lchdouble.h"
 
-// Test if the compiler treats the source code actually as UTF8.
-// A test string is converted to UTF8 code units (u8"") and each
-// code unit is checked to be correct.
+// Test if the compiler treats the source code actually as UTF-8.
+// All the source code of this library is stored in UTF-8. Now
+// we use the character “🖌” who’s code point is U+1F58C. Its UTF-8
+// representation in the source code file is 0xF0 0x9F 0x96 0x8C.
+// We create a string literal in the form U"🖌" which creates UTF-32
+// encoded Unicode. So we expect the first code unit to be 0x1F58C,
+// which is the UTF-32 representation. We do a static_assert to control
+// if the compiler has correctly done this encoding.
 static_assert(
-    (static_cast<quint8>(*((u8"🖌")+0)) == 0xF0)
-        && (static_cast<quint8>(*((u8"🖌")+1)) == 0x9F)
-        && (static_cast<quint8>(*((u8"🖌")+2)) == 0x96)
-        && (static_cast<quint8>(*((u8"🖌")+3)) == 0x8C)
-        && (static_cast<quint8>(*((u8"🖌")+4)) == 0x00),
-    "This source code has to be read-in as UTF8 by the compiler."
+    (*(U"🖌")) == 0x1F58C,
+    "This source code has to be read-in as UTF-8 by the compiler."
 );
+
+// TODO static_assert the execution character sets.
+
+// TODO Include the static asserts in all files ?
+
+// static_assert(
+//     (static_cast<quint8>(*((u8"🖌")+0)) == 0xF0)
+//         && (static_cast<quint8>(*((u8"🖌")+1)) == 0x9F)
+//         && (static_cast<quint8>(*((u8"🖌")+2)) == 0x96)
+//         && (static_cast<quint8>(*((u8"🖌")+3)) == 0x8C)
+//         && (static_cast<quint8>(*((u8"🖌")+4)) == 0x00),
+//     "This source code has to be read-in as UTF8 by the compiler."
+// );
 
 namespace PerceptualColor {
     

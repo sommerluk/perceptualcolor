@@ -382,74 +382,65 @@ private Q_SLOTS:
         QTest::addColumn<bool>("showAlphaChannel");
         QTest::addColumn<bool>("noButtons");
 
-        QVector<QPair<QString, QColor>> colorList;
+        QVector<QPair<QByteArray, QColor>> colorList;
 
         colorList.append(
-            QPair<QString, QColor>(
-                QStringLiteral("redOpaque"),
+            QPair<QByteArray, QColor>(
+                QByteArrayLiteral("redOpaque"),
                 QColor(255, 0, 0)
             )
         );
         colorList.append(
-            QPair<QString, QColor>(
-                QStringLiteral("greenHalf"),
+            QPair<QByteArray, QColor>(
+                QByteArrayLiteral("greenHalf"),
                 QColor(0, 255, 0, 128)
             )
         );
         colorList.append(
-            QPair<QString, QColor>(
-                QStringLiteral("greenTransparent"),
+            QPair<QByteArray, QColor>(
+                QByteArrayLiteral("greenTransparent"),
                 QColor(255, 0, 255, 0)
             )
         );
         colorList.append(
-            QPair<QString, QColor>(
-                QStringLiteral("invalid"),
+            QPair<QByteArray, QColor>(
+                QByteArrayLiteral("invalid"),
                 QColor()
             )
         );
 
         for (int i = 0; i < colorList.size(); ++i) {
             for (int j = 0; j < colorList.size(); ++j) {
+                QByteArray description =
+                    colorList.at(i).first
+                        + QByteArrayLiteral("/")
+                        + colorList.at(j).first;
                 QTest::newRow(
-                    (QString(colorList.at(i).first)
-                        + QStringLiteral("/")
-                        + QString(colorList.at(j).first)
-                        + QStringLiteral("/ShowAlphaChannel/NoButtons")
-                    ).toLatin1().data()
+                    (description
+                        + QByteArrayLiteral("/ShowAlphaChannel/NoButtons")
+                    ).constData()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << true
                     << true;
                 QTest::newRow(
-                    (QString(colorList.at(i).first)
-                        + QStringLiteral("/")
-                        + QString(colorList.at(j).first)
-                        + QStringLiteral("/ShowAlphaChannel")
-                    ).toLatin1().data()
+                    (description + QByteArrayLiteral("/ShowAlphaChannel"))
+                        .constData()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << true
                     << false;
                 QTest::newRow(
-                    (QString(colorList.at(i).first)
-                        + QStringLiteral("/")
-                        + QString(colorList.at(j).first)
-                        + QStringLiteral("/NoButtons")
-                    ).toLatin1().data()
+                    (description + QByteArrayLiteral("/NoButtons")).constData()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << false
                     << true;
                 QTest::newRow(
-                    (QString(colorList.at(i).first)
-                        + QStringLiteral("/")
-                        + QString(colorList.at(j).first)
-                        + QLatin1String()
-                    ).toLatin1().data()
+                    description.constData()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
@@ -535,34 +526,45 @@ private Q_SLOTS:
     }
 
     void testPropertyConformance_data() {
-        QTest::addColumn<QString>("propertyName");
+        // We provide the property names as data. To get the property names,
+        // this function is used:
+        // const char *QMetaProperty::name() const
+        // Now, the type “const char *” cannot be used with QTest::addColumn<>
+        // because it is not known to Qt’s meta object system. The
+        // meta object system requieres copy constructors for its known types.
+        // This might get wired with pointer types that might go out of scope.
+        // Therefore, we create a QByteArray from the data, which can be passed
+        // without problems through the meta object system. The good thing
+        // is that for the conversion we do not need to know anything
+        // about the actual encoding of “const char *”.
+        QTest::addColumn<QByteArray>("propertyName");
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
         for (int i = 0; i < referenceClass.propertyCount(); ++i) {
             QTest::newRow(referenceClass.property(i).name())
-                << referenceClass.property(i).name();
+                << QByteArray(referenceClass.property(i).name());
         }
     }
 
     void testPropertyConformance() {
-        QFETCH(QString, propertyName);
+        QFETCH(QByteArray, propertyName);
         QMetaObject testClass =
             PerceptualColor::ColorDialog::staticMetaObject;
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
         int testClassIndex =
-            testClass.indexOfProperty(propertyName.toLatin1().data());
+            testClass.indexOfProperty(propertyName.constData());
         int referenceClassIndex =
-            referenceClass.indexOfProperty(propertyName.toLatin1().data());
+            referenceClass.indexOfProperty(propertyName.constData());
         QMetaProperty referenceClassProperty =
             referenceClass.property(referenceClassIndex);
-        QString message;
-        message = QStringLiteral("Test if property \"")
-            + QString::fromUtf8(referenceClassProperty.name())
-            + QStringLiteral("\" of class \"")
-            + QString::fromUtf8(referenceClass.className())
-            + QStringLiteral("\" is also available in \"")
-            + QString::fromUtf8(testClass.className())
-            + QStringLiteral("\".");
-        QVERIFY2(testClassIndex >= 0, message.toLatin1().data());
+        QByteArray message;
+        message += "Test if property \"";
+        message += referenceClassProperty.name();
+        message += "\" of class \"";
+        message += referenceClass.className();
+        message += "\" is also available in \"";
+        message += testClass.className();
+        message += "\".";
+        QVERIFY2(testClassIndex >= 0, message.constData());
         QMetaProperty testClassProperty = testClass.property(testClassIndex);
         if (referenceClassProperty.hasNotifySignal()) {
             QVERIFY2(
@@ -742,17 +744,17 @@ private Q_SLOTS:
         QMetaMethod referenceClassMethod = referenceClass.method(
             referenceClassIndex
         );
-        QString message;
-        message = QStringLiteral("Test if method \"")
-            + QString::fromUtf8(referenceClassMethod.methodSignature())
-            + QStringLiteral("\" of class \"")
-            + QString::fromUtf8(referenceClass.className())
-            + QStringLiteral("\" is also available in \"")
-            + QString::fromUtf8(testClass.className())
-            + QStringLiteral("\".");
+        QByteArray message;
+        message += "Test if method \"";
+        message += referenceClassMethod.methodSignature();
+        message += "\" of class \"";
+        message += referenceClass.className();
+        message += "\" is also available in \"";
+        message += testClass.className();
+        message += "\".";
         QVERIFY2(
             testClassIndex >= 0,
-            message.toLatin1().data()
+            message.constData()
         );
         QMetaMethod testClassMethod = testClass.method(testClassIndex);
         QCOMPARE(
@@ -808,15 +810,10 @@ private Q_SLOTS:
     void testRttiConformance() {
         QMetaObject testClass = PerceptualColor::ColorDialog::staticMetaObject;
         QMetaObject referenceClass = QColorDialog::staticMetaObject;
-        QString message;
-        message = QStringLiteral("Test that \"")
-            + QString::fromUtf8(testClass.className())
-            + QStringLiteral("\" inherits from \"")
-            + QString::fromUtf8(referenceClass.className())
-            + QStringLiteral("\"'s superclass.");
         QVERIFY2(
             testClass.inherits(referenceClass.superClass()),
-            message.toLatin1().data()
+            "Test that PerceptualColor::ColorDialog inherits "
+                "from QColorDialog’s superclass."
         );
     }
     

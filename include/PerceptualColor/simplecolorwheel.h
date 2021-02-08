@@ -51,7 +51,7 @@ namespace PerceptualColor {
  * @note The diagram is not painted on the whole extend of the widget. A border
  * is left to allow that the focus indicator can be painted completely
  * even when the widget has the focus. The border is determined
- * automatically, its value depends on markerThickness(). */
+ * automatically, its value depends on @ref handleOutlineThickness(). */
 class SimpleColorWheel : public AbstractDiagram
 {
     Q_OBJECT
@@ -100,7 +100,7 @@ protected:
     int contentDiameter() const;
     // TODO No const definition in public headers! Better use a function
     // return value.
-    static constexpr int border = 2 * markerThickness;
+    static constexpr int border = 2 * handleOutlineThickness;
     /** @brief the thickness of the wheel ribbon */
     // TODO No const definition in public headers! Better use a function
     // return value.

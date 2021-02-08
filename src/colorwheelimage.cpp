@@ -253,6 +253,11 @@ QImage ColorWheelImage::getImage()
 
     // Anti-aliased cut off everything outside the circle (that
     // means: the overlap)
+    // The natural way would be to simply draw a circle with
+    // QPainter::CompositionMode_DestinationIn which should make transparent
+    // everything that is not in the circle. Unfourtunally, this does not
+    // seem to work. Therefore, we use a workaround and draw a very think
+    // circle outline around the circle with QPainter::CompositionMode_Clear.
     const qreal circleRadius = outerCircleDiameter / 2;
     const qreal cutOffThickness =
         qSqrt(qPow(m_imageSizePhysical, 2) * 2) / 2 // ½ of image diagonal
@@ -296,140 +301,5 @@ QImage ColorWheelImage::getImage()
     m_image.setDevicePixelRatio(m_devicePixelRatioF);
     return m_image;
 }
-
-/* Safety copy of the old implementation
-QImage ColorWheelImage::getImage()
-{
-    // If image is in cache, simply return the cache.
-    if (!m_image.isNull()) {
-        return m_image;
-    }
-    
-    // If no cache is available (m_image.isNull()), render a new image.
-    
-    // Special case: zero-size-image
-    if (m_imageSizePhysical <= 0) {
-        return m_image;
-    }
-
-    // construct our final QImage with transparent background
-    m_image = QImage(
-        QSize(m_imageSizePhysical, m_imageSizePhysical),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    m_image.fill(Qt::transparent);
-
-    // Calculate diameter of the outer circle
-    const qreal outerCircleDiameter =
-        m_imageSizePhysical - 2 * m_borderPhysical;
-
-    // Special case: an empty image
-    if (outerCircleDiameter <= 0) {
-        // Make sure to return a completly transparent image.
-        // If we would continue, in spite of an outer diameter of 0,
-        // we might get a non-transparent pixel in the middle.
-        return m_image;
-    }
-
-    // Generate a temporary non-anti-aliased, intermediate, color wheel,
-    // but with some pixels extra at the inner and outer side. The overlap
-    // defines an overlap for the wheel, so there are some more pixels that
-    // are drawn at the outer and at the inner border of the wheel, to allow
-    // later clipping with anti-aliasing
-    PolarPointF polarCoordinates;
-    int x;
-    int y;
-    QColor rgbColor;
-    LchDouble lch;
-    qreal center = (m_imageSizePhysical - 1) / static_cast<qreal>(2);
-    QImage tempWheel = QImage(
-        QSize(m_imageSizePhysical, m_imageSizePhysical),
-        QImage::Format_ARGB32_Premultiplied
-    );
-    // Because there may be out-of-gamut colors for some hue (depending on the
-    // given lightness and chroma value) which are drawn transparent, it is
-    // important to initialize this image with a transparent background.
-    tempWheel.fill(Qt::transparent);
-    lch.L = LchValues::neutralLightness;
-    lch.C = LchValues::srgbVersatileChroma;
-    // minimumRadial: Adding "+ 1" would reduce the workload (less pixel to
-    // process) and still work mostly, but not completely. It creates sometimes
-    // artifacts in the anti-aliasing process. So we don't do that.
-    const qreal minimumRadial =
-        center
-            - m_wheelThicknessPhysical
-            - m_borderPhysical
-            - overlap;
-    const qreal maximumRadial = center - m_borderPhysical + overlap;
-    for (x = 0; x < m_imageSizePhysical; ++x) {
-        for (y = 0; y < m_imageSizePhysical; ++y) {
-            polarCoordinates = PolarPointF(QPointF(x - center, center - y));
-            if (
-                inRange<qreal>(
-                    minimumRadial,
-                    polarCoordinates.radial(),
-                    maximumRadial
-                )
-                
-            ) {
-                // We are within the wheel
-                lch.h = polarCoordinates.angleDegree();
-                rgbColor = m_rgbColorSpace->colorRgb(lch);
-                if (rgbColor.isValid())
-                {
-                    tempWheel.setPixelColor(
-                        x,
-                        y,
-                        rgbColor
-                    );
-                }
-            }
-        }
-    }
-
-    // Paint an anti-aliased wheel on our final canvas, using the the
-    // temporary (non-anti-aliased) color wheel as brush
-    QPainter myPainter(&m_image);
-    myPainter.setRenderHint(QPainter::Antialiasing, true);
-    myPainter.setPen(QPen(Qt::NoPen));
-    myPainter.setBrush(QBrush(tempWheel));
-    myPainter.drawEllipse(
-        QRectF(
-            m_borderPhysical,
-            m_borderPhysical,
-            outerCircleDiameter,
-            outerCircleDiameter
-        )
-    );
-    // Delete tempWheel which is no longer needed; we try to free memory
-    // as early as possible.
-    tempWheel = QImage();
-
-    // set the inner circle of the wheel to anti-aliased transparency
-    const qreal innerCircleDiameter =
-        m_imageSizePhysical
-            - 2 * (m_wheelThicknessPhysical + m_borderPhysical);
-    if (innerCircleDiameter > 0) {
-        myPainter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-        myPainter.setRenderHint(QPainter::Antialiasing, true);
-        myPainter.setPen(QPen(Qt::NoPen));
-        myPainter.setBrush(QBrush(Qt::SolidPattern));
-        myPainter.drawEllipse(
-            QRectF(
-                m_wheelThicknessPhysical + m_borderPhysical,
-                m_wheelThicknessPhysical + m_borderPhysical,
-                innerCircleDiameter,
-                innerCircleDiameter
-            )
-        );
-    }
-
-    // Set the correct scaling information for the image
-    m_image.setDevicePixelRatio(m_devicePixelRatioF);
-
-    // Return
-    return m_image;
-}
-*/
 
 }

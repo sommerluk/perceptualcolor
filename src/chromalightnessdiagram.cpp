@@ -68,8 +68,8 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
 
     // Simple initialization
     // We don't use the reset methods as they rely on refreshDiagram()
-    // (and refreshDiagram relies itself on m_hue, markerRadius and
-    // markerThickness)
+    // (and refreshDiagram relies itself on m_hue, handleRadius and
+    // handleOutlineThickness)
     cmsCIELCh temp;
     temp.h = LchValues::neutralHue;
     temp.C = LchValues::srgbVersatileChroma;
@@ -108,22 +108,22 @@ ChromaLightnessDiagram
 {
 }
 
-/** @brief Updates the border() property.
+/** @brief Updates @ref m_border.
  * 
- * This function can be called after changes to markerRadius or
- * markerThickness to update the border() property.
- */
+ * This function can be called after changes to @ref handleRadius or
+ * @ref handleOutlineThickness to update @ref m_border(). */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
 {
     // Code
     m_border = qRound(
-        markerRadius + (markerThickness / static_cast<qreal>(2))
+        handleRadius
+            + (handleOutlineThickness / static_cast<qreal>(2))
     );
 }
 
 // TODO high-dpi support
 
-// TODO reasonable boundary for markerWidth and markerRadius and
+// TODO reasonable boundary for handleWidth and handleRadius and
 // minimumSizeHint: How to make sure the diagram has at least a few pixels?
 // And if it's very low: For precision wouldn't it be better to internally
 // calculate with a higher-resolution pixmap for more precision? Alternative:
@@ -179,7 +179,7 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(
  *
  * Does not differentiate between left, middle and right mouse click.
  * If the mouse is clicked within the <em>displayed</em> gamut, than the
- * marker is placed here and further
+ * handle is placed here and further
  * mouse movements are tracked.
  * 
  * @param event The corresponding mouse event
@@ -189,7 +189,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
     QPoint imageCoordinates =
         d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos());
     // TODO In the following “if” condition, also accept out-of-gamut clicks
-    // when they are covered by the current marker.
+    // when they are covered by the current handle.
     if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) { 
         // Mouse focus is handled manually because so we can accept focus only
         // on mouse clicks within the displayed gamut, while rejecting focus
@@ -216,8 +216,8 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  *
  * Reacts only on mouse move events if previously there had been a mouse
  * press event within the displayed gamut. If the mouse moves inside the
- * <em>displayed</em> gamut, the marker is displaced there. If the mouse
- * moves outside the <em>displayed</em> gamut, the marker is displaced to
+ * <em>displayed</em> gamut, the handle is displaced there. If the mouse
+ * moves outside the <em>displayed</em> gamut, the handle is displaced to
  * the nearest neighbor pixel within gamut.
  * 
  * If previously there had not been a mouse press event, the mouse move
@@ -248,9 +248,9 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
  * Reimplemented from base class. Does not differentiate between left,
  * middle and right mouse click.
  *
- * If the mouse is inside the <em>displayed</em> gamut, the marker is
+ * If the mouse is inside the <em>displayed</em> gamut, the handle is
  * displaced there. If the mouse is outside the <em>displayed</em> gamut,
- * the marker is displaced to the nearest neighbor pixel within gamut.
+ * the handle is displaced to the nearest neighbor pixel within gamut.
  * 
  * @param event The corresponding mouse event
  */
@@ -278,7 +278,7 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
  * 
  * Paints the widget. Takes the existing m_diagramImage and m_diagramPixmap
  * and paints them on the widget. Paints, if appropriate, the focus indicator.
- * Paints the marker. Relies on that m_diagramImage and m_diagramPixmap are
+ * Paints the handle. Relies on that m_diagramImage and m_diagramPixmap are
  * up to date.
  * 
  * @param event the paint event
@@ -318,54 +318,53 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
         d_pointer->m_diagramImage
     );
 
-    /* Paint a focus indicator.
-     * 
-     * We could paint a focus indicator (round or rectangular) around the
-     * marker. Depending on the currently selected hue for the diagram,
-     * it looks ugly because the colors of focus indicator and diagram
-     * do not harmonize, or it is mostly invisible the the colors are
-     * similar. So this approach does not work well.
-     * 
-     * It seems better to paint a focus indicator for the whole widget.
-     * We could use the style primitives to paint a rectangular focus
-     * indicator around the whole widget:
-     * 
-     * style()->drawPrimitive(
-     *     QStyle::PE_FrameFocusRect,
-     *     &option,
-     *     &painter,
-     *     this
-     * );
-     * 
-     * However, this does not work well because the chroma-lightness
-     * diagram has usually a triangular shape. The style primitive, however,
-     * often paints just a line at the bottom of the widget. That does not
-     * look good. An alternative approach is that we paint ourselves a focus
-     * indicator only on the left of the diagram (which is the place of
-     * black/gray/white, so the won't be any problems with non-harmonic
-     * colors).
-     * 
-     * Then we have to design the line that we want to display. It is better
-     * to do that ourselves instead of relying on generic QStyle::PE_Frame
-     * or similar solutions as their result seems to be quite unpredictable
-     * across various styles. So we use markerThickness as line width and
-     * paint it at the left-most possible position. As the border() property
-     * accommodates also to @ref markerRadius, the distance of the focus line
-     * to the real diagram also does, which looks nice.
-     */
+    // Paint a focus indicator.
+    // 
+    // We could paint a focus indicator (round or rectangular) around the
+    // handle. Depending on the currently selected hue for the diagram,
+    // it looks ugly because the colors of focus indicator and diagram
+    // do not harmonize, or it is mostly invisible the the colors are
+    // similar. So this approach does not work well.
+    // 
+    // It seems better to paint a focus indicator for the whole widget.
+    // We could use the style primitives to paint a rectangular focus
+    // indicator around the whole widget:
+    // 
+    // style()->drawPrimitive(
+    //     QStyle::PE_FrameFocusRect,
+    //     &option,
+    //     &painter,
+    //     this
+    // );
+    // 
+    // However, this does not work well because the chroma-lightness
+    // diagram has usually a triangular shape. The style primitive, however,
+    // often paints just a line at the bottom of the widget. That does not
+    // look good. An alternative approach is that we paint ourselves a focus
+    // indicator only on the left of the diagram (which is the place of
+    // black/gray/white, so the won't be any problems with non-harmonic
+    // colors).
+    // 
+    // Then we have to design the line that we want to display. It is better
+    // to do that ourselves instead of relying on generic QStyle::PE_Frame
+    // or similar solutions as their result seems to be quite unpredictable
+    // across various styles. So we use handleOutlineThickness as line width and
+    // paint it at the left-most possible position. As the border() property
+    // accommodates also to handleRadius, the distance of the focus line
+    // to the real diagram also does, which looks nice.
     if (hasFocus()) {
-        pen.setWidth(markerThickness);
+        pen.setWidth(handleOutlineThickness);
         pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
         painter.drawLine(
-            markerThickness / 2, // 0.5 is rounded down to 0.0
+            handleOutlineThickness / 2, // 0.5 is rounded down to 0.0
             0 + d_pointer->m_border,
-            markerThickness / 2, // 0.5 is rounded down to 0.0
+            handleOutlineThickness / 2, // 0.5 is rounded down to 0.0
             size().height() - d_pointer->m_border
         );
     }
 
-    // Paint the marker on-the-fly.
+    // Paint the handle on-the-fly.
     // Render anti-aliased looks better. But as Qt documentation says:
     //
     //      “Renderhints are used to specify flags to QPainter that may or
@@ -385,7 +384,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     //       representation on any platform.”
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint imageCoordinates = d_pointer->currentImageCoordinates();
-    pen.setWidth(markerThickness);
+    pen.setWidth(handleOutlineThickness);
     if (d_pointer->m_color.toLch().L >= 50  /* range: 0..100 */) {
         pen.setColor(Qt::black);
     } else {
@@ -393,10 +392,10 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     }
     painter.setPen(pen);
     painter.drawEllipse(
-        imageCoordinates.x() + d_pointer->m_border - markerRadius,
-        imageCoordinates.y() + d_pointer->m_border - markerRadius,
-        2 * markerRadius + 1,
-        2 * markerRadius + 1
+        imageCoordinates.x() + d_pointer->m_border - handleRadius,
+        imageCoordinates.y() + d_pointer->m_border - handleRadius,
+        2 * handleRadius + 1,
+        2 * handleRadius + 1
     );
 
     // Paint the buffer to the actual widget
@@ -425,10 +424,10 @@ QPoint ChromaLightnessDiagram
  * Reimplemented from base class.
  * 
  * Reacts on key press events. When the arrow keys are pressed, it moves the
- * marker by one pixel into the desired direction if this is still within
+ * handle by one pixel into the desired direction if this is still within
  * gamut. When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
  * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
- * marker as much as possible into the desired direction as long as this is
+ * handle as much as possible into the desired direction as long as this is
  * still in the gamut.
  * 
  * @param event the paint event
@@ -494,16 +493,16 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
             }
             break;
         default:
-            /* Quote from Qt documentation:
-             * 
-             *     “If you reimplement this handler, it is very important that
-             *      you call the base class implementation if you do not act
-             *      upon the key.
-             * 
-             *      The default implementation closes popup widgets if the
-             *      user presses the key sequence for QKeySequence::Cancel
-             *      (typically the Escape key). Otherwise the event is
-             *      ignored, so that the widget's parent can interpret it.“ */
+            // Quote from Qt documentation:
+            // 
+            //     “If you reimplement this handler, it is very important that
+            //      you call the base class implementation if you do not act
+            //      upon the key.
+            // 
+            //      The default implementation closes popup widgets if the
+            //      user presses the key sequence for QKeySequence::Cancel
+            //      (typically the Escape key). Otherwise the event is
+            //      ignored, so that the widget's parent can interpret it.“
             QWidget::keyPressEvent(event);
             return;
     }
@@ -809,16 +808,15 @@ myTimer.start();
                     maxHeight - y,
                     rgbColor
                 );
-                /* If color is out-of-gamut: We have chroma on the x axis and
-                * lightness on the y axis. We are drawing the pixmap line per
-                * line, so we go for given lightness from low chroma to high
-                * chroma. Because of the nature of most gamuts, if once in a
-                * line we have an out-of-gamut value, all other pixels that
-                * are more at the right will be out-of-gamut also. So we
-                * could optimize our code and break here. But as we are not
-                * sure about this (we do not know the gamut at compile time)
-                * for the moment we do not optimize the code.
-                */
+                // If color is out-of-gamut: We have chroma on the x axis and
+                // lightness on the y axis. We are drawing the pixmap line per
+                // line, so we go for given lightness from low chroma to high
+                // chroma. Because of the nature of most gamuts, if once in a
+                // line we have an out-of-gamut value, all other pixels that
+                // are more at the right will be out-of-gamut also. So we
+                // could optimize our code and break here. But as we are not
+                // sure about this (we do not know the gamut at compile time)
+                // for the moment we do not optimize the code.
             }
         }
     }

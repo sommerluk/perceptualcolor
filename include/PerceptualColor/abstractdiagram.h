@@ -58,7 +58,7 @@ namespace PerceptualColor {
  * 
  * @todo Circular diagrams should be right-aligned on RTL layouts.
  * 
- * @todo Touchscreen support: Magnify the marker circle, when diagram is
+ * @todo Touchscreen support: Magnify the handle circle, when diagram is
  * used on a touch device?  */
 class AbstractDiagram : public QFrame
 {
@@ -74,16 +74,16 @@ protected:
 
     // constexpr
 
-    /** @brief The radius for circular markers.
+    /** @brief The radius of a circular handle.
      * 
      * Measured in Device Independent Pixels: Pixels used by application (user
      * space), subject to scaling by the operating system or Qt. */
-    static constexpr int markerRadius = 4;
-    /** @brief The line thickness for markers.
+    static constexpr int handleRadius = 4;
+    /** @brief The outline thickness of a (either circular or linear) handle.
      * 
      * Measured in Device Independent Pixels: Pixels used by application (user
      * space), subject to scaling by the operating system or Qt. */
-    static constexpr int markerThickness = 2;
+    static constexpr int handleOutlineThickness = 2;
     /** @brief Amount of single step for chroma.
      * 
      * Measured in LCh chroma units.

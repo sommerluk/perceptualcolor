@@ -49,10 +49,10 @@ public:
      * diagram itself.
      * 
      * The diagram is not painted on the whole extend of the widget.
-     * A border is left to allow that the selection marker can be painted
+     * A border is left to allow that the selection handle can be painted
      * completely even when a pixel on the border of the diagram is
      * selected. The border is determined automatically, its value
-     * depends on @ref markerRadius and @ref markerThickness.
+     * depends on @ref handleRadius and @ref handleOutlineThickness.
      * 
      * @sa updateBorder()
      */

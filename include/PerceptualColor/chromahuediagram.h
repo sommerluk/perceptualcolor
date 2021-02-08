@@ -46,7 +46,7 @@ namespace PerceptualColor {
  * given lightness. It reacts on mouse events and on keyboard events (see
  * @ref keyPressEvent() for details).
  * 
- * The circle form of the widget and the selection marker that always
+ * The circle form of the widget and the selection handle that always
  * indicates the distance from the center of the diagram, all this
  * helps the user to understand intuitively that he is moving within a
  * polar coordinate system and to capture easily the current radial
@@ -88,7 +88,7 @@ namespace PerceptualColor {
  * @todo High-dpi support.
  * 
  * @todo Automatically scale the thickness of the wheel (and maybe even the
- * marker) with varying widget size?
+ * handle) with varying widget size?
  * 
  * @todo Support additional mouse buttons. For example, “forward” and
  * “backward” could be used to increase or decrease the radial, while

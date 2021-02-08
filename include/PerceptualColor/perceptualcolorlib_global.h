@@ -41,7 +41,7 @@
  * 
  * This approach is proposed in Qt’s documentation (chapter “Creating
  * Shared Libraries”) – see there for more details. In short:
- * - When the library itself is build, the macro <em>exports</em> the
+ * - When the library <em>itself</em> is build, the macro <em>exports</em> the
  *   corresponding symbol. (It expands to Qt’s <tt>Q_DECL_EXPORT</tt> macro.)
  * - When something is build <em>against</em> the dynamic library and
  *   includes the header files of the library, the macro <em>imports</em>
@@ -62,7 +62,11 @@
  * However, when just something is build that is <em>linking</em>
  * against this library, nothing special has to be done and
  * <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt> should <em>not</em>
- * be defined. */
+ * be defined.
+ * 
+ * @sa https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
+ * @sa http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
+ * @sa https://labjack.com/news/simple-cpp-symbol-visibility-demo */
 #if defined(PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
     #define PERCEPTUALCOLORLIB_EXPORT Q_DECL_EXPORT
 #else

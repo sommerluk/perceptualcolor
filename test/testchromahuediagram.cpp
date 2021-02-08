@@ -29,6 +29,7 @@
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
 #include "include/PerceptualColor/chromahuediagram.h"
+#include "chromahuediagram_p.h"
 
 #include <QtTest>
 
@@ -305,6 +306,27 @@ private Q_SLOTS:
             spyPerceptualDialog.count() == 1,
             "No signal was emitted when the invalid color assignment "
                 "had been ignored."
+        );
+    }
+
+    void testResizeEvent() {
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        myDiagram.show(); // Necessary to allow event processing
+        myDiagram.resize(50, 50);
+        QCOMPARE(
+            myDiagram.d_pointer->m_widgetDiameter,
+            50
+        );
+        qreal oldOffset = myDiagram.d_pointer->m_diagramOffset;
+        myDiagram.resize(100, 100);
+        QCOMPARE(
+            myDiagram.d_pointer->m_widgetDiameter,
+            100
+        );
+        QVERIFY2(
+            myDiagram.d_pointer->m_diagramOffset > oldOffset,
+            "Verify that the offset at widget size 150 is bigger "
+                "than at widget size 100."
         );
     }
 

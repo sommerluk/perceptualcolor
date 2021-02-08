@@ -135,7 +135,7 @@ namespace PerceptualColor {
  * @todo The HLC widget could provide intermediate values during the
  * user is editing. These could be displayed, and if the intermediate
  * value is out-of-gamut, the @ref ColorPatch could display an empty
- * value, and the diagram widgets could indeed put the marker at the
+ * value, and the diagram widgets could indeed put the handle at the
  * out-of-gamut position. Once the HLC widget finishes the editing,
  * an out-of-gamut value should of cource be corrected, following
  * the <tt>QAbstractSpinbox::correctionMode</tt> policy.

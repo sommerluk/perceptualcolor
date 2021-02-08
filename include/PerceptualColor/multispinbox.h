@@ -47,26 +47,44 @@ namespace PerceptualColor {
  * (Hue 0°–360°, Saturation 0–255, Value 0–255) comes here:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Basic example
  * 
- * @todo Imagine a section in a @ref MultiSpinBox that has 0 decimals and
- * a value of 15.7. It is displayed as 16. When the user scrolls up with
+ * @note It would be possible to add more functions to work with 
+ * @ref MultiSpinBox::SectionData. The interface could theoretically
+ * be similar to other Qt classes that offer similar concepts of various
+ * data within a list: QComboBox, QHeaderView, QDateTimeEdit, QList – of
+ * course with consistent naming. But probably it’s not worth the pain.
+ * Currently, we only allow to get and set all the sections as whole, and for
+ * our internal usage, that’s enought. Allowing changes to individual would
+ * require a lot of additional code to make sure that after such a change,
+ * the text curser is set the the appropriate position and the text selection
+ * is also appropriate. For the moment, no further interface functions
+ * are planned. However, a full-featured interface could look like that:
+ * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
+ * 
+ * @todo When adding Bengali digits (for example by copy and paste) to a
+ * @ref MultiSpinBox that was localized to en_US, than sometimes this is
+ * accepted (thought later “corrected” to 0), and sometimes not. This
+ * behaviour is inconsistend and wrong.
+ * 
+ * @todo Imagine a section in a @ref MultiSpinBox that has 0 decimals and
+ * a value of 15.7. It is displayed as 16. When the user scrolls up with
  * the mouse or uses the key ↑ than the value changes to 16.7 while the
- * display changes to 17. Isn’t is highly confusing that – after a user
+ * display changes to 17. Isn’t is highly confusing that – after a user
  * interaction – the new internal value is different from what the users sees?
  * How does QDoubleSpinBox solves this?
  * 
  * @todo When using this widget in @ref ColorDialog, there are rounding
- * differences, for example when choosing HSV 210° 27 19, then RGB becomes
- * 17 18 19. But when passing through an RGB field, HSV will be changed
- * to 210° 26.8405 19 even if in the RGB field nothing was changed by the
- * user. This is confusing. Also: If values are 0 and then passing through
+ * differences, for example when choosing HSV 210° 27 19, then RGB becomes
+ * 17 18 19. But when passing through an RGB field, HSV will be changed
+ * to 210° 26.8405 19 even if in the RGB field nothing was changed by the
+ * user. This is confusing. Also: If values are 0 and then passing through
  * fields of other color representations, the value can become something
- * like 0.001 by rounding error, and so the Arrow-Down-Button will be
- * enabled thought the displayed value is 0 (and this was the value previously
+ * like 0.001 by rounding error, and so the Arrow-Down-Button will be
+ * enabled thought the displayed value is 0 (and this was the value previously
  * manually entered by the user); this is confusing.
  * 
  * @todo Apparently, the validator doesn’t restict the input actually to the
  * given range. For QDoubleSpinBox however, the line edit <em>is</em>
- * restricted! Example: even if 100 is maximum, it is possible to write 444.
+ * restricted! Example: even if 100 is maximum, it is possible to write 444.
  * Maybe our @ref ExtendedDoubleValidator should not rely on Qt’s validator,
  * but on if QLocale is able to convert (result: valid) or not (result:
  * invalid)?!
@@ -86,21 +104,6 @@ namespace PerceptualColor {
  * 
  * @todo Do not text-cursor-select more than <em>one</em> value when
  * editing (or do not allow text selection at all)?
- * 
- * @todo Do unit tests for correct localization, also
- * when using locales with non-latin numerals.
- * 
- * @todo Full-featured interface to work with @ref MultiSpinBox::SectionData?
- * It might be possible to add more access functions. The interface can
- * be oriented to other Qt classes that offer similar concepts: QComboBox,
- * QHeaderView, QDateTimeEdit, QList – of course with consistent naming.
- * The question is: Would it be worth the pain? Currently, we only allow
- * to get and set all the sections as whole, and for our own usage, that’s
- * enought. Allowing changes to individual sections requires a lot of code
- * so that the text cursor does not move unexpectedly and so on. However,
- * a full-featured interface could look like that:
- * 
- * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
  * 
  * @todo Splitting @ref MultiSpinBox::SectionData into
  * <tt>SectionConfiguration</tt> and <tt>value</tt>? Disadvantage: Requires
@@ -148,7 +151,7 @@ public:
          * as a circular value.
          * 
          * Example: You have a section that displays a value measured in
-         * degree. @ref minimum is <tt>0</tt>. @ref maximum is <tt>360</tt>.
+         * degree. @ref minimum is <tt>0</tt>. @ref maximum is <tt>360</tt>.
          * The following corrections would be applied to input:
          * | Input | isWrapping == false | isWrapping == true |
          * | ----: | ------------------: | -----------------: |

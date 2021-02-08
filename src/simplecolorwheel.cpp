@@ -169,7 +169,7 @@ QPointF SimpleColorWheel
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
- * If the mouse is clicked within the wheel ribbon, than the marker is placed
+ * If the mouse is clicked within the wheel ribbon, than the handle is placed
  * here and further mouse movements are tracked.
  * 
  * @param event The corresponding mouse event
@@ -350,7 +350,7 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  * 
  * Paints the widget. Takes the existing m_wheelPixmap and paints
  * them on the widget. Paints, if appropriate, the focus indicator.
- * Paints the marker. Relies on that m_wheelPixmap are up to date.
+ * Paints the handle. Relies on that m_wheelPixmap are up to date.
  * 
  * @param event the paint event
  * 
@@ -386,16 +386,16 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     // paint the wheel from the cache
     painter.drawImage(0, 0, d_pointer->m_wheelImage.getImage());
 
-    // paint the marker
+    // paint the handle
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
-    // get widget coordinates for our marker
-    QPointF myMarkerInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
+    // get widget coordinates for our handle
+    QPointF myHandleInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
         PolarPointF(
             radius - m_wheelThickness,
             d_pointer->m_hue
         )
     );
-    QPointF myMarkerOuter = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
+    QPointF myHandleOuter = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
         PolarPointF(
             radius,
             d_pointer->m_hue
@@ -403,23 +403,23 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     );
     // draw the line
     QPen pen;
-    pen.setWidth(markerThickness);
+    pen.setWidth(handleOutlineThickness);
     pen.setCapStyle(Qt::FlatCap);
     pen.setColor(Qt::black);
     painter.setPen(pen);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.drawLine(myMarkerInner, myMarkerOuter);
+    painter.drawLine(myHandleInner, myHandleOuter);
 
     // Paint a focus indicator if the widget has the focus
     if (hasFocus()) {
-        pen.setWidth(markerThickness);
+        pen.setWidth(handleOutlineThickness);
         pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
         painter.drawEllipse(
-            markerThickness / 2, // Integer division (rounding down)
-            markerThickness / 2, // Integer division (rounding down)
-            contentDiameter() - markerThickness,
-            contentDiameter() - markerThickness
+            handleOutlineThickness / 2, // Integer division (rounding down)
+            handleOutlineThickness / 2, // Integer division (rounding down)
+            contentDiameter() - handleOutlineThickness,
+            contentDiameter() - handleOutlineThickness
         );
     }
 

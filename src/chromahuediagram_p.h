@@ -55,18 +55,17 @@ public:
     // Member variables
     /** @brief The border around the round diagram.
      * 
-     * Measured in Device Independent Pixels: Pixels used by application
-     * (user space), subject to scaling by the operating system or Qt. 
+     * Measured in widget coordinates. 
      * 
      * The border is the space where the surrounding color wheel and, where
      * applicable, the focus indicator is painted.
-     * @sa @ref markerThickness */
-    static constexpr qreal diagramBorder = 8 * markerThickness;
+     * @sa @ref handleOutlineThickness */
+    static constexpr qreal diagramBorder = 8 * handleOutlineThickness;
     /** @brief The image of the chroma-hue diagram itself. */
     ChromaHueImage m_chromaHueImage;
     /** @brief Internal storage of the @ref color() property */
     FullColorDescription m_color;
-    /** @brief Position of the center of the diagram coordinate system
+    /** @brief The point that is the center of the diagram coordinate system.
      * 
      * This value is measured in widget coordinates. */
     qreal m_diagramOffset = 0;
@@ -76,9 +75,9 @@ public:
      * - A mouse event gets typically activated on a @ref mousePressEvent()
      *   done within the gamut diagram. The value is set to <tt>true</tt>.
      * - While active, all @ref mouseMoveEvent() will move the diagram’s color
-     *   marker.
+     *   handle.
      * - Once a @ref mouseReleaseEvent() occurs, the value is set to
-     *   <tt>false</tt>. Further mouse movements will not move the marker
+     *   <tt>false</tt>. Further mouse movements will not move the handle
      *   anymore. */
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
@@ -89,17 +88,19 @@ public:
     ColorWheelImage m_wheelImage;
     /** @brief Diameter of the widget.
      * 
+     * Mesured in widget coordinates.
+     * 
      * This is different from <tt>size()</tt>. It is the maximum possible
      * diameter that is available within the current <tt>size()</tt>. */
     int m_widgetDiameter = 0;
 
     // Member functions
-    bool areImageCoordinatesWithinDiagramSurface(
-        const QPoint imageCoordinates
+    bool areWidgetCoordinatesWithinDiagramSurface(
+        const QPoint widgetCoordinates
     );
-    QPointF fromImageCoordinatesToAB(const QPoint imageCoordinates);
-    QPoint imageCoordinatesFromColor();
-    void setColorFromImageCoordinates(const QPoint imageCoordinates);
+    QPointF fromWidgetCoordinatesToAB(const QPoint widgetCoordinates);
+    QPoint widgetCoordinatesFromColor();
+    void setColorFromWidgetPixel(const QPoint position);
 
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)

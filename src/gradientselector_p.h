@@ -47,6 +47,16 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~GradientSelectorPrivate() noexcept = default;
 
+    /** @brief The thickness of the gradient, measured in widget coordinate
+     * system.
+     * 
+     * @note It would be interesting to consider the current style’s value for
+     * <tt>QStyle::PixelMetric::PM_SliderControlThickness</tt> for this.
+     * Unfortunally, many styles simply return <tt>0</tt> for this if
+     * the options are not correctly initialized: It seems necessary to
+     * use the protected <tt>QSlider::initStyleOption</tt> and also pass
+     * <tt>this</tt> as last argument (for the widget) to make this work;
+     * therefore, we would have to subclass QSlider. */
     int m_gradientThickness = 20;
     int m_gradientMinimumLength = 84;
     Qt::Orientation m_orientation;

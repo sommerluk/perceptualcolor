@@ -131,6 +131,16 @@
  * 
  * @todo Use <tt>explicit</tt> on all constructors?
  * 
+ * @todo Review and unit tests for these classes:
+ * @ref PerceptualColor::AlphaSelector,
+ * @ref PerceptualColor::ChromaHueDiagram (partial),
+ * @ref PerceptualColor::ChromaLightnessDiagram,
+ * @ref PerceptualColor::FullColorDescription,
+ * @ref PerceptualColor::GradientSelector,
+ * @ref PerceptualColor::RgbColorSpace,
+ * @ref PerceptualColor::SimpleColorWheel,
+ * @ref PerceptualColor::WheelColorPicker
+ * 
  * @todo Do not use constexpr in public headers as when we change the value
  * later, compile time value and run time value might be different, and
  * that might be dangerous.
@@ -144,16 +154,17 @@
  * exception early might make error detection easier for users of the library.
  * 
  * @todo Would it be better to avoid default arguments like
- * <tt>void test(int i = 0)</tt> as changes require recompilation which
- * breaks to a certain degree ABI? It the problem for default functions like
+ * <tt>void test(int i = 0)</tt> as changing the default value in a
+ * future version of the library requires recompilation, which breaks
+ * to a certain degree ABI? It the problem for default functions like
  * <tt>Test() = default</tt> as default constructor similar?
+ * 
+ * @todo Avoid default parameters as they would require recompilation of
+ * applications if changed in a future version of the library?
  * 
  * @todo Review all static class functions: Which should be made non-static?
  * (Maybe in the future, it might be necessary to access object data, so
  * better making them non-static so this stays possible.)
- * 
- * @todo Avoid default parameters as they would require recompilation of
- * applications?
  * 
  * @todo <tt>private Q_SLOTS</tt> can be connected to (with the old connection
  * syntax) from everywhere, so they are indeed not private. That’s not great.
@@ -219,7 +230,6 @@
  * be better to require the last LTS release (5.15), just to be compatible if
  * in the future we depend on this?
  * 
- * 
  * @todo This library provides some constexpr in the public API. If now we
  * release version 1.0.0 of this library with constexpr x == 1. Now, in
  * version 1.1.0 of this library, we change its value to constexpr x == 5.
@@ -239,11 +249,6 @@
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
  * 
- * @todo Switch to the pimpl idiom? Export symbols like in
- * https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
- * See also http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
- * and https://labjack.com/news/simple-cpp-symbol-visibility-demo
- * 
  * @todo A program that uses our library could also use LittleCMS itself. If
  * it would use LittleCMS without thread-save API, but using it always in the
  * very same thread which is <em>not</em> the main thread, this could make
@@ -261,7 +266,7 @@
  * @ref PerceptualColor::GradientSelector this could be simply the default
  * background, similar to grayed out spin boxes. And for the diagram
  * widgets, only the shape would stay visible, with uniform standard
- * gray colors coming from <tt>QStyle</tt>. The markers might not
+ * gray colors coming from <tt>QStyle</tt>. The handles might not
  * even be displayed at all.
  * 
  * @todo Follow KDE's <b><a href="https://hig.kde.org/index.html">HIG</a></b>

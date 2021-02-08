@@ -100,6 +100,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
         -Wvla\
         -Wconversion\
         -Wsign-conversion\
+        -finput-charset=UTF-8\
     ")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         # TODO Do not enable -Weverything (and the following excluded checks)
@@ -122,7 +123,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
         ")
     endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(warnings "/W4 /WX /EHsc")
+    set(CMAKE_CXX_FLAGS "/W4 /WX /EHsc/utf-8")
 endif()
 
 

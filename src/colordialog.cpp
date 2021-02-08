@@ -711,7 +711,7 @@ QWidget* ColorDialog::ColorDialogPrivate::initializeNumericPage()
     mySection.suffix = QStringLiteral(u"% ");
     mySection.isWrapping = false;
     hlcSections.append(mySection);
-    mySection.maximum = 255;
+    mySection.maximum = LchValues::humanMaximumChroma;
     mySection.prefix = QStringLiteral(u" ");
     mySection.suffix = QLatin1String();
     mySection.isWrapping = false;

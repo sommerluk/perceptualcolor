@@ -36,8 +36,6 @@
 #include <QPainter>
 #include <QtMath>
 
-#include <QDebug>
-
 namespace PerceptualColor {
 
 /** @brief Constructor */
@@ -249,6 +247,11 @@ QImage ChromaHueImage::getImage()
     // And the antialiasing result would be the same. If the gamut however
     // touchs the outline, the antialiasing would be ugly there, therefore
     // we cut everything outside the circle explicitly.
+    // The natural way would be to simply draw a circle with
+    // QPainter::CompositionMode_DestinationIn which should make transparent
+    // everything that is not in the circle. Unfourtunally, this does not
+    // seem to work. Therefore, we use a workaround and draw a very think
+    // circle outline around the circle with QPainter::CompositionMode_Clear.
     const qreal cutOffThickness =
         qSqrt(qPow(m_imageSizePhysical, 2) * 2) / 2 // ½ of image diagonal
             - circleRadius                          // circle radius

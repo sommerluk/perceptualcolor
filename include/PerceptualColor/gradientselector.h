@@ -53,6 +53,9 @@ namespace PerceptualColor {
  * in-gamut colors. Out-of-gamut colors are not rendered, so you might see
  * a hole in the gradient.
  * 
+ * @todo Wouldn’t it be better to subclass <tt>QSlider</tt> instead of
+ * @ref AbstractDiagram?
+ * 
  * @todo Declare Q_PROPERTY for @ref setFirstColor() and @ref setSecondColor()
  */
 class GradientSelector : public AbstractDiagram

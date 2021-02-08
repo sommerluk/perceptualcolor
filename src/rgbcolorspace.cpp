@@ -76,13 +76,20 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
     // used, not when an actual external ICC profile is used.
 //    m_cmsInfoDescription = tr("sRGB"); // TODO ???
     // Create the transforms
+    // We use the flag cmsFLAGS_NOCACHE which disables the 1-pixel-cache
+    // which is normally used in the transforms. We do this because transforms
+    // that use the 1-pixel-cache are not thread-save. And disabling it
+    // should not have negative impacts as we usually work with gradients,
+    // so anyway it is not likely to have two consecutive pixels with
+    // the same color, which is the only situation where the 1-pixel-cache
+    // makes processing faster.
     d_pointer->m_transformLabToRgbHandle = cmsCreateTransform(
         labProfileHandle,             // input profile handle
         TYPE_Lab_DBL,                 // input buffer format
         rgbProfileHandle,             // output profile handle
         TYPE_RGB_DBL,                 // output buffer format
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-        0                             // flags
+        cmsFLAGS_NOCACHE              // flags
     );
     d_pointer->m_transformLabToRgb16Handle = cmsCreateTransform(
         labProfileHandle,             // input profile handle
@@ -90,7 +97,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
         rgbProfileHandle,             // output profile handle
         TYPE_RGB_16,                  // output buffer format
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-        0                             // flags
+        cmsFLAGS_NOCACHE              // flags
     );
     d_pointer->m_transformRgbToLabHandle = cmsCreateTransform(
         rgbProfileHandle,             // input profile handle
@@ -98,7 +105,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
         labProfileHandle,             // output profile handle
         TYPE_Lab_DBL,                 // output buffer format
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-        0                             // flags
+        cmsFLAGS_NOCACHE              // flags
     );
     // Close profile (free memory)
     cmsCloseProfile(labProfileHandle);
@@ -383,17 +390,20 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     // documentation is "US".
     char countryCode[3] = "US";
     // Update languageCode and countryCode to the actual locale (if possible)
-    QStringList list = QLocale().name().split(QStringLiteral(u"_"));
-    // The locale codes should be ASCII only, so QString::toLatin1() should
-    // return valid results.
-    if (list.at(0).size() == 2) {
-        languageCode[0] = list.at(0).at(0).toLatin1();
-        languageCode[1] = list.at(0).at(1).toLatin1();
+    const QStringList list = QLocale().name().split(QStringLiteral(u"_"));
+    // The locale codes should be ASCII only, so QString::toUtf8() should
+    // return ASCII-only valid results. We do not know what character encoding
+    // LittleCMS expects, but ASCII seems a save choise.
+    const QByteArray currentLocaleLanguage = list.at(0).toUtf8();
+    const QByteArray currentLocaleCountry = list.at(1).toUtf8();
+    if (currentLocaleLanguage.size() == 2) {
+        languageCode[0] = currentLocaleLanguage.at(0);
+        languageCode[1] = currentLocaleLanguage.at(1);
         // No need for languageCode[2] = 0; for null-terminated string,
         // because the array was yet initialized
-        if (list.at(1).size() == 2) {
-            countryCode[0] = list.at(1).at(0).toLatin1();
-            countryCode[1] = list.at(1).at(1).toLatin1();
+        if (currentLocaleCountry.size() == 2) {
+            countryCode[0] = currentLocaleCountry.at(0);
+            countryCode[1] = currentLocaleCountry.at(1);
             // No need for countryCode[2] = 0; for null-terminated string,
             // because the array was yet initialized
         }
@@ -423,7 +433,7 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     // Allocate the buffer
     wchar_t *buffer = new wchar_t[bufferLength];
     // Initialize the buffer with 0
-    for (cmsUInt32Number i = 0; i < bufferLength - 1; ++i) {
+    for (cmsUInt32Number i = 0; i < bufferLength; ++i) {
         *(buffer + i) = 0;
     }
 
@@ -454,12 +464,21 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     // indeed null-terminated.
     // QString::fromWCharArray will return a QString. It accepts arrays of
     // wchar_t. wchar_t might have different sizes, either 16 bit or 32 bit
-    // depending on the system. The values are interpretated as UTF-16, so
-    // even when wchar_t has 32 bit, surrogate pairs are parsed as such.
-    // (which is not strictly UTF-32 conform). Single surrogates cannot
+    // depending on the system. As Qt’s documantation says:
+    //
+    //     “If wchar is 4 bytes, the string is interpreted as UCS-4,
+    //      if wchar is 2 bytes it is interpreted as UTF-16.”
+    //
+    // However, apparently this is not exact: When wchar is 4 bytes,
+    // surrogate pairs in the code unit array are interpretated like
+    // UTF-16: The surrogate pair is recognized as such. TODO static_assert that this is true (which seems complicate: better provide a unit test!)
+    // (Which is not strictly UTF-32 conform). Single surrogates cannot
     // be interpretated correctly, but there will be no crash:
     // QString::fromWCharArray will continue to read, also the part after
-    // the first UTF error.
+    // the first UTF error. We can rely on this behaviour: As we do
+    // not really know the encoding of the buffer that LittleCMS returns.
+    // Therefore, it is a good idea to be compatible for various
+    // interpretations.
     QString result = QString::fromWCharArray(
         buffer, // read from this buffer
         -1      // read until the first null element

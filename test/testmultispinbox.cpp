@@ -1156,6 +1156,44 @@ private Q_SLOTS:
         );
     }
 
+    void testLocalizationAndInternationalization() {
+        // Setup
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
+            new PerceptualColor::MultiSpinBox()
+        );
+        QList<MultiSpinBox::SectionData> mySectionList;
+        MultiSpinBox::SectionData mySection;
+        mySection.decimals = 1;
+        mySection.minimum = 0;
+        mySection.maximum = 100;
+        mySection.value = 50;
+        mySectionList.append(mySection);
+        widget->setSections(mySectionList);
+        
+        // Begin testing
+
+        widget->setLocale(QLocale::English);
+        widget->update(); // Make sure widget is updated
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"50.0")
+        );
+        
+        widget->setLocale(QLocale::German);
+        widget->update(); // Make sure widget is updated
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"50,0")
+        );
+        
+        widget->setLocale(QLocale::Bengali);
+        widget->update(); // Make sure widget is updated
+        QCOMPARE(
+            widget->lineEdit()->text(),
+            QStringLiteral(u"৫০.০")
+        );
+    }
+
     void testArrowKeys() {
         QScopedPointer<QWidget> parentWidget(new QWidget());
         PerceptualColor::MultiSpinBox *widget2 =

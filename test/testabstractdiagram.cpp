@@ -162,18 +162,18 @@ private Q_SLOTS:
         );
     }
     
-    void testMarker() {
+    void testHandle() {
         AbstractDiagram temp;
         QVERIFY2(
-            temp.markerRadius > 0,
+            temp.handleRadius > 0,
             "Radius is positive."
         );
         QVERIFY2(
-            temp.markerThickness > 0,
+            temp.handleOutlineThickness > 0,
             "Thickness is positive."
         );
         QVERIFY2(
-            temp.markerRadius > temp.markerThickness,
+            temp.handleRadius > temp.handleOutlineThickness,
             "Radius is bigger than thickness. "
             "(Otherwise, there would be no hole in the middle.)"
         );

@@ -43,36 +43,21 @@
 
 // TODO Anti-aliasing the gamut diagrams? Wouldn't this be bad for performance?
 
-// Test if the compiler treats the source code actually as UTF8.
-// A test string is converted to UTF8 code units (u8"") and each
-// code unit is checked to be correct.
-static_assert(
-    (static_cast<quint8>(*((u8"🖌")+0)) == 0xF0) &&
-        (static_cast<quint8>(*((u8"🖌")+1)) == 0x9F) &&
-        (static_cast<quint8>(*((u8"🖌")+2)) == 0x96) &&
-        (static_cast<quint8>(*((u8"🖌")+3)) == 0x8C) &&
-        (static_cast<quint8>(*((u8"🖌")+4)) == 0x00),
-    "This source code has to be read-in as UTF8 by the compiler."
-);
-
-
-
 /* TODO Make sure to always use u8"x" as string literals because L"x" and "x"
  * have compiler-dependent encoding. Alternative would be to make sure the
  * compiler actually uses yet UTF8 also for normal "x" values. But that is
  * something that this is not required by the standard, so it might be wired
  * to require it here. Anyway, this might be a possible test for it (but the
- * test itself should be reviewed/tested before trusting him):
+ * test itself should be reviewed/tested before trusting him): */
 static_assert(
     (static_cast<quint8>(*(("🖌")+0)) == 0xF0) &&
         (static_cast<quint8>(*(("🖌")+1)) == 0x9F) &&
         (static_cast<quint8>(*(("🖌")+2)) == 0x96) &&
         (static_cast<quint8>(*(("🖌")+3)) == 0x8C) &&
         (static_cast<quint8>(*(("🖌")+4)) == 0x00),
-    "Compiler must treat string literals as UTF8. "
-    "Example: gcc -fexec-charset=UTF-8"
+    "Compiler must treat string literals as UTF8. \n"
+        "Example: gcc -fexec-charset=UTF-8"
 );
- */
 
 // TODO Test the main function etc from KColorChooser to see if
 // PerceptualColor::ColorDialog is really a drop-in replacement
@@ -87,7 +72,7 @@ int main(int argc, char *argv[])
     app.setApplicationName(
         QObject::tr(u8"Perceptual color picker")
     );
-//     app.setLayoutDirection(Qt::RightToLeft);
+    app.setLayoutDirection(Qt::RightToLeft);
 //     QLocale::setDefault(QLocale::Bengali);
 //     QLocale::setDefault(QLocale::German);
     
@@ -101,18 +86,18 @@ int main(int argc, char *argv[])
 //         QColorDialog::ColorDialogOption::NoButtons,
 //         true
 //     );
-//     m_colorDialog.setLayoutDimensions(
-//         PerceptualColor
-//             ::ColorDialog
-//             ::DialogLayoutDimensions
-//             ::screenSizeDependent
-//     );
+    m_colorDialog.setLayoutDimensions(
+        PerceptualColor
+            ::ColorDialog
+            ::DialogLayoutDimensions
+            ::screenSizeDependent
+    );
     m_colorDialog.show();
     
 //     m_colorDialog.setStyleSheet(
 //         "background: yellow; color: red; border: 15px solid #FF0000;"
 //     );
-
+    
     // Run
     return app.exec();
 }
