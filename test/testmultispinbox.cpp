@@ -1169,25 +1169,32 @@ private Q_SLOTS:
         mySection.value = 50;
         mySectionList.append(mySection);
         widget->setSections(mySectionList);
+        widget->show();
         
         // Begin testing
 
         widget->setLocale(QLocale::English);
-        widget->update(); // Make sure widget is updated
+        // Without calling update() or other functions, the new locale should
+        // be applied on-the-fly.
+        // TODO Maybe processing QEvent::LocaleChange might help? If so,
+        // wouldn't it be mandatory to also process QEvent::LanguageChange
+        // and further other events?
         QCOMPARE(
             widget->lineEdit()->text(),
             QStringLiteral(u"50.0")
         );
         
         widget->setLocale(QLocale::German);
-        widget->update(); // Make sure widget is updated
+        // Without calling update() or other functions, the new locale should
+        // be applied on-the-fly.
         QCOMPARE(
             widget->lineEdit()->text(),
             QStringLiteral(u"50,0")
         );
         
         widget->setLocale(QLocale::Bengali);
-        widget->update(); // Make sure widget is updated
+        // Without calling update() or other functions, the new locale should
+        // be applied on-the-fly.
         QCOMPARE(
             widget->lineEdit()->text(),
             QStringLiteral(u"৫০.০")

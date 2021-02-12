@@ -191,7 +191,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
             d_pointer->m_rgbColorSpace->inGamut(lab)
             
         ) {
-            setCursor(Qt::BlankCursor);
+//             setCursor(Qt::BlankCursor); // TODO enable this code again xxx
         } else {
             unsetCursor();
         }
@@ -488,56 +488,22 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
     }
 }
 
-// TODO xxx Revision starting here
-    
-/** @brief Sets the @ref color property corresponding to given widget
- * pixel.
- * 
- * @param position A coordinate pair of a pixel of the widget coordinate
- * system. The pixel is a square of the width and length <tt>1</tt>. The
- * pixel at position <tt>QPoint(x, y)</tt> is the square with the top-left
- * edge at widget coordinates <tt>QPoint(x, y)</tt> and the botton-right
- * edge at widget coordinates <tt>QPoint(x+1, y+1)</tt>. On HiDPI
- * displays, this type of pixel will not be identical to the physical 
- * pixels on the hardware. The given value  does not necessarily need to
- * be within the actual displayed diagram or even the gamut itself. It
- * might even be negative.
- * 
- * @post If the center of the widget pixel is within the represented
- * gamut, then the @ref color property is set correspondingly. If the center
- * of the widget pixel is outside the gamut, then the chroma value is reduced
- * (while the hue is maintained) until arriving at the outer shell of the
- * gamut; this adapted color is than used for the @ref color property.
- * 
- * @note This function works independently of the actually displayed color
- * gamut diagram. So if parts of the gamut are cut off in the diagram,
- * this does not influence this function.
- * 
- * @todo What when the mouse goes outside the gray circle, but more
- * gamut is available outside (because m_maxChroma was chosen too small).
- * For consistency, the handle of the diagram should stay within the gray
- * circle, and this should be interpretat also actually as the value at
- * the position of the handle. */
-void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixel(
-    const QPoint position
-)
+/** @brief  Widget coordinates corresponding to the @ref color property
+ * @returns Widget coordinates corresponding to the @ref color property.
+ * This is the position of @ref color in the gamut diagram, but measured
+ * and expressed in widget coordinates. */
+QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::widgetCoordinatesFromColor()
 {
-    QPointF aB;
-    cmsCIELab lab;
-    if (position != widgetCoordinatesFromColor()) {
-        aB = fromWidgetCoordinatesToAB(position);
-        lab.L = m_color.toLch().L;
-        lab.a = aB.x();
-        lab.b = aB.y();
-        q_pointer->setColor(
-            FullColorDescription(
-                m_rgbColorSpace,
-                lab,
-                FullColorDescription::outOfGamutBehaviour::sacrifyChroma
-            )
-        );
-    }
+    const qreal scaleFactor =
+        (m_widgetDiameter - 2 * m_diagramBorder)
+            / static_cast<qreal>(2 * m_maxChroma);
+    return QPointF(
+        m_color.toLab().a * scaleFactor + m_diagramOffset,
+        m_diagramOffset - m_color.toLab().b * scaleFactor
+    );
 }
+
+// TODO xxx Revision starting here
 
 /** @brief Converts image coordinates to a-b-coordinates
  * @param widgetCoordinates A coordinate pair within the widget’s coordinate
@@ -551,25 +517,55 @@ QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::fromWidgetCoordinatesToAB(
 {
     const qreal scaleFactor =
         static_cast<qreal>(2 * m_maxChroma)
-            / (m_widgetDiameter - 2 * diagramBorder);
+            / (m_widgetDiameter - 2 * m_diagramBorder);
     return QPointF(
         (widgetCoordinates.x() - m_diagramOffset) * scaleFactor,
         (widgetCoordinates.y() - m_diagramOffset) * scaleFactor * (-1)
     );
 }
 
-/**
- * @returns the widget coordinates that correspond to @ref m_color() */
-QPoint ChromaHueDiagram::ChromaHueDiagramPrivate::widgetCoordinatesFromColor()
+/** @brief Sets the @ref color property corresponding to given widget
+ * pixel.
+ * 
+ * @param position A coordinate pair of a pixel of the widget coordinate
+ * system. The pixel is a square of the width and length <tt>1</tt>. The
+ * pixel at position <tt>QPoint(x, y)</tt> is the square with the top-left
+ * edge at widget coordinates <tt>QPoint(x, y)</tt> and the botton-right
+ * edge at widget coordinates <tt>QPoint(x+1, y+1)</tt>. On HiDPI
+ * displays, this type of pixel will not be identical to the physical 
+ * pixels on the hardware. The given value  does not necessarily need to
+ * be within the actual displayed diagram or even the gamut itself. It
+ * might even be negative.
+ * 
+ * @post If the <em>center</em> of the widget pixel is within the represented
+ * gamut, then the @ref color property is set correspondingly. If the center
+ * of the widget pixel is outside the gamut, then the chroma value is reduced
+ * (while the hue is maintained) until arriving at the outer shell of the
+ * gamut; this adapted color is than used for the @ref color property.
+ * 
+ * @note This function works independently of the actually displayed color
+ * gamut diagram. So if parts of the gamut (the high chroma parts) are cut
+ * off in the visible diagram, this does not influence this function.
+ * 
+ * @todo What when the mouse goes outside the gray circle, but more
+ * gamut is available outside (because m_maxChroma was chosen too small).
+ * For consistency, the handle of the diagram should stay within the gray
+ * circle, and this should be interpretat also actually as the value at
+ * the position of the handle. */
+void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixel(
+    const QPoint position
+)
 {
-    const qreal scaleFactor =
-        (m_widgetDiameter - 2 * diagramBorder)
-            / static_cast<qreal>(2 * m_maxChroma);
-    return QPoint(
-        qRound((m_color.toLab().a * scaleFactor + m_diagramOffset)),
-        qRound(
-            (m_color.toLab().b * scaleFactor + m_diagramOffset) * (-1)
-                + 2 * m_diagramOffset
+    const QPointF aB = fromWidgetCoordinatesToAB(position);
+    cmsCIELab lab;
+    lab.L = m_color.toLch().L;
+    lab.a = aB.x();
+    lab.b = aB.y();
+    q_pointer->setColor(
+        FullColorDescription(
+            m_rgbColorSpace,
+            lab,
+            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
         )
     );
 }
@@ -662,7 +658,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     // Paint the gamut itself as available in the cache.
     painter.setRenderHint(QPainter::Antialiasing, false);
     d_pointer->m_chromaHueImage.setBorder(
-        d_pointer->diagramBorder * devicePixelRatioF()
+        d_pointer->m_diagramBorder * devicePixelRatioF()
     );
     d_pointer->m_chromaHueImage.setImageSize(
         // Rounding down by using static_cast<int>
@@ -777,15 +773,15 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
             QPointF(
                 d_pointer->m_diagramOffset + 1,
                 d_pointer->m_diagramOffset + 1
-            ),                                                      // center
-            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2,    // x radius
-            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2     // y radius
+            ),                                                          // center
+            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2, // x radius
+            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2  // y radius
         );
     }
 
     // Paint the handle on-the-fly.
     painter.setRenderHint(QPainter::Antialiasing, true);
-    QPoint widgetCoordinates = d_pointer->widgetCoordinatesFromColor();
+    QPointF widgetCoordinates = d_pointer->widgetCoordinatesFromColor();
     pen = QPen();
     pen.setWidth(handleOutlineThickness);
     // Set color of the handle: Black or white, depending on the lightness of
@@ -798,11 +794,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     painter.setPen(pen);
     brush = QBrush(Qt::transparent);
     painter.setBrush(brush);
-    painter.drawEllipse( // TODO Switch to floating point!
-        widgetCoordinates.x() - handleRadius,
-        widgetCoordinates.y() - handleRadius,
-        2 * handleRadius + 1,
-        2 * handleRadius + 1
+    painter.drawEllipse(
+        widgetCoordinates,
+        handleRadius + 0.5,
+        handleRadius + 0.5
     );
     PolarPointF lineEndPolar = PolarPointF(
         QPointF(

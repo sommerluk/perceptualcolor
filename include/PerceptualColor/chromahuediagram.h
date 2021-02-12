@@ -46,7 +46,7 @@ namespace PerceptualColor {
  * given lightness. It reacts on mouse events and on keyboard events (see
  * @ref keyPressEvent() for details).
  * 
- * The circle form of the widget and the selection handle that always
+ * The circular form of the widget and the selection handle that always
  * indicates the distance from the center of the diagram, all this
  * helps the user to understand intuitively that he is moving within a
  * polar coordinate system and to capture easily the current radial
@@ -85,8 +85,6 @@ namespace PerceptualColor {
  * as long as the flag <tt>cmsFLAGS_NOCACHE</tt> is used to create the
  * transform.
  * 
- * @todo High-dpi support.
- * 
  * @todo Automatically scale the thickness of the wheel (and maybe even the
  * handle) with varying widget size?
  * 
@@ -115,7 +113,6 @@ public:
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
-    /** @brief Default destructor */
     virtual ~ChromaHueDiagram() noexcept override;
     /** @brief Getter for property @ref color
      *  @returns the property @ref color */

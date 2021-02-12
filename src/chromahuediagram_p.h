@@ -53,6 +53,10 @@ public:
     ~ChromaHueDiagramPrivate() noexcept = default;
 
     // Member variables
+    /** @brief The image of the chroma-hue diagram itself. */
+    ChromaHueImage m_chromaHueImage;
+    /** @brief Internal storage of the @ref color() property */
+    FullColorDescription m_color;
     /** @brief The border around the round diagram.
      * 
      * Measured in widget coordinates. 
@@ -60,11 +64,7 @@ public:
      * The border is the space where the surrounding color wheel and, where
      * applicable, the focus indicator is painted.
      * @sa @ref handleOutlineThickness */
-    static constexpr qreal diagramBorder = 8 * handleOutlineThickness;
-    /** @brief The image of the chroma-hue diagram itself. */
-    ChromaHueImage m_chromaHueImage;
-    /** @brief Internal storage of the @ref color() property */
-    FullColorDescription m_color;
+    static constexpr qreal m_diagramBorder = 8 * handleOutlineThickness;
     /** @brief The point that is the center of the diagram coordinate system.
      * 
      * This value is measured in widget coordinates. */
@@ -82,7 +82,11 @@ public:
     bool m_isMouseEventActive = false;
     /** @brief Pointer to @ref RgbColorSpace object */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
-    /** @todo This should not be hard-coded sRGB. */
+    /** @brief The maximum chroma value.
+     *
+     * This is the value that is on the border of the gray circle.
+     * 
+     * @todo This should not be hard-coded to sRGB. */
     qreal m_maxChroma = LchValues::srgbMaximumChroma;
     /** @brief The image of the color wheel. */
     ColorWheelImage m_wheelImage;
@@ -99,8 +103,8 @@ public:
         const QPoint widgetCoordinates
     );
     QPointF fromWidgetCoordinatesToAB(const QPoint widgetCoordinates);
-    QPoint widgetCoordinatesFromColor();
     void setColorFromWidgetPixel(const QPoint position);
+    QPointF widgetCoordinatesFromColor();
 
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)

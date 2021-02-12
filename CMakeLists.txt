@@ -123,7 +123,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
         ")
     endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS "/W4 /WX /EHsc/utf-8")
+    set(CMAKE_CXX_FLAGS "/W4 /WX /EHsc /utf-8")
 endif()
 
 
