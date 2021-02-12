@@ -179,6 +179,7 @@ public:
     virtual void stepBy(int steps) override;
 
 protected:
+    virtual bool event(QEvent *event) override;
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual bool focusNextPrevChild(bool next) override;
     virtual void focusOutEvent(QFocusEvent* event) override;

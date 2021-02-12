@@ -769,6 +769,32 @@ void MultiSpinBox::MultiSpinBoxPrivate::updateCurrentValueFromText(
     // this function is ment to receive signals of the very same lineEdit().
 }
 
+/** @brief The main event handler.
+ * 
+ * Reimplemented from base class.
+ * 
+ * On <tt>QEvent::Type::LocaleChange</tt> it updates the spinbox content
+ * accordingly. Apart from that, it calls the implementation in the parent
+ * class. */
+bool MultiSpinBox::event(QEvent *event)
+{
+    if (event->type() == QEvent::Type::LocaleChange) {
+        d_pointer->updatePrefixValueSuffixText();
+        d_pointer->m_validator->setPrefix(d_pointer->m_textBeforeCurrentValue);
+        d_pointer->m_validator->setSuffix(d_pointer->m_textAfterCurrentValue);
+        d_pointer->m_validator->setRange(
+            d_pointer->m_sections.at(d_pointer->m_currentIndex).minimum,
+            d_pointer->m_sections.at(d_pointer->m_currentIndex).maximum
+        );
+        lineEdit()->setText(
+            d_pointer->m_textBeforeCurrentValue
+                + d_pointer->m_textOfCurrentValue
+                + d_pointer->m_textAfterCurrentValue
+        );
+    }
+    return QAbstractSpinBox::event(event);
+}
+
 /** @brief Updates the widget according to the new cursor position.
  * 
  * This slot is meant to be connected to the

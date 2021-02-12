@@ -1169,16 +1169,12 @@ private Q_SLOTS:
         mySection.value = 50;
         mySectionList.append(mySection);
         widget->setSections(mySectionList);
-        widget->show();
-        
+
         // Begin testing
 
         widget->setLocale(QLocale::English);
         // Without calling update() or other functions, the new locale should
         // be applied on-the-fly.
-        // TODO Maybe processing QEvent::LocaleChange might help? If so,
-        // wouldn't it be mandatory to also process QEvent::LanguageChange
-        // and further other events?
         QCOMPARE(
             widget->lineEdit()->text(),
             QStringLiteral(u"50.0")
