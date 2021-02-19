@@ -330,6 +330,47 @@ private Q_SLOTS:
         );
     }
 
+    void testConversions() {
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        myDiagram.setColor(
+            FullColorDescription(m_rgbColorSpace, Qt::gray)
+        );
+        myDiagram.show(); // Necessary to make sure resize events are processed
+        constexpr int widgetSize = 300;
+        myDiagram.resize(widgetSize, widgetSize);
+        QCOMPARE(
+            myDiagram.size(),
+            QSize(widgetSize, widgetSize)
+        );
+        // Chose a position near to, but different from the center.
+        constexpr int testPosition = widgetSize / 2 + 10;
+        myDiagram.d_pointer->setColorFromWidgetPixelPosition(
+            QPoint(testPosition, testPosition)
+        );
+        QCOMPARE(
+            myDiagram.d_pointer->m_color.toLab().L,
+            myDiagram.d_pointer->fromWidgetPixelPositionToLab(
+                QPoint(testPosition, testPosition)
+            ).L
+        );
+        QCOMPARE(
+            myDiagram.d_pointer->m_color.toLab().a,
+            myDiagram.d_pointer->fromWidgetPixelPositionToLab(
+                QPoint(testPosition, testPosition)
+            ).a
+        );
+        QCOMPARE(
+            myDiagram.d_pointer->m_color.toLab().b,
+            myDiagram.d_pointer->fromWidgetPixelPositionToLab(
+                QPoint(testPosition, testPosition)
+            ).b
+        );
+        QCOMPARE(
+            myDiagram.d_pointer->widgetCoordinatesFromCurrentColor(),
+            QPoint(testPosition, testPosition) + QPointF(0.5, 0.5)
+        );
+    }
+
 };
 
 }

@@ -54,11 +54,13 @@
  *   lightness)
  * 
  * The library depends on (and therefore you has to link against):
+ * 
  * |                         | Qt                 | LittleCMS               |
  * | :---------------------- | :----------------- | :---------------------- |
  * | <b>Major release</b>    | 5                  | 2                       |
  * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
  * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
+ * 
  * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
  * used in this library.</em>
  *
@@ -273,8 +275,29 @@
  * 
  * @todo Add screenshots of widgets to the documentation
  * 
+ * @todo Test linking against lcms.h in version 2.0.0 for compatibility
+ * (or require more recent version?)
+ * 
+ * @todo Require (by static cast additional to CMake conditions) a minimum
+ * Qt version?
+ * 
  * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
  * also https://phabricator.kde.org/T12359
+ * 
+ * @todo Use a cross-hair cursor on @ref PerceptualColor::ChromaHueDiagram
+ * and @ref PerceptualColor::ChromaLightnessDiagram when the mouse is
+ * hovering over the gamut, to show that this surface can be clicked?
+ * 
+ * @todo Touch-friendly interface: Would it be good to have buttons for
+ * plus and minus on the various LCH axis which would be companings
+ * for @ref PerceptualColor::ChromaHueDiagram and
+ * @ref PerceptualColor::ChromaLightnessDiagram and would allow
+ * more exactly choose colors also on touch devices?
+ * 
+ * @todo Would it be a good idea to have plus and minus buttons that
+ * manipulate the current color along the depth and vividness axis
+ * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
+ * by Roy S. Berns?
  * 
  * @todo Spell checking for the documentation */
 

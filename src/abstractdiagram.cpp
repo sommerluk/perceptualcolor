@@ -52,17 +52,24 @@ AbstractDiagram::~AbstractDiagram() noexcept
 }
 
 /** @brief The color for painting focus indicators
- * 
- * @returns The color for painting focus indicators. This color is taken from
+ * @returns The color for painting focus indicators. This color is based on
  * the current widget style at the moment this function is called. The value
  * might therefore be different on the next function call, if the widget style
  * has been switched by the user in the meantime.
- * 
- * @note If is known that some (external) Qt style returns a wrong value
- * for this color. */
+ * @note As there is no build-in support in Qt to get this information, we
+ * have to do some best guess, which might go wrong on some styles. */
 QColor AbstractDiagram::focusIndicatorColor() const
 {
-    return palette().color(QPalette::Highlight);
+    // This approach goes wrong on some styles. For example, the Kvantum
+    // style engine provides a style names “KvFlatRed”. This style uses
+    // red to highlight the background of marked text. The focus indicators
+    // however are drawn in orange. This function returns red in this case,
+    // which is wrong. However, I do not know how to get around this
+    // limitation.
+    return palette().color(
+        QPalette::ColorGroup::Active,
+        QPalette::ColorRole::Highlight
+    );
 }
 
 /** @brief The rounded size of the widget measured in <em>physical</em>

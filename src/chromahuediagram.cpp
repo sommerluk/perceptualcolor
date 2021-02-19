@@ -40,6 +40,10 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
+// TODO Remove the following lines (QSpinBox QStyle and QStyleOption)
+#include <QSpinBox>
+#include <QStyle>
+#include <QStyleOption>
 #include <QWidget>
 
 #include <lcms2.h>
@@ -72,15 +76,15 @@ ChromaHueDiagram::ChromaHueDiagram(
     );
 
     // Set focus policy
-    // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
-    // either not accepted at all or accepted always for the hole rectangular
-    // widget, depending on QWidget::focusPolicy(). This is not
-    // convenient and intuitive for big, circular-shaped widgets like this one.
-    // It would be nicer if the focus would only be accepted by mouse clicks
-    // <em>within the circle itself</em>. Qt does not provide a build-in way to
-    // do this. But a workaround to implement this behavior is possible: Set
-    // QWidget::focusPolicy() to <em>not</em> accept focus by mouse
-    // click. Then, reimplement mousePressEvent() and call
+    // In Qt, usually focus (QWidget::hasFocus()) by mouse click is either
+    // not accepted at all or accepted always for the hole rectangular
+    // widget, depending on QWidget::focusPolicy(). This is not convenient
+    // and intuitive for big, circular-shaped widgets like this one. It
+    // would be nicer if the focus would only be accepted by mouse clicks
+    // <em>within the circle itself</em>. Qt does not provide a build-in
+    // way to do this. But a workaround to implement this behavior is
+    // possible: Set QWidget::focusPolicy() to <em>not</em> accept focus
+    // by mouse click. Then, reimplement mousePressEvent() and call
     // setFocus(Qt::MouseFocusReason) if the mouse click is within the
     // circle. Therefore, this class simply defaults to
     // Qt::FocusPolicy::TabFocus for QWidget::focusPolicy().
@@ -129,7 +133,9 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 {
     // TODO Also accept out-of-gamut clicks when they are covered by the
     // current handle.
-    if (d_pointer->areWidgetCoordinatesWithinDiagramSurface(event->pos())) {
+    if (
+        d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos())
+    ) {
         event->accept();
         // Mouse focus is handled manually because so we can accept
         // focus only on mouse clicks within the displayed gamut, while
@@ -144,7 +150,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
         // handle itself within the displayed gamut.
         setCursor(Qt::BlankCursor);
         // Set the color property
-        d_pointer->setColorFromWidgetPixel(event->pos());
+        d_pointer->setColorFromWidgetPixelPosition(event->pos());
         // Schedule a paint event, so that the wheel handle will show. It’s
         // not enough to hope setColorFromWidgetCoordinates() would do this,
         // because setColorFromWidgetCoordinates() would not update the
@@ -181,21 +187,20 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
         event->accept();
-        cmsCIELab lab;
-        QPointF aB = d_pointer->fromWidgetCoordinatesToAB(event->pos());
-        lab.L = d_pointer->m_color.toLch().L;
-        lab.a = aB.x();
-        lab.b = aB.y();
+        const cmsCIELab lab = d_pointer->fromWidgetPixelPositionToLab(
+            event->pos()
+        );
         if (
-            d_pointer->areWidgetCoordinatesWithinDiagramSurface(event->pos()) &&
-            d_pointer->m_rgbColorSpace->inGamut(lab)
-            
+            d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(
+                event->pos()
+            )
+                && d_pointer->m_rgbColorSpace->inGamut(lab)
         ) {
-//             setCursor(Qt::BlankCursor); // TODO enable this code again xxx
+            setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
         }
-        d_pointer->setColorFromWidgetPixel(event->pos());
+        d_pointer->setColorFromWidgetPixelPosition(event->pos());
     } else {
         // Make sure default behavior like drag-window in KDE’s
         // Breeze widget style works.
@@ -233,7 +238,7 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
         event->accept();
         unsetCursor();
         d_pointer->m_isMouseEventActive = false;
-        d_pointer->setColorFromWidgetPixel(event->pos());
+        d_pointer->setColorFromWidgetPixelPosition(event->pos());
         // Schedule a paint event, so that the wheel handle will be hidden.
         // It’s not enough to hope setColorFromWidgetCoordinates() would do
         // this, because setColorFromWidgetCoordinates() would not update the
@@ -266,7 +271,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
         (event->angleDelta().y() != 0) &&
         // Only react on wheel events when then happen in the appropriate
         // area.a
-        d_pointer->areWidgetCoordinatesWithinDiagramSurface(event->pos())
+        d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos())
     ) {
         event->accept();
         cmsCIELCh lch = d_pointer->m_color.toLch();
@@ -491,8 +496,11 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
 /** @brief  Widget coordinates corresponding to the @ref color property
  * @returns Widget coordinates corresponding to the @ref color property.
  * This is the position of @ref color in the gamut diagram, but measured
- * and expressed in widget coordinates. */
-QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::widgetCoordinatesFromColor()
+ * and expressed in widget coordinates.
+ * @sa @ref MeasurementDetails "Measurement details" */
+QPointF ChromaHueDiagram
+    ::ChromaHueDiagramPrivate
+    ::widgetCoordinatesFromCurrentColor()
 {
     const qreal scaleFactor =
         (m_widgetDiameter - 2 * m_diagramBorder)
@@ -503,64 +511,72 @@ QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::widgetCoordinatesFromColor()
     );
 }
 
-// TODO xxx Revision starting here
-
-/** @brief Converts image coordinates to a-b-coordinates
- * @param widgetCoordinates A coordinate pair within the widget’s coordinate
- * system. This does not necessarily need to be within the actual displayed
- * diagram or even the gamut itself. It might even be negative.
- * @returns a-b-coordinates (as <em>a</em> and <em>b</em> in Lab coordinates)
- * of the currently displayed gamut diagram for the given widget coordinates */
-QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::fromWidgetCoordinatesToAB(
-    const QPoint widgetCoordinates
+/** @brief Converts widget pixel positions to Lab coordinates
+ * @param position The position of a pixel of the widget coordinate
+ * system. The given value  does not necessarily need to
+ * be within the actual displayed diagram or even the gamut itself. It
+ * might even be negative.
+ * @returns The Lab coordinates of the currently displayed gamut diagram
+ * for the (center of the) given pixel position.
+ * @sa @ref MeasurementDetails "Measurement details" */
+cmsCIELab ChromaHueDiagram
+    ::ChromaHueDiagramPrivate
+    ::fromWidgetPixelPositionToLab
+(
+    const QPoint position
 )
 {
     const qreal scaleFactor =
         static_cast<qreal>(2 * m_maxChroma)
             / (m_widgetDiameter - 2 * m_diagramBorder);
-    return QPointF(
-        (widgetCoordinates.x() - m_diagramOffset) * scaleFactor,
-        (widgetCoordinates.y() - m_diagramOffset) * scaleFactor * (-1)
-    );
+    // The pixel at position 0 0 has its top left border at position 0 0
+    // and its bottom right border at position 1 1 and its center at
+    // position 0.5 0.5. Its the center of the pixel that is our reference
+    // for conversion, therefore we have to ship by 0.5 widget pixels.
+    constexpr qreal pixelValueShift = 0.5;
+    cmsCIELab lab;
+    lab.L = m_color.toLch().L;
+    lab.a = (position.x() + pixelValueShift - m_diagramOffset)
+        * scaleFactor;
+    lab.b = (position.y() + pixelValueShift - m_diagramOffset)
+        * scaleFactor
+        * (-1);
+    return lab;
 }
 
-/** @brief Sets the @ref color property corresponding to given widget
- * pixel.
+/** @brief Sets the @ref color property corresponding to a given widget
+ * pixel position.
  * 
- * @param position A coordinate pair of a pixel of the widget coordinate
- * system. The pixel is a square of the width and length <tt>1</tt>. The
- * pixel at position <tt>QPoint(x, y)</tt> is the square with the top-left
- * edge at widget coordinates <tt>QPoint(x, y)</tt> and the botton-right
- * edge at widget coordinates <tt>QPoint(x+1, y+1)</tt>. On HiDPI
- * displays, this type of pixel will not be identical to the physical 
- * pixels on the hardware. The given value  does not necessarily need to
- * be within the actual displayed diagram or even the gamut itself. It
- * might even be negative.
+ * @param position The position of a pixel of the widget coordinate
+ * system. The given value  does not necessarily need to be within the
+ * actual displayed diagram or even the gamut itself. It might even be
+ * negative.
  * 
  * @post If the <em>center</em> of the widget pixel is within the represented
  * gamut, then the @ref color property is set correspondingly. If the center
  * of the widget pixel is outside the gamut, then the chroma value is reduced
  * (while the hue is maintained) until arriving at the outer shell of the
- * gamut; this adapted color is than used for the @ref color property.
+ * gamut; the @ref color property is than set to this adapted color.
  * 
  * @note This function works independently of the actually displayed color
  * gamut diagram. So if parts of the gamut (the high chroma parts) are cut
  * off in the visible diagram, this does not influence this function.
  * 
+ * @sa @ref MeasurementDetails "Measurement details"
+ * 
  * @todo What when the mouse goes outside the gray circle, but more
- * gamut is available outside (because m_maxChroma was chosen too small).
+ * gamut is available outside (because @ref m_maxChroma was chosen too small).
  * For consistency, the handle of the diagram should stay within the gray
  * circle, and this should be interpretat also actually as the value at
  * the position of the handle. */
-void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixel(
+void ChromaHueDiagram
+    ::ChromaHueDiagramPrivate
+    ::setColorFromWidgetPixelPosition
+(
     const QPoint position
 )
 {
-    const QPointF aB = fromWidgetCoordinatesToAB(position);
-    cmsCIELab lab;
-    lab.L = m_color.toLch().L;
-    lab.a = aB.x();
-    lab.b = aB.y();
+    const cmsCIELab lab = fromWidgetPixelPositionToLab(position);
     q_pointer->setColor(
         FullColorDescription(
             m_rgbColorSpace,
@@ -570,34 +586,32 @@ void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixel(
     );
 }
 
-/** @brief Tests if image coordinates are within the diagram surface.
+/** @brief Tests if a wiget pixel positon iswithin the mouse sensible circle.
  * 
- * The diagram surface is the gray circle on which the gamut diagram is
- * painted.
- * @param widgetCoordinates A coordinate pair within the widget’s coordinate
- * system. This does not necessarily need to be within the actual displayed
- * diagram or even the gamut itself. It might even be negative.
- * @returns <tt>true</tt> if the given image coordinates are within this
- * circle, <tt>false</tt> otherwise. */
+ * The mouse sensible circle contains the inner gray circle (on which the
+ * gamut diagram is painted).
+ * @param position The position of a pixel of the widget coordinate
+ * system. The given value  does not necessarily need to be within the
+ * actual displayed diagram or even the gamut itself. It might even be
+ * negative.
+ * @returns <tt>true</tt> if the (center of the) pixel at the given position
+ * is within the circle, <tt>false</tt> otherwise. */
 bool ChromaHueDiagram
     ::ChromaHueDiagramPrivate
-    ::areWidgetCoordinatesWithinDiagramSurface
+    ::isWidgetPixelPositionWithinMouseSensibleCircle
 (
-    const QPoint widgetCoordinates
+    const QPoint position
 )
 {
-    const qreal radialPixel = PerceptualColor::PolarPointF(
-        widgetCoordinates - QPointF(m_diagramOffset, m_diagramOffset)
+    const qreal radial = PerceptualColor::PolarPointF(
+        position
+            + QPointF(0.5, 0.5)
+            - QPointF(m_diagramOffset, m_diagramOffset)
     ).radial();
     return (
-        radialPixel <= ( (m_widgetDiameter - 1) / static_cast<qreal>(2) )
+        radial <= ( m_widgetDiameter / static_cast<qreal>(2) - m_diagramBorder)
     );
 }
-
-// TODO how to treat empty images because the color profile does not
-// work or the resolution is too small?
-
-// TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
 
 /** @brief Paint the widget.
  * 
@@ -606,8 +620,14 @@ bool ChromaHueDiagram
  * - Paints the widget. Takes the existing
  *   @ref ChromaHueDiagramPrivate::m_chromaHueImage and
  *   @ref ChromaHueDiagramPrivate::m_wheelImage and paints them on the widget.
+ *   If their cache is up-to-date, this operation is very fast, otherwise
+ *   considerably slower.
  * - Paints the handles.
- * - If the widget has focus, it also paints the focus indicator.
+ * - If the widget has focus, it also paints the focus indicator. As the
+ *   widget is round, we cannot use <tt>QStyle::PE_FrameFocusRect</tt> for
+ *   painting this, neither does <tt>QStyle</tt> provide build-in support
+ *   for round widgets. Therefore, we draw the focus indicator ourself,
+ *   which means its form is not controlled by <tt>QStyle</tt>.
  * 
  * @param event the paint event
  * 
@@ -620,7 +640,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
 
-    int imageSize = qMin(
+    const int imageSize = qMin(
             physicalPixelSize().width(),
             physicalPixelSize().height()
     );
@@ -642,44 +662,45 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     //       use the platform independent QImage as paint device; i.e. using
     //       QImage will ensure that the result has an identical pixel
     //       representation on any platform.”
-    QImage paintBuffer(
+    QImage buffer(
         imageSize,
         imageSize,
         QImage::Format_ARGB32_Premultiplied
     );
-    paintBuffer.fill(Qt::transparent);
-    paintBuffer.setDevicePixelRatio(devicePixelRatioF());
+    buffer.fill(Qt::transparent);
+    buffer.setDevicePixelRatio(devicePixelRatioF());
     
     // Other initialization
-    QPainter painter(&paintBuffer);
+    QPainter bufferPainter(&buffer);
     QPen pen;
     QBrush brush;
+// TODO xxx Revision starting here
+// TODO What if black or white are out of gamut on L=0.1 or L=99.9? Where
+// are the handles placed? How to react?
+// TODO how to treat empty images because the color profile does not
+// work or the resolution is too small?
+// TODO m_diagramOffset and m_widgetDiameter sollten in Funktionen umwegandelt
+// und in die Elternklasse verschoben werden.
 
     // Paint the gamut itself as available in the cache.
-    painter.setRenderHint(QPainter::Antialiasing, false);
+    bufferPainter.setRenderHint(QPainter::Antialiasing, false);
     d_pointer->m_chromaHueImage.setBorder(
         d_pointer->m_diagramBorder * devicePixelRatioF()
     );
     d_pointer->m_chromaHueImage.setImageSize(
         // Rounding down by using static_cast<int>
-        static_cast<int>(d_pointer->m_widgetDiameter * devicePixelRatioF())
+        static_cast<int>(d_pointer->m_widgetDiameter * devicePixelRatioF()) // TODO substitute this and all similar code with a specialized function
     );
-    d_pointer->m_chromaHueImage.setChromaRange(
-        d_pointer->m_maxChroma
-    );
-    d_pointer->m_chromaHueImage.setLightness(
-        d_pointer->m_color.toLch().L
-    );
-    d_pointer->m_chromaHueImage.setDevicePixelRatioF(
-        devicePixelRatioF()
-    );
-    painter.drawImage(
+    d_pointer->m_chromaHueImage.setChromaRange(d_pointer->m_maxChroma);
+    d_pointer->m_chromaHueImage.setLightness(d_pointer->m_color.toLch().L);
+    d_pointer->m_chromaHueImage.setDevicePixelRatioF(devicePixelRatioF());
+    bufferPainter.drawImage(
         QPoint(0, 0),                          // position of the image
         d_pointer->m_chromaHueImage.getImage() // image
     );
 
     // Paint a color wheel around
-    painter.setRenderHint(QPainter::Antialiasing, false);
+    bufferPainter.setRenderHint(QPainter::Antialiasing, false);
     // As devicePixelRatioF() might have changed, we make sure everything
     // is update before painting.
     d_pointer->m_wheelImage.setBorder(
@@ -691,7 +712,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
         static_cast<int>(d_pointer->m_widgetDiameter * devicePixelRatioF())
     );
     d_pointer->m_wheelImage.setWheelThickness(4 * handleOutlineThickness);
-    painter.drawImage(
+    bufferPainter.drawImage(
         QPoint(0, 0),                       // position of the image
         d_pointer->m_wheelImage.getImage()  // the image itself
     );
@@ -727,9 +748,9 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
         pen.setWidth(handleOutlineThickness);
         pen.setCapStyle(Qt::FlatCap);
         pen.setColor(Qt::black);
-        painter.setPen(pen);
-        painter.setRenderHint(QPainter::Antialiasing, true);
-        painter.drawLine(myHandleInner, myHandleOuter);
+        bufferPainter.setPen(pen);
+        bufferPainter.setRenderHint(QPainter::Antialiasing, true);
+        bufferPainter.drawLine(myHandleInner, myHandleOuter);
     }
   
     // Paint a focus indicator.
@@ -762,26 +783,29 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     // accommodates also to handleRadius, the distance of the focus line to
     // the real diagram also does, which looks nice.
     if (hasFocus()) {
-        painter.setRenderHint(QPainter::Antialiasing, true);
+        bufferPainter.setRenderHint(QPainter::Antialiasing, true);
         pen = QPen();
         pen.setWidth(handleOutlineThickness);
         pen.setColor(focusIndicatorColor());
-        painter.setPen(pen);
+        bufferPainter.setPen(pen);
         brush = QBrush(Qt::transparent);
-        painter.setBrush(brush);
-        painter.drawEllipse(
+        bufferPainter.setBrush(brush);
+        bufferPainter.drawEllipse(
+            // center:
             QPointF(
                 d_pointer->m_diagramOffset + 1,
                 d_pointer->m_diagramOffset + 1
-            ),                                                          // center
-            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2, // x radius
-            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2  // y radius
+            ),
+            // x radius:
+            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2,
+            // y radius:
+            (d_pointer->m_widgetDiameter - handleOutlineThickness) / 2 
         );
     }
 
     // Paint the handle on-the-fly.
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    QPointF widgetCoordinates = d_pointer->widgetCoordinatesFromColor();
+    bufferPainter.setRenderHint(QPainter::Antialiasing, true);
+    QPointF widgetCoordinates = d_pointer->widgetCoordinatesFromCurrentColor();
     pen = QPen();
     pen.setWidth(handleOutlineThickness);
     // Set color of the handle: Black or white, depending on the lightness of
@@ -791,10 +815,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     } else {
         pen.setColor(Qt::white);
     }
-    painter.setPen(pen);
+    bufferPainter.setPen(pen);
     brush = QBrush(Qt::transparent);
-    painter.setBrush(brush);
-    painter.drawEllipse(
+    bufferPainter.setBrush(brush);
+    bufferPainter.drawEllipse(
         widgetCoordinates,
         handleRadius + 0.5,
         handleRadius + 0.5
@@ -817,7 +841,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
             d_pointer->m_diagramOffset,
             d_pointer->m_diagramOffset
         );
-        painter.drawLine(
+        bufferPainter.drawLine(
             QPointF(
                 d_pointer->m_diagramOffset,
                 d_pointer->m_diagramOffset
@@ -834,7 +858,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     );
     widgetPainter.drawImage(
         QPoint(0, 0),
-        paintBuffer
+        buffer
     );
 }
 

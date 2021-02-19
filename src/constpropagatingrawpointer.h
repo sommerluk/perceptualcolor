@@ -51,9 +51,10 @@ namespace PerceptualColor {
  * 
  * @sa @ref ConstPropagatingUniquePointer
  *
- * @todo Would it be better to include (or link to)
- * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation? Or remove propagate_const header from this library? */
+ * @note There exist very sophisticated implementations like
+ * https://github.com/jbcoe/propagate_const but we use nevertheless
+ * our own lightwise implementation because this seems to be enough
+ * for our limited use case. */
 template <typename T>
 class ConstPropagatingRawPointer final
 {

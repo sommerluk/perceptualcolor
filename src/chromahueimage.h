@@ -40,13 +40,16 @@ namespace PerceptualColor {
  * This is a cut through the gamut body. The cut is orthogonal to
  * the L axis, so it shows the a-b diagram (speaking in terms of LAB
  * color model) also known as chroma-hue diagram (speaking in terms
- * of LCH color model).
+ * of LCH color model). The center of the coordiante system is in
+ * the center of the image. This might be a non-integer value. Each
+ * pixel has the color that corresponds to the coordinate point <em>at
+ * the middle</em> of the pixel.
  * 
  * The image has properties that can be accessed by the corresponding setters
  * and getters.
  * 
  * This class has a cache. The data is cached because it is expensive to
- * calculate it again and again on the fly.
+ * calculate the image again and again on the fly.
  * 
  * When changing one of the properties, the image is <em>not</em> calculated
  * inmediatly. But the old image in the cache is deleted, so that this

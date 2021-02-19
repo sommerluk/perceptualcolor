@@ -186,7 +186,7 @@ QImage ChromaHueImage::getImage()
     // finally have the background color, while everything around will be
     // transparent).
     const qreal circleRadius =
-        (m_imageSizePhysical - 2 * m_borderPhysical) / 2;
+        (m_imageSizePhysical - 2 * m_borderPhysical) / 2.;
     if (circleRadius <= 0) {
         // The border is too big the and image size too small: The size
         // of the circle is zero. The image will therefore be transparent.
@@ -206,7 +206,7 @@ QImage ChromaHueImage::getImage()
     );
 
     // Prepare for gamut painting
-    cmsCIELab lab; // uses cmsFloat64Number internally
+    cmsCIELab lab;
     lab.L = m_lightness;
     int x;
     int y;
@@ -219,15 +219,24 @@ QImage ChromaHueImage::getImage()
             / (m_imageSizePhysical - 2 * m_borderPhysical); 
 
     // Paint the gamut.
+    // The pixel at position QPoint(x, y) is the square with the top-left
+    // edge at coordinate point QPoint(x, y) and the botton-right edge at
+    // coordinate point QPoint(x+1, y+1). This pixel is supposed to have
+    // the color from coordinate point QPoint(x+0.5, y+0.5), which is
+    // the middle of this pixel. Therefore, with an offset of 0.5 we can
+    // convert from the pixel position to the point in the middle of the pixel.
+    constexpr qreal pixelOffset = 0.5;
     // TODO Could this be further optimized? For example not go from zero
     // up to m_imageSizePhysical, but exclude the border (and add the 
     // tolerance)? Tought anyway the color transform (which is the heavy
     // work) is only done when within a given diameter, reducing loop runs
     // itself might also increase performance at least a little bit…
     for (y = 0; y < m_imageSizePhysical; ++y) {
-        lab.b = m_chromaRange - (y - m_borderPhysical) * scaleFactor;
+        lab.b = m_chromaRange
+            - (y + pixelOffset - m_borderPhysical) * scaleFactor;
         for (x = 0; x < m_imageSizePhysical; ++x) {
-            lab.a = (x - m_borderPhysical) * scaleFactor - m_chromaRange;
+            lab.a = (x + pixelOffset - m_borderPhysical) * scaleFactor
+                - m_chromaRange;
             if (
                 (qPow(lab.a, 2) + qPow(lab.b, 2))
                     <= (qPow(m_chromaRange + overlap, 2))

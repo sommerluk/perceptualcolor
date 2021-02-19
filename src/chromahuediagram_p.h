@@ -38,7 +38,51 @@
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to
- *  implementation</em> idiom */
+ *  implementation</em> idiom
+ * 
+ * @anchor MeasurementDetails <b>Measurement details</b>
+ * 
+ * This class deals simultaniously with various
+ * coordinate systems and  unit of measurement.
+ * 
+ * <b>Units of measurement</b>
+ * 
+ * - <em>Device-indepentend pixel/coordinates</em> are the  unit of
+ *   measurement for widgets, windows, screens, mouse events and so on in Qt.
+ * - <em>Physical pixel/coordinates</em> are the unit that measures actual
+ *   physical screen pixel.
+ * 
+ * The conversion factor between these two units of measurement is
+ * <tt>QPaintDevice::devicePixelRatioF()</tt>. It is usually <tt>1</tt> on
+ * classic low resolution screens, and bigger than <tt>1</tt> on high
+ * resolution screens. See https://doc.qt.io/qt-6/highdpi.html for more
+ * details on Qt’s High DPI support.
+ * 
+ * <b>Coordinate points versus pixel positions</b>
+ * 
+ * - <em>Coordinate points</em> are points in the mathematical sense, that
+ *   means they have zero surface. They should always be represented by
+ *   floating point data types; this is necessary to allow conversions
+ *   without having too much rounding errors.
+ * - <em>Pixel positions</em> describe the position of a particular pixel.
+ *   Pixel are surfaces, not points. A pixel is a square of the width and
+ *   length <tt>1</tt>. The pixel at position <tt>QPoint(x, y)</tt> is the
+ *   square with the top-left edge at coordinate point <tt>QPoint(x, y)</tt>
+ *   and the botton-right edge at coordinate point <tt>QPoint(x+1, y+1)</tt>.
+ * 
+ * Some functions (like mouse events work with pixel positions), other
+ * functions (like antialiased floatting-point drawing operations) work
+ * with coordinate points. It’s important to always distinguish correctly
+ * these two different concepts. See https://doc.qt.io/qt-6/coordsys.html
+ * for more details on Qt’s coordinate systems.
+ * 
+ * In this widget, when painting a pixel of the gamut, the color of the
+ * pixel will be the color of the coordinate point at the center of the pixel.
+ * So the pixel at position <tt>QPoint(x, y)</tt> gets the color that
+ * corresponds to the coordinate point <tt>QPoint(x+0.5, y+0.5)</tt>.
+ * Also, mouse events work with pixel position; so when reacting on mouse
+ * events than the center of the given mouse event pixel position is
+ * used to decide how to react on the mouse event. */
 class ChromaHueDiagram::ChromaHueDiagramPrivate final
 {
 public:
@@ -74,20 +118,20 @@ public:
      * Default value is <tt>false</tt>.
      * - A mouse event gets typically activated on a @ref mousePressEvent()
      *   done within the gamut diagram. The value is set to <tt>true</tt>.
-     * - While active, all @ref mouseMoveEvent() will move the diagram’s color
-     *   handle.
+     * - While active, all @ref mouseMoveEvent() will move the diagram’s
+     *   color handle.
      * - Once a @ref mouseReleaseEvent() occurs, the value is set to
      *   <tt>false</tt>. Further mouse movements will not move the handle
      *   anymore. */
     bool m_isMouseEventActive = false;
-    /** @brief Pointer to @ref RgbColorSpace object */
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
     /** @brief The maximum chroma value.
      *
      * This is the value that is on the border of the gray circle.
      * 
      * @todo This should not be hard-coded to sRGB. */
     qreal m_maxChroma = LchValues::srgbMaximumChroma;
+    /** @brief Pointer to @ref RgbColorSpace object */
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
     /** @brief The image of the color wheel. */
     ColorWheelImage m_wheelImage;
     /** @brief Diameter of the widget.
@@ -99,12 +143,12 @@ public:
     int m_widgetDiameter = 0;
 
     // Member functions
-    bool areWidgetCoordinatesWithinDiagramSurface(
+    cmsCIELab fromWidgetPixelPositionToLab(const QPoint position);
+    bool isWidgetPixelPositionWithinMouseSensibleCircle(
         const QPoint widgetCoordinates
     );
-    QPointF fromWidgetCoordinatesToAB(const QPoint widgetCoordinates);
-    void setColorFromWidgetPixel(const QPoint position);
-    QPointF widgetCoordinatesFromColor();
+    void setColorFromWidgetPixelPosition(const QPoint position);
+    QPointF widgetCoordinatesFromCurrentColor();
 
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)

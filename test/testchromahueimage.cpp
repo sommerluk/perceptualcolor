@@ -32,7 +32,9 @@
 
 #include <QtTest>
 
-#include <helper.h>
+#include "PerceptualColor/fullcolordescription.h"
+#include "helper.h"
+#include "lchvalues.h"
 
 namespace PerceptualColor {
 
@@ -467,6 +469,88 @@ private Q_SLOTS:
             test.getImage().devicePixelRatio(),
             1.5
         );
+    }
+    
+    void testIfGamutIsCenteredCorrectlyOnOddSize() {
+        ChromaHueImage test(colorSpace);
+        test.setBorder(0);
+        test.setLightness(50);
+        test.setChromaRange(LchValues::srgbMaximumChroma);
+        constexpr int oddSize = 101;
+        test.setImageSize(oddSize); // an odd numer
+        constexpr int positionAtCenter = (oddSize - 1) / 2;
+        const qreal chromaAtCenter = FullColorDescription(
+            colorSpace,
+            test.getImage().pixelColor(positionAtCenter, positionAtCenter)
+        ).toLch().C;
+        for (int x = positionAtCenter - 2; x <= positionAtCenter + 2; ++x) {
+            for (int y = positionAtCenter - 2; y <= positionAtCenter + 2; ++y) {
+                if ( (x == positionAtCenter) && (y == positionAtCenter) ) {
+                    continue;
+                }
+                const qreal chromaAround = FullColorDescription(
+                    colorSpace,
+                    test.getImage().pixelColor(x, y)
+                ).toLch().C;
+                QVERIFY2(
+                    chromaAtCenter < chromaAround,
+                    "The chroma of the pixel at the center of the image "
+                        "is lower than the chroma of any of the pixels "
+                        "around."
+                );
+            }
+        }
+    }
+    
+    void testIfGamutIsCenteredCorrectlyOnEvenSize() {
+        ChromaHueImage test(colorSpace);
+        test.setBorder(0);
+        test.setLightness(50);
+        test.setChromaRange(LchValues::srgbMaximumChroma);
+        constexpr int evenSize = 100;
+        test.setImageSize(evenSize); // an odd numer
+        constexpr int positionAtCenter2 = evenSize / 2;
+        constexpr int positionAtCenter1 = positionAtCenter2 - 1;
+        const qreal chromaAtCenterA = FullColorDescription(
+            colorSpace,
+            test.getImage().pixelColor(positionAtCenter1, positionAtCenter1)
+        ).toLch().C;
+        const qreal chromaAtCenterB = FullColorDescription(
+            colorSpace,
+            test.getImage().pixelColor(positionAtCenter1, positionAtCenter2)
+        ).toLch().C;
+        const qreal chromaAtCenterC = FullColorDescription(
+            colorSpace,
+            test.getImage().pixelColor(positionAtCenter2, positionAtCenter1)
+        ).toLch().C;
+        const qreal chromaAtCenterD = FullColorDescription(
+            colorSpace,
+            test.getImage().pixelColor(positionAtCenter2, positionAtCenter2)
+        ).toLch().C;
+        const qreal maximumChromaAtCenter = qMax(
+            qMax(chromaAtCenterA, chromaAtCenterB),
+            qMax(chromaAtCenterC, chromaAtCenterD)
+        );
+        for (int x = positionAtCenter1 - 2; x <= positionAtCenter2 + 2; ++x) {
+            for (int y = positionAtCenter1 - 2; y <= positionAtCenter2 + 2; ++y) {
+                if (
+                    inRange(positionAtCenter1, x, positionAtCenter2)
+                        && inRange(positionAtCenter1, y, positionAtCenter2)
+                ) {
+                    continue;
+                }
+                const qreal chromaAround = FullColorDescription(
+                    colorSpace,
+                    test.getImage().pixelColor(x, y)
+                ).toLch().C;
+                QVERIFY2(
+                    maximumChromaAtCenter < chromaAround,
+                    "The chroma of the pixels at the center of the image "
+                        "is lower than the chroma of any of the pixels "
+                        "around."
+                );
+            }
+        }
     }
 
     void testSnippet01() {
