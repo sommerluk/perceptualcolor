@@ -374,10 +374,8 @@ private Q_SLOTS:
     void testDebug() {
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
-
         // Test if QDebug support does not make a crash.
         qDebug() << PolarPointF();
-        
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
     }

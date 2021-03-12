@@ -57,6 +57,14 @@ signal-with-return-value,\
 thread-with-slots,\
 tr-non-literal,\
 unneeded-cast"
+# TODO Activate also:
+# qt6-header-fixes
+# qt6-qhash-signature
+# qt6-fwd-fixes
+# missing-qobject-macro
+# which are recommandet for Qt6 porting
+# at https://www.qt.io/blog/porting-from-qt-5-to-qt-6-using-clazy-checks
+# but require Clazy 1.10
 
 # We run “make” with the argument “--jobs” without specifying the number
 # of parallel jobs. This means the number is jobs is maximum.

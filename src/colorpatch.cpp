@@ -33,12 +33,19 @@
 #include "colorpatch_p.h"
 
 #include <QPainter>
+#include <QStyleOption>
+
+#include "PerceptualColor/abstractdiagram.h"
+
+#include "helper.h"
 
 namespace PerceptualColor {
 
-/** @brief Constructor */
+/** @brief Constructor
+ * @param parent The parent of the widget, if any
+ */
 ColorPatch::ColorPatch(QWidget *parent) :
-    AbstractDiagram(parent),
+    QFrame(parent),
     d_pointer(new ColorPatchPrivate())
 {
     setFrameShape(QFrame::StyledPanel);
@@ -98,23 +105,64 @@ void ColorPatch::setColor(const QColor &newColor)
  * the current color above. */
 void ColorPatch::paintEvent(QPaintEvent *event)
 {
-    
+    // First of all, draw the frame
+    QFrame::paintEvent(event);
+
+    // Initialization
+    QPainter widgetPainter { this };
+    widgetPainter.setRenderHint(QPainter::Antialiasing, true);
+    QStyleOptionFrame opt;
+    opt.initFrom(this); // Sets also QStyle::State_MouseOver if appropriate
+    const int defaultFrameWidth =
+        qMax(style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt), 1);
+
+    // Draw content of an invalid color (and return)
     if (!d_pointer->m_color.isValid()) {
-        // Paint the frame, as provided by the base class
-        QFrame::paintEvent(event);
+        widgetPainter.setRenderHint(QPainter::Antialiasing, true);
+        QPalette::ColorGroup paletteColorGroup;
+        if (isEnabled()) {
+            paletteColorGroup =  QPalette::ColorGroup::Normal;
+        } else {
+            paletteColorGroup = QPalette::ColorGroup::Disabled;
+        }
+        QPen pen { palette().color(paletteColorGroup, QPalette::WindowText) };
+        pen.setWidth(defaultFrameWidth);
+        pen.setCapStyle(Qt::PenCapStyle::RoundCap);
+        widgetPainter.setPen(pen);
+        // Calculate an adjustmend to allow for rounded line caps without
+        // touching the frame.
+        const qreal adjustmentForRoundedLineCaps = pen.widthF() / 2.0;
+        const QRectF noColorMarkerRectangle = 
+            QRectF(contentsRect()).adjusted(
+                adjustmentForRoundedLineCaps,
+                adjustmentForRoundedLineCaps,
+                -adjustmentForRoundedLineCaps,
+                -adjustmentForRoundedLineCaps
+            );
+        widgetPainter.drawLine(
+            noColorMarkerRectangle.topLeft(),
+            noColorMarkerRectangle.bottomRight()
+        );
+        widgetPainter.drawLine(
+            noColorMarkerRectangle.topRight(),
+            noColorMarkerRectangle.bottomLeft()
+        );
         return;
     }
 
+    // Draw content of a valid color
+    widgetPainter.setRenderHint(QPainter::Antialiasing, false);
     // Create an image to paint on
     QImage tempImage = QImage(
-        qRound(contentsRect().width() * devicePixelRatioF()),
-        qRound(contentsRect().height() * devicePixelRatioF()),
+        // deliberately rounding down with static_cast<int>
+        static_cast<int>(contentsRect().width() * devicePixelRatioF()),
+        static_cast<int>(contentsRect().height() * devicePixelRatioF()),
         QImage::Format_RGB32
     );
     if (d_pointer->m_color.alphaF() < 1) {
         // Prepare the image with (semi-)transparent color
         // Background for colors that are not fully opaque
-        QImage tempBackground = transparencyBackground();
+        QImage tempBackground = transparencyBackground(devicePixelRatioF());
         // Paint the color above
         QPainter(&tempBackground).fillRect(
             0,
@@ -143,24 +191,16 @@ void ColorPatch::paintEvent(QPaintEvent *event)
         }
     } else {
         // Prepare the image with plain color
-        QPainter(&tempImage).fillRect(
-            0,
-            0,
-            tempImage.width(),
-            tempImage.height(),
-            d_pointer->m_color
-        );
+        tempImage.fill(d_pointer->m_color);
     }
     // Set correct devicePixelRatioF for image
     tempImage.setDevicePixelRatio(devicePixelRatioF());
     // Paint the image on the widget
-    QPainter(this).drawImage(
-        contentsRect().x(),
-        contentsRect().y(),
+    widgetPainter.drawImage(
+        contentsMargins().left(),
+        contentsMargins().top(),
         tempImage
     );
-    // Paint the frame, as provided by the base class
-    QFrame::paintEvent(event);
 }
 
 }

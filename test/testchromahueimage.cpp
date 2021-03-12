@@ -106,6 +106,8 @@ private Q_SLOTS:
     
     void testImageSize() {
         ChromaHueImage test(colorSpace);
+        // Test especially small values, that might make special
+        // problems in the algorithm (devision by zero, offset by 1…)
         QCOMPARE(
             test.getImage().size(),
             QSize(0, 0)
@@ -120,11 +122,22 @@ private Q_SLOTS:
             test.getImage().size(),
             QSize(2, 2)
         );
+        test.setImageSize(2);
+        QCOMPARE(
+            test.getImage().size(),
+            QSize(2, 2)
+        );
+        test.setImageSize(4);
+        QCOMPARE(
+            test.getImage().size(),
+            QSize(4, 4)
+        );
         test.setImageSize(5);
         QCOMPARE(
             test.getImage().size(),
             QSize(5, 5)
         );
+        // Test a normal size value
         test.setImageSize(500);
         QCOMPARE(
             test.getImage().size(),

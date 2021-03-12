@@ -82,10 +82,14 @@ grep \
 grep \
     --recursive \
     --perl-regexp "[^a-zA-Z]cms[a-zA-Z0-9]" \
-    $PUBLIC_HEADERS \
-    | grep \
-        --perl-regexp "(:using)|(\<tt\>cms)" \
-        --invert-match
+    $PUBLIC_HEADERS # \
+#     | grep \
+#         --perl-regexp "(:using)|(\<tt\>cms)" \
+#         --invert-match
+grep \
+    --recursive \
+    --fixed-strings "lcms2.h" \
+    $PUBLIC_HEADERS
 
 # -> Do not use the “code” and “endcode” tags for Doxygen documentation. Use
 #    @snippet instead! That allows that the example code is actually compiled
@@ -141,7 +145,8 @@ grep \
 #    compatibility, because applications linking against the library
 #    will always execute the inline function version against they where
 #    compiled, and never the inline function of the library version
-#    against they are linking at run-time.
+#    against they are linking at run-time. This make maintaining binary
+#    compatibility much harder, for little benefit.
 grep \
     --recursive \
     --fixed-strings "inline" \

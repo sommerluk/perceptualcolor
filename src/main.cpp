@@ -29,17 +29,28 @@
 #include "PerceptualColor/colordialog.h"
 
 #include "PerceptualColor/multispinbox.h"
+#include "PerceptualColor/polarpointf.h"
+#include "PerceptualColor/labdouble.h"
+#include "PerceptualColor/lchdouble.h"
+#include "PerceptualColor/rgbdouble.h"
+#include "fallbackiconengine.h"
+
+#include <lcms2.h>
 
 #include <QApplication>
 
 #include <QColorDialog>
+#include <QAction>
 #include <QDebug>
+#include <QLineEdit>
+#include <QImageReader>
 #include <QPainter>
 #include <QPushButton>
 #include <QDateTimeEdit>
 #include <QColorDialog>
 #include <memory>// Other includes
 #include <QtMath>
+#include <QLabel>
 
 // TODO Anti-aliasing the gamut diagrams? Wouldn't this be bad for performance?
 
@@ -67,12 +78,14 @@ static_assert(
 
 int main(int argc, char *argv[])
 {
-    // Initialize the application
+    // Prepare configuratin before instanciating the application object
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    // Instanciate the application object
     QApplication app(argc, argv);
     app.setApplicationName(
         QObject::tr(u8"Perceptual color picker")
     );
-    app.setLayoutDirection(Qt::RightToLeft);
+//     app.setLayoutDirection(Qt::RightToLeft);
 //     QLocale::setDefault(QLocale::Bengali);
 //     QLocale::setDefault(QLocale::German);
     
@@ -82,10 +95,7 @@ int main(int argc, char *argv[])
         QColorDialog::ColorDialogOption::ShowAlphaChannel,
         true
     );
-//     m_colorDialog.setOption(
-//         QColorDialog::ColorDialogOption::NoButtons,
-//         true
-//     );
+//     m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
     m_colorDialog.setLayoutDimensions(
         PerceptualColor
             ::ColorDialog
@@ -97,7 +107,7 @@ int main(int argc, char *argv[])
 //     m_colorDialog.setStyleSheet(
 //         "background: yellow; color: red; border: 15px solid #FF0000;"
 //     );
-    
+
     // Run
     return app.exec();
 }

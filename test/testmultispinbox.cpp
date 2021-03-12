@@ -34,6 +34,7 @@
 
 #include <QtTest>
 
+#include <QAction>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
@@ -1246,12 +1247,47 @@ private Q_SLOTS:
     void testSectionDataDebug() {
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
-
         // Test if QDebug support does not make a crash.
         qDebug() << MultiSpinBox::SectionData();
-        
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
+    }
+    
+    void testAddActionButton() {
+        MultiSpinBox mySpinBox;
+        int oldWidth = 0;
+        QCOMPARE(
+            mySpinBox.d_pointer->m_actionButtonCount,
+            0
+        );
+        oldWidth = mySpinBox.sizeHint().width();
+        mySpinBox.addActionButton(
+            new QAction(QStringLiteral(u"test"), &mySpinBox),
+            QLineEdit::ActionPosition::TrailingPosition
+        );
+        QCOMPARE(
+            mySpinBox.d_pointer->m_actionButtonCount,
+            1
+        );
+        QVERIFY2(
+            mySpinBox.sizeHint().width() > oldWidth,
+            "Verify that the size hint has a bigger width than before after "
+                "an action button has been added."
+        );
+        oldWidth = mySpinBox.sizeHint().width();
+        mySpinBox.addActionButton(
+            new QAction(QStringLiteral(u"test"), &mySpinBox),
+            QLineEdit::ActionPosition::TrailingPosition
+        );
+        QCOMPARE(
+            mySpinBox.d_pointer->m_actionButtonCount,
+            2
+        );
+        QVERIFY2(
+            mySpinBox.sizeHint().width() > oldWidth,
+            "Verify that the size hint has a bigger width than before after "
+                "an action button has been added."
+        );
     }
 
     void testFixedSection_data() {

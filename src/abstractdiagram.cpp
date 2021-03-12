@@ -35,14 +35,18 @@
 #include <cmath>
 
 #include <QPainter>
+#include <QStyle>
+#include <QStyleOption>
+
+#include "helper.h"
 
 namespace PerceptualColor {
 
 /** @brief The constructor.
  * @param parent The widget’s parent widget. This parameter will be passed
- * to the QWidget base class constructor. */
+ * to the base class’s constructor. */
 AbstractDiagram::AbstractDiagram(QWidget *parent)
-: QFrame(parent)
+: QWidget(parent)
 {
 }
 
@@ -121,11 +125,46 @@ QSize AbstractDiagram::physicalPixelSize() const
     );
 }
 
+/** @brief The maximum possible size of a square within the widget, measured
+ * in <em>physical</em> pixels.
+ * 
+ * This is the shorter value of width and height of the widget.
+ * 
+ * @returns The maximum possible size of a square within the widget, measured
+ * in <em>physical</em> pixels.
+ * 
+ * @sa @ref maximumWidgetSquareSize */
+int AbstractDiagram::maximumPhysicalSquareSize() const
+{
+    return qMin(
+            physicalPixelSize().width(),
+            physicalPixelSize().height()
+    );
+}
+
+/** @brief The maximum possible size of a square within the widget, measured
+ * in <em>widget</em> pixels.
+ * 
+ * This is the conversion of @ref maximumPhysicalSquareSize to the unit
+ * “widget pixels“. It might therefore be <em>smaller</em> than the shortest
+ * value of width and height of this widget because of defensive rounding.
+ * 
+ * @returns The maximum possible size of a square within the widget, measured
+ * in <em>widget</em> pixels. */
+qreal AbstractDiagram::maximumWidgetSquareSize() const
+{
+    return (maximumPhysicalSquareSize() / devicePixelRatioF());
+}
+
 /** @brief Background for semi-transparent colors.
 ** 
 ** When showing a semi-transparent color, there has to be a background
 ** on which it is shown. This function provides a suitable background
 ** for showcasing a color.
+** 
+** Example code (to use within a class that inherits from
+** @ref PerceptualColor::AbstractDiagram):
+** @snippet test/testabstractdiagram.cpp AbstractDiagram Use transparency background
 ** 
 ** @returns An image of a mosaic of neutral gray rectangles of different
 ** lightness. You can use this as tiles to paint a background.
@@ -136,43 +175,69 @@ QSize AbstractDiagram::physicalPixelSize() const
 ** to full integers. Therefore, the result is always a sharp image.
 ** This function takes care that each square has the same pixel size,
 ** without scaling errors or anti-aliasing errors.
-** 
-** Example code (to use within a class that inherits from
-** @ref PerceptualColor::AbstractDiagram):
-** @snippet test/testabstractdiagram.cpp AbstractDiagram Use transparency background
-** 
-** @todo Provide color management support? Currently, we use the same
-** value for red, green and blue, this might <em>not</em> be perfectly
-** neutral gray depending on the color profile of the monitor… */
+**
+** @sa @ref transparencyBackground(qreal devicePixelRatioF) */
 QImage AbstractDiagram::transparencyBackground() const
 {
-    constexpr int lightnessOne = 210; // valid range is [0, 255]
-    constexpr int lightnessTwo = 240; // valid range is [0, 255]
-    constexpr int squareSizeInLogicalPixel = 10;
-    const int squareSize = qRound(
-        squareSizeInLogicalPixel * devicePixelRatioF()
-    );
+    return PerceptualColor::transparencyBackground(devicePixelRatioF());
+}
 
-    QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
-    temp.fill(QColor(lightnessOne, lightnessOne, lightnessOne));
-    QPainter painter(&temp);
-    QColor foregroundColor(lightnessTwo, lightnessTwo, lightnessTwo);
-    painter.fillRect(
-        0,
-        0,
-        squareSize,
-        squareSize,
-        foregroundColor
+/** @brief The outline thickness of a (either circular or linear) handle.
+ * 
+ * Measured in widget pixels. */
+int AbstractDiagram::handleOutlineThickness() const
+{
+    return 2;
+    
+//     // The following code is an alternative. However, this leeds to extremly
+//     // low values for the Fusion style and extremly high values for the
+//     // Kvantum style (with KvGnomish). This is not acceptable. Therefore,
+//     // we do not use this code…
+//     QStyleOption styleOption;
+//     styleOption.initFrom(this); // Sets also QStyle::State_MouseOver
+//     return qMax(
+//         style()->pixelMetric(
+//             QStyle::PM_DefaultFrameWidth,
+//             &styleOption,
+//             this
+//         ),
+//         1
+//     );
+}
+
+/** @brief The radius of a circular handle.
+ * @returns The radius of a circular handle, measured in widget pixels. */
+qreal AbstractDiagram::handleRadius() const
+{
+    return handleOutlineThickness() * 2.5;
+}
+
+
+/** @brief The thickness of the color wheel.
+ * @returns The thickness of the color wheel, measured in widget
+ * coordinates. */
+int AbstractDiagram::wheelThickness() const
+{
+    QStyleOption styleOption;
+    styleOption.initFrom(this); // Sets also QStyle::State_MouseOver
+    return qMax(
+        style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this),
+        qRound(handleRadius())
     );
-    painter.fillRect(
-        squareSize,
-        squareSize,
-        squareSize,
-        squareSize,
-        foregroundColor
-    );
-    temp.setDevicePixelRatio(devicePixelRatioF());
-    return temp;
+    
+}
+
+/** @brief The empty space around diagrams reserverd for the focus indicator.
+ * 
+ * Measured in widget coordinates. 
+ * 
+ * @returns The empty space around diagrams reserverd for the focus
+ * indicator. */
+int AbstractDiagram::spaceForFocusIndicator() const
+{
+    return
+        handleOutlineThickness() // The space for the focus indicator itself
+        + 2 * handleOutlineThickness(); // Add some spacing
 }
 
 }

@@ -53,6 +53,12 @@ public:
     /** @brief Only for unit tests. */
     friend class TestMultiSpinBox;
 
+    /** @brief Counter for all actions added by @ref addActionButton. */
+    int m_actionButtonCount = 0;
+    /** @brief Holds the index of the currently selected section.
+     * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue
+     * @sa @ref setCurrentIndexWithoutUpdatingText */
+    int m_currentIndex = 0;
     /** @brief Holds the data for the sections.
      * 
      * This list is guaranteed to contain at least <em>one</em> section.
@@ -60,10 +66,6 @@ public:
      * @sa @ref sections()
      * @sa @ref setSections() */
     QList<MultiSpinBox::SectionData> m_sections;
-    /** @brief Holds the index of the currently selected section.
-     * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue
-     * @sa @ref setCurrentIndexWithoutUpdatingText */
-    int m_currentIndex = 0;
     /** @brief The string of everything <em>after</em> the value of the
      * current section.
      * 

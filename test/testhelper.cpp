@@ -143,6 +143,22 @@ private Q_SLOTS:
         );
     }
 
+    void testTransparencyBackground() {
+        QImage temp = transparencyBackground(1);
+        QVERIFY2(
+            temp.size().width() > 0,
+            "Width of image is bigger than 0."
+        );
+        QVERIFY2(
+            temp.size().height() > 0,
+            "Height of image is bigger than 0."
+        );
+        QVERIFY2(
+            temp.allGray(),
+            "Image is neutral gray."
+        );
+    }
+
     void testStandardWheelSteps() {
         QWheelEvent temp(
             QPointF(),

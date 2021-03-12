@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// // SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
  * 
@@ -116,8 +116,8 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
 {
     // Code
     m_border = qRound(
-        handleRadius
-            + (handleOutlineThickness / static_cast<qreal>(2))
+        q_pointer->handleRadius()
+            + (q_pointer->handleOutlineThickness() / static_cast<qreal>(2))
     );
 }
 
@@ -352,14 +352,17 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     // paint it at the left-most possible position. As the border() property
     // accommodates also to handleRadius, the distance of the focus line
     // to the real diagram also does, which looks nice.
+    // TODO This should be styled correctly. Find a solution with
+    // QStyle::PE_Frame. But: Some styles like dlight have invisible frames
+    // (all, even raised and sunken).
     if (hasFocus()) {
-        pen.setWidth(handleOutlineThickness);
+        pen.setWidth(handleOutlineThickness());
         pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
         painter.drawLine(
-            handleOutlineThickness / 2, // 0.5 is rounded down to 0.0
+            handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
             0 + d_pointer->m_border,
-            handleOutlineThickness / 2, // 0.5 is rounded down to 0.0
+            handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
             size().height() - d_pointer->m_border
         );
     }
@@ -384,7 +387,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     //       representation on any platform.”
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint imageCoordinates = d_pointer->currentImageCoordinates();
-    pen.setWidth(handleOutlineThickness);
+    pen.setWidth(handleOutlineThickness());
     if (d_pointer->m_color.toLch().L >= 50  /* range: 0..100 */) {
         pen.setColor(Qt::black);
     } else {
@@ -392,10 +395,12 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     }
     painter.setPen(pen);
     painter.drawEllipse(
-        imageCoordinates.x() + d_pointer->m_border - handleRadius,
-        imageCoordinates.y() + d_pointer->m_border - handleRadius,
-        2 * handleRadius + 1,
-        2 * handleRadius + 1
+        QRectF(
+            imageCoordinates.x() + d_pointer->m_border - handleRadius(),
+            imageCoordinates.y() + d_pointer->m_border - handleRadius(),
+            2 * handleRadius() + 1,
+            2 * handleRadius() + 1
+        )
     );
 
     // Paint the buffer to the actual widget

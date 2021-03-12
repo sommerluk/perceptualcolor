@@ -309,24 +309,30 @@ private Q_SLOTS:
         );
     }
 
-    void testResizeEvent() {
+    void testDiagramOffset() {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         myDiagram.show(); // Necessary to allow event processing
         myDiagram.resize(50, 50);
-        QCOMPARE(
-            myDiagram.d_pointer->m_widgetDiameter,
-            50
-        );
-        qreal oldOffset = myDiagram.d_pointer->m_diagramOffset;
+        qreal oldOffset = myDiagram.d_pointer->diagramOffset();
         myDiagram.resize(100, 100);
-        QCOMPARE(
-            myDiagram.d_pointer->m_widgetDiameter,
-            100
-        );
         QVERIFY2(
-            myDiagram.d_pointer->m_diagramOffset > oldOffset,
+            myDiagram.d_pointer->diagramOffset() > oldOffset,
             "Verify that the offset at widget size 150 is bigger "
                 "than at widget size 100."
+        );
+    }
+
+    void testDiagramCenterInWidgetCoordinates() {
+        PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
+        myDiagram.resize(100, 100);
+        // Test conformance with diagramOffset()
+        QCOMPARE(
+            myDiagram.d_pointer->diagramCenterInWidgetCoordinates().x(),
+            myDiagram.d_pointer->diagramOffset()
+        );
+        QCOMPARE(
+            myDiagram.d_pointer->diagramCenterInWidgetCoordinates().y(),
+            myDiagram.d_pointer->diagramOffset()
         );
     }
 
@@ -370,6 +376,21 @@ private Q_SLOTS:
             QPoint(testPosition, testPosition) + QPointF(0.5, 0.5)
         );
     }
+
+void testSnipped1() {
+//! [ChromaHueDiagram Instanciate]
+QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
+    new PerceptualColor::RgbColorSpace()
+};
+PerceptualColor::ChromaHueDiagram *myDiagram =
+    new PerceptualColor::ChromaHueDiagram(myColorSpace);
+myDiagram->setColor(
+    FullColorDescription(myColorSpace, Qt::green)
+);
+myDiagram->show();
+//! [ChromaHueDiagram Instanciate]
+delete myDiagram;
+}
 
 };
 

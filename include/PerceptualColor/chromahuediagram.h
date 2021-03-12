@@ -42,15 +42,17 @@ namespace PerceptualColor {
  * <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">
  * Lab color model</a>) at a given lightness.
  * 
- * The widget allows to select a color within the specified gamut at the
- * given lightness. It reacts on mouse events and on keyboard events (see
- * @ref keyPressEvent() for details).
+ * The widget allows the user to select a color (chroma and hue) within the
+ * specified gamut at a given lightness. It reacts on mouse events and on
+ * keyboard events (see @ref keyPressEvent() for details).
  * 
- * The circular form of the widget and the selection handle that always
- * indicates the distance from the center of the diagram, all this
+ * The form of the selection handle (that always indicates the distance from
+ * the center of the diagram) and the circular form of the widget, all this
  * helps the user to understand intuitively that he is moving within a
  * polar coordinate system and to capture easily the current radial
  * and angle.
+ * 
+ * Usage example: @snippet test/testchromahuediagram.cpp ChromaHueDiagram Instanciate
  * 
  * @note This widget <em>always</em> accepts focus by a mouse click within
  * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
@@ -62,37 +64,27 @@ namespace PerceptualColor {
  * - If you set the <tt>QWidget::focusPolicy</tt> property to a
  *   value that accepts focus by mouse click, the focus will not only be
  *   accepted for clicks within the actual circle, but also for clicks
- *   within the surrounding rectangle.
- * 
- * @todo The image is wrong: The hue indicator is not at the correct
- * position (at least at 150% screen scaling).
- * 
- * @todo Declare a property for @ref color()
+ *   anyware within the (rectangular) widget.
  * 
  * @todo Example code: How to create the widget at a given
  * lightness.
  * 
- * @todo The image cache should be updated asynchronously (in its own thread
- * or even various own threads in parallel), but this should only be
- * triggered when the widget is visible, and not while the widget is
- * hidden. While waiting for the result, an empty image could be used.
- * Or it might be useful to provide first a low-resolution version, and only
- * later-on a high-resolution version.
+ * @todo Get rid of @ref FullColorDescription within this class. Use
+ * polar coordinates (or cartesian coordinates) instead.
  * 
- * @todo Multi-threaded application of color transforms. It seems okay to
- * create the color transforms in one thread and use the same color
- * transform (once created) from various other threads at the same time
- * as long as the flag <tt>cmsFLAGS_NOCACHE</tt> is used to create the
- * transform.
- * 
- * @todo Automatically scale the thickness of the wheel (and maybe even the
- * handle) with varying widget size?
+ * @todo Use a cross cursor for better usability: The cross cursor indicates
+ * to the user that an area can be clicked in. Do it only within the gamut
+ * (where the color handle can actually go) or in the hole gray circle,
+ * which is the mouse sensitive area (but out of the gamut the color
+ * handle cannot follow)?
  * 
  * @todo Support additional mouse buttons. For example, “forward” and
- * “backward” could be used to increase or decrease the radial, while
- * the angel is controlled by the mouse wheel.
- *         
- * @todo Provide RESET functions for all properties around the library? */
+ * “backward” could be used to increase or decrease the radial.
+ * 
+ * @todo What if black or white are out of gamut on L=0.1 or L=99.9? Where
+ * are the handles placed? Visible or invisible? How to react? Should
+ * there be always a pixel in the middle that is visible (black or white)
+ * even when out of gamut? */
 class ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT
@@ -121,7 +113,7 @@ public:
     virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setColor(const PerceptualColor::FullColorDescription &color);
+    void setColor(const PerceptualColor::FullColorDescription &newColor);
 
 Q_SIGNALS:
     /** @brief Notify signal for property @ref color().

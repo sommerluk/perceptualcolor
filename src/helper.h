@@ -93,7 +93,6 @@ template<typename T> bool inRange(const T& low, const T& x, const T& high)
     );
 }
 
-
 /** @brief The overlap is a recommanded tolerance value, measured in physical
  * pixels.
  * 
@@ -106,6 +105,8 @@ template<typename T> bool inRange(const T& low, const T& x, const T& high)
 constexpr int overlap = 2;
 
 qreal standardWheelSteps(QWheelEvent *event);
+
+QImage transparencyBackground(qreal devicePixelRatioF);
 
 }
 

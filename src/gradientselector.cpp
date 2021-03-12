@@ -292,6 +292,19 @@ void GradientSelector::setPageStep(qreal newPageStep)
 // could be conform with the current QStyle, and would guarantee
 // a consistent contrast between the arrow and its background.
 // TODO When zoom factor is 1,25, then background scaling is 1,25².
+// TODO Draw a focus rectangle like this?:
+//     if (hasFocus()) {
+//         QStyleOptionFocusRect opt;
+//         opt.palette = palette();
+//         opt.rect = rect;
+//         opt.state = QStyle::State_None | QStyle::State_KeyboardFocusChange;
+//         style()->drawPrimitive(
+//             QStyle::PE_FrameFocusRect,
+//             &opt,
+//             &widgetPainter,
+//             this
+//         );
+//     }
 void GradientSelector::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
@@ -353,7 +366,7 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     if (hasFocus()) {
         pen.setWidth(2);
         pen.setColor(
-            palette().color(QPalette::Highlight)
+            focusIndicatorColor()
         );
         painter.setPen(pen);
         painter.drawLine(

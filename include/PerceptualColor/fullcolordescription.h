@@ -31,6 +31,7 @@
 
 #include <QColor>
 #include <QDebug>
+#include <QSharedPointer>
 
 namespace PerceptualColor {
 
@@ -135,6 +136,8 @@ public:
     bool operator==(const FullColorDescription& other) const;
 
     bool operator!=(const FullColorDescription& other) const;
+    
+    QSharedPointer<RgbColorSpace> rgbColorSpace() const;
 
     PerceptualColor::RgbDouble toRgb() const;
     QColor toRgbQColor() const;
@@ -147,6 +150,11 @@ public:
     void setAlpha(qreal alpha);
 
 private:
+    /** @brief Pointer to the used RGB color space.
+     * @note Thought there is intentionally no public interface to change
+     * this value, it is not marked as <tt>const</tt>; this is done to allow
+     * the implementation of copy constructors. */
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
     /** RGB representation. */
     PerceptualColor::RgbDouble m_rgb;
     /** RGB representation within a QColor object */

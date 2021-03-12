@@ -100,7 +100,7 @@ protected:
     int contentDiameter() const;
     // TODO No const definition in public headers! Better use a function
     // return value.
-    static constexpr int border = 2 * handleOutlineThickness;
+    const int border = 2 * handleOutlineThickness();
     /** @brief the thickness of the wheel ribbon */
     // TODO No const definition in public headers! Better use a function
     // return value.

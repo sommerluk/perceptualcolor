@@ -38,7 +38,7 @@ project(
 )
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Get directories for installation process
+# Get predefined directories for installation process
 include(GNUInstallDirs)
 
 
@@ -125,6 +125,19 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "/W4 /WX /EHsc /utf-8")
 endif()
+add_definitions(
+    -DQT_NO_CAST_FROM_ASCII
+    -DQT_NO_CAST_FROM_BYTEARRAY
+    -DQT_NO_CAST_TO_ASCII
+    -DQT_NO_NARROWING_CONVERSIONS_IN_CONNECT
+    -DQT_NO_PROCESS_COMBINED_ARGUMENT_START
+    -DQT_NO_URL_CAST_FROM_STRING
+    -DQT_USE_QSTRINGBUILDER
+    -DQT_NO_KEYWORDS
+    -DQT_DISABLE_DEPRECATED_BEFORE=0x060000
+    #-DQT_STRICT_ITERATORS # This might crash on older Qt versions on Windows,
+    # see https://bugreports.qt.io/browse/AUTOSUITE-946
+)
 
 
 
@@ -144,6 +157,18 @@ set(CMAKE_AUTOUIC ON)
 include_directories(${LCMS2_INCLUDE_DIRS})
 # Define external library dependencies
 set(LIBS ${LIBS} Qt5::Core Qt5::Gui Qt5::Widgets ${LCMS2_LIBRARIES})
+# TODO xxx Is SVG support really necessary? It seems to work nevertheless
+# even without linking it! Why?  It seems that SVG support is
+# enabled automatically for icons via plugins like
+# /usr/lib/x86_64-linux-gnu/qt5/plugins/iconengines/libqsvgicon.so
+# or /usr/lib/x86_64-linux-gnu/qt5/plugins/imageformats/libqsvg.so which
+# both are dynamically linking to /lib/x86_64-linux-gnu/libQt5Svg.so.5
+# The plugins are loaded automatically when present. If not present,
+# they are not available, but there is no linker error either. It seems
+# possible to dynamically link to plugins, which would probably force
+# the package manager to include a corresponding dependency. Not sure
+# if in this case they are finally loaded as plugins or as dynamic
+# libraries.
 
 
 
@@ -161,6 +186,7 @@ set(perceptualcolor_SRC
   src/colorpatch.cpp
   src/colorwheelimage.cpp
   src/extendeddoublevalidator.cpp
+  src/fallbackiconengine.cpp
   src/fullcolordescription.cpp
   src/gradientselector.cpp
   src/helper.cpp
@@ -253,10 +279,6 @@ add_library(perceptualcolorexport SHARED
 set_target_properties(perceptualcolorexport PROPERTIES CXX_VISIBILITY_PRESET
     default
 )
-# Get warnings when using features that have been deprecated during
-# the development cycle of Qt 5. So we can be sure to be well-prepared
-# for Qt 6.
-target_compile_definitions(perceptualcolorexport PRIVATE QT_DEPRECATED_WARNINGS)
 target_link_libraries(perceptualcolorexport ${LIBS})
 # TODO Do this only during development, not for release
 # # Find iwyu (include-what-you-use), a tool to check for unnecessary
@@ -270,10 +292,6 @@ target_link_libraries(perceptualcolorexport ${LIBS})
 
 # Build a standalone application lauching the color dialog
 add_executable(perceptualcolorpicker src/main.cpp)
-# Get warnings when using features that have been deprecated during
-# the development cycle of Qt 5. So we can be sure to be well-prepared
-# for Qt 6.
-target_compile_definitions(perceptualcolorpicker PRIVATE QT_DEPRECATED_WARNINGS)
 target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolorexport)
 
 # Define how to add unit tests.
@@ -282,10 +300,6 @@ target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolorexport)
 # you have to call “add_unit_test(testsomething)”.
 function(add_unit_test test_name)
     add_executable (${test_name} test/${test_name}.cpp)
-    # Get warnings when using features that have been deprecated during
-    # the development cycle of Qt 5. So we can be sure to be well-prepared
-    # for Qt 6.
-    target_compile_definitions(${test_name} PRIVATE QT_DEPRECATED_WARNINGS)
     target_link_libraries (${test_name} ${LIBS} Qt5::Test perceptualcolorexport)
     add_test (NAME ${test_name} COMMAND ${test_name})
 endfunction(add_unit_test)
@@ -299,6 +313,7 @@ add_unit_test(testcolorwheelimage)
 add_unit_test(testconstpropagatinguniquepointer)
 add_unit_test(testconstpropagatingrawpointer)
 add_unit_test(testextendeddoublevalidator)
+add_unit_test(testfallbackiconengine)
 add_unit_test(testhelper)
 add_unit_test(testlabdouble)
 add_unit_test(testlchdouble)

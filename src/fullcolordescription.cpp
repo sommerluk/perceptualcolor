@@ -62,6 +62,7 @@ FullColorDescription::FullColorDescription(
     const QSharedPointer<RgbColorSpace> &colorSpace,
     const PerceptualColor::RgbDouble &rgb,
     qreal alpha)
+: m_rgbColorSpace(colorSpace)
 {
     m_rgb = rgb;
     m_rgbQColor = QColor::fromRgbF(m_rgb.red, m_rgb.green, m_rgb.blue, alpha);
@@ -85,6 +86,7 @@ FullColorDescription::FullColorDescription(
     const QSharedPointer<RgbColorSpace> &colorSpace,
     QColor color
 )
+: m_rgbColorSpace(colorSpace)
 {
     switch (color.spec()) {
         case QColor::Spec::Invalid:
@@ -128,6 +130,7 @@ FullColorDescription::FullColorDescription(
     outOfGamutBehaviour coordinates,
     qreal alpha
 )
+: m_rgbColorSpace(colorSpace)
 {
     m_lch = toLch(lab);
     normalizeLch();
@@ -157,6 +160,7 @@ FullColorDescription::FullColorDescription(
     outOfGamutBehaviour coordinates,
     qreal alpha
 )
+: m_rgbColorSpace(colorSpace)
 {
     m_lch = lch;
     normalizeLch();
@@ -171,6 +175,11 @@ FullColorDescription::FullColorDescription(
     m_rgbQColor.setAlphaF(alpha);
     m_hsvQColor.setAlphaF(alpha);
     m_valid = true;
+}
+
+QSharedPointer<RgbColorSpace> FullColorDescription::rgbColorSpace() const
+{
+    return m_rgbColorSpace;
 }
 
 /** Makes sure that m_lch() will be within the gamut.

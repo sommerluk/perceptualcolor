@@ -36,15 +36,6 @@ namespace PerceptualColor {
 
 /** @brief Constructor
  * 
- * Constructs an object with @ref radial() = 0 and @ref angleDegree() = 0 */
-// PolarPointF::PolarPointF()
-// {
-//     m_radial = 0;
-//     m_angleDegree = 0;
-// }
-
-/** @brief Constructor
- * 
  * Constructs an object with the given @ref radial() and @ref angleDegree()
  * values. The values get normalized, see the general class description for
  * details.
@@ -175,16 +166,20 @@ QPointF PolarPointF::toCartesian() const
 }
 
 /** @brief Adds QDebug() support for this data type. */
-QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
+QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)
 {
     dbg.nospace()
         << "PolarPointF(radial: "
-        << polarpointf.radial()
+        << value.radial()
         << ", angleDegree: "
-        << polarpointf.angleDegree()
+        << value.angleDegree()
         << "°)";
     return dbg.maybeSpace();
 }
+
+static_assert(
+    std::is_trivially_copyable_v<PolarPointF>
+);
 
 static_assert(
     std::is_standard_layout_v<PolarPointF>

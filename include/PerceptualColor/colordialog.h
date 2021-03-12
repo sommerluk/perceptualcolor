@@ -108,7 +108,10 @@ namespace PerceptualColor {
  * - When the default constructor is used, unlike QColorDialog, the default
  *   color is not <tt>Qt::white</tt>.
  * 
- * @warning The graphical display in @ref WheelColorPicker jumps when you
+ * @note This dialog uses icons. See @ref hidpisupport "High DPI support"
+ * about how to enable support for high-DPI icons.
+ * 
+ * @todo The graphical display in @ref WheelColorPicker jumps when you
  * choose a gray color like HSV 20 0 125 and then increment or decrement the
  * V component in the QSpinBox by 1. This is because @ref WheelColorPicker is
  * based on the LCh model and LCh’s hue component is different from HSV’s hue
@@ -117,6 +120,11 @@ namespace PerceptualColor {
  * can we get a similar continuity for HSV’s hue? (By the way: Similar problem
  * for RGB values changing along the gray axis: #444 → #555 → #666 changes
  * the graphically displayed hue.
+ * 
+ * @todo It might be nice to support keyboard shortcuts for switching tabs
+ * like in browsers, which is a concept many users might be familiar to.
+ * Crtl+Tab to switch to the next tab in the list. Crtl+Shift+Tab to switch
+ * to the previous tab in the list.
  * 
  * @todo The dialog shows up with a widget width that is bigger than
  * the recommended width. This is useless: The diagram won’t get
@@ -165,10 +173,6 @@ namespace PerceptualColor {
  * 
  * @todo Use the <em>actual</em> color profile of the monitor.
  * 
- * @todo High-dpi-support: Scale the icons of the “OK button” and “Cancel
- * button” correctly. See also:
- * https://bugs.kde.org/show_bug.cgi?id=273938
- * 
  * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
  * letters on-the-fly (as-you-type) to upper-case letters.
  * 
@@ -211,7 +215,12 @@ namespace PerceptualColor {
  * defined as sRGB values?
  * <a href="https://en.wikipedia.org/wiki/Web_colors#Web-safe_colors">Web-save colors</a>
  * (but with another name, maybe “216 colors”) as bigger palette, without a
- * specific color space?
+ * specific color space – does not make sense, since we provide a perceptual
+ * color dialog, which allows things much beyond 216 colors, and 216 colors
+ * isn’t a useful standard anymore, and not a nice palette either.
+ * 
+ * @todo Instead (or additional to) palettes: Discret widgets, that have
+ * a fixed (quite limited) number of fields to chose for the user?
  * 
  * @todo What about functions that are deprecated in QColorDialog? This seems
  * to be currently only apply to <tt>QRgb QColorDialog::getRgba(QRgb

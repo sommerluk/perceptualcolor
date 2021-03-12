@@ -51,17 +51,14 @@ namespace PerceptualColor {
  * @snippet test/testconstpropagatinguniquepointer.cpp ConstPropagatingUniquePointer Example
  * 
  * @sa @ref ConstPropagatingRawPointer
+ * @sa <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
+ * is a more general implementation of this concept, that does not only
+ * support <tt>std::unique_ptr</tt> but also <tt>std::shared_ptr</tt>. It
+ * lacks however the dereference operator.
  *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation? Or remove propagate_const header from this library?
- * 
- * @author Torbjörn Klatt <opensource@torbjoern-klatt.de>
- * @date 2013-04-14
- * @copyright MIT License
- * @author Lukas Sommer
- * @date 2020
- * @copyright MIT License */
+ * implementation? Or remove propagate_const header from this library? */
 template<typename T> class ConstPropagatingUniquePointer final
     : public std::unique_ptr<T>
 {

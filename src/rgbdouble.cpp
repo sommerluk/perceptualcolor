@@ -40,6 +40,20 @@
 
 namespace PerceptualColor {
 
+/** @brief Adds QDebug() support for this data type. */
+QDebug operator<<(QDebug dbg, const PerceptualColor::RgbDouble &value)
+{
+    dbg.nospace()
+        << "RgbDouble("
+        << value.red
+        << " "
+        << value.green
+        << " "
+        << value.blue
+        << ")";
+    return dbg.maybeSpace();
+}
+
 static_assert(
     std::is_same_v<
         cmsFloat64Number,

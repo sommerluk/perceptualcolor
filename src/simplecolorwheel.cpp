@@ -403,7 +403,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
     );
     // draw the line
     QPen pen;
-    pen.setWidth(handleOutlineThickness);
+    pen.setWidth(handleOutlineThickness());
     pen.setCapStyle(Qt::FlatCap);
     pen.setColor(Qt::black);
     painter.setPen(pen);
@@ -412,14 +412,14 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
 
     // Paint a focus indicator if the widget has the focus
     if (hasFocus()) {
-        pen.setWidth(handleOutlineThickness);
+        pen.setWidth(handleOutlineThickness());
         pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
         painter.drawEllipse(
-            handleOutlineThickness / 2, // Integer division (rounding down)
-            handleOutlineThickness / 2, // Integer division (rounding down)
-            contentDiameter() - handleOutlineThickness,
-            contentDiameter() - handleOutlineThickness
+            handleOutlineThickness() / 2, // Integer division (rounding down)
+            handleOutlineThickness() / 2, // Integer division (rounding down)
+            contentDiameter() - handleOutlineThickness(),
+            contentDiameter() - handleOutlineThickness()
         );
     }
 

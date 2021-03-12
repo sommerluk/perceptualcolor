@@ -36,7 +36,7 @@ namespace PerceptualColor {
 /** @brief The @ref ExtendedDoubleValidator class provides range checking
  * of floating-point numbers with support for prefix and/or suffix.
  * 
- * This class behaves exactly like its parent class <tt>QDoubleValidator</tt>
+ * This class behaves exactly like its base class <tt>QDoubleValidator</tt>
  * with the difference that is allows to specify prefixes and/or suffixed
  * that are considered by @ref validate(). */
 class ExtendedDoubleValidator : public QDoubleValidator

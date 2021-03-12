@@ -45,6 +45,15 @@ public:
     TestLchDouble(QObject *parent = nullptr) : QObject(parent) {
     }
 
+private:
+    static void voidMessageHandler(
+        QtMsgType,
+        const QMessageLogContext &,
+        const QString &
+    ) {
+        // dummy message handler that does not print messages
+    }
+
 private Q_SLOTS:
     void initTestCase() {
         // Called before the first test function is executed
@@ -88,6 +97,16 @@ private Q_SLOTS:
             copy.h,
             5
         );
+    }
+
+    void testQDebugSupport()
+    {
+        PerceptualColor::LchDouble test;
+        // suppress warning for generating invalid QColor
+        qInstallMessageHandler(voidMessageHandler);
+        qDebug() << test;
+        // do not suppress warning for generating invalid QColor anymore
+        qInstallMessageHandler(nullptr);
     }
     
 void testLchDouble1() {

@@ -72,3 +72,22 @@ static_assert(
 );
 
 } // namespace PerceptualColor
+
+/** @brief Adds QDebug() support for this data type.
+ * @note This is declared outside the global namespace instead of the
+ * @ref PerceptualColor namespace, because the supported value is a
+ * <tt>typedef</tt> for a LittleCMS type in the global; when declaring
+ * this function in @ref PerceptualColor namespace, it would not work
+ * in the global namespace. */
+QDebug operator<<(QDebug dbg, const PerceptualColor::LabDouble &value)
+{
+    dbg.nospace()
+        << "LabDouble("
+        << value.L
+        << "% "
+        << value.a
+        << " "
+        << value.b
+        << ")";
+    return dbg.maybeSpace();
+}

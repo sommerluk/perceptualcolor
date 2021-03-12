@@ -25,6 +25,7 @@
  */
 
 #include "perceptualcolorlib_qtconfiguration.h"
+#undef QT_USE_QSTRINGBUILDER
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.

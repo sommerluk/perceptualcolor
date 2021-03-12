@@ -28,6 +28,7 @@
 #define MULTISPINBOX_H
 
 #include <QAbstractSpinBox>
+#include <QLineEdit>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 
@@ -47,6 +48,9 @@ namespace PerceptualColor {
  * (Hue 0°–360°, Saturation 0–255, Value 0–255) comes here:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Basic example
  * 
+ * You can also have additional buttons within the spin box via the
+ * @ref addActionButton() function.
+ * 
  * @note It would be possible to add more functions to work with 
  * @ref MultiSpinBox::SectionData. The interface could theoretically
  * be similar to other Qt classes that offer similar concepts of various
@@ -59,6 +63,16 @@ namespace PerceptualColor {
  * is also appropriate. For the moment, no further interface functions
  * are planned. However, a full-featured interface could look like that:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
+ * 
+ * @todo Currently, if the widget has <em>not</em> the focus but the
+ * mouse moves over it and the scroll wheel is used, it’s the first
+ * section that will be changed, and not the one where the mouse is,
+ * as the user might expect. Even QDateTimeEdit does the same thing
+ * (thus they do not change the first section, but the last one that
+ * was editig before). But it would be great if we could do better here.
+ * But: Is this realistic and will the required code work on all
+ * platforms?
+ * 
  * 
  * @todo When adding Bengali digits (for example by copy and paste) to a
  * @ref MultiSpinBox that was localized to en_US, than sometimes this is
@@ -170,6 +184,7 @@ public:
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
     /** @brief Default destructor */
     virtual ~MultiSpinBox() noexcept override;
+    void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual QSize minimumSizeHint() const override;
     Q_INVOKABLE QList<MultiSpinBox::SectionData> sections() const;
     Q_INVOKABLE void setSections (
@@ -204,7 +219,7 @@ private:
 
 QDebug operator<<(
     QDebug dbg,
-    const PerceptualColor::MultiSpinBox::SectionData &section
+    const PerceptualColor::MultiSpinBox::SectionData &value
 );
 
 }

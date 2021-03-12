@@ -29,6 +29,8 @@
 
 #include <lcms2.h>
 
+#include <QDebug>
+
 namespace PerceptualColor {
 
 /** @brief A LCH color.
@@ -57,5 +59,7 @@ namespace PerceptualColor {
 using LchDouble = cmsCIELCh;
 
 } // namespace PerceptualColor
+
+QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value);
 
 #endif // LCHDOUBLE_H

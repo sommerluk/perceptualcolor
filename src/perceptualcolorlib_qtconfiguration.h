@@ -42,34 +42,6 @@
 #ifndef PERCEPTUALCOLORLIB_QTCONFIGURATION_H
 #define PERCEPTUALCOLORLIB_QTCONFIGURATION_H
 
-#ifndef QT_NO_CAST_FROM_ASCII
-/** @brief By defining this macro, this implicit cast of Qt is disabled. */
-#define QT_NO_CAST_FROM_ASCII
-#endif // QT_NO_CAST_FROM_ASCII
-
-#ifndef QT_NO_CAST_FROM_BYTEARRAY
-/** @brief By defining this macro, this implicit cast of Qt is disabled. */
-#define QT_NO_CAST_FROM_BYTEARRAY
-#endif // QT_NO_CAST_FROM_BYTEARRAY
-
-#ifndef QT_NO_CAST_TO_ASCII
-/** @brief By defining this macro, this implicit cast of Qt is disabled. */
-#define QT_NO_CAST_TO_ASCII
-#endif // QT_NO_CAST_TO_ASCII
-
-#ifndef QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
-/** @brief By defining this macro, this implicit cast of Qt is disabled. */
-#define QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
-#endif // QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
-
-#ifndef QT_NO_PROCESS_COMBINED_ARGUMENT_START
-/** @brief By defining this macro, this implicit cast of Qt is disabled. */
-#define QT_NO_PROCESS_COMBINED_ARGUMENT_START
-#endif // QT_NO_PROCESS_COMBINED_ARGUMENT_START
-
-#ifndef QT_NO_URL_CAST_FROM_STRING
-/** @brief By defining this macro, this implicit cast of Qt is disabled. */
-#define QT_NO_URL_CAST_FROM_STRING
-#endif // QT_NO_URL_CAST_FROM_STRING
+// Commom macro definitions go here.
 
 #endif // PERCEPTUALCOLORLIB_QTCONFIGURATION_H

@@ -27,7 +27,8 @@
 #ifndef COLORPATCH_H
 #define COLORPATCH_H
 
-#include "PerceptualColor/abstractdiagram.h"
+#include <QFrame>
+
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor {
@@ -46,8 +47,10 @@ namespace PerceptualColor {
  * pull-in another dependency. Furthermore, KColorPatch has support for
  * drag-and-drop, which is not desirable for our use case. Therefore, with
  * @ref ColorPatch there is a lightweight alternative (that, by the way,
- * implements the full  API of KColorPatch). */
-class ColorPatch : public AbstractDiagram
+ * implements the full  API of KColorPatch).
+ * 
+ * @todo The design does not work well on some styles (wrong metrics!) */
+class ColorPatch : public QFrame
 {
     Q_OBJECT
 

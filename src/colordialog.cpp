@@ -32,17 +32,16 @@
 // Second, the private implementation.
 #include "colordialog_p.h"
 
-#include <QApplication>
-#include <QByteArray>
-#include <QDialog>
+#include <QAction>
 #include <QFormLayout>
 #include <QGroupBox>
-#include <QObject>
-#include <QPointer>
+#include <QGuiApplication>
 #include <QRegularExpressionValidator>
 #include <QScreen>
+#include <QStyle>
 #include <QVBoxLayout>
 
+#include "fallbackiconengine.h"
 #include "lchvalues.h"
 
 namespace PerceptualColor {
@@ -72,7 +71,7 @@ ColorDialog::ColorDialog(QWidget *parent) :
     // color is more vivid than those at 0°, 90° and 270°. Also, be choose
     // 180° because the color seems clean and colorful.
     cmsCIELCh initialColor;
-    initialColor.h = 180; 
+    initialColor.h = 180;
     initialColor.L = LchValues::neutralLightness;
     initialColor.C = LchValues::srgbVersatileChroma;
     // Calling setCurrentFullColor() guaranties to update all widgets
@@ -548,6 +547,39 @@ void ColorDialog::ColorDialogPrivate::initialize()
     // widget styles indeed show the size grip widget, like Fusion or
     // QtCurve.
     q_pointer->setSizeGripEnabled(true);
+
+    // TODO xxx
+    // TODO Remove the following lines
+    // TODO xxx When else do we have to call updateGeometry() in this library?
+    // TODO How to update on-the-fly on style changes?
+    // TODO MultiSpinBox should never become 0 because the validator allows something that the converter cannot convert!
+    // TODO Sometimes, after a click on the action, the first section is selected. Sometimes not. That’s inconsistant!
+    // TODO Accept F5 and Ctrl+R just as the refresh buttons. (But attention: If someone embeds the dialog, he does not want his shortcuts to be intercepted!
+
+    // Refresh button for the HLC spin box
+    FallbackIconEngine *myIconEngine = new FallbackIconEngine;
+    myIconEngine->setReferenceWidget(m_hlcSpinBox);
+    // myIcon takes ownership of myIconEngine, therefore we won’t
+    // delete myIconEngine manually.
+    QIcon myIcon = QIcon(myIconEngine);
+    QAction *myAction = new QAction(
+        myIcon, // icon
+        QLatin1String(), // text
+        // The q_pointer’s object is still not fully initialized at
+        // this point, but it’s base class constructor has fully run;
+        // this should be enough to use functionality based on QWidget.
+        q_pointer // parent object
+    );
+    m_hlcSpinBox->addActionButton(
+        myAction,
+        QLineEdit::ActionPosition::TrailingPosition
+    );
+    connect(
+        myAction,
+        &QAction::triggered,
+        q_pointer,
+        [this]() { readHlcNumericValues(); }
+    );
 }
 
 /** @brief Reads the HLC numbers in the dialog and
@@ -574,7 +606,7 @@ void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
 QWidget* ColorDialog::ColorDialogPrivate::initializeNumericPage()
 {
     // Setup
-    constexpr int decimals = 0; // TODO xxx set this back to 0
+    constexpr int decimals = 0;
     MultiSpinBox::SectionData mySection;
     mySection.decimals = decimals;
 

@@ -72,6 +72,9 @@ namespace PerceptualColor {
  * <tt>(5)</tt>, than this will not trigger an image calculation, but the
  * cache stays valid and available.
  * 
+ * @note This class is not based on <tt>QCache</tt> or <tt>QPixmapCache</tt>
+ * because the semantic is different.
+ * 
  * @note This class is not part of the public API, but just for internal
  * usage. Therefore, its interface is incomplete and contains only the
  * functions that are really used in the rest of the source code (property

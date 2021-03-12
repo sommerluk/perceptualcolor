@@ -27,6 +27,8 @@
 #ifndef RGBDOUBLE_H
 #define RGBDOUBLE_H
 
+#include <QDebug>
+
 namespace PerceptualColor {
 
 /** @brief A RGB color.
@@ -37,7 +39,7 @@ namespace PerceptualColor {
  * to set also invalid values.
  * 
  * The data is not default-initializad; it is undefined when the object
- * is created.
+ * is created!
  * 
  * @note This format of storage is practical for working with
  * <a href="http://www.littlecms.com/">LittleCMS</a>. LittleCMS
@@ -53,8 +55,7 @@ namespace PerceptualColor {
  * which is quite useful for converting quickly a single color.
  * 
  * Example:
- * @snippet test/testrgbdouble.cpp Use RgbDouble
- */
+ * @snippet test/testrgbdouble.cpp Use RgbDouble */
 struct RgbDouble {
     /** @brief The red value. */
     double red;
@@ -63,6 +64,8 @@ struct RgbDouble {
     /** @brief The blue value. */
     double blue;
 };
+
+QDebug operator<<(QDebug dbg, const PerceptualColor::RgbDouble &value);
 
 } // namespace PerceptualColor
 

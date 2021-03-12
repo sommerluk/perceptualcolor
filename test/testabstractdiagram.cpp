@@ -28,9 +28,11 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include <PerceptualColor/abstractdiagram.h>
+#include "PerceptualColor/abstractdiagram.h"
 
 #include <QtTest>
+
+#include "helper.h"
 
 #include <QPainter>
 #include <QWidget>
@@ -161,19 +163,36 @@ private Q_SLOTS:
             "Rounding height with error < 1."
         );
     }
+
+    void testDiagramOffset() {
+        AbstractDiagram myDiagram;
+        myDiagram.resize(50, 50);
+        QVERIFY2(
+            inRange(49.0, myDiagram.maximumWidgetSquareSize(), 50.0),
+            "Verify that maximumWidgetSquareSize is within expected "
+                "rounding range."
+        );
+        // Next try: off by one.
+        myDiagram.resize(51, 51);
+        QVERIFY2(
+            inRange(50.0, myDiagram.maximumWidgetSquareSize(), 51.0),
+            "Verify that maximumWidgetSquareSize is within expected "
+                "rounding range."
+        );
+    }
     
     void testHandle() {
         AbstractDiagram temp;
         QVERIFY2(
-            temp.handleRadius > 0,
+            temp.handleRadius() > 0,
             "Radius is positive."
         );
         QVERIFY2(
-            temp.handleOutlineThickness > 0,
+            temp.handleOutlineThickness() > 0,
             "Thickness is positive."
         );
         QVERIFY2(
-            temp.handleRadius > temp.handleOutlineThickness,
+            temp.handleRadius() > temp.handleOutlineThickness(),
             "Radius is bigger than thickness. "
             "(Otherwise, there would be no hole in the middle.)"
         );

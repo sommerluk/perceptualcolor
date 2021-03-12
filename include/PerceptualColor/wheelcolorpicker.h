@@ -31,8 +31,6 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/simplecolorwheel.h"
 
-// TODO Add whatsThis value explaining the accepted keys and mouse movements
-
 namespace PerceptualColor {
 
 /** @brief Complete wheel-based color picker widget
@@ -43,7 +41,8 @@ namespace PerceptualColor {
  * @todo This class should not derive from @ref SimpleColorWheel because it’s
  * not really an IS-A relationship.
  * 
- */
+ * @todo Add whatsThis value explaining the accepted keys and mouse
+ * movements. */
 class WheelColorPicker : public SimpleColorWheel
 {
     Q_OBJECT

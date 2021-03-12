@@ -29,6 +29,8 @@
 
 #include <lcms2.h>
 
+#include <QDebug>
+
 namespace PerceptualColor {
 
 /** @brief A LAB color.
@@ -51,5 +53,7 @@ namespace PerceptualColor {
 using LabDouble = cmsCIELab;
 
 } // namespace PerceptualColor
+
+QDebug operator<<(QDebug dbg, const PerceptualColor::LabDouble &value);
 
 #endif // LABDOUBLE_H

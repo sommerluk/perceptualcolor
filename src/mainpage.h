@@ -36,22 +36,54 @@
  * about LCh at all, because the graphical representations is
  * intuitive enough.
  * 
- * This library itself lives in the namespace @ref PerceptualColor. However,
- * it also includes headers from LittleCMS which lives in the <em>global
- * namespace</em>, but has functions and types typically prefixed
- * with <tt>cms</tt>. The library relies internally on LittleCMS for all
- * the color management. However, you can uses this library without knowing
- * about the internals of LittleCMS.
+ * This library itself lives in the namespace @ref PerceptualColor. Almost
+ * all symbols and macros are within this namespace. For the very few
+ * exceptions, see <em>Files → File members</em> in this documentationi.
+ * However, this library also includes headers from LittleCMS which lives
+ * in the <em>global namespace</em>, but has functions and types typically
+ * prefixed with <tt>cms</tt>. The library relies internally on LittleCMS
+ * for all the color management. Anyway, you can uses this library without
+ * knowing about the internals of LittleCMS.
  * 
- * How to get started? @ref PerceptualColor::ColorDialog provides a perceptual
- * replacement for QColorDialog:
+ * How to get started? @ref PerceptualColor::ColorDialog provides a
+ * perceptual replacement for QColorDialog:
  * @snippet test/testcolordialog.cpp ColorDialog Get color
  * 
  * And there are also individual widgets available. Among others:
  * - @ref PerceptualColor::WheelColorPicker (a full-featured color wheel)
  * - @ref PerceptualColor::ColorPatch (to show a particular color)
- * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a given
- *   lightness)
+ * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a
+ *   given lightness)
+ * 
+ * @anchor hidpisupport <b>High DPI support:</b> This library supports
+ * High DPI out of the box. You do not need much to use it. The widgets
+ * provide High DPI support automatically. The only problem are icons.
+ * Icons are used for @ref PerceptualColor::MultiSpinBox::addActionButton
+ * and for the “refresh” icon and (on some widget styles) for the “Ok”
+ * button and the “Cancel” button in @ref PerceptualColor::ColorDialog.
+ * - Load icons: This library uses by default a possibly existing icon theme.
+ *   Windows and Mac do not provide icon themes by default, though it’s
+ *   possible to bundle icons with your application. Linux provides usually
+ *   icon themes. If the icon theme is SVG (which is pretty much the standard
+ *   nowadays and the only reliably way to have crip icons also on desktop
+ *   scales like 1.25 or 1.5), then it can only be loaded if Qt’s SVG icon
+ *   support is available. This is done via a plugin (on Linux this is
+ *   <tt>plugins/iconengines/libqsvgicon.so</tt>). This plugin is loaded
+ *   automatically if present, and not loaded if absent. Make sure that
+ *   the plugin is present if you want that SVG icons can be loaded.
+ *   It seems possible to enforce this by linking dynamically to the
+ *   plugin itself, if you want to. If no external icon can be loaded,
+ *   a hard-coded fallback icon is used.
+ * - Render icons: Furthermore, Qt5 paints all icons by default in low
+ *   resolution (even SVG icons on high-DPI displays). When you are
+ *   developping an application and you want to enable high-DPI icons in
+ *   your application, add the following line to your code (which
+ *   should be done by convention <em>before</em> creating
+ *   the <tt>QCoreApplication</tt> object):
+ *   <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt>
+ * 
+ * @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt> anymore.
+ * Does this mean that it is set by default and no further action is required?
  * 
  * The library depends on (and therefore you has to link against):
  * 
@@ -104,9 +136,11 @@
  * texts.
  * 
  * @note This library uses the <em>pointer to implementation</em> idiom
- * (also known as pimpl idiom, d-pointer idiom or opaque-pointer idiom).
- * This idiom is also used by Qt itself, and Qt even provides some macros
- * and extension points (<tt>Q_DECLARE_PRIVATE</tt>, <tt>Q_D</tt>, a protected
+ * (also known as pimpl idiom, d-pointer idiom or opaque-pointer idiom)
+ * in almost all classes that are part of the public API, and also in
+ * some classes that are part of th eprivate API. This idiom is also
+ * used by Qt itself, and Qt even provides some macros and extension
+ * points (<tt>Q_DECLARE_PRIVATE</tt>, <tt>Q_D</tt>, a protected
  * member called <tt>d_ptr</tt> in almost all classes…), that help dealing
  * with the pimpl idiom. Though available, these Qt features are not
  * officially documentated; and they would also interfer with private
@@ -133,9 +167,38 @@
  * 
  * @todo Use <tt>explicit</tt> on all constructors?
  * 
+ * @todo Multi-licensing? Add Boost licence and Unlicense as an additional
+ * choise?
+ * 
+ * @todo The image cache for the gamut widgets should be updated
+ * asynchronously (in its own thread or even various own threads
+ * in parallel). While waiting for the result, an empty image could be used.
+ * Or it might be useful to provide first a low-resolution version, and only
+ * later-on a high-resolution version.
+ * 
+ * @todo Multi-threaded application of color transforms. It seems okay to
+ * create the color transforms in one thread and use the same color
+ * transform (once created) from various other threads at the same time
+ * as long as the flag <tt>cmsFLAGS_NOCACHE</tt> is used to create the
+ * transform.
+ * 
+ * @todo Automatically scale the thickness of the wheel (and maybe even the
+ * handle) with varying widget size?
+ * 
+ * @todo Support more color spaces? https://pypi.org/project/colorio/ for
+ * example supports a lot of (also perceptually uniform) color spaces…
+ * 
+ * @todo All <tt>d_pointer</tt> and <tt>q_pointer</tt> could be changed
+ * to <tt>const</tt> which would work without problems with the current
+ * code base. Advantage: It communicates clearly that these pointers
+ * will not change during live time. But: If ever we cannot initialize
+ * these pointers in the constructor initializer, but would have to
+ * do it in the constructor function body, this will not work; than
+ * we would have to delete the <tt>const</tt> qualifiers, which would
+ * probably break ABI compatibility?
+ * 
  * @todo Review and unit tests for these classes:
  * @ref PerceptualColor::AlphaSelector,
- * @ref PerceptualColor::ChromaHueDiagram (partial),
  * @ref PerceptualColor::ChromaLightnessDiagram,
  * @ref PerceptualColor::FullColorDescription,
  * @ref PerceptualColor::GradientSelector,
@@ -222,6 +285,8 @@
  * @todo Comply with KDE policies: https://community.kde.org/Policies
  * 
  * @todo Remove all qDebug calls from the source
+ *         
+ * @todo Provide RESET functions for all properties around the library?
  * 
  * @todo Use QObject::tr() for translations. Provide po files.
  * 
@@ -260,6 +325,9 @@
  * 
  * @todo Qt Designer support for the widgets
  * 
+ * @todo Use <a href="https://lvc.github.io/abi-compliance-checker/">
+ * abi-compliance-checker</a> to control ABI compatibility.
+ * 
  * @todo It might be useful to support for all widgets grayed out appearance
  * when they are disabled. Just fade out, maybe with some transparency, and
  * let colors still be visible, would be a bad idea: It would be highly
@@ -283,6 +351,8 @@
  * 
  * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
  * also https://phabricator.kde.org/T12359
+ * 
+ * @todo Better design on small widget sizes for the whole library.
  * 
  * @todo Use a cross-hair cursor on @ref PerceptualColor::ChromaHueDiagram
  * and @ref PerceptualColor::ChromaLightnessDiagram when the mouse is

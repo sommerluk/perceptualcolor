@@ -35,6 +35,7 @@
 #include "PerceptualColor/extendeddoublevalidator.h"
 #include "helper.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QLineEdit>
 #include <QStyle>
@@ -89,7 +90,7 @@ QSize MultiSpinBox::minimumSizeHint() const
 
 /** @brief Constructor
  * 
- * @param parent the parent widget */
+ * @param parent the parent widget, if any */
 MultiSpinBox::MultiSpinBox(QWidget *parent) :
     QAbstractSpinBox(parent),
     d_pointer(new MultiSpinBoxPrivate(this))
@@ -156,7 +157,6 @@ MultiSpinBox::MultiSpinBoxPrivate::MultiSpinBoxPrivate(
  * Reimplemented from base class.
  * 
  * @returns the size hint
- * 
  * @sa @ref minimumSizeHint() */
 QSize MultiSpinBox::sizeHint() const
 {
@@ -216,12 +216,79 @@ QSize MultiSpinBox::sizeHint() const
     QStyleOptionSpinBox myStyleOptionsForSpinBoxes;
     initStyleOption(&myStyleOptionsForSpinBoxes);
     QSize contentSize(width, height);
-    return style()->sizeFromContents(
+    QSize result = style()->sizeFromContents(
         QStyle::CT_SpinBox,
         &myStyleOptionsForSpinBoxes,
         contentSize,
         this
     ).expandedTo(QApplication::globalStrut());
+
+    if (d_pointer->m_actionButtonCount > 0) {
+        // Determine the size of icons for actions similar to what Qt
+        // does in QLineEditPrivate::sideWidgetParameters() and than
+        // add this to the size hint.
+        //
+        // This code leads in general to good results. However, some
+        // styles like CDE and Motif calculate badly the size for
+        // QAbstractSpinBox and therefore also for this widget.
+        //
+        // The Kvantum style has a strange behaviour: While behaving
+        // correctly on QSpinBox, it does not behave correctly on small
+        // widget sizes: On small widget sizes, style()->sizeFromContents()
+        // returns a value that is too small, but the actual size of
+        // the widget in the layout system will be bigger than the
+        // reported size, so this looks okay. On big sizes however,
+        // the actual size in the layout system is identical to the
+        // reported size, which is too small. For these styles,
+        // there seems to be no good work-around. These very same
+        // styles also have problems with normal QSpinBox widgets and
+        // cut some of the text there, so I suppose this is rather a
+        // problem of these styles, and not of our code.
+        //
+        // TODO That‘s wrong. Normal spinboxes work fine in all CDE,
+        // Motif and Kvantum styles. It should work also for MultiSpinBox!
+        const int actionButtonIconSize = style()->pixelMetric(
+            QStyle::PM_SmallIconSize,
+            nullptr,
+            lineEdit()
+        );
+        const int actionButtonMargin = actionButtonIconSize / 4;
+        const int actionButtonWidth = actionButtonIconSize + 6;
+        const int actionButtonSpace =
+            actionButtonWidth + actionButtonMargin; // Only 1 margin per button
+        result.setWidth(
+            result.width() + d_pointer->m_actionButtonCount * actionButtonSpace
+        );
+    }
+
+    return result;
+}
+
+/** @brief Adds to the widget a button associated with the given action.
+ * 
+ * The icon of the action will be displayed as button. If the action has
+ * no icon, just an empty space will be displayed.
+ * 
+ * It is possible to add more than one action.
+ * 
+ * @param action This action that will be executed when clicking the button.
+ * (The parentship of the action object remains unchanged.) 
+ * @param position The position of the button within the widget (left
+ * or right)
+ * @note See @ref hidpisupport "High DPI support" about how to enable
+ * support for high-DPI icons.
+ * @note The action will <em>not</em> appear in
+ * <tt>QWidget::actions()</tt>. */
+void MultiSpinBox::addActionButton(
+    QAction *action,
+    QLineEdit::ActionPosition position
+)
+{
+    lineEdit()->addAction(action, position);
+    d_pointer->m_actionButtonCount += 1;
+    // The size hints have changed, because an additional button needs
+    // more space.
+    updateGeometry();
 }
 
 /** @brief Formats the value of a given section.
@@ -260,7 +327,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     m_textBeforeCurrentValue.append(
         m_sections.at(m_currentIndex).prefix
     );
-    
+
     // Update m_currentSectionTextOfTheValue
     m_textOfCurrentValue = formattedValue(
                                          m_sections.at(m_currentIndex)
@@ -453,24 +520,24 @@ MultiSpinBox::SectionData MultiSpinBox::MultiSpinBoxPrivate::fixedSection(
 /** @brief Adds QDebug() support for this data type. */
 QDebug operator<<(
     QDebug dbg,
-    const PerceptualColor::MultiSpinBox::SectionData &section
+    const PerceptualColor::MultiSpinBox::SectionData &value
 )
 {
     dbg.nospace()
         << "\nMultiSpinBox::SectionData(\n    prefix: "
-        << section.prefix
+        << value.prefix
         << "\n    minimum: "
-        << section.minimum
+        << value.minimum
         << "\n    value: "
-        << section.value
+        << value.value
         << "\n    decimals: "
-        << section.decimals
+        << value.decimals
         << "\n    isWrapping: "
-        << section.isWrapping
+        << value.isWrapping
         << "\n    maximum: "
-        << section.maximum
+        << value.maximum
         << "\n    suffix: "
-        << section.suffix
+        << value.suffix
         << "\n)";
     return dbg.maybeSpace();
 }

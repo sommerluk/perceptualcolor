@@ -28,8 +28,8 @@
 #define POLARPOINTF_H
 
 #include <QDebug>
-#include <QPointF>
 #include <QMetaType>
+#include <QPointF>
 
 namespace PerceptualColor {
 
@@ -75,7 +75,12 @@ namespace PerceptualColor {
  * but you never know? */
 class PolarPointF final
 {
+
 public:
+
+    /** @brief Constructor
+    * 
+    * Constructs an object with @ref radial() = 0 and @ref angleDegree() = 0 */
     explicit PolarPointF() = default;
 
     /** @brief Default copy constructor
@@ -126,13 +131,13 @@ public:
 private:
 
     /** @brief Holds the @ref angleDegree() value. */
-    qreal m_angleDegree = {0};
+    qreal m_angleDegree { 0 };
 
     /** @brief Holds the @ref radial() value. */
-    qreal m_radial = {0};
+    qreal m_radial { 0 };
 };
 
-QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf);
+QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value);
 
 } // namespace PerceptualColor
 
