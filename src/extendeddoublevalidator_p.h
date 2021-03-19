@@ -1,6 +1,6 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,7 +28,7 @@
 #define EXTENDEDDOUBLEVALIDATOR_P_H
 
 // Include the header of the public class of this private implementation.
-#include "PerceptualColor/extendeddoublevalidator.h"
+#include "extendeddoublevalidator.h"
 #include "constpropagatingrawpointer.h"
 
 namespace PerceptualColor {

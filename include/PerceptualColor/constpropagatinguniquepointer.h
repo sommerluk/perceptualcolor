@@ -1,7 +1,7 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2013 Torbjörn Klatt <opensource@torbjoern-klatt.de>
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -53,10 +53,11 @@ namespace PerceptualColor {
  * @snippet test/testconstpropagatinguniquepointer.cpp ConstPropagatingUniquePointer Example
  *
  * @sa @ref ConstPropagatingRawPointer
- * @sa <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
- * is a more general implementation of this concept, that does not only
- * support <tt>std::unique_ptr</tt> but also <tt>std::shared_ptr</tt>. It
- * lacks however the dereference operator.
+ * @sa This code is based on the idea in
+ * <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
+ * which is a more general implementation of this concept, that does not
+ * provide a <tt>std::unique_ptr</tt> but acts as a wrapper template around
+ * smart pointers in general. It lacks however the dereference operator.
  *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own

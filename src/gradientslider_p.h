@@ -1,6 +1,6 @@
 ﻿// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -72,7 +72,7 @@ public:
     QPair<LchDouble, qreal> intermediateColor(
         const LchDouble &firstColor,
         const LchDouble &secondColor,
-        qreal fraction
+        qreal value
     );
     /** @brief Cache for the gradient image
      *
@@ -107,8 +107,8 @@ public:
      * Depends on layoutDirection() and orientation() */
     QTransform m_transform;
     QTransform getTransform() const;
-    qreal m_fraction = 0.5;
-    qreal fromWindowCoordinatesToFraction(QPoint windowCoordinates);
+    qreal m_value = 0.5;
+    qreal fromWindowCoordinatesToValue(QPoint windowCoordinates);
     qreal m_singleStep = 0.01;
     qreal m_pageStep = 0.1;
 

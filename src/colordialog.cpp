@@ -1,6 +1,6 @@
 ﻿// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -137,7 +137,7 @@ QColor ColorDialog::currentColor() const
 {
     QColor temp;
     temp = d_pointer->m_currentOpaqueColor.toRgbQColor();
-    temp.setAlphaF(d_pointer->m_alphaGradientSlider->fraction());
+    temp.setAlphaF(d_pointer->m_alphaGradientSlider->value());
     return temp;
 }
 
@@ -184,7 +184,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentFullColor(
     } else {
         myAlphaF = 1;
     }
-    m_alphaGradientSlider->setFraction(myAlphaF);
+    m_alphaGradientSlider->setValue(myAlphaF);
     // No need to update m_alphaSpinBox is this is done
     // automatically by signals emitted by m_alphaGradientSlider.
     setCurrentOpaqueColor(color);
@@ -229,7 +229,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(
 void ColorDialog::ColorDialogPrivate::updateColorPatch()
 {
     QColor tempRgbQColor = m_currentOpaqueColor.toRgbQColor();
-    tempRgbQColor.setAlphaF(m_alphaGradientSlider->fraction());
+    tempRgbQColor.setAlphaF(m_alphaGradientSlider->value());
     m_colorPatch->setColor(tempRgbQColor);
 }
 
@@ -295,7 +295,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
     m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
 
     // Update the diagrams
-    m_lchLightnessSelector->setFraction(
+    m_lchLightnessSelector->setValue(
         color.toLch().l / static_cast<qreal>(100)
     );
     m_chromaHueDiagram->setColor(color.toLch());
@@ -325,7 +325,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
 void ColorDialog::ColorDialogPrivate::readLightnessValue()
 {
     LchDouble lch = m_currentOpaqueColor.toLch();
-    lch.l = m_lchLightnessSelector->fraction() * 100;
+    lch.l = m_lchLightnessSelector->value() * 100;
     setCurrentOpaqueColor(
         FullColorDescription(
             m_rgbColorSpace,
@@ -448,9 +448,9 @@ void ColorDialog::ColorDialogPrivate::initialize()
     // Create widgets for alpha value
     QHBoxLayout* m_alphaLayout = new QHBoxLayout();
     m_alphaGradientSlider = new GradientSlider(
-        m_rgbColorSpace
+        m_rgbColorSpace,
+        Qt::Orientation::Horizontal
     );
-    m_alphaGradientSlider->setOrientation(Qt::Orientation::Horizontal);
     m_alphaSpinBox = new QDoubleSpinBox();
     m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
     m_alphaSpinBox->setMinimum(0);
@@ -515,7 +515,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
     );
     connect(
         m_lchLightnessSelector,
-        &GradientSlider::fractionChanged,
+        &GradientSlider::valueChanged,
         q_pointer,
         [this]() { readLightnessValue(); }
     );
@@ -542,13 +542,13 @@ void ColorDialog::ColorDialogPrivate::initialize()
     );
     connect(
         m_alphaGradientSlider,
-        &GradientSlider::fractionChanged,
+        &GradientSlider::valueChanged,
         q_pointer,
         [this]() { updateColorPatch(); }
     );
     connect(
         m_alphaGradientSlider,
-        &GradientSlider::fractionChanged,
+        &GradientSlider::valueChanged,
         q_pointer,
         [this](const qreal newFraction) {
             const QSignalBlocker blocker(m_alphaSpinBox);
@@ -560,7 +560,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
         QOverload<double>::of(&QDoubleSpinBox::valueChanged),
         q_pointer,
         [this](const double newValue) {
-            m_alphaGradientSlider->setFraction(newValue / 100);
+            m_alphaGradientSlider->setValue(newValue / 100);
         }
     );
 

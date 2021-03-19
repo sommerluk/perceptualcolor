@@ -1,6 +1,6 @@
 ﻿// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -36,32 +36,41 @@
 
 namespace PerceptualColor {
 
-/** @brief A slider displaying a gradient
+/** @brief A slider who’s groove displays an LCh color gradient.
  *
- * A slider that displays a gradient between two LCh colors. The gradient
- * is calculated by equal steps in the LCh color space. Concerning the h
- * value (hue), which is circular, always the shorter side of the circle
- * is chosen. Examples:
+ * The groove of this slider that displays a gradient between two LCh
+ * colors. The gradient is an equal gradient calculated indepentendly
+ * for each of the four components (lightness, chroma, hue, alpha).
+ *
+ * The hue component is the only one that is circular (0°=360°): Here,
+ * Here, the path via the shorter side is always chosen. Examples:
  * @li If the first hue is 182° and the second hue is 1°, than
  *     the hue will increase from 182° to 360° than 1°.
  * @li If the first hue is 169° and the second hue is 359°, than
  *     the hue will decrease from 169° to 0°, than 359°.
  *
- * This widget also renders the alpha channel, using a background
- * of gray squares for colors that are not fully opaque.
+ * This widget considers the alpha channel, using a background
+ * of gray squares behind the (semi-)transparent colors.
+ *
+ * Example:
+ * |             |   L |  C |   h  | alpha |
+ * | :---------- | --: | -: | ---: | ----: |
+ * | firstColor  | 80% |  5 |  15° |   70% |
+ * |             | 70% |  7 |   5° |   80% |
+ * |             | 60% |  9 | 355° |   90% |
+ * | secondcolor | 50% | 11 | 345° |  100% |
  *
  * Note that due to this mathematical model, there might be out-of-gamut
  * colors within the slider even if both, the first and the second color are
  * in-gamut colors. Out-of-gamut colors are not rendered, so you might see
  * a hole in the gradient.
  *
- * @todo Wouldn’t it be better to subclass <tt>QSlider</tt> instead of
- * @ref AbstractDiagram? Or implement it’s source-code interaface?
- * Or the source code interface of KGradientSelector?
- *
  * @todo Declare Q_PROPERTY for @ref setFirstColor() and @ref setSecondColor()
- */
-// TODO Source interface similar to QSlider? Or to KGradientSelector/KSelector?
+ *
+ * @todo Could the API be even smaller? */
+// The API is roughly orientated on QSlider/QAbstractSlider and on
+// KSelecter/KGradientSelector where appicable. Our API is however
+// much smaller.
 class GradientSlider : public AbstractDiagram
 {
     Q_OBJECT
@@ -80,9 +89,9 @@ class GradientSlider : public AbstractDiagram
      * - 0 means: totally firstColor()
      * - 1 means: totally secondColor()
      *
-     * @sa setFraction()
-     * @sa m_fraction() */
-    Q_PROPERTY(qreal fraction READ fraction WRITE setFraction NOTIFY fractionChanged USER true)
+     * @sa setValue()
+     * @sa m_value() */
+    Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
     /** @brief This property holds the page step.
      *
@@ -118,13 +127,13 @@ public:
 
     virtual QSize minimumSizeHint() const override;
     Qt::Orientation	orientation() const;
-    qreal fraction();
+    qreal value();
     qreal singleStep();
     qreal pageStep();
 
 Q_SIGNALS:
-    /** @brief Signal for fraction() property. */
-    void fractionChanged(const qreal newFraction);
+    /** @brief Signal for value() property. */
+    void valueChanged(const qreal newValue);
     void orientationChanged(const Qt::Orientation newOrientation);
     void pageStepChanged(const qreal newPageStep);
     void singleStepChanged(const qreal newSingleStep);
@@ -137,7 +146,7 @@ public Q_SLOTS:
     );
     void setFirstColor(const PerceptualColor::FullColorDescription &col);
     void setSecondColor(const PerceptualColor::FullColorDescription &col);
-    void setFraction(const qreal newFraction);
+    void setValue(const qreal newValue);
     void setSingleStep(const qreal newSingleStep);
     void setPageStep(const qreal newPageStep);
 

@@ -1,6 +1,6 @@
-﻿// // SPDX-License-Identifier: MIT
+// // SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation

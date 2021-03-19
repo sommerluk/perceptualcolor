@@ -1,6 +1,6 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -135,7 +135,7 @@ QSize GradientSlider::minimumSizeHint() const
 
 qreal GradientSlider
     ::GradientSliderPrivate
-    ::fromWindowCoordinatesToFraction
+    ::fromWindowCoordinatesToValue
 (
     QPoint windowCoordinates
 )
@@ -158,8 +158,8 @@ qreal GradientSlider
 
 void GradientSlider::mousePressEvent(QMouseEvent* event)
 {
-    setFraction(
-        d_pointer->fromWindowCoordinatesToFraction(
+    setValue(
+        d_pointer->fromWindowCoordinatesToValue(
             event->pos()
         )
     );
@@ -167,8 +167,8 @@ void GradientSlider::mousePressEvent(QMouseEvent* event)
 
 void GradientSlider::mouseReleaseEvent(QMouseEvent* event)
 {
-    setFraction(
-        d_pointer->fromWindowCoordinatesToFraction(
+    setValue(
+        d_pointer->fromWindowCoordinatesToValue(
             event->pos()
         )
     );
@@ -176,25 +176,25 @@ void GradientSlider::mouseReleaseEvent(QMouseEvent* event)
 
 void GradientSlider::mouseMoveEvent(QMouseEvent* event)
 {
-    setFraction(
-        d_pointer->fromWindowCoordinatesToFraction(
+    setValue(
+        d_pointer->fromWindowCoordinatesToValue(
             event->pos()
         )
     );
 }
 
-qreal GradientSlider::fraction()
+qreal GradientSlider::value()
 {
-    return d_pointer->m_fraction;
+    return d_pointer->m_value;
 }
 
-void GradientSlider::setFraction(qreal newFraction)
+void GradientSlider::setValue(qreal newValue)
 {
-    qreal temp = qBound<qreal>(0, newFraction, 1);
-    if (d_pointer->m_fraction != temp) {
-        d_pointer->m_fraction = temp;
+    qreal temp = qBound<qreal>(0, newValue, 1);
+    if (d_pointer->m_value != temp) {
+        d_pointer->m_value = temp;
         update();
-        Q_EMIT fractionChanged(temp);
+        Q_EMIT valueChanged(temp);
     }
 }
 
@@ -203,7 +203,7 @@ void GradientSlider::wheelEvent(QWheelEvent* event)
     qreal steps = standardWheelSteps(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
-        setFraction(d_pointer->m_fraction + steps * d_pointer->m_singleStep);
+        setValue(d_pointer->m_value + steps * d_pointer->m_singleStep);
     } else {
         // Don’t accept the event and let it up to the default treatment:
         event->ignore();
@@ -215,37 +215,37 @@ void GradientSlider::keyPressEvent(QKeyEvent* event)
     switch (event->key()) {
         case Qt::Key_Up:
         case Qt::Key_Plus:
-            setFraction(d_pointer->m_fraction + d_pointer->m_singleStep);
+            setValue(d_pointer->m_value + d_pointer->m_singleStep);
             break;
         case Qt::Key_Down:
         case Qt::Key_Minus:
-            setFraction(d_pointer->m_fraction - d_pointer->m_singleStep);
+            setValue(d_pointer->m_value - d_pointer->m_singleStep);
             break;
         case Qt::Key_Left:
             if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                setFraction(d_pointer->m_fraction - d_pointer->m_singleStep);
+                setValue(d_pointer->m_value - d_pointer->m_singleStep);
             } else {
-                setFraction(d_pointer->m_fraction + d_pointer->m_singleStep);
+                setValue(d_pointer->m_value + d_pointer->m_singleStep);
             }
             break;
         case Qt::Key_Right:
             if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                setFraction(d_pointer->m_fraction + d_pointer->m_singleStep);
+                setValue(d_pointer->m_value + d_pointer->m_singleStep);
             } else {
-                setFraction(d_pointer->m_fraction - d_pointer->m_singleStep);
+                setValue(d_pointer->m_value - d_pointer->m_singleStep);
             }
             break;
         case Qt::Key_PageUp:
-            setFraction(d_pointer->m_fraction + d_pointer->m_pageStep);
+            setValue(d_pointer->m_value + d_pointer->m_pageStep);
             break;
         case Qt::Key_PageDown:
-            setFraction(d_pointer->m_fraction - d_pointer->m_pageStep);
+            setValue(d_pointer->m_value - d_pointer->m_pageStep);
             break;
         case Qt::Key_Home:
-            setFraction(0);
+            setValue(0);
             break;
         case Qt::Key_End:
-            setFraction(1);
+            setValue(1);
             break;
         default:
             /* Quote from Qt documentation:
@@ -345,7 +345,7 @@ void GradientSlider::paintEvent(QPaintEvent* event)
     }
 
     QPolygonF arrowPolygon;
-    const qreal cursorPosition = actualLength * d_pointer->m_fraction;
+    const qreal cursorPosition = actualLength * d_pointer->m_value;
     const qreal arrowSize = 6;
     arrowPolygon
         << QPointF(cursorPosition, arrowSize)
@@ -445,18 +445,18 @@ QPair<LchDouble, qreal> GradientSlider
 (
     const LchDouble &firstColor,
     const LchDouble &secondColor,
-    qreal fraction
+    qreal value
 )
 {
     LchDouble color;
     qreal alpha;
-    color.l = firstColor.l + (secondColor.l - firstColor.l) * fraction;
-    color.c = firstColor.c + (secondColor.c - firstColor.c) * fraction;
-    color.h = firstColor.h + (secondColor.h - firstColor.h) * fraction;
+    color.l = firstColor.l + (secondColor.l - firstColor.l) * value;
+    color.c = firstColor.c + (secondColor.c - firstColor.c) * value;
+    color.h = firstColor.h + (secondColor.h - firstColor.h) * value;
     alpha =
         m_firstColor.alpha()
         + (m_secondColor.alpha() - m_firstColor.alpha())
-        * fraction;
+        * value;
     return QPair<LchDouble, qreal>(color, alpha);
 }
 

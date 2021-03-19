@@ -1,6 +1,6 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -1729,7 +1729,7 @@ private Q_SLOTS:
 
     void testReadLightnessValues() {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
-        myDialog->d_pointer->m_lchLightnessSelector->setFraction(0.6);
+        myDialog->d_pointer->m_lchLightnessSelector->setValue(0.6);
         myDialog->d_pointer->readLightnessValue();
         QCOMPARE(
             myDialog->d_pointer->m_currentOpaqueColor.toLch().l,
@@ -1918,7 +1918,7 @@ private Q_SLOTS:
         );
         QCOMPARE(
             myDialog->d_pointer->m_colorPatch->color().alphaF(),
-            myDialog->d_pointer->m_alphaGradientSlider->fraction()
+            myDialog->d_pointer->m_alphaGradientSlider->value()
         );
     }
 

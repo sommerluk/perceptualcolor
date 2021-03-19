@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 #
-# Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+# Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
@@ -202,7 +202,6 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/colordialog.h
   include/PerceptualColor/colorpatch.h
   include/PerceptualColor/constpropagatinguniquepointer.h
-  include/PerceptualColor/extendeddoublevalidator.h
   include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientslider.h
   include/PerceptualColor/labdouble.h

@@ -1,6 +1,6 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
- * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
+ * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,7 +28,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/extendeddoublevalidator.h"
+#include "extendeddoublevalidator.h"
 // Second, the private implementation.
 #include "extendeddoublevalidator_p.h"
 
