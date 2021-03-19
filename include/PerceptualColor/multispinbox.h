@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -31,27 +31,28 @@
 #include <QLineEdit>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor {
-    
+
 /** @brief A spin box that can hold multiple sections (each with its own
  * value) at the same time.
- * 
+ *
  * This widget is similar to <tt>QDateTimeEdit</tt> which also provides
  * multiple sections (day, month, year…) within a single spin box.
  * However, <em>this</em> widget is flexible. You can define on your own
  * the behaviour of each section.
- * 
+ *
  * This widget works with floating point precision.
- * 
+ *
  * Example code to create a @ref MultiSpinBox for a HSV color value
  * (Hue 0°–360°, Saturation 0–255, Value 0–255) comes here:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Basic example
- * 
+ *
  * You can also have additional buttons within the spin box via the
  * @ref addActionButton() function.
- * 
- * @note It would be possible to add more functions to work with 
+ *
+ * @note It would be possible to add more functions to work with
  * @ref MultiSpinBox::SectionData. The interface could theoretically
  * be similar to other Qt classes that offer similar concepts of various
  * data within a list: QComboBox, QHeaderView, QDateTimeEdit, QList – of
@@ -63,7 +64,13 @@ namespace PerceptualColor {
  * is also appropriate. For the moment, no further interface functions
  * are planned. However, a full-featured interface could look like that:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
- * 
+ *
+ *  @todo MultiSpinBox should never become 0 because the validator
+ * allows something that the converter cannot convert!
+ *
+ * @todo Sometimes, after a click on the action, the first section
+ * is selected. Sometimes not. That’s inconsistant!
+ *
  * @todo Currently, if the widget has <em>not</em> the focus but the
  * mouse moves over it and the scroll wheel is used, it’s the first
  * section that will be changed, and not the one where the mouse is,
@@ -72,20 +79,20 @@ namespace PerceptualColor {
  * was editig before). But it would be great if we could do better here.
  * But: Is this realistic and will the required code work on all
  * platforms?
- * 
- * 
+ *
+ *
  * @todo When adding Bengali digits (for example by copy and paste) to a
  * @ref MultiSpinBox that was localized to en_US, than sometimes this is
  * accepted (thought later “corrected” to 0), and sometimes not. This
  * behaviour is inconsistend and wrong.
- * 
+ *
  * @todo Imagine a section in a @ref MultiSpinBox that has 0 decimals and
  * a value of 15.7. It is displayed as 16. When the user scrolls up with
  * the mouse or uses the key ↑ than the value changes to 16.7 while the
  * display changes to 17. Isn’t is highly confusing that – after a user
  * interaction – the new internal value is different from what the users sees?
  * How does QDoubleSpinBox solves this?
- * 
+ *
  * @todo When using this widget in @ref ColorDialog, there are rounding
  * differences, for example when choosing HSV 210° 27 19, then RGB becomes
  * 17 18 19. But when passing through an RGB field, HSV will be changed
@@ -95,14 +102,14 @@ namespace PerceptualColor {
  * like 0.001 by rounding error, and so the Arrow-Down-Button will be
  * enabled thought the displayed value is 0 (and this was the value previously
  * manually entered by the user); this is confusing.
- * 
+ *
  * @todo Apparently, the validator doesn’t restict the input actually to the
  * given range. For QDoubleSpinBox however, the line edit <em>is</em>
  * restricted! Example: even if 100 is maximum, it is possible to write 444.
  * Maybe our @ref ExtendedDoubleValidator should not rely on Qt’s validator,
  * but on if QLocale is able to convert (result: valid) or not (result:
  * invalid)?!
- * 
+ *
  * @todo This class inherits from QAbstractSpinBox, which provides
  * properties. We have to make sure these properties work also for
  * this class. There are various types of properties.
@@ -115,10 +122,10 @@ namespace PerceptualColor {
  *     this has to be documentated (such as <tt>wrapping</tt> which cannot
  *      be set for the hole @ref MultiSpinBox but has to be individual per
  *     section).
- * 
+ *
  * @todo Do not text-cursor-select more than <em>one</em> value when
  * editing (or do not allow text selection at all)?
- * 
+ *
  * @todo Splitting @ref MultiSpinBox::SectionData into
  * <tt>SectionConfiguration</tt> and <tt>value</tt>? Disadvantage: Requires
  * to double all access functions. Advantage: Often, you only want the value,
@@ -131,14 +138,14 @@ class MultiSpinBox : public QAbstractSpinBox
 
 public:
     /** @brief The data of a single section within a @ref MultiSpinBox.
-     * 
+     *
      * For a specific section within a @ref MultiSpinBox, this data structure
      * contains on the one hand the @ref value itself, and on the other hand
      * also the various setting parameters for the widget.
-     * 
+     *
      * This data type can be passed to QDebug thanks to
      * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &section)
-     * 
+     *
      * @todo How to make this future-proof? Maybe later we want to add
      * singleStep() or pageStep() values? Are d-pointers working well when
      * this data structure has to be copy-able? */
@@ -157,13 +164,13 @@ public:
         double value = 0;
         /** @brief Holds whether or not @ref value wraps around when it
          * reaches @ref minimum or @ref maximum.
-         * 
+         *
          * The default is <tt>false</tt>.
-         * 
+         *
          * If <tt>false</tt>, @ref value shall be bound between @ref minimum
          * and  @ref maximum. If <tt>true</tt>, @ref value shall be treated
          * as a circular value.
-         * 
+         *
          * Example: You have a section that displays a value measured in
          * degree. @ref minimum is <tt>0</tt>. @ref maximum is <tt>360</tt>.
          * The following corrections would be applied to input:
@@ -180,7 +187,7 @@ public:
          * |   725 |                 360 |                  5 | */
         bool isWrapping = false;
     };
-    
+
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
     /** @brief Default destructor */
     virtual ~MultiSpinBox() noexcept override;
@@ -205,7 +212,7 @@ private:
 
     class MultiSpinBoxPrivate;
     /** @brief Declare the private implementation as friend class.
-     * 
+     *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
     friend class MultiSpinBoxPrivate;

@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -48,12 +48,12 @@ ColorWheelImage::ColorWheelImage(
 }
 
 /** @brief Setter for the border property.
- * 
+ *
  * The border is the space between the outer outline of the wheel and the
  * limits of the image. The wheel is always centered within the limits of
  * the image. The default value is <tt>0</tt>, which means that the wheel
  * touchs the limits of the image.
- * 
+ *
  * @param newBorder The new border size, measured in <em>physical</em>
  * pixels. */
 void ColorWheelImage::setBorder(const qreal newBorder)
@@ -72,21 +72,21 @@ void ColorWheelImage::setBorder(const qreal newBorder)
 }
 
 /** @brief Setter for the device pixel ratio (floating point).
- * 
+ *
  * This value is set as device pixel ratio (floating point) in the
  * <tt>QImage</tt> that this class holds. It does <em>not</em> change
  * the <em>pixel</em> size of the image or the pixel size of wheel
  * thickness or border.
- * 
+ *
  * This is for HiDPI support. You can set this to
  * <tt>QWidget::devicePixelRatioF()</tt> to get HiDPI images in the correct
  * resolution for your widgets. Within a method of a class derived
  * from <tt>QWidget</tt>, you could write:
- * 
+ *
  * @snippet test/testcolorwheelimage.cpp ColorWheelImage HiDPI usage
- * 
+ *
  * The default value is <tt>1</tt> which means no special scaling.
- * 
+ *
  * @param newDevicePixelRatioF the new device pixel ratio as a
  * floating point data type. */
 void ColorWheelImage::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
@@ -105,10 +105,10 @@ void ColorWheelImage::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
 }
 
 /** @brief Setter for the image size property.
- * 
+ *
  * This value fixes the size of the image. The image will be a square
  * of <tt>QSize(newImageSize, newImageSize)</tt>.
- * 
+ *
  * @param newImageSize The new image size, measured in <em>physical</em>
  * pixels. */
 void ColorWheelImage::setImageSize(const int newImageSize)
@@ -127,10 +127,10 @@ void ColorWheelImage::setImageSize(const int newImageSize)
 }
 
 /** @brief Setter for the wheel thickness property.
- * 
+ *
  * The wheel thickness is the distance between the inner outline and the
  * outer outline of the wheel.
- * 
+ *
  * @param newWheelThickness The new wheel thickness, measured
  * in <em>logical</em> pixels. */
 void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
@@ -149,7 +149,7 @@ void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
 }
 
 /** @brief Delivers an image of a color wheel
-* 
+*
 * @returns Delivers a square image of a color wheel. Its size
 * is <tt>QSize(imageSize, imageSize)</tt>. All pixels
 * that do not belong to the wheel itself will be transparent.
@@ -158,7 +158,7 @@ void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
 * values for lightness and chroma and the available colors in
 * the current color space, there may be some hue who is out of
 *  gamut; if so, this part of the wheel will be transparent.
-* 
+*
 * @todo Out-of-gamut situations should automatically be handled. */
 QImage ColorWheelImage::getImage()
 {
@@ -166,9 +166,9 @@ QImage ColorWheelImage::getImage()
     if (!m_image.isNull()) {
         return m_image;
     }
-    
+
     // If no cache is available (m_image.isNull()), render a new image.
-    
+
     // Special case: zero-size-image
     if (m_imageSizePhysical <= 0) {
         return m_image;
@@ -214,8 +214,8 @@ QImage ColorWheelImage::getImage()
     // given lightness and chroma value) which are drawn transparent, it is
     // important to initialize this image with a transparent background.
     m_image.fill(Qt::transparent);
-    lch.L = LchValues::neutralLightness;
-    lch.C = LchValues::srgbVersatileChroma;
+    lch.l = LchValues::neutralLightness;
+    lch.c = LchValues::srgbVersatileChroma;
     // minimumRadial: Adding "+ 1" would reduce the workload (less pixel to
     // process) and still work mostly, but not completely. It creates sometimes
     // artifacts in the anti-aliasing process. So we don't do that.
@@ -234,7 +234,7 @@ QImage ColorWheelImage::getImage()
                     polarCoordinates.radial(),
                     maximumRadial
                 )
-                
+
             ) {
                 // We are within the wheel
                 lch.h = polarCoordinates.angleDegree();

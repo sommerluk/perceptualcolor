@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -35,7 +35,7 @@
  * However, the widgets do not require the user itself to know anything
  * about LCh at all, because the graphical representations is
  * intuitive enough.
- * 
+ *
  * This library itself lives in the namespace @ref PerceptualColor. Almost
  * all symbols and macros are within this namespace. For the very few
  * exceptions, see <em>Files → File members</em> in this documentationi.
@@ -44,17 +44,17 @@
  * prefixed with <tt>cms</tt>. The library relies internally on LittleCMS
  * for all the color management. Anyway, you can uses this library without
  * knowing about the internals of LittleCMS.
- * 
+ *
  * How to get started? @ref PerceptualColor::ColorDialog provides a
  * perceptual replacement for QColorDialog:
  * @snippet test/testcolordialog.cpp ColorDialog Get color
- * 
+ *
  * And there are also individual widgets available. Among others:
  * - @ref PerceptualColor::WheelColorPicker (a full-featured color wheel)
  * - @ref PerceptualColor::ColorPatch (to show a particular color)
  * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a
  *   given lightness)
- * 
+ *
  * @anchor hidpisupport <b>High DPI support:</b> This library supports
  * High DPI out of the box. You do not need much to use it. The widgets
  * provide High DPI support automatically. The only problem are icons.
@@ -78,21 +78,21 @@
  *   resolution (even SVG icons on high-DPI displays). When you are
  *   developping an application and you want to enable high-DPI icons in
  *   your application, add the following line to your code (which
- *   should be done by convention <em>before</em> creating
- *   the <tt>QCoreApplication</tt> object):
+ *   should be done by convention <em>before</em> creating the
+ *   <tt>QCoreApplication</tt> object):
  *   <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt>
- * 
+ *
  * @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt> anymore.
  * Does this mean that it is set by default and no further action is required?
- * 
+ *
  * The library depends on (and therefore you has to link against):
- * 
+ *
  * |                         | Qt                 | LittleCMS               |
  * | :---------------------- | :----------------- | :---------------------- |
  * | <b>Major release</b>    | 5                  | 2                       |
  * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
  * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
- * 
+ *
  * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
  * used in this library.</em>
  *
@@ -102,13 +102,13 @@
  *      by this library) only requires C++03. Only starting
  *      with Qt 5.7, Qt itself requires C++11. Source:
  *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
- * 
+ *
  *      Qt 6 requires minimum C++17, as
  *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
  *      explains.
- * 
+ *
  *      Our library code uses C++11 features, for example “constexpr”.
- * 
+ *
  *      In the CMakeLists.txt file, we set -std=c++17 and we set
  *      also -Wpedantic and -pedantic-errors to enforce it. That is
  *      a useful option for this library if we decide to make it Qt-6-only.
@@ -116,7 +116,7 @@
  *      requirements that we do not have to raise soon, and that are a
  *      good base for LTS.
  * -->
- * 
+ *
  * The library uses in general <tt>int</tt> for integer values, because
  * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
  * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
@@ -126,15 +126,15 @@
  * colors. For internal transformation, usually <tt>qreal</tt>
  * is used for each channel, giving a better precision and reducing rounding
  * errors.
- * 
+ *
  * The source code of the library is in UTF8. A static_assert within the
  * header @ref helper.h makes sure your compiler actually treats it as UTF8.
- * 
+ *
  * @copyright Almost all the code is published under MIT License. Only
  * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
  * license. The <tt>LICENSES</tt> subfolder contains copies of the licence
  * texts.
- * 
+ *
  * @note This library uses the <em>pointer to implementation</em> idiom
  * (also known as pimpl idiom, d-pointer idiom or opaque-pointer idiom)
  * in almost all classes that are part of the public API, and also in
@@ -164,30 +164,32 @@
  * Versioning in C++</a></em> and KDE’s information document <em>
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
  * Binary Compatibility Issues With C++</a></em> and for details.
- * 
+ *
+ * @sa @ref characterset "Character sets"
+ *
  * @todo Use <tt>explicit</tt> on all constructors?
- * 
+ *
  * @todo Multi-licensing? Add Boost licence and Unlicense as an additional
  * choise?
- * 
+ *
  * @todo The image cache for the gamut widgets should be updated
  * asynchronously (in its own thread or even various own threads
  * in parallel). While waiting for the result, an empty image could be used.
  * Or it might be useful to provide first a low-resolution version, and only
  * later-on a high-resolution version.
- * 
+ *
  * @todo Multi-threaded application of color transforms. It seems okay to
  * create the color transforms in one thread and use the same color
  * transform (once created) from various other threads at the same time
  * as long as the flag <tt>cmsFLAGS_NOCACHE</tt> is used to create the
  * transform.
- * 
+ *
  * @todo Automatically scale the thickness of the wheel (and maybe even the
  * handle) with varying widget size?
- * 
+ *
  * @todo Support more color spaces? https://pypi.org/project/colorio/ for
  * example supports a lot of (also perceptually uniform) color spaces…
- * 
+ *
  * @todo All <tt>d_pointer</tt> and <tt>q_pointer</tt> could be changed
  * to <tt>const</tt> which would work without problems with the current
  * code base. Advantage: It communicates clearly that these pointers
@@ -196,41 +198,41 @@
  * do it in the constructor function body, this will not work; than
  * we would have to delete the <tt>const</tt> qualifiers, which would
  * probably break ABI compatibility?
- * 
+ *
  * @todo Review and unit tests for these classes:
  * @ref PerceptualColor::AlphaSelector,
  * @ref PerceptualColor::ChromaLightnessDiagram,
  * @ref PerceptualColor::FullColorDescription,
- * @ref PerceptualColor::GradientSelector,
+ * @ref PerceptualColor::GradientSlider,
  * @ref PerceptualColor::RgbColorSpace,
  * @ref PerceptualColor::SimpleColorWheel,
  * @ref PerceptualColor::WheelColorPicker
- * 
+ *
  * @todo Do not use constexpr in public headers as when we change the value
  * later, compile time value and run time value might be different, and
  * that might be dangerous.
- * 
+ *
  * @todo Which symbols should finally be exported? Remove (most of) the other
  * headers from the include directory!
- * 
+ *
  * @todo Check in all classes that take a @ref PerceptualColor::RgbColorSpace
  * that the shared pointer is actually not a <tt>nullptr</tt>. If is
  * <em>is</em> a <tt>nullptr</tt> than throw an exception. Throwing the
  * exception early might make error detection easier for users of the library.
- * 
+ *
  * @todo Would it be better to avoid default arguments like
  * <tt>void test(int i = 0)</tt> as changing the default value in a
  * future version of the library requires recompilation, which breaks
  * to a certain degree ABI? It the problem for default functions like
  * <tt>Test() = default</tt> as default constructor similar?
- * 
+ *
  * @todo Avoid default parameters as they would require recompilation of
  * applications if changed in a future version of the library?
- * 
+ *
  * @todo Review all static class functions: Which should be made non-static?
  * (Maybe in the future, it might be necessary to access object data, so
  * better making them non-static so this stays possible.)
- * 
+ *
  * @todo <tt>private Q_SLOTS</tt> can be connected to (with the old connection
  * syntax) from everywhere, so they are indeed not private. That’s not great.
  * As we use almost exclusively the new connection syntax, we can connect
@@ -238,15 +240,15 @@
  * to private functions. Or, better: If switching to pimpl, in the private
  * class, the private slots will become public slots, which is fine and
  * expressive.
- * 
+ *
  * @todo mark all public non-slot functions with Q_INVOKABLE (except property
  * setters and getters)
- * 
+ *
  * @todo Delete all default arguments in public headers, as changes require
  * re-compilation of the client application to take effect, which might lead
  * to a miss-match of behaviour between app and lib, if compile-time and
  * run-time version of the lib are not the same.
- * 
+ *
  * @todo A good widget library should
  * - run on all systems (✓ We do not use system-specific code nor do we
  *   rely on byte order / Is this correct? Image generation code?)
@@ -254,16 +256,16 @@
  * - stylable by QStyle (? partial)
  * - stylable by style sheets (✗)
  * - accessibility (✗)
- * 
+ *
  * @todo A good widget library should also be touchscreen-ready.
  * - An alternative to
  *   the spin box? How, for up to 360 values (degrees in step by 1)? Or
  *   should the steps simply be bigger?
- * 
+ *
  * @todo KDE Frameworks / https://marketplace.qt.io/ ?
  * https://community.kde.org/Incubator
- * 
- * @todo Provide property bindings as described in 
+ *
+ * @todo Provide property bindings as described in
  * https://www.qt.io/blog/property-bindings-in-qt-6 or not? It is worth
  * when we do not support QML? What are the pitfalls? Imagine a property
  * that holds a percent value from 0 to 100; the setter enforces this
@@ -276,27 +278,30 @@
  * stored internally at m_color: Much implementation code of the clas will
  * access directly m_color instead of color(), so when using bindings,
  * this code is broken?
- * 
+ *
  * @todo Provide QML support so that for
  * https://doc.qt.io/qt-5/qml-qtquick-dialogs-colordialog.html (or its
  * Qt6 counterpart) we provide a source compatible alternative, like for
  * QColorWidget? Split the library in three parts (Common, Widgets, QML)?
- * 
+ *
  * @todo Comply with KDE policies: https://community.kde.org/Policies
- * 
+ *
  * @todo Remove all qDebug calls from the source
- *         
+ *
  * @todo Provide RESET functions for all properties around the library?
- * 
- * @todo Use QObject::tr() for translations. Provide po files.
- * 
+ *
+ * @todo Use QObject::tr() for translations.
+ * Provide po files? How can a library be localized?
+ * See https://community.kde.org/Frameworks/Frameworks_Localization_Policy for
+ * ideas.
+ *
  * @todo Qt6 property bindings (QProperty QPropertyBinding) for all
  * properties?
- * 
+ *
  * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
  * be better to require the last LTS release (5.15), just to be compatible if
  * in the future we depend on this?
- * 
+ *
  * @todo This library provides some constexpr in the public API. If now we
  * release version 1.0.0 of this library with constexpr x == 1. Now, in
  * version 1.1.0 of this library, we change its value to constexpr x == 5.
@@ -306,73 +311,76 @@
  * with version 1.1.0, doest’t then constexpr x have different values
  * within the library code and within the program code, which might
  * lead to undefined behaviour?
- * 
+ *
  * @todo When scaling is used, the icons on the OK button and the
  * Cancel button are ugly. Why isn’t this handled automatically correctly,
  * though on other Qt apps it seems to be handled automatically correctly?
- * 
+ *
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
- * 
+ *
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
- * 
+ *
  * @todo A program that uses our library could also use LittleCMS itself. If
  * it would use LittleCMS without thread-save API, but using it always in the
  * very same thread which is <em>not</em> the main thread, this could make
  * problems for our library if we use non-thread-save LittleCMS APIs. So
  * best would be that our library uses exclusively <em>thread-save</em>
  * APIs of LittleCMS.
- * 
+ *
  * @todo Qt Designer support for the widgets
- * 
+ *
  * @todo Use <a href="https://lvc.github.io/abi-compliance-checker/">
  * abi-compliance-checker</a> to control ABI compatibility.
- * 
+ *
  * @todo It might be useful to support for all widgets grayed out appearance
  * when they are disabled. Just fade out, maybe with some transparency, and
  * let colors still be visible, would be a bad idea: It would be highly
  * confusing seeing colors, but colors that are wrong. So everything
  * would have to be gray. For @ref PerceptualColor::ColorPatch and
- * @ref PerceptualColor::GradientSelector this could be simply the default
+ * @ref PerceptualColor::GradientSlider this could be simply the default
  * background, similar to grayed out spin boxes. And for the diagram
  * widgets, only the shape would stay visible, with uniform standard
  * gray colors coming from <tt>QStyle</tt>. The handles might not
  * even be displayed at all.
- * 
+ *
  * @todo Follow KDE's <b><a href="https://hig.kde.org/index.html">HIG</a></b>
- * 
+ *
  * @todo Add screenshots of widgets to the documentation
- * 
+ *
  * @todo Test linking against lcms.h in version 2.0.0 for compatibility
  * (or require more recent version?)
- * 
+ *
  * @todo Require (by static cast additional to CMake conditions) a minimum
  * Qt version?
- * 
+ *
  * @todo Would it be a good idea to implement Q_PROPERTY RESET overall? See
  * also https://phabricator.kde.org/T12359
- * 
+ *
  * @todo Better design on small widget sizes for the whole library.
- * 
+ *
+ * @todo Anti-aliasing the gamut diagrams? Wouldn't this be bad for
+ * performance?
+ *
  * @todo Use a cross-hair cursor on @ref PerceptualColor::ChromaHueDiagram
  * and @ref PerceptualColor::ChromaLightnessDiagram when the mouse is
  * hovering over the gamut, to show that this surface can be clicked?
- * 
+ *
  * @todo Touch-friendly interface: Would it be good to have buttons for
  * plus and minus on the various LCH axis which would be companings
  * for @ref PerceptualColor::ChromaHueDiagram and
  * @ref PerceptualColor::ChromaLightnessDiagram and would allow
  * more exactly choose colors also on touch devices?
- * 
+ *
  * @todo Would it be a good idea to have plus and minus buttons that
  * manipulate the current color along the depth and vividness axis
  * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
  * by Roy S. Berns?
- * 
+ *
  * @todo Spell checking for the documentation */
 
 /** @brief The namespace of this library.
- * 
+ *
  * Everything that is provides in this library is encapsulated within this
  * namespace. */
 namespace PerceptualColor {

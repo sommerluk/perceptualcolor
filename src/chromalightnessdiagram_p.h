@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -40,20 +40,20 @@ class ChromaLightnessDiagram::ChromaLightnessDiagramPrivate final
 public:
     ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink);
     /** @brief Default destructor
-     * 
+     *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~ChromaLightnessDiagramPrivate() noexcept = default;
 
     /** @brief The border between the widget outer border and the
      * diagram itself.
-     * 
+     *
      * The diagram is not painted on the whole extend of the widget.
      * A border is left to allow that the selection handle can be painted
      * completely even when a pixel on the border of the diagram is
      * selected. The border is determined automatically, its value
      * depends on @ref handleRadius and @ref handleOutlineThickness.
-     * 
+     *
      * @sa updateBorder()
      */
     int m_border;
@@ -68,7 +68,7 @@ public:
      * @sa updateDiagramCache */
     bool m_diagramCacheReady = false;
     /** @brief If a mouse event is active
-     * 
+     *
      * Holds if currently a mouse event is active or not.
      * @sa mousePressEvent()
      * @sa mouseMoveEvent()
@@ -99,11 +99,11 @@ public:
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)
-    
+
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ChromaLightnessDiagram> q_pointer;
-    
+
 };
 
 }

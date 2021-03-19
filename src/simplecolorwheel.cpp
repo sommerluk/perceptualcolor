@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -50,12 +50,12 @@
 namespace PerceptualColor {
 
 /** @brief Constructor
- * 
+ *
  * @param colorSpace The color spaces within this widget should operate.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
 SimpleColorWheel::SimpleColorWheel(
-    const QSharedPointer<RgbColorSpace> &colorSpace,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     QWidget *parent
 ) :
     AbstractDiagram(parent),
@@ -99,7 +99,7 @@ SimpleColorWheel::~SimpleColorWheel() noexcept
 }
 
 /** @brief Constructor
- * 
+ *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
  * @param colorSpace The color spaces within this widget should operate. */
@@ -113,7 +113,7 @@ SimpleColorWheel::SimpleColorWheelPrivate::SimpleColorWheelPrivate(
 }
 
 /** @brief The diameter of the widget content
- * 
+ *
  * @returns the diameter of the content of this widget, coordinates in pixel.
  * The content is always in form of a circle. This value includes the space
  * for the focus indicator, independently if currently the focus indicator
@@ -126,7 +126,7 @@ int SimpleColorWheel::contentDiameter() const
 }
 
 /** @brief Converts window coordinates to wheel coordinates.
- * 
+ *
  * @param widgetCoordinates coordinates in the coordinate system of this widget
  * @returns “wheel” coordinates: Coordinates in a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel.
@@ -145,7 +145,7 @@ PolarPointF SimpleColorWheel
 }
 
 /** @brief Converts wheel coordinates to widget coordinates.
- * 
+ *
  * @param wheelCoordinates Coordinates in a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel.
  * @returns coordinates in the coordinate system of this widget
@@ -165,13 +165,13 @@ QPointF SimpleColorWheel
 }
 
 /** @brief React on a mouse press event.
- * 
+ *
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
  * If the mouse is clicked within the wheel ribbon, than the handle is placed
  * here and further mouse movements are tracked.
- * 
+ *
  * @param event The corresponding mouse event
  */
 void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
@@ -184,7 +184,7 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
             radius-m_wheelThickness,
             myPolarPoint.radial(),
             radius
-        ) 
+        )
     ) {
         setFocus(Qt::MouseFocusReason);
         d_pointer->m_mouseEventActive = true;
@@ -202,10 +202,10 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
  *
  * Reacts only on mouse move events if previously there had been a mouse press
  * event that had been accepted.
- * 
+ *
  * If previously there had not been a mouse press event, the mouse move event
  * is ignored.
- * 
+ *
  * @param event The corresponding mouse event
  */
 void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
@@ -227,7 +227,7 @@ void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
  *
  * Reimplemented from base class. Does not differentiate between left,
  * middle and right mouse click.
- * 
+ *
  * @param event The corresponding mouse event
  */
 void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
@@ -249,10 +249,10 @@ void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
 /** @brief React on a mouse wheel event.
  *
  * Reimplemented from base class.
- * 
+ *
  * Scrolling up raises the hue value, scrolling down lowers the hue value.
  * Of course, the point at 0°/360° it not blocking.
- * 
+ *
  * @param event The corresponding mouse event
  */
 void SimpleColorWheel::wheelEvent(QWheelEvent *event)
@@ -288,13 +288,13 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
 // TODO deliver also arrow keys to the child widget! WARNING DANGER
 
 /** @brief React on key press events.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * Reacts on key press events. When the plus key or the minus key are pressed,
  * it raises or lowers the hue. When Qt::Key_Insert or Qt::Key_Delete are
  * pressed, it raises or lowers the hue faster.
- * 
+ *
  * @param event the paint event
  */
 void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
@@ -302,7 +302,7 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
     constexpr qreal wheelStep = 5;
     constexpr qreal bigWheelStep = 15;
     switch (event->key()) {
-        case Qt::Key_Plus: 
+        case Qt::Key_Plus:
             setHue(d_pointer->m_hue + wheelStep);
             break;
         case Qt::Key_Minus:
@@ -316,11 +316,11 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
             break;
         default:
             /* Quote from Qt documentation:
-             * 
+             *
              * If you reimplement this handler, it is very important
              * that you call the base class implementation if you do not
              * act upon the key.
-             * 
+             *
              * The default implementation closes popup widgets if the user
              * presses the key sequence for QKeySequence::Cancel (typically
              * the Escape key). Otherwise the event is ignored, so that the
@@ -331,31 +331,31 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
 }
 
 /* TODO Support more mouse buttons?
- * 
+ *
  * enum Qt::MouseButton
  * flags Qt::MouseButtons
- * 
+ *
  * Qt::BackButton	0x00000008
  * The 'Back' button. (Typically present on the 'thumb' side of a mouse
  * with extra buttons. This is NOT the tilt wheel.)
- * 
+ *
  * Qt::ForwardButton	0x00000010
  * The 'Forward' Button. (Typically present beside the 'Back' button, and
  * also pressed by the thumb.)
  */
 
 /** @brief Paint the widget.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * Paints the widget. Takes the existing m_wheelPixmap and paints
  * them on the widget. Paints, if appropriate, the focus indicator.
  * Paints the handle. Relies on that m_wheelPixmap are up to date.
- * 
+ *
  * @param event the paint event
- * 
+ *
  * @todo Make the wheel to be drawn horizontally and vertically aligned.
- * 
+ *
  * @todo Better design on small widget sizes
  */
 void SimpleColorWheel::paintEvent(QPaintEvent* event)
@@ -430,7 +430,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
 /** @brief React on a resize event.
  *
  * Reimplemented from base class.
- * 
+ *
  * @param event The corresponding resize event
  */
 void SimpleColorWheel::resizeEvent(QResizeEvent* event)
@@ -472,7 +472,7 @@ qreal SimpleColorWheel::wheelRibbonChroma() const
  * \li 720 gets 0
  * \li -1 gets 359
  * \li -1.3 gets 358.7
- * 
+ *
  * After changing the hue property, the widget gets updated.
  * @param newHue The new hue value to set.
  */
@@ -491,9 +491,9 @@ void SimpleColorWheel::setHue(const qreal newHue)
 /** @brief Provide the size hint.
  *
  * Reimplemented from base class.
- * 
+ *
  * @returns the size hint
- * 
+ *
  * @sa minimumSizeHint()
  */
 QSize SimpleColorWheel::sizeHint() const
@@ -504,9 +504,9 @@ QSize SimpleColorWheel::sizeHint() const
 /** @brief Provide the minimum size hint.
  *
  * Reimplemented from base class.
- * 
+ *
  * @returns the minimum size hint
- * 
+ *
  * @sa sizeHint()
  */
 QSize SimpleColorWheel::minimumSizeHint() const

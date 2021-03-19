@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -47,12 +47,12 @@ ChromaHueImage::ChromaHueImage(
 }
 
 /** @brief Setter for the border property.
- * 
+ *
  * The border is the space between the outer outline of the diagram and the
  * limits of the image. The diagram is always centered within the limits of
  * the image. The default value is <tt>0</tt>, which means that the diagram
  * touchs the limits of the image.
- * 
+ *
  * @param newBorder The new border size, measured in <em>physical</em>
  * pixels. */
 void ChromaHueImage::setBorder(const qreal newBorder)
@@ -71,20 +71,20 @@ void ChromaHueImage::setBorder(const qreal newBorder)
 }
 
 /** @brief Setter for the device pixel ratio (floating point).
- * 
+ *
  * This value is set as device pixel ratio (floating point) in the
  * QImage that this class holds. It does <em>not</em> change
  * the <em>pixel</em> size of the image or the pixel size or the border.
- * 
+ *
  * This is for HiDPI support. You can set this to
  * <tt>QWidget::devicePixelRatioF()</tt> to get HiDPI images in the correct
  * resolution for your widgets. Within a method of a class derived
  * from <tt>QWidget</tt>, you could write:
- * 
+ *
  * @snippet test/testchromahueimage.cpp ChromaHueImage HiDPI usage
- * 
+ *
  * The default value is <tt>1</tt> which means no special scaling.
- * 
+ *
  * @param newDevicePixelRatioF the new device pixel ratio as a
  * floating point data type. */
 void ChromaHueImage::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
@@ -103,10 +103,10 @@ void ChromaHueImage::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
 }
 
 /** @brief Setter for the image size property.
- * 
+ *
  * This value fixes the size of the image. The image will be a square
  * of <tt>QSize(newImageSize, newImageSize)</tt>.
- * 
+ *
  * @param newImageSize The new image size, measured in <em>physical</em>
  * pixels. */
 void ChromaHueImage::setImageSize(const int newImageSize)
@@ -125,7 +125,7 @@ void ChromaHueImage::setImageSize(const int newImageSize)
 }
 
 /** @brief Setter for the lightness property.
- * 
+ *
  * @param newLightness The new lightness. Valid range is <tt>[0, 100]</tt>. */
 void ChromaHueImage::setLightness(const qreal newLightness)
 {
@@ -142,7 +142,7 @@ void ChromaHueImage::setLightness(const qreal newLightness)
 }
 
 /** @brief Setter for the chroma range property.
- * 
+ *
  * @param newChromaRange The new chroma range. Valid
  * range is <tt>[0, @ref LchValues::humanMaximumChroma]</tt>. */
 void ChromaHueImage::setChromaRange(const qreal newChromaRange)
@@ -160,7 +160,7 @@ void ChromaHueImage::setChromaRange(const qreal newChromaRange)
 }
 
 /** @brief Delivers an image of the chroma hue plane.
-* 
+*
 * @returns Delivers a square image of the chroma hue plane. It consists
 * of a circle with a background color. The circle has a distance of
 * @ref setBorder() to the border of the <tt>QImage</tt>. The <tt>QImage</tt>
@@ -216,7 +216,7 @@ QImage ChromaHueImage::getImage()
             // The following line will never be 0 because we have have
             // tested above that circleRadius is > 0, so this line will
             // we > 0 also.
-            / (m_imageSizePhysical - 2 * m_borderPhysical); 
+            / (m_imageSizePhysical - 2 * m_borderPhysical);
 
     // Paint the gamut.
     // The pixel at position QPoint(x, y) is the square with the top-left
@@ -227,7 +227,7 @@ QImage ChromaHueImage::getImage()
     // convert from the pixel position to the point in the middle of the pixel.
     constexpr qreal pixelOffset = 0.5;
     // TODO Could this be further optimized? For example not go from zero
-    // up to m_imageSizePhysical, but exclude the border (and add the 
+    // up to m_imageSizePhysical, but exclude the border (and add the
     // tolerance)? Tought anyway the color transform (which is the heavy
     // work) is only done when within a given diameter, reducing loop runs
     // itself might also increase performance at least a little bit…

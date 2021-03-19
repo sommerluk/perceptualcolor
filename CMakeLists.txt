@@ -123,8 +123,15 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
         ")
     endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # /utf-8 set both, the input and the (narrow) execution character set.
     set(CMAKE_CXX_FLAGS "/W4 /WX /EHsc /utf-8")
 endif()
+# Some macro definitions that configure Qt to disable some API functions
+# that provide implicid casts. By doing these definitions, the code of this
+# library is forced to use explicit casts instead of relying implicit casta;
+# this will helps to reveal bugs. Some other macro definitions disable
+# potentially error-prone features, or make Qt more compatible,
+# like NO_KEYWORDS.
 add_definitions(
     -DQT_NO_CAST_FROM_ASCII
     -DQT_NO_CAST_FROM_BYTEARRAY
@@ -157,18 +164,6 @@ set(CMAKE_AUTOUIC ON)
 include_directories(${LCMS2_INCLUDE_DIRS})
 # Define external library dependencies
 set(LIBS ${LIBS} Qt5::Core Qt5::Gui Qt5::Widgets ${LCMS2_LIBRARIES})
-# TODO xxx Is SVG support really necessary? It seems to work nevertheless
-# even without linking it! Why?  It seems that SVG support is
-# enabled automatically for icons via plugins like
-# /usr/lib/x86_64-linux-gnu/qt5/plugins/iconengines/libqsvgicon.so
-# or /usr/lib/x86_64-linux-gnu/qt5/plugins/imageformats/libqsvg.so which
-# both are dynamically linking to /lib/x86_64-linux-gnu/libQt5Svg.so.5
-# The plugins are loaded automatically when present. If not present,
-# they are not available, but there is no linker error either. It seems
-# possible to dynamically link to plugins, which would probably force
-# the package manager to include a corresponding dependency. Not sure
-# if in this case they are finally loaded as plugins or as dynamic
-# libraries.
 
 
 
@@ -188,7 +183,7 @@ set(perceptualcolor_SRC
   src/extendeddoublevalidator.cpp
   src/fallbackiconengine.cpp
   src/fullcolordescription.cpp
-  src/gradientselector.cpp
+  src/gradientslider.cpp
   src/helper.cpp
   src/labdouble.cpp
   src/lchdouble.cpp
@@ -211,7 +206,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/constpropagatinguniquepointer.h
   include/PerceptualColor/extendeddoublevalidator.h
   include/PerceptualColor/fullcolordescription.h
-  include/PerceptualColor/gradientselector.h
+  include/PerceptualColor/gradientslider.h
   include/PerceptualColor/labdouble.h
   include/PerceptualColor/lchdouble.h
   include/PerceptualColor/multispinbox.h

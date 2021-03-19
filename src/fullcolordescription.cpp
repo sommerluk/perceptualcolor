@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // own header
 #include "PerceptualColor/fullcolordescription.h"
@@ -127,14 +127,14 @@ FullColorDescription::FullColorDescription(
 FullColorDescription::FullColorDescription(
     const QSharedPointer<RgbColorSpace> &colorSpace,
     const cmsCIELab &lab,
-    outOfGamutBehaviour coordinates,
+    OutOfGamutBehaviour coordinates,
     qreal alpha
 )
 : m_rgbColorSpace(colorSpace)
 {
     m_lch = toLch(lab);
     normalizeLch();
-    if (coordinates == outOfGamutBehaviour::sacrifyChroma) {
+    if (coordinates == OutOfGamutBehaviour::sacrifyChroma) {
         moveChromaIntoGamut(colorSpace);
     }
     m_lab = toLab(m_lch);
@@ -157,14 +157,14 @@ FullColorDescription::FullColorDescription(
 FullColorDescription::FullColorDescription(
     const QSharedPointer<RgbColorSpace> &colorSpace,
     const LchDouble &lch,
-    outOfGamutBehaviour coordinates,
+    OutOfGamutBehaviour coordinates,
     qreal alpha
 )
 : m_rgbColorSpace(colorSpace)
 {
     m_lch = lch;
     normalizeLch();
-    if (coordinates == outOfGamutBehaviour::sacrifyChroma) {
+    if (coordinates == OutOfGamutBehaviour::sacrifyChroma) {
         moveChromaIntoGamut(colorSpace);
     }
     m_lab = toLab(m_lch);
@@ -194,18 +194,18 @@ void FullColorDescription::moveChromaIntoGamut(
     }
 
     // Now we know: We are out-of-gamut…
-    LchDouble lowerChroma {m_lch.L, 0, m_lch.h};
+    LchDouble lowerChroma {m_lch.l, 0, m_lch.h};
     LchDouble upperChroma {m_lch};
     LchDouble candidate;
     if (colorSpace->inGamut(lowerChroma)) {
         // Now we know for sure that lowerChroma is in-gamut
         // and upperChroma is out-of-gamut…
         candidate = upperChroma;
-        while (upperChroma.C - lowerChroma.C > gamutPrecision) {
+        while (upperChroma.c - lowerChroma.c > gamutPrecision) {
             // Our test candidate is half the way between lowerChroma
             // and upperChroma:
-            candidate.C = (
-                (lowerChroma.C + upperChroma.C) / 2
+            candidate.c = (
+                (lowerChroma.c + upperChroma.c) / 2
             );
             if (colorSpace->inGamut(candidate)) {
                 lowerChroma = candidate;
@@ -215,13 +215,13 @@ void FullColorDescription::moveChromaIntoGamut(
         }
         m_lch = lowerChroma;
     } else {
-        if (m_lch.L < colorSpace->blackpointL()) {
-            m_lch.L = colorSpace->blackpointL();
-            m_lch.C = 0;
+        if (m_lch.l < colorSpace->blackpointL()) {
+            m_lch.l = colorSpace->blackpointL();
+            m_lch.c = 0;
         } else {
-            if (m_lch.L > colorSpace->whitepointL()) {
-                m_lch.L = colorSpace->blackpointL();
-                m_lch.C = 0;
+            if (m_lch.l > colorSpace->whitepointL()) {
+                m_lch.l = colorSpace->blackpointL();
+                m_lch.c = 0;
             }
         }
     }
@@ -247,8 +247,8 @@ bool FullColorDescription::operator==(const FullColorDescription& other) const
         (m_lab.L == other.m_lab.L) &&
         (m_lab.a == other.m_lab.a) &&
         (m_lab.b == other.m_lab.b) &&
-        (m_lch.L == other.m_lch.L) &&
-        (m_lch.C == other.m_lch.C) &&
+        (m_lch.l == other.m_lch.l) &&
+        (m_lch.c == other.m_lch.c) &&
         (m_lch.h == other.m_lch.h) &&
         (m_alpha == other.m_alpha) &&
         (m_rgbQColor == other.m_rgbQColor) &&
@@ -307,7 +307,7 @@ LchDouble FullColorDescription::toLch() const
 /**
  * @returns if this object is valid, the alpha channel, otherwise an arbitrary
  * value. 0 is fully transparent, 1 is fully opaque.
- * 
+ *
  * @todo Rename this to alphaF() for consistence with QColor? Do the same
  * thing for other field of this class?
  */
@@ -353,9 +353,9 @@ QDebug operator<<(
             << value.toLab().b
             << "\n"
         << " - LCh: "
-            << value.toLch().L
+            << value.toLch().l
             << " "
-            << value.toLch().C
+            << value.toLch().c
             << " "
             << value.toLch().h
             << "°\n"
@@ -369,13 +369,13 @@ QDebug operator<<(
 /** Normalizes m_lch. */
 void FullColorDescription::normalizeLch()
 {
-    PolarPointF temp(m_lch.C, m_lch.h);
-    m_lch.C = temp.radial();
+    PolarPointF temp(m_lch.c, m_lch.h);
+    m_lch.c = temp.radial();
     m_lch.h = temp.angleDegree();
 }
 
 /** @brief  A string with a hexadecimal representation of the color.
- * 
+ *
  * This function is similar to QColor::name(), but provides correct rounding.
  * @returns A string of the form <em>\#RRGGBB</em> with the red (R), green (G)
  * and blue (B) values represented as two hexadecimal digits in the range
@@ -395,24 +395,25 @@ QString FullColorDescription::toRgbHexString() const
 }
 
 /** @brief Convert to LCh
- * 
+ *
  * @param lab a point in Lab representation
  * @returns the same point in LCh representation */
 LchDouble FullColorDescription::toLch(const cmsCIELab &lab)
 {
-    LchDouble temp;
+    cmsCIELCh temp;
     cmsLab2LCh(&temp, &lab);
-    return temp;
+    return toLchDouble(temp);
 }
 
 /** @brief Convert to Lab
- * 
+ *
  * @param lch a point in LCh representation
  * @returns the same point in Lab representation */
 cmsCIELab FullColorDescription::toLab(const LchDouble &lch)
 {
     cmsCIELab temp;
-    cmsLCh2Lab(&temp, &lch);
+    const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
+    cmsLCh2Lab(&temp, &myCmsCieLch);
     return temp;
 }
 
@@ -420,7 +421,7 @@ static_assert(
     std::is_standard_layout_v<FullColorDescription>
 );
 
-// TODO Isn't it inconsistent if toRgbHexString is generated on-the-fly
+// TODO Isn’t it inconsistent if toRgbHexString is generated on-the-fly
 // while all others are generated previously?
 
 } // namespace PerceptualColor

@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -62,7 +62,7 @@ QImage myImage = test.getImage();
 Q_UNUSED(myImage)
 }
 };
-    
+
 class TestColorWheelImage : public QObject
 {
 
@@ -95,7 +95,7 @@ private Q_SLOTS:
     void testConstructor() {
         ColorWheelImage test(colorSpace);
     }
-    
+
     void testImageSize() {
         ColorWheelImage test(colorSpace);
         QCOMPARE(
@@ -113,7 +113,7 @@ private Q_SLOTS:
             QSize(500, 500)
         );
     }
-    
+
     void testDevicePixelRatioF() {
         ColorWheelImage test(colorSpace);
         test.setImageSize(100);
@@ -307,7 +307,7 @@ private Q_SLOTS:
             "Verify that there is no crash and the returned image is not null."
         );
     }
-    
+
     void testVeryThickWheel() {
         ColorWheelImage test(colorSpace);
         test.setImageSize(51); // Set a non-zero image size
@@ -316,7 +316,7 @@ private Q_SLOTS:
         // a fully opaque pixel.
         QCOMPARE(test.getImage().pixelColor(25, 25).alpha(), 255);
     }
-    
+
     void testVeryBigBorder() {
         ColorWheelImage test(colorSpace);
         const int myImageSize = 51;
@@ -331,7 +331,7 @@ private Q_SLOTS:
             }
         }
     }
-    
+
     void testDevicePixelRatioFForExtremeCases() {
         ColorWheelImage test(colorSpace);
         // Testing with a (non-integer) scale factor
@@ -345,7 +345,7 @@ private Q_SLOTS:
             1.5
         );
     }
-    
+
     void testSnippet01() {
         TestColorWheelSnippetClass mySnippets;
         mySnippets.testSnippet01();

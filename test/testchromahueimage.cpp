@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the header of the class we are testing;
 // this forces the header to be self-contained.
@@ -47,7 +47,7 @@ TestChromaHueSnippetClass(QWidget *parent = nullptr) : QWidget(parent) {}
 void testSnippet01() {
 //! [ChromaHueImage HiDPI usage]
 QSharedPointer<RgbColorSpace> myColorSpace {
-    new RgbColorSpace
+    new RgbColorSpace()
 };
 ChromaHueImage test(myColorSpace);
 // The function setImageSize() expects an int
@@ -103,7 +103,7 @@ private Q_SLOTS:
         ChromaHueImage test(colorSpace);
         Q_UNUSED(test.getImage());
     }
-    
+
     void testImageSize() {
         ChromaHueImage test(colorSpace);
         // Test especially small values, that might make special
@@ -144,7 +144,7 @@ private Q_SLOTS:
             QSize(500, 500)
         );
     }
-    
+
     void testDevicePixelRatioF() {
         ChromaHueImage test(colorSpace);
         test.setImageSize(100);
@@ -363,7 +363,7 @@ private Q_SLOTS:
             "Verify that there is no crash and the returned image is not null."
         );
     }
-    
+
     void testVeryBigBorder() {
         ChromaHueImage test(colorSpace);
         const int myImageSize = 51;
@@ -469,7 +469,7 @@ private Q_SLOTS:
         test.setBorder(10); // Set exactly the half of image size as border
         Q_UNUSED(test.getImage());
     }
-    
+
     void testDevicePixelRatioFForExtremeCases() {
         ChromaHueImage test(colorSpace);
         // Testing with a (non-integer) scale factor
@@ -483,7 +483,7 @@ private Q_SLOTS:
             1.5
         );
     }
-    
+
     void testIfGamutIsCenteredCorrectlyOnOddSize() {
         ChromaHueImage test(colorSpace);
         test.setBorder(0);
@@ -495,7 +495,7 @@ private Q_SLOTS:
         const qreal chromaAtCenter = FullColorDescription(
             colorSpace,
             test.getImage().pixelColor(positionAtCenter, positionAtCenter)
-        ).toLch().C;
+        ).toLch().c;
         for (int x = positionAtCenter - 2; x <= positionAtCenter + 2; ++x) {
             for (int y = positionAtCenter - 2; y <= positionAtCenter + 2; ++y) {
                 if ( (x == positionAtCenter) && (y == positionAtCenter) ) {
@@ -504,7 +504,7 @@ private Q_SLOTS:
                 const qreal chromaAround = FullColorDescription(
                     colorSpace,
                     test.getImage().pixelColor(x, y)
-                ).toLch().C;
+                ).toLch().c;
                 QVERIFY2(
                     chromaAtCenter < chromaAround,
                     "The chroma of the pixel at the center of the image "
@@ -514,7 +514,7 @@ private Q_SLOTS:
             }
         }
     }
-    
+
     void testIfGamutIsCenteredCorrectlyOnEvenSize() {
         ChromaHueImage test(colorSpace);
         test.setBorder(0);
@@ -527,19 +527,19 @@ private Q_SLOTS:
         const qreal chromaAtCenterA = FullColorDescription(
             colorSpace,
             test.getImage().pixelColor(positionAtCenter1, positionAtCenter1)
-        ).toLch().C;
+        ).toLch().c;
         const qreal chromaAtCenterB = FullColorDescription(
             colorSpace,
             test.getImage().pixelColor(positionAtCenter1, positionAtCenter2)
-        ).toLch().C;
+        ).toLch().c;
         const qreal chromaAtCenterC = FullColorDescription(
             colorSpace,
             test.getImage().pixelColor(positionAtCenter2, positionAtCenter1)
-        ).toLch().C;
+        ).toLch().c;
         const qreal chromaAtCenterD = FullColorDescription(
             colorSpace,
             test.getImage().pixelColor(positionAtCenter2, positionAtCenter2)
-        ).toLch().C;
+        ).toLch().c;
         const qreal maximumChromaAtCenter = qMax(
             qMax(chromaAtCenterA, chromaAtCenterB),
             qMax(chromaAtCenterC, chromaAtCenterD)
@@ -555,7 +555,7 @@ private Q_SLOTS:
                 const qreal chromaAround = FullColorDescription(
                     colorSpace,
                     test.getImage().pixelColor(x, y)
-                ).toLch().C;
+                ).toLch().c;
                 QVERIFY2(
                     maximumChromaAtCenter < chromaAround,
                     "The chroma of the pixels at the center of the image "

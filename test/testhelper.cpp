@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -127,7 +127,7 @@ private Q_SLOTS:
         QCOMPARE(PerceptualColor::inRange<double>(-3, -1, -1), true);
         QCOMPARE(PerceptualColor::inRange<double>(-3, -4, -1), false);
         QCOMPARE(PerceptualColor::inRange<double>(-3, 0, -1), false);
-        
+
         QCOMPARE(
             PerceptualColor::inRange<double>(-3.1, 0.2, -1.3),
             false
@@ -173,6 +173,43 @@ private Q_SLOTS:
         QCOMPARE(PerceptualColor::standardWheelSteps(&temp), 1);
     }
 
+    void testLchConvertion() {
+        // Check if round-trips work fine.
+        // One sense
+        cmsCIELCh startValue;
+        startValue.L = 50.1;
+        startValue.C = 20.1;
+        startValue.h = 80.1;
+        QCOMPARE(
+            toCmsCieLch(toLchDouble(startValue)).L,
+            startValue.L
+        );
+        QCOMPARE(
+            toCmsCieLch(toLchDouble(startValue)).C,
+            startValue.C
+        );
+        QCOMPARE(
+            toCmsCieLch(toLchDouble(startValue)).h,
+            startValue.h
+        );
+        // The other sense
+        LchDouble startValue2;
+        startValue2.l = 50.1;
+        startValue2.c = 20.1;
+        startValue2.h = 80.1;
+        QCOMPARE(
+            toLchDouble(toCmsCieLch(startValue2)).l,
+            startValue2.l
+        );
+        QCOMPARE(
+            toLchDouble(toCmsCieLch(startValue2)).c,
+            startValue2.c
+        );
+        QCOMPARE(
+            toLchDouble(toCmsCieLch(startValue2)).h,
+            startValue2.h
+        );
+    }
 };
 
 }

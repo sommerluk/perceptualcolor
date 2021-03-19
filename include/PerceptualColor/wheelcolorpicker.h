@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,20 +27,22 @@
 #ifndef WHEELCOLORPICKER_H
 #define WHEELCOLORPICKER_H
 
-#include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/perceptualcolorlib_global.h"
+
+#include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/simplecolorwheel.h"
 
 namespace PerceptualColor {
 
 /** @brief Complete wheel-based color picker widget
- * 
+ *
  * This is a composite widget: It inherits from the SimpleColorWheel() widget
  * and adds a ChromaLightnessDiagram() in its center.
- * 
+ *
  * @todo This class should not derive from @ref SimpleColorWheel because it’s
  * not really an IS-A relationship.
- * 
+ *
  * @todo Add whatsThis value explaining the accepted keys and mouse
  * movements. */
 class WheelColorPicker : public SimpleColorWheel
@@ -48,9 +50,9 @@ class WheelColorPicker : public SimpleColorWheel
     Q_OBJECT
 
     /** @brief Currently selected color
-     * 
+     *
      * This property is provides as an RGB value.
-     * 
+     *
      * @sa currentColorRgb()
      * @sa setCurrentColorRgb()
      * @sa currentColorRgbChanged()
@@ -76,7 +78,7 @@ Q_SIGNALS:
     void currentColorChanged(
         const PerceptualColor::FullColorDescription &newCurrentColor
     );
-    
+
 protected:
     virtual void resizeEvent(QResizeEvent* event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
@@ -86,7 +88,7 @@ private:
 
     class WheelColorPickerPrivate;
     /** @brief Declare the private implementation as friend class.
-     * 
+     *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
     friend class WheelColorPickerPrivate;

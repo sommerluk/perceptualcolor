@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -13,7 +13,7 @@
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -30,12 +30,13 @@
 #include <QDoubleValidator>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor {
 
 /** @brief The @ref ExtendedDoubleValidator class provides range checking
  * of floating-point numbers with support for prefix and/or suffix.
- * 
+ *
  * This class behaves exactly like its base class <tt>QDoubleValidator</tt>
  * with the difference that is allows to specify prefixes and/or suffixed
  * that are considered by @ref validate(). */
@@ -44,7 +45,7 @@ class ExtendedDoubleValidator : public QDoubleValidator
     Q_OBJECT
 
     /** @brief The prefix of the number.
-     * 
+     *
      * @sa @ref prefix()
      * @sa @ref setPrefix()
      * @sa @ref prefixChanged()
@@ -52,7 +53,7 @@ class ExtendedDoubleValidator : public QDoubleValidator
     Q_PROPERTY(QString prefix READ prefix WRITE setPrefix NOTIFY prefixChanged)
 
     /** @brief The suffix of the number.
-     * 
+     *
      * @sa @ref suffix()
      * @sa @ref setSuffix()
      * @sa @ref suffixChanged()
@@ -69,7 +70,7 @@ public:
      *  @returns the property @ref suffix */
     QString suffix() const;
     /** @brief Validate input.
-     * 
+     *
      * @param input the input string
      * @param pos the cursor position
      * @returns
@@ -89,20 +90,20 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     /** @brief Notify signal for property @ref prefix.
-     * 
+     *
      * @param prefix the new prefix */
     void prefixChanged(const QString &prefix);
     /** @brief Notify signal for property @ref suffix.
-     * 
+     *
      * @param suffix the new suffix */
     void suffixChanged(const QString &suffix);
-    
+
 private:
     Q_DISABLE_COPY(ExtendedDoubleValidator)
 
     class ExtendedDoubleValidatorPrivate;
     /** @brief Declare the private implementation as friend class.
-     * 
+     *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
     friend class ExtendedDoubleValidatorPrivate;

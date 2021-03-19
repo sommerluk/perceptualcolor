@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -45,14 +45,14 @@
 namespace PerceptualColor {
 
 /** @brief Test if a cursor position is at the current value.
- * 
+ *
  * Everything from the cursor position exactly before the value itself up
  * to the cursor position exactly after the value itself. Example: “ab12cd”
  * (prefix “ab”, value 12, suffix “cd”). The cursor positions 2, 3 and 4 are
  * <em>at</em> the current value.
- * 
+ *
  * @param cursorPosition the cursor position to test
- * 
+ *
  * @returns <tt>true</tt> if the indicated cursor position is at the
  * <em>value</em> text of the current section. <tt>false</tt> otherwise. */
 bool MultiSpinBox::MultiSpinBoxPrivate::isCursorPositionAtCurrentSectionValue(
@@ -72,16 +72,16 @@ bool MultiSpinBox::MultiSpinBoxPrivate::isCursorPositionAtCurrentSectionValue(
 }
 
 /** @brief The recommended minimum size for the widget
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * @note The minimum size of the widget is the same as @ref sizeHint(). This
  * behavior is different from <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt>
  * that have a minimum size hint that allows for displaying only prefix and
  * value, but not the suffix. However, such a behavior does not seem
  * appropriate for a @ref MultiSpinBox because it could be confusing, given
  * that its content is more complex.
- * 
+ *
  * @returns the recommended minimum size for the widget */
 QSize MultiSpinBox::minimumSizeHint() const
 {
@@ -89,7 +89,7 @@ QSize MultiSpinBox::minimumSizeHint() const
 }
 
 /** @brief Constructor
- * 
+ *
  * @param parent the parent widget, if any */
 MultiSpinBox::MultiSpinBox(QWidget *parent) :
     QAbstractSpinBox(parent),
@@ -99,14 +99,14 @@ MultiSpinBox::MultiSpinBox(QWidget *parent) :
     d_pointer->m_validator = new ExtendedDoubleValidator(this);
     d_pointer->m_validator->setLocale(locale());
     lineEdit()->setValidator(d_pointer->m_validator);
-    
+
     // Connect signals and slots
     connect(
         lineEdit(),
         &QLineEdit::textChanged,
         this,
         [this](const QString &lineEditText) {
-            d_pointer->updateCurrentValueFromText(lineEditText); 
+            d_pointer->updateCurrentValueFromText(lineEditText);
         }
     );
     connect(
@@ -143,7 +143,7 @@ MultiSpinBox::~MultiSpinBox() noexcept
 }
 
 /** @brief Constructor
- * 
+ *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 MultiSpinBox::MultiSpinBoxPrivate::MultiSpinBoxPrivate(
@@ -153,9 +153,9 @@ MultiSpinBox::MultiSpinBoxPrivate::MultiSpinBoxPrivate(
 }
 
 /** @brief The recommended size for the widget
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * @returns the size hint
  * @sa @ref minimumSizeHint() */
 QSize MultiSpinBox::sizeHint() const
@@ -204,7 +204,7 @@ QSize MultiSpinBox::sizeHint() const
         // Suffix
         completeString += myConfiguration.at(i).suffix;
     }
-    
+
     // Add some extra space, just as QSpinBox seems to do also.
     completeString += QStringLiteral(u" ");
 
@@ -265,14 +265,14 @@ QSize MultiSpinBox::sizeHint() const
 }
 
 /** @brief Adds to the widget a button associated with the given action.
- * 
+ *
  * The icon of the action will be displayed as button. If the action has
  * no icon, just an empty space will be displayed.
- * 
+ *
  * It is possible to add more than one action.
- * 
+ *
  * @param action This action that will be executed when clicking the button.
- * (The parentship of the action object remains unchanged.) 
+ * (The parentship of the action object remains unchanged.)
  * @param position The position of the button within the widget (left
  * or right)
  * @note See @ref hidpisupport "High DPI support" about how to enable
@@ -292,7 +292,7 @@ void MultiSpinBox::addActionButton(
 }
 
 /** @brief Formats the value of a given section.
- * 
+ *
  * @param mySection the section that will be formatted
  * @returns the value, formatted (without prefix or suffix), as text */
 QString MultiSpinBox::MultiSpinBoxPrivate::formattedValue(
@@ -305,8 +305,8 @@ QString MultiSpinBox::MultiSpinBoxPrivate::formattedValue(
     );
 }
 
-/** @brief Updates prefix, value and suffix text 
- * 
+/** @brief Updates prefix, value and suffix text
+ *
  * Updates @ref m_textBeforeCurrentValue,
  * @ref m_textOfCurrentValue,
  * @ref m_textAfterCurrentValue
@@ -314,7 +314,7 @@ QString MultiSpinBox::MultiSpinBoxPrivate::formattedValue(
 void MultiSpinBox::MultiSpinBoxPrivate::updatePrefixValueSuffixText()
 {
     int i;
-    
+
     // Update m_currentSectionTextBeforeValue
     m_textBeforeCurrentValue = QString();
     for (i = 0; i < m_currentIndex; ++i) {
@@ -332,7 +332,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     m_textOfCurrentValue = formattedValue(
                                          m_sections.at(m_currentIndex)
     );
-    
+
     // Update m_currentSectionTextAfterValue
     m_textAfterCurrentValue = QString();
     m_textAfterCurrentValue.append(
@@ -340,7 +340,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     );
     for (i = m_currentIndex + 1; i < m_sections.count(); ++i) {
         m_textAfterCurrentValue.append( m_sections.at(i).prefix);
-        
+
         m_textAfterCurrentValue.append(
             formattedValue(m_sections.at(i))
         );
@@ -349,7 +349,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::updatePrefixValueSuffixText()
 }
 
 /** @brief Sets the current section index to <tt>0</tt>.
- * 
+ *
  * Convenience function that simply calls
  * @ref setCurrentIndexAndUpdateTextAndSelectValue with the
  * argument <tt>0</tt>. */
@@ -364,12 +364,12 @@ void MultiSpinBox
  *
  * Updates the text in the QLineEdit of this widget. If the widget has focus,
  * it also selects the value of the new current section.
- * 
+ *
  * @param newIndex The index of the new current section. Must be a valid index.
  * Default is <tt>0</tt> (which is always valid as @ref m_sections is
  * guaranteed to contain at least <em>one</em> section). The update will
  * be done even if this argument is identical to the @ref m_currentIndex.
- * 
+ *
  * @sa @ref setCurrentIndexToZeroAndUpdateTextAndSelectValue
  * @sa @ref setCurrentIndexWithoutUpdatingText */
 void MultiSpinBox
@@ -405,9 +405,9 @@ void MultiSpinBox
  * the <tt>QLineEdit</tt>.
  *
  * Does not change neither the text nor the cursor in the <tt>QLineEdit</tt>.
- * 
+ *
  * @param newIndex The index of the new current section. Must be a valid index.
- * 
+ *
  * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue */
 void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(
     int newIndex
@@ -453,9 +453,9 @@ void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(
 
 /** @brief Virtual function that determines whether stepping up and down is
  * legal at any given time.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * @returns whether stepping up and down is legal */
 QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
 {
@@ -475,7 +475,7 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
     if (currentSection.value < currentSection.maximum) {
         result.setFlag(StepUpEnabled, true);
     }
-    
+
     // Test is step down should be enabled…
     if (currentSection.value > currentSection.minimum) {
         result.setFlag(StepDownEnabled, true);
@@ -484,7 +484,7 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
 }
 
 /** @brief Get fixed section data
- * 
+ *
  * @param section the original section data
  * @returns A copy of this section data, with @ref SectionData.value fixed
  * to be conform to @ref SectionData.minimum, @ref SectionData.maximum and
@@ -543,18 +543,18 @@ QDebug operator<<(
 }
 
 /** @brief Sets the data for the sections.
- * 
+ *
  * @post The old data for the sections is completly destroyed. The new
  * data is used now.
- * 
+ *
  * The first section will be selected as current section.
- * 
+ *
  * @param newSections The new sections. If this list is empty, the function
  * call will be ignored. Each section should have valid
  * values: <tt>@ref SectionData.minimum ≤ @ref SectionData.value ≤
  * @ref SectionData.maximum </tt> If the values are not valid, automatically
  * fixed section data will be used.
- * 
+ *
  * @sa @ref sections()
  * @sa @ref MultiSpinBoxPrivate::m_sections */
 void MultiSpinBox::setSections(
@@ -592,9 +592,9 @@ void MultiSpinBox::setSections(
 }
 
 /** @brief Returns the data of all sections.
- * 
+ *
  * @returns the data of all sections.
- * 
+ *
  * @sa @ref setSections()
  * @sa @ref MultiSpinBoxPrivate::m_sections */
 QList<MultiSpinBox::SectionData> MultiSpinBox::sections() const
@@ -603,9 +603,9 @@ QList<MultiSpinBox::SectionData> MultiSpinBox::sections() const
 }
 
 /** @brief Focus handling for <em>Tab</em> respectively <em>Shift+Tab</em>.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * @note If it’s about moving the focus <em>within</em> this widget, the focus
  * move is actually done. If it’s about moving the focus to <em>another</em>
  * widget, the focus move is <em>not</em> actually done.
@@ -614,10 +614,10 @@ QList<MultiSpinBox::SectionData> MultiSpinBox::sections() const
  * base class suggests. Especially, it handles directly the focus move
  * <em>within</em> the widget itself. This was, however, the only working
  * solution we found.
- * 
+ *
  * @param next <tt>true</tt> stands for focus handling for <em>Tab</em>.
  * <tt>false</tt> stands for focus handling for <em>Shift+Tab</em>.
- * 
+ *
  * @returns <tt>true</tt> if the focus has actually been moved within
  * this widget or if a move to another widget is possible. <tt>false</tt>
  * otherwise. */
@@ -647,18 +647,18 @@ bool MultiSpinBox::focusNextPrevChild(bool next)
 
     // Make sure that the buttons for step up and step down are updated.
     update();
-    
+
     // Return
     return QWidget::focusNextPrevChild(next);
 }
 
 /** @brief Handles a <tt>QEvent::FocusOut</tt>.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * Updates the widget (except for windows that do not
  * specify a <tt>focusPolicy()</tt>).
- * 
+ *
  * @param event the <tt>QEvent::FocusOut</tt> to be handled. */
 void MultiSpinBox::focusOutEvent(QFocusEvent* event)
 {
@@ -685,12 +685,12 @@ void MultiSpinBox::focusOutEvent(QFocusEvent* event)
 }
 
 /** @brief Handles a <tt>QEvent::FocusIn</tt>.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * Updates the widget (except for windows that do not
  * specify a <tt>focusPolicy()</tt>).
- * 
+ *
  * @param event the <tt>QEvent::FocusIn</tt> to be handled. */
 void MultiSpinBox::focusInEvent(QFocusEvent* event)
 {
@@ -724,20 +724,20 @@ void MultiSpinBox::focusInEvent(QFocusEvent* event)
 }
 
 /** @brief Increase or decrese the current section’s value.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * As of the base class’s documentation:
- * 
- * > Virtual function that is called whenever the user triggers a step. 
+ *
+ * > Virtual function that is called whenever the user triggers a step.
  * > For example, pressing <tt>Qt::Key_Down</tt> will trigger a call
  * > to <tt>stepBy(-1)</tt>, whereas pressing <tt>Qt::Key_PageUp</tt> will
  * > trigger a call to <tt>stepBy(10)</tt>.
- * 
+ *
  * The step size in this function is <em>always</em> <tt>1</tt>. Therefore,
  * calling <tt>stepBy(1)</tt> will increase the current section’s value
  * by <tt>1</tt>; no additional factor is applied.
- * 
+ *
  * @param steps The <em>steps</em> parameter indicates how many steps were
  * taken. A positive step count increases the value, a negative step count
  * decreases it. */
@@ -766,7 +766,7 @@ void MultiSpinBox::stepBy(int steps)
 }
 
 /** @brief Updates the value of the current section in @ref m_sections.
- * 
+ *
  * This slot is meant to be connected to the
  * <tt>&QLineEdit::textChanged()</tt> signal of
  * the <tt>MultiSpinBox::lineEdit()</tt> child widget.
@@ -837,9 +837,9 @@ void MultiSpinBox::MultiSpinBoxPrivate::updateCurrentValueFromText(
 }
 
 /** @brief The main event handler.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * On <tt>QEvent::Type::LocaleChange</tt> it updates the spinbox content
  * accordingly. Apart from that, it calls the implementation in the parent
  * class. */
@@ -863,11 +863,11 @@ bool MultiSpinBox::event(QEvent *event)
 }
 
 /** @brief Updates the widget according to the new cursor position.
- * 
+ *
  * This slot is meant to be connected to the
  * <tt>QLineEdit::cursorPositionChanged()</tt> signal of
  * the <tt>MultiSpinBox::lineEdit()</tt> child widget.
- * 
+ *
  * @param oldPos the old cursor position (previous position)
  * @param newPos the new cursor position (current position) */
 void MultiSpinBox::MultiSpinBoxPrivate::reactOnCursorPositionChange(
@@ -899,7 +899,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::reactOnCursorPositionChange(
     }
 
     QSignalBlocker myBlocker(q_pointer->lineEdit());
-    
+
     // The new position is not at the current value, but the old one might
     // have been. So maybe we have to correct the value, which might change
     // its length. If the new cursor position is after this value, it will
@@ -947,7 +947,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::reactOnCursorPositionChange(
                 - oldTextLength;
     }
     q_pointer->lineEdit()->setCursorPosition(correctedCursorPosition);
-    
+
     // Make sure that the buttons for step up and step down are updated.
 
     q_pointer->update();

@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -47,7 +47,7 @@
 namespace PerceptualColor {
 
 /** @brief Constructor
- * 
+ *
  *  @param parent pointer to the parent widget, if any
  *  @post The @ref currentColor property is set to a default value. */
 ColorDialog::ColorDialog(QWidget *parent) :
@@ -70,10 +70,10 @@ ColorDialog::ColorDialog(QWidget *parent) :
     // Therefore, we choose 180°, because at a given chroma, the resulting
     // color is more vivid than those at 0°, 90° and 270°. Also, be choose
     // 180° because the color seems clean and colorful.
-    cmsCIELCh initialColor;
+    LchDouble initialColor;
     initialColor.h = 180;
-    initialColor.L = LchValues::neutralLightness;
-    initialColor.C = LchValues::srgbVersatileChroma;
+    initialColor.l = LchValues::neutralLightness;
+    initialColor.c = LchValues::srgbVersatileChroma;
     // Calling setCurrentFullColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid
@@ -83,13 +83,13 @@ ColorDialog::ColorDialog(QWidget *parent) :
         FullColorDescription(
             d_pointer->m_rgbColorSpace,
             initialColor,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         )
     );
 }
 
 /** @brief Constructor
- * 
+ *
  *  @param initial the initially chosen color of the dialog
  *  @param parent pointer to the parent widget, if any
  *  @post The object is constructed and @ref setCurrentColor() is called
@@ -122,7 +122,7 @@ ColorDialog::~ColorDialog() noexcept
 }
 
 /** @brief Constructor
- * 
+ *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 ColorDialog::ColorDialogPrivate::ColorDialogPrivate(
@@ -142,7 +142,7 @@ QColor ColorDialog::currentColor() const
 }
 
 /** @brief Setter for @ref currentColor property.
- * 
+ *
  * @param color the new color
  * @post The property @ref currentColor is adapted as follows:
  * - If <em>color</em> is not valid, <tt>Qt::black</tt> is used instead.
@@ -171,7 +171,7 @@ void ColorDialog::setCurrentColor(const QColor& color)
 }
 
 /** @brief Sets the @ref currentColor property.
- * 
+ *
  * @param color The new color to set. The alpha value is taken
  * into account. */
 void ColorDialog::ColorDialogPrivate::setCurrentFullColor(
@@ -188,9 +188,9 @@ void ColorDialog::ColorDialogPrivate::setCurrentFullColor(
 
 /** @brief Opens the dialog and connects its @ref colorSelected() signal to
  * the slot specified by receiver and member.
- * 
+ *
  * The signal will be disconnected from the slot when the dialog is closed.
- * 
+ *
  * Example:
  * @snippet test/testcolordialog.cpp ColorDialog Open */
 void ColorDialog::open(QObject *receiver, const char *member)
@@ -218,7 +218,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(
 }
 
 /** @brief Updates the color patch widget
- * 
+ *
  * @post The color patch widget will show the color of
  * @ref m_currentOpaqueColor and the alpha value of
  * @ref m_alphaSelector() as available with
@@ -231,7 +231,7 @@ void ColorDialog::ColorDialogPrivate::updateColorPatch()
 }
 
 /** @brief Updates @ref m_currentOpaqueColor and all affected widgets.
- * 
+ *
  * This function ignores the alpha component!
  * @param color the new color
  * @post If color is invalid, nothing happens. If this function is called
@@ -266,38 +266,38 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
     QColor tempRgbQColor = color.toRgbQColor();
     tempRgbQColor.setAlpha(255);
     QList<MultiSpinBox::SectionData> tempSections;
-    
+
     // Update RGB widget
     tempSections = m_rgbSpinBox->sections();
     tempSections[0].value = tempRgbQColor.redF() * 255;
     tempSections[1].value = tempRgbQColor.greenF() * 255;
     tempSections[2].value = tempRgbQColor.blueF() * 255;
     m_rgbSpinBox->setSections(tempSections);
-    
+
     // Update HSV widget
     tempSections = m_hsvSpinBox->sections();
     tempSections[0].value = color.toHsvQColor().hsvHueF() * 360;
     tempSections[1].value = color.toHsvQColor().hsvSaturationF() * 255;
     tempSections[2].value = color.toHsvQColor().valueF() * 255;
     m_hsvSpinBox->setSections(tempSections);
-    
+
     // Update HLC widget
     tempSections = m_hlcSpinBox->sections();
     tempSections[0].value = m_currentOpaqueColor.toLch().h;
-    tempSections[1].value = m_currentOpaqueColor.toLch().L;
-    tempSections[2].value = m_currentOpaqueColor.toLch().C;
+    tempSections[1].value = m_currentOpaqueColor.toLch().l;
+    tempSections[2].value = m_currentOpaqueColor.toLch().c;
     m_hlcSpinBox->setSections(tempSections);
 
     // Update RGB hex widget
     m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
-    
+
     // Update the diagrams
     m_lchLightnessSelector->setFraction(
-        color.toLch().L / static_cast<qreal>(100)
+        color.toLch().l / static_cast<qreal>(100)
     );
-    m_chromaHueDiagram->setColor(color);
+    m_chromaHueDiagram->setColor(color.toLch());
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
-    
+
     // Update alpha selector
     m_alphaSelector->setColor(m_currentOpaqueColor);
 
@@ -318,13 +318,13 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readLightnessValue()
 {
-    cmsCIELCh lch = m_currentOpaqueColor.toLch();
-    lch.L = m_lchLightnessSelector->fraction() * 100;
+    LchDouble lch = m_currentOpaqueColor.toLch();
+    lch.l = m_lchLightnessSelector->fraction() * 100;
     setCurrentOpaqueColor(
         FullColorDescription(
             m_rgbColorSpace,
             lch,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         )
     );
 }
@@ -376,7 +376,7 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
 }
 
 /** @brief Basic initialization.
- * 
+ *
  * Code that is shared between the various overloaded constructors. */
 void ColorDialog::ColorDialogPrivate::initialize()
 {
@@ -391,25 +391,25 @@ void ColorDialog::ColorDialogPrivate::initialize()
     QHBoxLayout *tempHueFirstLayout = new QHBoxLayout;
     tempHueFirstLayout->addWidget(m_wheelColorPicker);
     tempHueFirstWidget->setLayout(tempHueFirstLayout);
-    m_lchLightnessSelector = new GradientSelector(m_rgbColorSpace);
-    cmsCIELCh black;
-    black.L = 0;
-    black.C = 0;
+    m_lchLightnessSelector = new GradientSlider(m_rgbColorSpace);
+    LchDouble black;
+    black.l = 0;
+    black.c = 0;
     black.h = 0;
-    cmsCIELCh white;
-    white.L = 100;
-    white.C = 0;
+    LchDouble white;
+    white.l = 100;
+    white.c = 0;
     white.h = 0;
     m_lchLightnessSelector->setColors(
         FullColorDescription(
             m_rgbColorSpace,
             black,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         ),
         FullColorDescription(
             m_rgbColorSpace,
             white,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         )
     );
     m_chromaHueDiagram = new ChromaHueDiagram(m_rgbColorSpace);
@@ -427,7 +427,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
         m_lightnessFirstWidget,
         tr("&Lightness first")
     );
-    
+
     // Create the ColorPatch
     m_colorPatch = new ColorPatch();
 
@@ -439,12 +439,26 @@ void ColorDialog::ColorDialogPrivate::initialize()
     m_selectorLayout->addWidget(m_tabWidget);
     m_selectorLayout->addWidget(m_numericalWidget);
 
-    // Create alpha selector
+    // Create alpha selector (old)
     m_alphaSelector = new AlphaSelector(m_rgbColorSpace);
     QFormLayout *tempAlphaLayout = new QFormLayout();
     m_alphaSelectorLabel = new QLabel(tr("O&pacity:"));
     m_alphaSelector->registerAsBuddy(m_alphaSelectorLabel);
     tempAlphaLayout->addRow(m_alphaSelectorLabel, m_alphaSelector);
+
+    // Create widgets for alpha value
+    m_alphaLayout = new QHBoxLayout();
+    QLabel* tempAlphaLabel = new QLabel(tr("O&pacity:"));
+    m_alphaGradientSlider = new GradientSlider(
+        m_rgbColorSpace
+    );
+    m_alphaGradientSlider->setOrientation(Qt::Orientation::Horizontal);
+    m_alphaSpinBox = new QDoubleSpinBox();
+    tempAlphaLabel->setBuddy(m_alphaSpinBox);
+    m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
+    m_alphaLayout->addWidget(tempAlphaLabel);
+    m_alphaLayout->addWidget(m_alphaGradientSlider);
+    m_alphaLayout->addWidget(m_alphaSpinBox);
 
     // Create the default buttons
     m_buttonBox = new QDialogButtonBox(
@@ -468,9 +482,10 @@ void ColorDialog::ColorDialogPrivate::initialize()
     tempMainLayout->addWidget(m_colorPatch);
     tempMainLayout->addLayout(m_selectorLayout);
     tempMainLayout->addLayout(tempAlphaLayout);
+    tempMainLayout->addLayout(m_alphaLayout);
     tempMainLayout->addWidget(m_buttonBox);
     q_pointer->setLayout(tempMainLayout);
-    
+
     // initialize signal-slot-connections
     connect(
         m_rgbSpinBox,
@@ -498,7 +513,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
     );
     connect(
         m_lchLightnessSelector,
-        &GradientSelector::fractionChanged,
+        &GradientSlider::fractionChanged,
         q_pointer,
         [this]() { readLightnessValue(); }
     );
@@ -514,8 +529,13 @@ void ColorDialog::ColorDialogPrivate::initialize()
         m_chromaHueDiagram,
         &ChromaHueDiagram::colorChanged,
         q_pointer,
-        [this](const PerceptualColor::FullColorDescription &color) {
-            setCurrentOpaqueColor(color);
+        [this](const PerceptualColor::LchDouble &color) {
+            setCurrentOpaqueColor(
+                FullColorDescription(
+                    m_rgbColorSpace,
+                    color,
+                    FullColorDescription::OutOfGamutBehaviour::preserve)
+            );
         }
     );
     connect(
@@ -529,7 +549,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
     q_pointer->setOptions(
         QColorDialog::ColorDialogOption::DontUseNativeDialog
     );
-    
+
     // Initialize the window title
     q_pointer->setWindowTitle(tr("Select Color"));
 
@@ -547,14 +567,6 @@ void ColorDialog::ColorDialogPrivate::initialize()
     // widget styles indeed show the size grip widget, like Fusion or
     // QtCurve.
     q_pointer->setSizeGripEnabled(true);
-
-    // TODO xxx
-    // TODO Remove the following lines
-    // TODO xxx When else do we have to call updateGeometry() in this library?
-    // TODO How to update on-the-fly on style changes?
-    // TODO MultiSpinBox should never become 0 because the validator allows something that the converter cannot convert!
-    // TODO Sometimes, after a click on the action, the first section is selected. Sometimes not. That’s inconsistant!
-    // TODO Accept F5 and Ctrl+R just as the refresh buttons. (But attention: If someone embeds the dialog, he does not want his shortcuts to be intercepted!
 
     // Refresh button for the HLC spin box
     FallbackIconEngine *myIconEngine = new FallbackIconEngine;
@@ -587,15 +599,15 @@ void ColorDialog::ColorDialogPrivate::initialize()
 void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
 {
     QList<MultiSpinBox::SectionData> hlcSections = m_hlcSpinBox->sections();
-    cmsCIELCh lch;
+    LchDouble lch;
     lch.h = hlcSections[0].value;
-    lch.L = hlcSections[1].value;
-    lch.C = hlcSections[2].value;
+    lch.l = hlcSections[1].value;
+    lch.c = hlcSections[2].value;
     setCurrentOpaqueColor(
         FullColorDescription(
             m_rgbColorSpace,
             lch,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         )
     );
 }
@@ -767,7 +779,7 @@ QWidget* ColorDialog::ColorDialogPrivate::initializeNumericPage()
     tempMainLayout->addLayout(cielabFormLayout);
     tempMainLayout->addWidget(rgbGroupBox);
     tempMainLayout->addStretch();
-    
+
     // Return
     return tempWidget;
 }
@@ -780,7 +792,7 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
 }
 
 /** @brief Setter for @ref options.
- * 
+ *
  * Sets a value for just one single option within @ref options.
  * @param option the option to set
  * @param on the new value of the option
@@ -829,15 +841,15 @@ void ColorDialog::setOptions(
             QColorDialog::ColorDialogOption::NoButtons
         )
     );
-    
+
     // Notify
     Q_EMIT optionsChanged(d_pointer->m_options);
 }
 
 /** @brief Getter for @ref options
- * 
+ *
  * Gets the value of just one single option within @ref options.
- * 
+ *
  * @param option the requested option
  * @returns the value of the requested option
  */
@@ -850,7 +862,7 @@ bool ColorDialog::testOption(
 
 /** @brief Pops up a modal color dialog, lets the user choose a color, and
  *  returns that color.
- * 
+ *
  * @param initial initial value for currentColor()
  * @param parent  parent widget of the dialog (or 0 for no parent)
  * @param title   window title (or an empty string for the default window
@@ -879,17 +891,17 @@ QColor ColorDialog::getColor(
 }
 
 /** @brief The color that was actually selected by the user.
- * 
+ *
  * At difference to the @ref currentColor property, this function provides
  * the color that was actually selected by the user by clicking the OK button
  * or pressing the return key or another equivalent action.
- * 
+ *
  * This function most useful to get the actually selected color <em>after</em>
  * that the dialog has been closed.
- * 
+ *
  * When a dialog that had been closed or hidden is shown again,
  * this function returns to an invalid QColor().
- * 
+ *
  * @returns Just after showing the dialog, the value is an invalid QColor. If
  * the user selects a color by clicking the OK button or another equivalent
  * action, the value is the selected color. If the user cancels the dialog
@@ -901,12 +913,12 @@ QColor ColorDialog::selectedColor() const
 }
 
 /** @brief Setter for property <em>visible</em>
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * When a dialog, that wasn't formerly visible, gets visible,
  * it's @ref ColorDialogPrivate::m_selectedColor is cleared.
- * 
+ *
  * @param visible holds whether or not the dialog should be visible */
 void ColorDialog::setVisible(bool visible)
 {
@@ -920,7 +932,7 @@ void ColorDialog::setVisible(bool visible)
 }
 
 /** @brief Various updates when closing the dialog.
- * 
+ *
  * Reimplemented from base class.
  * @param result The result with which the dialog has been closed */
 void ColorDialog::done(int result)
@@ -967,7 +979,7 @@ void ColorDialog::setLayoutDimensions(
 }
 
 /** @brief Arranges the layout conforming to @ref layoutDimensions
- * 
+ *
  * If @ref layoutDimensions is DialogLayoutDimensions::automatic than it is
  * first evaluated again if for the current display the collapsed or the
  * expanded layout is used. */
@@ -986,7 +998,7 @@ void ColorDialog::ColorDialogPrivate::applyLayoutDimensions()
         case DialogLayoutDimensions::screenSizeDependent:
             // Note: The following code works correctly on scaled
             // devices (high-DPI…).
-            
+
             // We should not use more than 70% of the screen for a dialog.
             // That's roughly the same as the default maximum sizes for
             // a QDialog.

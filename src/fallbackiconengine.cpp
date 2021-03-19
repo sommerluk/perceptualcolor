@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -40,7 +40,7 @@
 namespace PerceptualColor {
 
 /** @brief Constructor.
- * 
+ *
  * @pre Instanciating this class requires an existing <tt>QApplication</tt>
  * object. */
 FallbackIconEngine::FallbackIconEngine()
@@ -72,7 +72,7 @@ FallbackIconEngine::FallbackIconEngine()
 }
 
 /** @brief Sets a reference widget.
- * 
+ *
  * The reference widget is the widget who’s color palette is used when
  * drawing the fallback icon. Using this function is optional. When
  * set, the fallback icon colors follow the palette of this specific
@@ -80,13 +80,13 @@ FallbackIconEngine::FallbackIconEngine()
  * sense when using the icon with a widget that uses a modified color
  * palette.) If it is not set, the default palette of the application
  * is used instead.
- * 
+ *
  * @param referenceWidget A pointer to the reference widget, or
  * <tt>nullptr</tt> to not use a reference widget. It is allowed that
  * the widget may be deleted in the future; if so, FallbackIconEngine
  * will not crash, but simply fall back the the default palette of the
  * application.
- * 
+ *
  * @note
  * - The reference widget is used only for the fallback icon; it has
  *   no influence if the icon-theme’s icon or the widget-style’s icon are
@@ -95,7 +95,7 @@ FallbackIconEngine::FallbackIconEngine()
  *   This would be highly confusing, because normally constructors are taking
  *   pointers to widgets to use them as parent. Therefore, it’s better to
  *   avoid this confusion.
- * 
+ *
  * @sa @ref m_referenceWidget */
 void FallbackIconEngine::setReferenceWidget(QWidget *referenceWidget)
 {
@@ -104,11 +104,11 @@ void FallbackIconEngine::setReferenceWidget(QWidget *referenceWidget)
 
 /** @brief Returns the icon as a pixmap with the required size,
  * mode, and state.
- * 
- * Reimplemented from base class. 
- * 
+ *
+ * Reimplemented from base class.
+ *
  * Relies on @ref paint() to do the heavy work.
- * 
+ *
  * @param size The size of the icon.
  * @param mode The mode of the icon.
  * @param state The state of the icon.
@@ -141,10 +141,10 @@ QPixmap FallbackIconEngine::pixmap(
 }
 
 /** @brief Paints the fallback “refresh” icon.
- * 
+ *
  * This function provides a freely scalable icon. It does not rely
  * on QSvg, but only on the QPainter class.
- * 
+ *
  * @todo Provide a real design for this icon, and not just a circle.
  *
  * @param painter Uses the given painter to paint the icon
@@ -227,9 +227,9 @@ void FallbackIconEngine::paintRefreshFallbackIcon(
 }
 
 /** @brief Paints the icon.
- * 
- * Reimplemented from base class. 
- * 
+ *
+ * Reimplemented from base class.
+ *
  * @param painter Uses the given painter to paint the icon
  * @param rect into the rectangle rect
  * @param mode with the required mode
@@ -243,7 +243,7 @@ void FallbackIconEngine::paint(
 {
     // Initialize
     QIcon myIcon;
-    
+
     // First, try to load an icon from the current icon theme.
     myIcon = QIcon::fromTheme(QStringLiteral("view-refresh"));
     if (!myIcon.isNull()) {
@@ -293,16 +293,16 @@ void FallbackIconEngine::paint(
 }
 
 /** @brief Returns a clone of this icon engine.
- * 
+ *
  * Reimplemented from base class, where this function is abstract.
- * 
+ *
  * This idiom provides a sort of virtual copy constructor that can be
  * called by pointers to the base class of @ref FallbackIconEngine.
- * 
+ *
  * The implementation basicly calls the private copy constructor
  * @ref FallbackIconEngine(const FallbackIconEngine &other) and
  * returns the result.
- * 
+ *
  * @returns a clone of this icon engine. */
 QIconEngine* FallbackIconEngine::clone() const
 {
@@ -311,19 +311,19 @@ QIconEngine* FallbackIconEngine::clone() const
 
 
 /** @brief Copy constructor.
- * 
+ *
  * The base class of <em>this</em> class has an abstract <tt>clone</tt>
  * function. The implementation of @ref clone() here in <em>this</em> class
  * relies on an existing copy constructor.
- * 
+ *
  * This copy constructor calls the base class’s copy constructor. That
  * means, that this copy constructor cannot be defined as default, which means
  * that we have to implement the function body explicitly and keep track
  * of newly added data members and support them one-by-one here within this
  * copy constructor.
- * 
+ *
  * To avoid slicing, this copy constructor is private.
- * 
+ *
  * @param other The other object that shall be copied to this one. */
 FallbackIconEngine::FallbackIconEngine(const FallbackIconEngine &other)
 : QIconEngine(other)

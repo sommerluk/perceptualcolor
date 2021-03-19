@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,13 +24,13 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/gradientselector.h"
+#include "PerceptualColor/gradientslider.h"
 // Second, the private implementation.
-#include "gradientselector_p.h"
+#include "gradientslider_p.h"
 
 #include <QDebug>
 #include <QPainter>
@@ -42,43 +42,43 @@
 
 namespace PerceptualColor {
 
-GradientSelector::GradientSelector(
+GradientSlider::GradientSlider(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     QWidget *parent
 ) :
     AbstractDiagram(parent),
-    d_pointer(new GradientSelectorPrivate(this))
+    d_pointer(new GradientSliderPrivate(this))
 {
     d_pointer->initialize(colorSpace, Qt::Orientation::Vertical);
 }
 
-GradientSelector::GradientSelector(
+GradientSlider::GradientSlider(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     Qt::Orientation orientation,
     QWidget* parent
 ) :
     AbstractDiagram(parent),
-    d_pointer(new GradientSelectorPrivate(this))
+    d_pointer(new GradientSliderPrivate(this))
 {
     d_pointer->initialize(colorSpace, orientation);
 }
 
 /** @brief Default destructor */
-GradientSelector::~GradientSelector() noexcept
+GradientSlider::~GradientSlider() noexcept
 {
 }
 
 /** @brief Constructor
- * 
+ *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
-GradientSelector::GradientSelectorPrivate::GradientSelectorPrivate(
-    GradientSelector *backLink
+GradientSlider::GradientSliderPrivate::GradientSliderPrivate(
+    GradientSlider *backLink
 ) : q_pointer(backLink)
 {
 }
 
-void GradientSelector::GradientSelectorPrivate::initialize(
+void GradientSlider::GradientSliderPrivate::initialize(
     const QSharedPointer<RgbColorSpace> &colorSpace,
     Qt::Orientation orientation
 )
@@ -86,37 +86,37 @@ void GradientSelector::GradientSelectorPrivate::initialize(
     q_pointer->setFocusPolicy(Qt::StrongFocus);
     m_rgbColorSpace = colorSpace;
     q_pointer->setOrientation(orientation); // also updates the size policy
-    cmsCIELCh one;
-    one.L = 50;
-    one.C = 65;
+    LchDouble one;
+    one.l = 50;
+    one.c = 65;
     one.h = 100;
-    cmsCIELCh two;
-    two.L = 60;
-    two.C = 85;
+    LchDouble two;
+    two.l = 60;
+    two.c = 85;
     two.h = 300;
     q_pointer->setColors(
         FullColorDescription(
             m_rgbColorSpace,
             one,
-            FullColorDescription::outOfGamutBehaviour::preserve,
+            FullColorDescription::OutOfGamutBehaviour::preserve,
             0
         ),
         FullColorDescription(
             m_rgbColorSpace,
             two,
-            FullColorDescription::outOfGamutBehaviour::preserve,
+            FullColorDescription::OutOfGamutBehaviour::preserve,
             1
         )
     );
     m_gradientImageReady = false;
 }
 
-QSize GradientSelector::sizeHint() const
+QSize GradientSlider::sizeHint() const
 {
     return minimumSizeHint();
 }
 
-QSize GradientSelector::minimumSizeHint() const
+QSize GradientSlider::minimumSizeHint() const
 {
     QSize temp;
     if (d_pointer->m_orientation == Qt::Orientation::Vertical) {
@@ -133,8 +133,8 @@ QSize GradientSelector::minimumSizeHint() const
     return temp;
 }
 
-qreal GradientSelector
-    ::GradientSelectorPrivate
+qreal GradientSlider
+    ::GradientSliderPrivate
     ::fromWindowCoordinatesToFraction
 (
     QPoint windowCoordinates
@@ -156,7 +156,7 @@ qreal GradientSelector
     return qBound<qreal>(0, temp, 1);
 }
 
-void GradientSelector::mousePressEvent(QMouseEvent* event)
+void GradientSlider::mousePressEvent(QMouseEvent* event)
 {
     setFraction(
         d_pointer->fromWindowCoordinatesToFraction(
@@ -165,7 +165,7 @@ void GradientSelector::mousePressEvent(QMouseEvent* event)
     );
 }
 
-void GradientSelector::mouseReleaseEvent(QMouseEvent* event)
+void GradientSlider::mouseReleaseEvent(QMouseEvent* event)
 {
     setFraction(
         d_pointer->fromWindowCoordinatesToFraction(
@@ -174,7 +174,7 @@ void GradientSelector::mouseReleaseEvent(QMouseEvent* event)
     );
 }
 
-void GradientSelector::mouseMoveEvent(QMouseEvent* event)
+void GradientSlider::mouseMoveEvent(QMouseEvent* event)
 {
     setFraction(
         d_pointer->fromWindowCoordinatesToFraction(
@@ -183,12 +183,12 @@ void GradientSelector::mouseMoveEvent(QMouseEvent* event)
     );
 }
 
-qreal GradientSelector::fraction()
+qreal GradientSlider::fraction()
 {
     return d_pointer->m_fraction;
 }
 
-void GradientSelector::setFraction(qreal newFraction)
+void GradientSlider::setFraction(qreal newFraction)
 {
     qreal temp = qBound<qreal>(0, newFraction, 1);
     if (d_pointer->m_fraction != temp) {
@@ -198,7 +198,7 @@ void GradientSelector::setFraction(qreal newFraction)
     }
 }
 
-void GradientSelector::wheelEvent(QWheelEvent* event)
+void GradientSlider::wheelEvent(QWheelEvent* event)
 {
     qreal steps = standardWheelSteps(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
@@ -210,15 +210,15 @@ void GradientSelector::wheelEvent(QWheelEvent* event)
     }
 }
 
-void GradientSelector::keyPressEvent(QKeyEvent* event)
+void GradientSlider::keyPressEvent(QKeyEvent* event)
 {
     switch (event->key()) {
         case Qt::Key_Up:
-        case Qt::Key_Plus: 
+        case Qt::Key_Plus:
             setFraction(d_pointer->m_fraction + d_pointer->m_singleStep);
             break;
         case Qt::Key_Down:
-        case Qt::Key_Minus: 
+        case Qt::Key_Minus:
             setFraction(d_pointer->m_fraction - d_pointer->m_singleStep);
             break;
         case Qt::Key_Left:
@@ -249,11 +249,11 @@ void GradientSelector::keyPressEvent(QKeyEvent* event)
             break;
         default:
             /* Quote from Qt documentation:
-             * 
+             *
              *     “If you reimplement this handler, it is very important that
              *      you call the base class implementation if you do not act
              *      upon the key.
-             * 
+             *
              *      The default implementation closes popup widgets if the
              *      user presses the key sequence for QKeySequence::Cancel
              *      (typically the Escape key). Otherwise the event is
@@ -262,17 +262,17 @@ void GradientSelector::keyPressEvent(QKeyEvent* event)
     }
 }
 
-qreal GradientSelector::singleStep()
+qreal GradientSlider::singleStep()
 {
     return d_pointer->m_singleStep;
 }
 
-qreal GradientSelector::pageStep()
+qreal GradientSlider::pageStep()
 {
     return d_pointer->m_pageStep;
 }
 
-void GradientSelector::setSingleStep(qreal newSingleStep)
+void GradientSlider::setSingleStep(qreal newSingleStep)
 {
     if (newSingleStep != d_pointer->m_singleStep) {
         d_pointer->m_singleStep = newSingleStep;
@@ -280,7 +280,7 @@ void GradientSelector::setSingleStep(qreal newSingleStep)
     }
 }
 
-void GradientSelector::setPageStep(qreal newPageStep)
+void GradientSlider::setPageStep(qreal newPageStep)
 {
     if (newPageStep != d_pointer->m_pageStep) {
         d_pointer->m_pageStep = newPageStep;
@@ -305,7 +305,7 @@ void GradientSelector::setPageStep(qreal newPageStep)
 //             this
 //         );
 //     }
-void GradientSelector::paintEvent(QPaintEvent* event)
+void GradientSlider::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
@@ -335,7 +335,7 @@ void GradientSelector::paintEvent(QPaintEvent* event)
         d_pointer->updateGradientImage();
     }
     painter.drawImage(0, 0, d_pointer->m_gradientImage);
-    
+
 
     int actualLength;
     if (d_pointer->m_orientation == Qt::Orientation::Vertical) {
@@ -343,7 +343,7 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     } else {
         actualLength = size().width();
     }
-    
+
     QPolygonF arrowPolygon;
     const qreal cursorPosition = actualLength * d_pointer->m_fraction;
     const qreal arrowSize = 6;
@@ -387,12 +387,12 @@ void GradientSelector::paintEvent(QPaintEvent* event)
     QPainter(this).drawImage(0, 0, paintBuffer);
 }
 
-Qt::Orientation	GradientSelector::orientation() const
+Qt::Orientation	GradientSlider::orientation() const
 {
     return d_pointer->m_orientation;
 }
 
-void GradientSelector::GradientSelectorPrivate::setOrientationAndForceUpdate(
+void GradientSlider::GradientSliderPrivate::setOrientationAndForceUpdate(
     Qt::Orientation newOrientation
 )
 {
@@ -407,7 +407,7 @@ void GradientSelector::GradientSelectorPrivate::setOrientationAndForceUpdate(
     q_pointer->updateGeometry();
 }
 
-void GradientSelector::setOrientation(Qt::Orientation newOrientation)
+void GradientSlider::setOrientation(Qt::Orientation newOrientation)
 {
     if (newOrientation != d_pointer->m_orientation) {
         d_pointer->setOrientationAndForceUpdate(newOrientation);
@@ -415,7 +415,7 @@ void GradientSelector::setOrientation(Qt::Orientation newOrientation)
     }
 }
 
-void GradientSelector::setColors(
+void GradientSlider::setColors(
     const FullColorDescription &col1,
     const FullColorDescription &col2
 )
@@ -429,38 +429,38 @@ void GradientSelector::setColors(
     update();
 }
 
-void GradientSelector::setFirstColor(const FullColorDescription &col)
+void GradientSlider::setFirstColor(const FullColorDescription &col)
 {
     setColors(col, d_pointer->m_secondColor);
 }
 
-void GradientSelector::setSecondColor(const FullColorDescription &col)
+void GradientSlider::setSecondColor(const FullColorDescription &col)
 {
     setColors(d_pointer->m_firstColor, col);
 }
 
-QPair<cmsCIELCh, qreal> GradientSelector
-    ::GradientSelectorPrivate
+QPair<LchDouble, qreal> GradientSlider
+    ::GradientSliderPrivate
     ::intermediateColor
 (
-    const cmsCIELCh &firstColor,
-    const cmsCIELCh &secondColor,
+    const LchDouble &firstColor,
+    const LchDouble &secondColor,
     qreal fraction
 )
 {
-    cmsCIELCh color;
+    LchDouble color;
     qreal alpha;
-    color.L = firstColor.L + (secondColor.L - firstColor.L) * fraction;
-    color.C = firstColor.C + (secondColor.C - firstColor.C) * fraction;
+    color.l = firstColor.l + (secondColor.l - firstColor.l) * fraction;
+    color.c = firstColor.c + (secondColor.c - firstColor.c) * fraction;
     color.h = firstColor.h + (secondColor.h - firstColor.h) * fraction;
     alpha =
         m_firstColor.alpha()
         + (m_secondColor.alpha() - m_firstColor.alpha())
         * fraction;
-    return QPair<cmsCIELCh, qreal>(color, alpha);
+    return QPair<LchDouble, qreal>(color, alpha);
 }
 
-QTransform GradientSelector::GradientSelectorPrivate::getTransform() const
+QTransform GradientSlider::GradientSliderPrivate::getTransform() const
 {
     QTransform transform;
     if (m_orientation == Qt::Orientation::Vertical) {
@@ -475,10 +475,9 @@ QTransform GradientSelector::GradientSelectorPrivate::getTransform() const
     return transform;
 }
 
-void GradientSelector::GradientSelectorPrivate::updateGradientImage()
+void GradientSlider::GradientSliderPrivate::updateGradientImage()
 {
     int actualLength;
-    int i;
     if (m_orientation == Qt::Orientation::Vertical) {
         actualLength = q_pointer->size().height();
     } else {
@@ -486,8 +485,8 @@ void GradientSelector::GradientSelectorPrivate::updateGradientImage()
     }
     QImage temp(actualLength, 1, QImage::Format_ARGB32_Premultiplied);
     temp.fill(Qt::transparent); // Initialize the image with transparency.
-    cmsCIELCh firstColor = m_firstColor.toLch();
-    cmsCIELCh secondColor = m_secondColor.toLch();
+    LchDouble firstColor = m_firstColor.toLch();
+    LchDouble secondColor = m_secondColor.toLch();
     if (qAbs(firstColor.h - secondColor.h) > 180) {
         if (firstColor.h > secondColor.h) {
             secondColor.h += 360;
@@ -495,9 +494,9 @@ void GradientSelector::GradientSelectorPrivate::updateGradientImage()
             secondColor.h -= 360;
         }
     }
-    QPair<cmsCIELCh, qreal> color;
+    QPair<LchDouble, qreal> color;
     FullColorDescription fullColor;
-    for (i = 0; i < actualLength; ++i) {
+    for (int i = 0; i < actualLength; ++i) {
         color = intermediateColor(
             firstColor,
             secondColor,
@@ -510,8 +509,10 @@ void GradientSelector::GradientSelectorPrivate::updateGradientImage()
         fullColor = FullColorDescription(
             m_rgbColorSpace,
             color.first,
-            FullColorDescription::outOfGamutBehaviour::preserve,
-            color.second
+            FullColorDescription::OutOfGamutBehaviour::preserve,
+            color.second // What the hell is the constructor called
+            // with a 4. (!) parameter of tye LchDouble? Is there
+            // a strange hidden overload that is triggered?
         );
         temp.setPixelColor(i, 0, fullColor.toRgbQColor());
     }
@@ -528,14 +529,14 @@ void GradientSelector::GradientSelectorPrivate::updateGradientImage()
         m_gradientThickness,
         QBrush(q_pointer->transparencyBackground())
     );
-    for (i = 0; i < m_gradientThickness; ++i) {
+    for (int i = 0; i < m_gradientThickness; ++i) {
         painter.drawImage(0, i, temp);
     }
     m_gradientImage = result;
     m_gradientImageReady = true;
 }
 
-void GradientSelector::resizeEvent(QResizeEvent *event)
+void GradientSlider::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     d_pointer->m_gradientImageReady = false;

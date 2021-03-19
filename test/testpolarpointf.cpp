@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -68,12 +68,12 @@ private Q_SLOTS:
 
     void testConstructorRadialAngle() {
         PerceptualColor::PolarPointF temp01;
-        
+
         // Default value is 0, 0°
         temp01 = PerceptualColor::PolarPointF();
         QCOMPARE(temp01.radial(), 0);
         QCOMPARE(temp01.angleDegree(), 0);
-        
+
         // Same for initialization with 0, 0
         temp01 = PerceptualColor::PolarPointF(0, 0);
         QCOMPARE(temp01.radial(), 0);
@@ -88,12 +88,12 @@ private Q_SLOTS:
         temp01 = PerceptualColor::PolarPointF(-2, 183);
         QCOMPARE(temp01.radial(), 2);
         QCOMPARE(temp01.angleDegree(), 3);
-        
+
         // Out-of-range angle is normalized
         temp01 = PerceptualColor::PolarPointF(2, 363);
         QCOMPARE(temp01.radial(), 2);
         QCOMPARE(temp01.angleDegree(), 3);
-        
+
         temp01 = PerceptualColor::PolarPointF(2, -357);
         QCOMPARE(temp01.radial(), 2);
         QCOMPARE(temp01.angleDegree(), 3);
@@ -136,7 +136,7 @@ private Q_SLOTS:
         PerceptualColor::PolarPointF temp01;
         PerceptualColor::PolarPointF temp02;
         PerceptualColor::PolarPointF temp03;
-        
+
         temp01 = PerceptualColor::PolarPointF();
         temp02 = temp01;
         temp03 = PerceptualColor::PolarPointF(temp01);
@@ -146,7 +146,7 @@ private Q_SLOTS:
         QCOMPARE(temp01.angleDegree(), 0);
         QCOMPARE(temp02.angleDegree(), 0);
         QCOMPARE(temp03.angleDegree(), 0);
-        
+
         temp01 = PerceptualColor::PolarPointF(0, 0);
         temp02 = temp01;
         temp03 = PerceptualColor::PolarPointF(temp01);
@@ -156,7 +156,7 @@ private Q_SLOTS:
         QCOMPARE(temp01.angleDegree(), 0);
         QCOMPARE(temp02.angleDegree(), 0);
         QCOMPARE(temp03.angleDegree(), 0);
-        
+
         temp01 = PerceptualColor::PolarPointF(-2, 723);
         temp02 = temp01;
         temp03 = PerceptualColor::PolarPointF(temp01);
@@ -167,7 +167,7 @@ private Q_SLOTS:
         QCOMPARE(temp02.angleDegree(), 183);
         QCOMPARE(temp03.angleDegree(), 183);
     }
-    
+
     void testConstructorCartesian() {
         PerceptualColor::PolarPointF temp01;
         temp01 = PerceptualColor::PolarPointF(QPointF(0, 0));
@@ -203,7 +203,7 @@ private Q_SLOTS:
                     == PerceptualColor::PolarPointF(1, 0)
             )
         );
-        
+
         // If radial is 0, different angle still means same point
         QVERIFY(
             (
@@ -217,7 +217,7 @@ private Q_SLOTS:
                     != PerceptualColor::PolarPointF(0, 500)
             )
         );
-        
+
         QVERIFY(
             (
                 PerceptualColor::PolarPointF(0, 0)
@@ -230,7 +230,7 @@ private Q_SLOTS:
                     != PerceptualColor::PolarPointF(0, 300)
             )
         );
-        
+
         QVERIFY(
             (
                 PerceptualColor::PolarPointF(0, 0)
@@ -243,7 +243,7 @@ private Q_SLOTS:
                     != PerceptualColor::PolarPointF(0, -500)
             )
         );
-        
+
         QVERIFY(
             (
                 PerceptualColor::PolarPointF(1, 320)
@@ -256,7 +256,7 @@ private Q_SLOTS:
                     == PerceptualColor::PolarPointF(1, 321)
             )
         );
-        
+
         QVERIFY(
             (
                 PerceptualColor::PolarPointF(5, 90)
@@ -269,7 +269,7 @@ private Q_SLOTS:
                     != PerceptualColor::PolarPointF(-5, 270)
             )
         );
-        
+
         QVERIFY(
             (
                 PerceptualColor::PolarPointF(5, 450)
@@ -361,7 +361,7 @@ private Q_SLOTS:
             QPointF(2, 2)
         );
     }
-    
+
     void testMetaType() {
         PerceptualColor::PolarPointF temp01(17, 18);
         QVariant var;

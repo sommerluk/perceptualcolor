@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,14 +32,14 @@
 namespace PerceptualColor {
 
 /** @brief LCh default values
- * 
+ *
  * The gamut of actual human perception within the LAB color model (and
  * its alternative representation LCH) has an irregular shape. Its maximum
  * extensions:
- * 
+ *
  * - LAB/LCH lightness: <tt>[0, 100]</tt>
  * - LCH hue: The full circle, <tt>[0°, 360°[</tt>.
- * 
+ *
  * |                               |        a         |         b         |      C      |
  * | :---------------------------  |:---------------: | :---------------: | :---------: |
  * | Usual implementation¹         |   [−128, 127]    |    [−128, 127]    |             |
@@ -65,7 +65,7 @@ namespace PerceptualColor {
  *
  * But what could be useful default values? This struct provides some
  * proposals. All values are <tt>constexpr</tt>.
- * 
+ *
  * @note It is not always a good idea to have <tt>constexpr</tt> in header
  * files, as they are evaluated at compile time, so when linking dynamically
  * to a different library version that the compile time library version, this
@@ -74,7 +74,7 @@ namespace PerceptualColor {
 struct LchValues final {
 public:
     /** @brief Maximum chroma value of human perception.
-     * 
+     *
      * Following the table in the description of this class, the
      * maximum chroma in human perception is <tt>194.84</tt>. As aparently
      * this depends on viewing conditions, it might be a good idea
@@ -83,7 +83,7 @@ public:
      * chroma of human perception. */
     static constexpr int humanMaximumChroma = 200;
     /** @brief Neutral chroma value
-     * 
+     *
      *  For chroma, a neutral value of 0 might be a good
      *  choice because it is less likely to make  out-of-gamut problems on
      *  any lightness (except maybe extreme white or extreme black). And
@@ -95,7 +95,7 @@ public:
      *  For the hue, a default value of 0 might be used by convention. */
     static constexpr int neutralHue = 0;
     /** @brief Neutral lightness value
-     * 
+     *
      *  For the lightness, a neutral value of 50 seems a good choice as it
      *  is half the way in the defined lightness range of <tt>[0, 100]</tt>
      *  (thought not all gamuts offer the hole range of <tt>[0, 100]</tt>). As
@@ -107,7 +107,7 @@ public:
      *  gamut diagrams. */
     static constexpr int neutralLightness = 50;
     /** @brief Neutral gray color as Lab value.
-     * 
+     *
      * Neutral gray is a good choice for the background, as it is equally
      * distant from black and white, and also quite distant from any
      * saturated color. */
@@ -119,13 +119,13 @@ public:
     /** @brief Maximum chroma value in
      * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
      * sRGB gamut
-     * 
+     *
      *  @sa @ref neutralChroma */
     static constexpr int srgbMaximumChroma = 132;
     /** @brief Versatile chroma value in
      * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
      * sRGB gamut
-     * 
+     *
      *  Depending on the use case, there might be an alternative to
      *  the neutral gray @ref neutralChroma. For a lightness of 50, this
      *  value is the maximum chroma available at all possible hues within

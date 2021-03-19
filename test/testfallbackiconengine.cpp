@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -62,7 +62,7 @@ private:
         QTest::addColumn<QRect>("rect");
         QTest::addColumn<QIcon::Mode>("mode");
         QTest::addColumn<QIcon::State>("state");
-        
+
         QList<QPoint> rectPointList;
         rectPointList.append(QPoint(0, 0));
         rectPointList.append(QPoint(0, 10));
@@ -71,7 +71,7 @@ private:
         rectPointList.append(QPoint(-10, 0));
         rectPointList.append(QPoint(0, -10));
         rectPointList.append(QPoint(-10, -10));
-        
+
         QList<QSize> rectSizeList;
         rectSizeList.append(QSize(0, 0));
         rectSizeList.append(QSize(1, 1));
@@ -80,7 +80,7 @@ private:
         rectSizeList.append(QSize(-1, -1));
         rectSizeList.append(QSize(0, 10));
         rectSizeList.append(QSize(10, 0));
-        
+
         QList<QIcon::Mode> modeList;
         modeList.append(QIcon::Mode::Active);
         modeList.append(QIcon::Mode::Disabled);
@@ -168,7 +168,7 @@ private Q_SLOTS:
     void testPaint_data() {
         helperProvideTestData();
     }
-    
+
     void testPaint() {
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
@@ -176,14 +176,14 @@ private Q_SLOTS:
         QImage myImage(10, 10, QImage::Format::Format_ARGB32_Premultiplied);
         QPainter myPainter(&myImage);
         FallbackIconEngine myEngine;
-        
+
         // Test if there is no crash also on strange values
 
         // suppress warning on invalid sizes
         qInstallMessageHandler(voidMessageHandler);
-        
+
         myEngine.paint(&myPainter, rect, mode, state);
-        
+
         // do not suppress warnings anymore
         qInstallMessageHandler(nullptr);
     }
@@ -191,21 +191,21 @@ private Q_SLOTS:
     void testPaintRefreshFallbackIcon_data() {
         helperProvideTestData();
     }
-    
+
     void testPaintRefreshFallbackIcon() {
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
         QImage myImage(10, 10, QImage::Format::Format_ARGB32_Premultiplied);
         QPainter myPainter(&myImage);
         FallbackIconEngine myEngine;
-        
+
         // Test if there is no crash also on strange values
-        
+
         // suppress warning on invalid sizes
         qInstallMessageHandler(voidMessageHandler);
-        
+
         myEngine.paintRefreshFallbackIcon(&myPainter, rect, mode);
-        
+
         // do not suppress warnings anymore
         qInstallMessageHandler(nullptr);
     }
@@ -213,24 +213,24 @@ private Q_SLOTS:
     void testPixmap_data() {
         helperProvideTestData();
     }
-    
+
     void testPixmap() {
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
         QFETCH(QIcon::State, state);
         FallbackIconEngine myEngine;
-        
+
         // Test if there is no crash also on strange values
-        
+
         // suppress warning on invalid sizes
         qInstallMessageHandler(voidMessageHandler);
-    
+
         myEngine.pixmap(rect.size(), mode, state);
-        
+
         // do not suppress warnings anymore
         qInstallMessageHandler(nullptr);
     }
-    
+
     void testSetReferenceWidget() {
         FallbackIconEngine myEngine;
         QScopedPointer<QWidget> myWidget { new QWidget };

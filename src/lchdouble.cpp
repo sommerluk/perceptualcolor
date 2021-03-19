@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own header
 #include "PerceptualColor/lchdouble.h"
@@ -34,12 +34,14 @@
 #include <lcms2.h>
 
 /** @file
- * 
+ *
  * This file defines some static asserts for the data type
  * @ref PerceptualColor::LchDouble. */
 
 namespace PerceptualColor {
 
+// We are using double. Check that we stay compatible with cmsCIELCh
+// which is based on cmsFloat64Number.
 static_assert(
     std::is_same_v<
         cmsFloat64Number,
@@ -49,14 +51,6 @@ static_assert(
 
 static_assert(
     sizeof(double) == sizeof(cmsFloat64Number)
-);
-
-
-static_assert(
-    std::is_same_v<
-        LchDouble,
-        cmsCIELCh
-    >
 );
 
 static_assert(
@@ -71,8 +65,6 @@ static_assert(
     std::is_standard_layout_v<LchDouble>
 );
 
-} // namespace PerceptualColor
-
 /** @brief Adds QDebug() support for this data type.
  * @note This is declared outside the global namespace instead of the
  * @ref PerceptualColor namespace, because the supported value is a
@@ -83,11 +75,13 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value)
 {
     dbg.nospace()
         << "LchDouble("
-        << value.L
+        << value.l
         << "% "
-        << value.C
+        << value.c
         << " "
         << value.h
         << "°)";
     return dbg.maybeSpace();
 }
+
+} // namespace PerceptualColor

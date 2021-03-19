@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -43,13 +43,13 @@ namespace PerceptualColor {
 
 /** @brief Constructor */
 WheelColorPicker::WheelColorPicker(
-    const QSharedPointer<RgbColorSpace> &colorSpace,
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     QWidget *parent
 ) :
     SimpleColorWheel(colorSpace, parent),
     d_pointer(new WheelColorPickerPrivate(this))
 {
-    
+
     d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(
         colorSpace,
         this
@@ -81,7 +81,7 @@ WheelColorPicker::~WheelColorPicker() noexcept
 }
 
 /** @brief Constructor
- * 
+ *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 WheelColorPicker::WheelColorPickerPrivate::WheelColorPickerPrivate(
@@ -100,7 +100,7 @@ WheelColorPicker::WheelColorPickerPrivate::WheelColorPickerPrivate(
 /** @brief React on a resize event.
  *
  * Reimplemented from base class.
- * 
+ *
  * @param event The corresponding resize event
  */
 void WheelColorPicker::resizeEvent(QResizeEvent* event)
@@ -110,7 +110,7 @@ void WheelColorPicker::resizeEvent(QResizeEvent* event)
 }
 
 /** Convenience slot that calls update() on the base implementation.
- * 
+ *
  * @todo This slot exists as a workaround because connecting directly
  * didn’t work before using pimpl idiom. Now that we use pimpl idiom,
  * maybe it works without this class! */
@@ -120,7 +120,7 @@ void WheelColorPicker::WheelColorPickerPrivate::scheduleUpdate()
 }
 
 /** @brief Scale a rectangle to a given diagonal line length
- * 
+ *
  * @param oldRectangle the size of a rectangle
  * @param newDiagonal the desired new diagonal line length (distance from the
  * bottom left to the top right corner.

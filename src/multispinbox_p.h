@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -44,7 +44,7 @@ class MultiSpinBox::MultiSpinBoxPrivate final
 public:
     MultiSpinBoxPrivate(MultiSpinBox *backLink);
     /** @brief Default destructor
-     * 
+     *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~MultiSpinBoxPrivate() noexcept = default;
@@ -60,22 +60,22 @@ public:
      * @sa @ref setCurrentIndexWithoutUpdatingText */
     int m_currentIndex = 0;
     /** @brief Holds the data for the sections.
-     * 
+     *
      * This list is guaranteed to contain at least <em>one</em> section.
-     * 
+     *
      * @sa @ref sections()
      * @sa @ref setSections() */
     QList<MultiSpinBox::SectionData> m_sections;
     /** @brief The string of everything <em>after</em> the value of the
      * current section.
-     * 
+     *
      * This includes the suffix of the current section and everything
      * (prefixes, values and suffixes) of all sections that come after
      * the current sections. */
     QString m_textAfterCurrentValue;
     /** @brief The string of everything <em>before</em> the value of the
      * current section.
-     * 
+     *
      * This includes everything (prefixes, values and suffixes) of all
      * sections that come before the current section, and the prefix
      * of the current section. */
@@ -83,12 +83,12 @@ public:
     /** @brief The string of the value of the current section. */
     QString m_textOfCurrentValue;
     /** @brief The validator for the <tt>QLineEdit</tt>.
-     * 
+     *
      * This validator allows changes only to the <em>current</em> section.
-     * 
+     *
      * If the current section changes, also this validator’s configuration
      * will be adapted to cover the new current section.
-     * 
+     *
      * @note It is <em>not</em> possible to change various values at the
      * same time, for example by marking all the current text and use
      * Ctrl-V to past a complete new value from the clipbord. This would
@@ -115,7 +115,7 @@ public Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(MultiSpinBoxPrivate)
-    
+
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<MultiSpinBox> q_pointer;

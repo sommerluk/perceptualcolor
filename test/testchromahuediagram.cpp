@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -32,6 +32,9 @@
 #include "chromahuediagram_p.h"
 
 #include <QtTest>
+
+#include "PerceptualColor/fullcolordescription.h"
+#include "PerceptualColor/polarpointf.h"
 
 namespace PerceptualColor {
 
@@ -45,8 +48,16 @@ public:
 
 private:
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace {
-        new RgbColorSpace() 
+        new RgbColorSpace()
     };
+
+    bool isEqual(const LchDouble &first, const LchDouble &second) {
+        return (
+            (first.l == second.l)
+                && (first.c == second.c)
+                && (first.h == second.h)
+        );
+    }
 
 private Q_SLOTS:
     void initTestCase() {
@@ -76,42 +87,31 @@ private Q_SLOTS:
 
     void testKeyPressEvent() {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
-        cmsCIELCh referenceColorLch;
-        referenceColorLch.L = 50;
-        referenceColorLch.C = 0;
+        LchDouble referenceColorLch;
+        referenceColorLch.l = 50;
+        referenceColorLch.c = 0;
         referenceColorLch.h = 180;
         FullColorDescription referenceColor = FullColorDescription(
             m_rgbColorSpace,
             referenceColorLch,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         );
-        myDiagram.setColor(referenceColor);
-        if (myDiagram.color().toLch().h != 180) {
+        myDiagram.setColor(referenceColorLch);
+        if (myDiagram.color().h != 180) {
             throw;
         }
-        if (myDiagram.color().toLch().C != 0) {
+        if (myDiagram.color().c != 0) {
             throw;
         }
-        cmsCIELCh referenceColorChromaLch;
-        referenceColorChromaLch.L = 50;
-        referenceColorChromaLch.C = 10;
+        LchDouble referenceColorChromaLch;
+        referenceColorChromaLch.l = 50;
+        referenceColorChromaLch.c = 10;
         referenceColorChromaLch.h = 180;
-        FullColorDescription referenceColorChroma = FullColorDescription(
-            m_rgbColorSpace,
-            referenceColorChromaLch,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
-        );
-        myDiagram.setColor(referenceColorChroma);
-        if (myDiagram.color().toLch().h != 180) {
-            throw;
-        }
-        if (myDiagram.color().toLch().C != 10) {
-            throw;
-        }
-        
+        myDiagram.setColor(referenceColorChromaLch);
+
         QKeyEvent myEvent { QEvent::None, 0, Qt::NoModifier };
 
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_Up,
@@ -119,11 +119,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().C > 0,
+            myDiagram.color().c > 0,
             "Test Key_Up"
         );
 
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_PageUp,
@@ -131,11 +131,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().C > 0,
+            myDiagram.color().c > 0,
             "Test Key_PageUp"
         );
-      
-        myDiagram.setColor(referenceColorChroma);
+
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_Down,
@@ -143,11 +143,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().C < 10,
+            myDiagram.color().c < 10,
             "Test Key_Down"
         );
 
-        myDiagram.setColor(referenceColorChroma);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_PageDown,
@@ -155,11 +155,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().C < 10,
+            myDiagram.color().c < 10,
             "Test Key_PageDown"
         );
 
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_Down,
@@ -167,11 +167,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().C == 0,
+            myDiagram.color().c >= 0,
             "Test Key_Down never negative"
         );
 
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_PageDown,
@@ -179,12 +179,12 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().C == 0,
+            myDiagram.color().c >= 0,
             "Test Key_PageDown never negative"
         );
 
 
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_Left,
@@ -192,11 +192,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().h > 180,
+            myDiagram.color().h > 180,
             "Test Key_Left"
         );
 
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_Home,
@@ -204,11 +204,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().h > 180,
+            myDiagram.color().h > 180,
             "Test Key_Home"
         );
-      
-        myDiagram.setColor(referenceColor);
+
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_Right,
@@ -216,11 +216,11 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().h < 180,
+            myDiagram.color().h < 180,
             "Test Key_Right"
         );
 
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorChromaLch);
         myEvent = QKeyEvent(
             QEvent::KeyPress,
             Qt::Key_End,
@@ -228,12 +228,12 @@ private Q_SLOTS:
         );
         myDiagram.keyPressEvent(&myEvent);
         QVERIFY2(
-            myDiagram.color().toLch().h < 180,
+            myDiagram.color().h < 180,
             "Test Key_End"
         );
 
     }
-    
+
     void testMinimalSizeHint() {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         QVERIFY2(
@@ -245,7 +245,7 @@ private Q_SLOTS:
             "minimalSizeHint height is implemented."
         );
     }
-    
+
     void testSizeHint() {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         QVERIFY2(
@@ -259,53 +259,37 @@ private Q_SLOTS:
             "minimalSizeHint height is implemented."
         );
     }
-    
+
     void testColorProperty() {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
-        QVERIFY2(
-            myDiagram.color().isValid(),
-            "Initialization with a valid value."
-        );
         QSignalSpy spyPerceptualDialog(
             &myDiagram,
             &PerceptualColor::ChromaHueDiagram::colorChanged
         );
-        cmsCIELCh referenceColorLch;
-        referenceColorLch.L = 50;
-        referenceColorLch.C = 10;
+        LchDouble referenceColorLch;
+        referenceColorLch.l = 50;
+        referenceColorLch.c = 10;
         referenceColorLch.h = 180;
         FullColorDescription referenceColor = FullColorDescription(
             m_rgbColorSpace,
             referenceColorLch,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         );
-        
+
         // Test if signal for new color is emitted.
-        myDiagram.setColor(referenceColor);
+        myDiagram.setColor(referenceColorLch);
         QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(
-            myDiagram.color().toRgbQColor(),
-            referenceColor.toRgbQColor()
-        );
-        
-        // Test that no signal is emitted for old color.
-        myDiagram.setColor(referenceColor);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QCOMPARE(
-            myDiagram.color().toRgbQColor(),
-            referenceColor.toRgbQColor()
-        );
-        
-        // Test using an invalid FullColorDescription
-        myDiagram.setColor(FullColorDescription());
-        QCOMPARE(
-            myDiagram.color().toRgbQColor(),
-            referenceColor.toRgbQColor()
-        );
         QVERIFY2(
-            spyPerceptualDialog.count() == 1,
-            "No signal was emitted when the invalid color assignment "
-                "had been ignored."
+            isEqual(myDiagram.color(), referenceColorLch),
+            "Verify that the diagram’s color is equal to the reference color."
+        );
+
+        // Test that no signal is emitted for old color.
+        myDiagram.setColor(referenceColorLch);
+        QCOMPARE(spyPerceptualDialog.count(), 1);
+        QVERIFY2(
+            isEqual(myDiagram.color(), referenceColorLch),
+            "Verify that the diagram’s color is equal to the reference color."
         );
     }
 
@@ -338,9 +322,11 @@ private Q_SLOTS:
 
     void testConversions() {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
-        myDiagram.setColor(
-            FullColorDescription(m_rgbColorSpace, Qt::gray)
-        );
+        LchDouble myGrayColor;
+        myGrayColor.h = 0;
+        myGrayColor.l = 50;
+        myGrayColor.c = 0;
+        myDiagram.setColor(myGrayColor);
         myDiagram.show(); // Necessary to make sure resize events are processed
         constexpr int widgetSize = 300;
         myDiagram.resize(widgetSize, widgetSize);
@@ -354,19 +340,25 @@ private Q_SLOTS:
             QPoint(testPosition, testPosition)
         );
         QCOMPARE(
-            myDiagram.d_pointer->m_color.toLab().L,
+            myDiagram.d_pointer->m_color.l,
             myDiagram.d_pointer->fromWidgetPixelPositionToLab(
                 QPoint(testPosition, testPosition)
             ).L
         );
         QCOMPARE(
-            myDiagram.d_pointer->m_color.toLab().a,
+            PolarPointF(
+                myDiagram.d_pointer->m_color.c,
+                myDiagram.d_pointer->m_color.h
+            ).toCartesian().x(),
             myDiagram.d_pointer->fromWidgetPixelPositionToLab(
                 QPoint(testPosition, testPosition)
             ).a
         );
         QCOMPARE(
-            myDiagram.d_pointer->m_color.toLab().b,
+            PolarPointF(
+                myDiagram.d_pointer->m_color.c,
+                myDiagram.d_pointer->m_color.h
+            ).toCartesian().y(),
             myDiagram.d_pointer->fromWidgetPixelPositionToLab(
                 QPoint(testPosition, testPosition)
             ).b
@@ -384,9 +376,11 @@ QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
 };
 PerceptualColor::ChromaHueDiagram *myDiagram =
     new PerceptualColor::ChromaHueDiagram(myColorSpace);
-myDiagram->setColor(
-    FullColorDescription(myColorSpace, Qt::green)
-);
+LchDouble myColor;
+myColor.h = 270;
+myColor.l = 50;
+myColor.c = 25;
+myDiagram->setColor(myColor);
 myDiagram->show();
 //! [ChromaHueDiagram Instanciate]
 delete myDiagram;
@@ -399,4 +393,4 @@ delete myDiagram;
 QTEST_MAIN(PerceptualColor::TestChromaHueDiagram)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testchromahuediagram.moc" 
+#include "testchromahuediagram.moc"

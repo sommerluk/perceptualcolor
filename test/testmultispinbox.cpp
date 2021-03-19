@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -187,7 +187,7 @@ private Q_SLOTS:
         MultiSpinBox test;
         // Test default index
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
-        
+
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if setting negative value is ignored
@@ -209,7 +209,7 @@ private Q_SLOTS:
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
-        
+
         // Test if correct sections are stored correctly
         QList<MultiSpinBox::SectionData> mySectionList;
         mySectionList.append(MultiSpinBox::SectionData());
@@ -219,7 +219,7 @@ private Q_SLOTS:
         test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(2);
         QCOMPARE(test.d_pointer->m_currentIndex, 2);
     }
-    
+
     void testSetConfiguration() {
         // Correct configurations should be applied as-is.
         QList<MultiSpinBox::SectionData> mySectionList;
@@ -304,7 +304,7 @@ private Q_SLOTS:
         const int referenceWidth = myMulti.sizeHint().width();
 
         // Now test various configurations that should lead to bigger sizes…
-        
+
         section.minimum = -1;
         section.maximum = 9;
         section.prefix = QStringLiteral(u"abcdefghij");
@@ -376,7 +376,7 @@ private Q_SLOTS:
             QStringLiteral(u"jkl")
         );
     }
-    
+
     void testSetCurrentSectionIndexWithoutSelectingText() {
         PerceptualColor::MultiSpinBox myMulti;
         QList<MultiSpinBox::SectionData> config;
@@ -404,7 +404,7 @@ private Q_SLOTS:
             "No text should be selected."
         );
     }
-    
+
     void testSetCurrentSectionIndex() {
         PerceptualColor::MultiSpinBox myMulti;
         myMulti.setSections (myConfiguration);
@@ -631,7 +631,7 @@ private Q_SLOTS:
             StepDownEnabled
         );
     }
-    
+
     void testConfiguration() {
         PerceptualColor::MultiSpinBox myMulti;
         QList<MultiSpinBox::SectionData> config;
@@ -711,13 +711,13 @@ private Q_SLOTS:
         }
 
         // Start actual testing
-        
+
         // Apparently it isn’t possible to call simply the key click
         // on the parent widget. This code fails sometimes:
         // QTest::keyClick(parentWidget, Qt::Key::Key_Tab);
         // Therefore, we call QTest::keyClick() on
         // QApplication::focusWidget()
-        
+
         // Move focus from widget1 to widget2/section0
         QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
         QCOMPARE(QApplication::focusWidget(), widget2);
@@ -978,7 +978,7 @@ private Q_SLOTS:
             throw 0;
         }
 
-        // Start actual testing        
+        // Start actual testing
         // Make sure that MultiSpinBox does not react on incoming tab focus
         // events if the current focus policy does not allow tab focus.
         widget2->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
@@ -1119,7 +1119,7 @@ private Q_SLOTS:
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        
+
         // Do testing
         widget->lineEdit()->setCursorPosition(0);
         QCOMPARE(widget->d_pointer->m_currentIndex, 0);
@@ -1180,7 +1180,7 @@ private Q_SLOTS:
             widget->lineEdit()->text(),
             QStringLiteral(u"50.0")
         );
-        
+
         widget->setLocale(QLocale::German);
         // Without calling update() or other functions, the new locale should
         // be applied on-the-fly.
@@ -1188,7 +1188,7 @@ private Q_SLOTS:
             widget->lineEdit()->text(),
             QStringLiteral(u"50,0")
         );
-        
+
         widget->setLocale(QLocale::Bengali);
         // Without calling update() or other functions, the new locale should
         // be applied on-the-fly.
@@ -1252,7 +1252,7 @@ private Q_SLOTS:
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
     }
-    
+
     void testAddActionButton() {
         MultiSpinBox mySpinBox;
         int oldWidth = 0;
@@ -1310,11 +1310,11 @@ private Q_SLOTS:
         MultiSpinBox::SectionData mySection;
         mySection.minimum = 0;
         mySection.maximum = 360;
-        
+
         QFETCH(double, value);
         QFETCH(double, expectedOnIsWrappigFalse);
         QFETCH(double, expectedOnIsWrappigTrue);
-        
+
         mySection.value = value;
         mySection.isWrapping = false;
         QCOMPARE(
@@ -1348,11 +1348,11 @@ private Q_SLOTS:
         MultiSpinBox::SectionData mySection;
         mySection.minimum = -20;
         mySection.maximum = 340;
-        
+
         QFETCH(double, value);
         QFETCH(double, expectedOnIsWrappigFalse);
         QFETCH(double, expectedOnIsWrappigTrue);
-        
+
         mySection.value = value;
         mySection.isWrapping = false;
         QCOMPARE(
@@ -1377,7 +1377,7 @@ private Q_SLOTS:
             widget->lineEdit()->text(),
             QStringLiteral(u"0°  0%  0")
         );
-        
+
         // Go to begin of the line edit
         QTest::keyClick(widget.data(), Qt::Key_Home);
         // Input
@@ -1393,7 +1393,7 @@ private Q_SLOTS:
             widget->lineEdit()->text(),
             QStringLiteral(u"360°  0%  0")
         );
-        
+
         // Go to end of the line edit
         QTest::keyClick(widget.data(), Qt::Key_End);
         // Input

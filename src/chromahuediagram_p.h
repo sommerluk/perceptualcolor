@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -39,7 +39,7 @@ namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom
- * 
+ *
  * @anchor ChromaHueMeasurement <b>Measurement details:</b> The general
  * @ref MeasurementDetails "notes about measurement" apply also to this widget.
  * Furthermore, in this widget, when painting a pixel of the gamut, the color
@@ -57,7 +57,7 @@ public:
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
     );
     /** @brief Default destructor
-     * 
+     *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~ChromaHueDiagramPrivate() noexcept = default;
@@ -66,9 +66,9 @@ public:
     /** @brief The image of the chroma-hue diagram itself. */
     ChromaHueImage m_chromaHueImage;
     /** @brief Internal storage of the @ref color() property */
-    FullColorDescription m_color;
+    LchDouble m_color;
     /** @brief Holds if currently a mouse event is active or not.
-     * 
+     *
      * Default value is <tt>false</tt>.
      * - A mouse event gets typically activated on a @ref mousePressEvent()
      *   done within the gamut diagram. The value is set to <tt>true</tt>.
@@ -81,7 +81,7 @@ public:
     /** @brief The maximum chroma value.
      *
      * This is the chroma value that is on the border of the gray circle.
-     * 
+     *
      * @todo This should not be hard-coded to sRGB. */
     qreal m_maxChroma = LchValues::srgbMaximumChroma;
     /** @brief Pointer to @ref RgbColorSpace object used to describe the
@@ -103,7 +103,7 @@ public:
 
 private:
     Q_DISABLE_COPY(ChromaHueDiagramPrivate)
-    
+
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ChromaHueDiagram> q_pointer;

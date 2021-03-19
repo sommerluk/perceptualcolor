@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -35,11 +35,12 @@
 #include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/chromahuediagram.h"
 #include "PerceptualColor/fullcolordescription.h"
-#include "PerceptualColor/gradientselector.h"
+#include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/wheelcolorpicker.h"
 
 #include <QDialogButtonBox>
+#include <QDoubleSpinBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -55,20 +56,26 @@ class ColorDialog::ColorDialogPrivate final
 public:
     ColorDialogPrivate(ColorDialog *backLink);
     /** @brief Default destructor
-     * 
+     *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~ColorDialogPrivate() noexcept = default;
 
-    /** @brief Pointer to the @ref GradientSelector for alpha. */
+    /** @brief @ref GradientSlider widget for the alpha channel. */
+    QPointer<GradientSlider> m_alphaGradientSlider;
+    /** @brief The layout of the widgets for the alpha channel. */
+    QPointer<QHBoxLayout> m_alphaLayout;
+    /** @brief Pointer to the @ref AlphaSelector for alpha. */
     QPointer<AlphaSelector> m_alphaSelector;
     /** @brief Pointer to the QLabel for @ref m_alphaSelector().
-     * 
+     *
      * We store this in a
      * pointer to allow toggle the visibility later. */
     QPointer<QLabel> m_alphaSelectorLabel;
+    /** @brief Spin box for the alpha channel. */
+    QPointer<QDoubleSpinBox> m_alphaSpinBox;
     /** @brief Pointer to the QButtonBox of this dialog.
-     * 
+     *
      * We store this in a pointer
      * to allow toggle the visibility later. */
     QPointer<QDialogButtonBox> m_buttonBox;
@@ -77,21 +84,21 @@ public:
     /** @brief Pointer to the @ref ColorPatch widget. */
     QPointer<ColorPatch> m_colorPatch;
     /** @brief Holds the current color without alpha information
-     * 
+     *
      * @note The alpha information within this data member is meaningless.
      * Ignore it. The information about the alpha channel is actually stored
      * within @ref m_alphaSelector.
-     * 
+     *
      * @sa @ref currentColor() */
     FullColorDescription m_currentOpaqueColor;
-    /** @brief Pointer to the @ref GradientSelector for LCh lightness. */
-    QPointer<GradientSelector> m_lchLightnessSelector;
+    /** @brief Pointer to the @ref GradientSlider for LCh lightness. */
+    QPointer<GradientSlider> m_lchLightnessSelector;
     /** @brief Pointer to the @ref MultiSpinBox for HLC. */
     QPointer<MultiSpinBox> m_hlcSpinBox;
     /** @brief Pointer to the @ref MultiSpinBox for HSV. */
     QPointer<MultiSpinBox> m_hsvSpinBox;
     /** @brief Holds whether currently a color change is ongoing, or not.
-     * 
+     *
      * Used to avoid infinite recursions when updating the different widgets
      * within this dialog.
      * @sa @ref setCurrentOpaqueColor() */
@@ -104,7 +111,7 @@ public:
     QPointer<QWidget> m_lightnessFirstWidget;
     /** @brief Holds the receiver slot (if any) to be disconnected
      *  automatically after closing the dialog.
-     * 
+     *
      * Its value is only meaningful if
      * @ref m_receiverToBeDisconnected is not null.
      * @sa @ref m_receiverToBeDisconnected
@@ -115,7 +122,7 @@ public:
     QPointer<QWidget> m_numericalWidget;
     /** @brief Holds the receiver object (if any) to be disconnected
      *  automatically after closing the dialog.
-     * 
+     *
      * @sa @ref m_memberToBeDisconnected
      * @sa @ref open() */
     QPointer<QObject> m_receiverToBeDisconnected;
@@ -156,7 +163,7 @@ public Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(ColorDialogPrivate)
-    
+
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ColorDialog> q_pointer;

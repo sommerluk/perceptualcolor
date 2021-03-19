@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 #
 # Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
-# 
+#
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
 # files (the "Software"), to deal in the Software without
@@ -12,10 +12,10 @@
 # copies of the Software, and to permit persons to whom the
 # Software is furnished to do so, subject to the following
 # conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 # OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -65,6 +65,16 @@ PUBLIC_HEADERS="include"
 CODE_WITHOUT_UNIT_TESTS="include src"
 CODE_AND_UNIT_TESTS="include src test"
 
+# Search for files that do not start with a byte-order-mark (BOM).
+# Limit the search to files names that ends with .cpp or .h
+# We do this because Microsoft’s compiler does require a BOM at the start
+# of the file in order to interpretate it as UTF-8.
+grep \
+    --recursive \
+    --files-without-match $'\xEF\xBB\xBF' \
+    $CODE_AND_UNIT_TESTS \
+    | grep --perl-regexp "(\.cpp|\.h)$"
+
 # Search for some patterns that should not be used in the source code. If
 # these patterns are found, a message is displayed. Otherwise, nothing is
 # displayed.
@@ -82,10 +92,10 @@ grep \
 grep \
     --recursive \
     --perl-regexp "[^a-zA-Z]cms[a-zA-Z0-9]" \
-    $PUBLIC_HEADERS # \
-#     | grep \
-#         --perl-regexp "(:using)|(\<tt\>cms)" \
-#         --invert-match
+    $PUBLIC_HEADERS \
+    | grep \
+        --perl-regexp "\<tt\>cms" \
+        --invert-match
 grep \
     --recursive \
     --fixed-strings "lcms2.h" \

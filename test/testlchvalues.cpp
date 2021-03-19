@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -85,7 +85,7 @@ private Q_SLOTS:
         );
 
         PerceptualColor::RgbColorSpace temp;
-        cmsCIELCh color;
+        LchDouble color;
         qreal presicion = 0.1;
 
         // Test if maxSrgbChroma is big enough
@@ -95,7 +95,7 @@ private Q_SLOTS:
                 * 2
                 * M_PI
                 * PerceptualColor::LchValues::srgbMaximumChroma;
-        color.C = PerceptualColor::LchValues::srgbMaximumChroma;
+        color.c = PerceptualColor::LchValues::srgbMaximumChroma;
         for (
             qreal hue = 0;
             hue <= 360;
@@ -107,17 +107,17 @@ private Q_SLOTS:
                 lightness < 100;
                 lightness += presicion
             ) {
-                color.L = lightness;
+                color.l = lightness;
                 QVERIFY2(
                     !temp.inGamut(color),
                     "Test if maxSrgbChroma is big enough"
                 );
             }
-            
+
         }
-        
+
         // Test if maxSrgbChroma is as small as possible
-        color.C = PerceptualColor::LchValues::srgbMaximumChroma - 1;
+        color.c = PerceptualColor::LchValues::srgbMaximumChroma - 1;
         bool inGamutValueFound = false;
         for (
             qreal hue = 0;
@@ -130,7 +130,7 @@ private Q_SLOTS:
                 lightness < 100;
                 lightness += presicion
             ) {
-                color.L = lightness;
+                color.l = lightness;
                 if (temp.inGamut(color)) {
                     inGamutValueFound = true;
                     break;
@@ -152,8 +152,8 @@ private Q_SLOTS:
                 * 2
                 * M_PI
                 * PerceptualColor::LchValues::srgbVersatileChroma;
-        color.C = PerceptualColor::LchValues::srgbVersatileChroma;
-        color.L = 50;
+        color.c = PerceptualColor::LchValues::srgbVersatileChroma;
+        color.l = 50;
         for (
             qreal hue = 0;
             hue <= 360;
@@ -167,9 +167,9 @@ private Q_SLOTS:
         }
 
         // Test if versatile is as big as possible
-        color.C =
+        color.c =
             PerceptualColor::LchValues::srgbVersatileChroma + 1;
-        color.L = 50;
+        color.l = 50;
         inGamutValueFound = true;
         for (
             qreal hue = 0;
@@ -192,11 +192,11 @@ private Q_SLOTS:
     void testNeutralGray() {
         // Test that the unified initialization is done in the correct order.
         QCOMPARE(
-            LchValues::neutralGray.L,
+            LchValues::neutralGray.l,
             50 // Should be half the way between light and dark
         );
         QCOMPARE(
-            LchValues::neutralGray.C,
+            LchValues::neutralGray.c,
             0 // Should have no chroma
         );
         QCOMPARE(

@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -39,7 +39,7 @@
 namespace PerceptualColor {
 
 /** @brief Default constructor
- * 
+ *
  * Creates an sRGB color space.
  */
 RgbColorSpace::RgbColorSpace(QObject *parent) :
@@ -48,7 +48,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
 {
     // TODO The creation of profiles and transforms might fail!
     // TODO How to handle that?
-    
+
     // Create an ICC v4 profile object for the Lab color space.
     cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(
         nullptr // nullptr means: Default white point (D50)
@@ -114,18 +114,18 @@ RgbColorSpace::RgbColorSpace(QObject *parent) :
     // Now we know for sure that lowerChroma is in-gamut and upperChroma is
     // out-of-gamut…
     LchDouble candidate;
-    candidate.L = 0;
-    candidate.C = 0;
+    candidate.l = 0;
+    candidate.c = 0;
     candidate.h = 0;
-    while (!inGamut(candidate) && (candidate.L < 100)) {
-        candidate.L += gamutPrecision;
+    while (!inGamut(candidate) && (candidate.l < 100)) {
+        candidate.l += gamutPrecision;
     }
-    d_pointer->m_blackpointL = candidate.L;
-    candidate.L = 100;
-    while (!inGamut(candidate) && (candidate.L > 0)) {
-        candidate.L -= gamutPrecision;
+    d_pointer->m_blackpointL = candidate.l;
+    candidate.l = 100;
+    while (!inGamut(candidate) && (candidate.l > 0)) {
+        candidate.l -= gamutPrecision;
     }
-    d_pointer->m_whitepointL = candidate.L;
+    d_pointer->m_whitepointL = candidate.l;
     if (d_pointer->m_whitepointL <= d_pointer->m_blackpointL) {
         qCritical()
             << "Unable to find blackpoint and whitepoint on gray axis.";
@@ -142,7 +142,7 @@ RgbColorSpace::~RgbColorSpace() noexcept
 }
 
 /** @brief Constructor
- * 
+ *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(
@@ -152,7 +152,7 @@ RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(
 }
 
 /** @brief The darkest in-gamut point on the L* axis.
- * 
+ *
  * @sa whitepointL */
 qreal RgbColorSpace::blackpointL() const
 {
@@ -160,7 +160,7 @@ qreal RgbColorSpace::blackpointL() const
 }
 
 /** @brief The lightest in-gamut point on the L* axis.
- * 
+ *
  * @sa blackpointL() */
 qreal RgbColorSpace::whitepointL() const
 {
@@ -168,7 +168,7 @@ qreal RgbColorSpace::whitepointL() const
 }
 
 /** @brief Calculates the Lab value
- * 
+ *
  * @param rgbColor the color that will be converted. (If this is not an
  * RGB color, it will be converted first into an RGB color by QColor methods.)
  * @returns If the color is valid, the corresponding LCh value might also
@@ -184,7 +184,7 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
 }
 
 /** @brief Calculates the Lab value
- * 
+ *
  * @param rgb the color that will be converted.
  * @returns If the color is valid, the corresponding LCh value might also
  * be invalid. */
@@ -196,12 +196,12 @@ cmsCIELab RgbColorSpace::colorLab(const PerceptualColor::RgbDouble &rgb) const
         &rgb,                                 // input
         &lab,                                 // output
         1                                     // convert exactly 1 value
-    ); 
+    );
     return lab;
 }
 
 /** @brief Calculates the RGB value
- * 
+ *
  * @param Lab a L*a*b* color
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * An invalid QColor otherwise.
@@ -226,7 +226,7 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 }
 
 /** @brief Calculates the RGB value
- * 
+ *
  * @param lch an LCh color
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * An invalid QColor otherwise.
@@ -234,8 +234,9 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
 {
     cmsCIELab lab; // uses cmsFloat64Number internally
+    const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
     // convert from LCh to Lab
-    cmsLCh2Lab(&lab, &lch); 
+    cmsLCh2Lab(&lab, &myCmsCieLch);
     return colorRgb(lab);
 }
 
@@ -256,7 +257,7 @@ PerceptualColor::RgbDouble RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &L
 }
 
 /** @brief Calculates the RGB value
- * 
+ *
  * @param Lab a L*a*b* color
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
@@ -268,7 +269,7 @@ QColor RgbColorSpace::colorRgbBound(const cmsCIELab &Lab) const
 }
 
 /** @brief Calculates the RGB value
- * 
+ *
  * @param lch an LCh color
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
@@ -278,8 +279,9 @@ QColor RgbColorSpace::colorRgbBound(
 ) const
 {
     cmsCIELab lab; // uses cmsFloat64Number internally
+    const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
     // convert from LCh to Lab
-    cmsLCh2Lab(&lab, &lch); 
+    cmsLCh2Lab(&lab, &myCmsCieLch);
     return colorRgbBound(lab);
 }
 
@@ -303,23 +305,24 @@ bool RgbColorSpace::inGamut(
     LchDouble LCh;
 
     // code
-    LCh.L = lightness;
-    LCh.C = chroma;
+    LCh.l = lightness;
+    LCh.c = chroma;
     LCh.h = hue;
     return inGamut(LCh);
 }
 
 /** @brief check if an LCh value is within a specific RGB gamut
- * @param LCh the LCh color
+ * @param lch the LCh color
  * @returns Returns true if lightness/chroma/hue is in the specified
  * RGB gamut. Returns false otherwise. */
-bool RgbColorSpace::inGamut(const LchDouble &LCh)
+bool RgbColorSpace::inGamut(const LchDouble &lch)
 {
     // variables
     cmsCIELab Lab; // uses cmsFloat64Number internally
+    const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
 
     // code
-    cmsLCh2Lab(&Lab, &LCh); // TODO no normalization necessary previously?
+    cmsLCh2Lab(&Lab, &myCmsCieLch); // TODO no normalization necessary previously?
     return inGamut(Lab);
 }
 
@@ -330,7 +333,7 @@ bool RgbColorSpace::inGamut(const LchDouble &LCh)
 bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
 {
     RgbDouble rgb;
-    
+
     cmsDoTransform(
         d_pointer->m_transformLabToRgbHandle, // handle to transform function
         &Lab,                                 // input
@@ -367,7 +370,7 @@ QString RgbColorSpace::profileInfoModel() const
 }
 
 /** @brief Get information from an ICC profile via LittleCMS
- * 
+ *
  * @param profileHandle handle to the ICC profile in which will be searched
  * @param infoType the type of information that is searched
  * @returns A QString with the information. First, it searches the
@@ -382,12 +385,12 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
 )
 {
     // Initialize a char array of 3 values (two for actual characters and a
-    // one for a terminating null)
-    // The recommended default value for language following LittleCMS
-    // documentation is "en".
+    // one for a terminating null)cmsFloat64Number
+    // The recommended default value for language
+    // following LittleCMS documentation is “en”.
     char languageCode[3] = "en";
-    // The recommended default value for country following LittleCMS
-    // documentation is "US".
+    // The recommended default value for country
+    // following LittleCMS documentation is “US”.
     char countryCode[3] = "US";
     // Update languageCode and countryCode to the actual locale (if possible)
     const QStringList list = QLocale().name().split(QStringLiteral(u"_"));
@@ -410,7 +413,7 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     }
     // Calculate the size of the buffer that we have to provide for
     // cmsGetProfileInfo in order to return a value.
-    cmsUInt32Number resultLength = cmsGetProfileInfo(
+    const cmsUInt32Number resultLength = cmsGetProfileInfo(
         // Profile in which we search:
         profileHandle,
         // The type of information we search:
@@ -428,7 +431,7 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     );
     // For the actual buffer size, increment by 1. This helps us to
     // guarantee a null-terminated string later on.
-    cmsUInt32Number bufferLength = resultLength + 1;
+    const cmsUInt32Number bufferLength = resultLength + 1;
 
     // Allocate the buffer
     wchar_t *buffer = new wchar_t[bufferLength];
@@ -442,7 +445,7 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
         // profile in which we search
         profileHandle,
         // the type of information we search
-        infoType,       
+        infoType,
         // the preferred language in which we want to get the information
         languageCode,
         // the preferred country for which we want to get the information
@@ -450,7 +453,7 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
         // the buffer into which the requested information will be written
         buffer,
         // the buffer size as previously calculated
-        resultLength    
+        resultLength
     );
     // Make absolutely sure the buffer is null-terminated by marking its last
     // element (the one that was the +1 "extra" element) as null.
@@ -464,7 +467,7 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     // indeed null-terminated.
     // QString::fromWCharArray will return a QString. It accepts arrays of
     // wchar_t. wchar_t might have different sizes, either 16 bit or 32 bit
-    // depending on the system. As Qt’s documantation says:
+    // depending on the operating system. As Qt’s documantation says:
     //
     //     “If wchar is 4 bytes, the string is interpreted as UCS-4,
     //      if wchar is 2 bytes it is interpreted as UTF-16.”
@@ -490,5 +493,5 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     // Return
     return result;
 }
-    
+
 }

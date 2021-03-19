@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,6 +27,8 @@
 #ifndef FULLCOLORDESCRIPTION_H
 #define FULLCOLORDESCRIPTION_H
 
+#include "PerceptualColor/perceptualcolorlib_global.h"
+
 #include "PerceptualColor/rgbcolorspace.h"
 
 #include <QColor>
@@ -36,37 +38,37 @@
 namespace PerceptualColor {
 
 /** @brief A fully qualified color.
- * 
+ *
  * This is similar to QColor, but contains both Lab color space
  * representations and RGB color space representations. The constructor takes
  * an RgbColorSpace() object to assure color management. Once constructed,
  * the object cannot be modified anymore (except the alpha value, which does
  * not depend on color management).
- * 
+ *
  * Contains an RGB, LCh and Lab representation of the color and the alpha
  * channel. The data types are compatible with LittleCMS. The LCh value is
  * normalized.
- * 
+ *
  * This class is declared as type to Qt's type system:
  * <tt>Q_DECLARE_METATYPE(PerceptualColor::FullColorDescription)</tt>.
  * Depending on your use case (for example if you want to use it
  * reliably in Qt's signals and slots), you might consider calling
  * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
  * object.
- * 
+ *
  * This data type can be passed to QDebug thanks to
  * operator<<(QDebug dbg, const PerceptualColor::FullColorDescription &value)
- * 
+ *
  * @todo Conversion HSV-RGB with Qt’s QColor: Can we get a higher precison
  * with our own implementation?
- * 
+ *
  * @todo This class is rather a data type than a functional class. Currently,
  * it does not provide pimpl idiom. And: It is copyable and <tt>final</tt>.
  * Should it be switched to pimpl or not? Pimpl would be bad for performance,
  * which matters as this class will get instanciated a lot. On the other
  * hand, this class has often changed during code development and is not
  * stable, which is quite a risk if we to not have pimpl.
- * 
+ *
  * @todo TODO What if an API user sets a FullColorDescription property
  * within a widget, but widget and FullColorDescription are
  * based on different color spaces? Display would be wrong! Or not? */
@@ -74,7 +76,7 @@ class FullColorDescription final
 {
 public:
 
-    enum class outOfGamutBehaviour {
+    enum class OutOfGamutBehaviour {
         preserve,     /**< Leave LCh values as-is. Only the RGB is forced
                            into the gamut. */
         sacrifyChroma /**< Preserve the hue and the lightness and change the
@@ -101,13 +103,13 @@ public:
     FullColorDescription(
         const QSharedPointer<RgbColorSpace> &colorSpace,
         const LabDouble &lab,
-        outOfGamutBehaviour coordinates,
+        OutOfGamutBehaviour coordinates,
         qreal alpha = 1
     );
     FullColorDescription(
         const QSharedPointer<RgbColorSpace> &colorSpace,
         const LchDouble &lch,
-        outOfGamutBehaviour coordinates,
+        OutOfGamutBehaviour coordinates,
         qreal alpha = 1
     );
 
@@ -120,7 +122,7 @@ public:
     /** @brief Default move constructor
      *
      * @param other the object to move
-     */   
+     */
     FullColorDescription(FullColorDescription&& other) noexcept = default;
 
     /** @brief Default Assignment operator */
@@ -136,7 +138,7 @@ public:
     bool operator==(const FullColorDescription& other) const;
 
     bool operator!=(const FullColorDescription& other) const;
-    
+
     QSharedPointer<RgbColorSpace> rgbColorSpace() const;
 
     PerceptualColor::RgbDouble toRgb() const;

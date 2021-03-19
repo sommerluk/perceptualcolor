@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own header
 #include "PerceptualColor/polarpointf.h"
@@ -35,11 +35,11 @@
 namespace PerceptualColor {
 
 /** @brief Constructor
- * 
+ *
  * Constructs an object with the given @ref radial() and @ref angleDegree()
  * values. The values get normalized, see the general class description for
  * details.
- * 
+ *
  * @param newRadial the @ref radial() value
  * @param newAngleDegree the @ref angleDegree() value */
 PolarPointF::PolarPointF(const qreal newRadial, const qreal newAngleDegree)
@@ -54,12 +54,12 @@ PolarPointF::PolarPointF(const qreal newRadial, const qreal newAngleDegree)
 }
 
 /** @brief Constructor
- * 
+ *
  * Constructs an object converting from the given Cartesian coordinates.
- * 
+ *
  * If the Cartesian coordinates are (0, 0) than the @ref angleDegree (which is
  * meaningless for a @ref radial of 0) is set to 0°.
- * 
+ *
  * @param cartesianCoordiantes the Cartesian coordinates */
 PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 {
@@ -84,12 +84,12 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 }
 
 /** @brief Equal operator
- * 
+ *
  * Equal means, both values reference to the same point in the coordinates
  * space. So <tt>[@ref radial() 0, @ref angleDegree() 50]</tt> is considered
  * equal to <tt>[@ref radial() 0, @ref angleDegree() 80]</tt> because the
  * @ref angleDegree() is meaningless if the @ref radial() is 0.
- * 
+ *
  * @param other the polar coordinates to compare with
  * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise */
 bool PolarPointF::operator==(const PolarPointF other) const
@@ -104,9 +104,9 @@ bool PolarPointF::operator==(const PolarPointF other) const
 }
 
 /** @brief Unequal operator
- * 
+ *
  * Inverse coordinates to @ref operator==()
- * 
+ *
  * @param other the polar coordinates to compare with
  * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise */
 bool PolarPointF::operator!=(const PolarPointF other) const
@@ -132,7 +132,7 @@ qreal PolarPointF::angleDegree() const
 }
 
 /** @brief Normalizes an angle.
- * 
+ *
  * |      Value      | Normalized Value |
  * | :-------------: | :--------------: |
  * | <tt>  0°  </tt> | <tt>  0°  </tt>  |
@@ -142,7 +142,7 @@ qreal PolarPointF::angleDegree() const
  * | <tt>720°  </tt> | <tt>  0°  </tt>  |
  * | <tt> −1°  </tt> | <tt>359°  </tt>  |
  * | <tt> −1.3°</tt> | <tt>358.7°</tt>  |
- * 
+ *
  * @param angleDegree an angle (coordinates in degree)
  * @returns the angle, normalized to the range 0° ≤ value < 360° */
 qreal PolarPointF::normalizedAngleDegree(const qreal angleDegree)
@@ -155,7 +155,7 @@ qreal PolarPointF::normalizedAngleDegree(const qreal angleDegree)
 }
 
 /** @brief Convert to Cartesian coordinates
- * 
+ *
  * @returns the corresponding Cartesian coordinates */
 QPointF PolarPointF::toCartesian() const
 {

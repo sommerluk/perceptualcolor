@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -33,7 +33,7 @@
 namespace PerceptualColor {
 
 /** @brief An icon engine with fallback icons.
- * 
+ *
  * This icon engine provides a <em>refresh</em> icon. It does a best
  * effort to find an icon that integrates well with the current icon
  * theme and widget style. It searches in various places to provide
@@ -42,7 +42,7 @@ namespace PerceptualColor {
  *    icon theme, either on your system or boundled as resource with
  *    the application that uses this library. On Linux, it is common
  *    that an icon theme is provided. Which icon formats (SVG, PNG …)
- *    are supported depends on your Qt installation. On 
+ *    are supported depends on your Qt installation. On
  *    <a href="https://kate-editor.org/post/2021/2021-03-07-cross-platform-light-dark-themes-and-icons/">
  *    some platforms like KDE</a> the icons get automatically adapted to
  *    dark and light mode, on others not.
@@ -59,7 +59,7 @@ namespace PerceptualColor {
  *
  * Thanks to the fallback build-in icon, this icon engine will always
  * return a valid, non-null icon.
- * 
+ *
  * This icon engine does not use a cache. That means, the icon will
  * be recalculated each time again. This is less efficient, but it
  * makes sure the icon is always up-to-date, also inmediatly after

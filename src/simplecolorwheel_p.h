@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -48,18 +48,18 @@ public:
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
     );
     /** @brief Default destructor
-     * 
+     *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~SimpleColorWheelPrivate() noexcept = default;
 
     /** @brief If a mouse event is active
-     * 
+     *
      * Holds if currently a mouse event is active or not.
      * @sa mousePressEvent()
      * @sa mouseMoveEvent()
      * @sa mouseReleaseEvent()
-     */ 
+     */
     bool m_mouseEventActive;
     ColorWheelImage m_wheelImage;
     /** @brief Internal storage of the hue() property */
@@ -76,7 +76,7 @@ public:
 
 private:
     Q_DISABLE_COPY(SimpleColorWheelPrivate)
-    
+
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<SimpleColorWheel> q_pointer;

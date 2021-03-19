@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -85,7 +85,7 @@ QValidator::State ExtendedDoubleValidator::validate(
 {
     QString myInput = input;
     int myPos = pos;
-    
+
     // IF (m_prefix.isEmpty && !m_prefix.isNull)
     // THEN input.startsWith(m_prefix)
     // →  will be true IF !input.isEmpty
@@ -95,7 +95,7 @@ QValidator::State ExtendedDoubleValidator::validate(
     // The same also applies to suffix.
     // TODO Bug report, because Qt documentation says at
     // https://doc.qt.io/qt-6/qstring.html#distinction-between-null-and-empty-strings
-    // (and at its Qt-5-counterpart): 
+    // (and at its Qt-5-counterpart):
     //     “All functions except isNull() treat null strings the same
     //      as empty strings.”
     // This is apparently wrong (at least for Qt 5).
@@ -114,14 +114,14 @@ QValidator::State ExtendedDoubleValidator::validate(
             return QValidator::State::Invalid;
         }
     }
-    
+
     QValidator::State result = QDoubleValidator::validate(myInput, myPos);
     // Following the Qt documentation, QDoubleValidator::validate() is allowed
     // and intended to make changes the arguments passed by reference. We
     // have to write back these changes also in this reimplemented function.
     input = d_pointer->m_prefix + myInput + d_pointer->m_suffix;
     pos = myPos + d_pointer->m_prefix.size();
-    
+
     return result;
 }
 

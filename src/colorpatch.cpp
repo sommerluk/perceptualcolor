@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -61,9 +61,9 @@ ColorPatch::~ColorPatch() noexcept
 /** @brief Provide the size hint.
  *
  * Reimplemented from base class.
- * 
+ *
  * @returns the size hint
- * 
+ *
  * @sa @ref minimumSizeHint() */
 QSize ColorPatch::sizeHint() const
 {
@@ -73,9 +73,9 @@ QSize ColorPatch::sizeHint() const
 /** @brief Provide the minimum size hint.
  *
  * Reimplemented from base class.
- * 
+ *
  * @returns the minimum size hint
- * 
+ *
  * @sa @ref sizeHint() */
 QSize ColorPatch::minimumSizeHint() const
 {
@@ -100,7 +100,7 @@ void ColorPatch::setColor(const QColor &newColor)
 }
 
 /** @brief Handle paint events.
- * 
+ *
  * Just draws the frame inherited from QFrame, than paints a rectangle with
  * the current color above. */
 void ColorPatch::paintEvent(QPaintEvent *event)
@@ -132,7 +132,7 @@ void ColorPatch::paintEvent(QPaintEvent *event)
         // Calculate an adjustmend to allow for rounded line caps without
         // touching the frame.
         const qreal adjustmentForRoundedLineCaps = pen.widthF() / 2.0;
-        const QRectF noColorMarkerRectangle = 
+        const QRectF noColorMarkerRectangle =
             QRectF(contentsRect()).adjusted(
                 adjustmentForRoundedLineCaps,
                 adjustmentForRoundedLineCaps,
@@ -185,7 +185,7 @@ void ColorPatch::paintEvent(QPaintEvent *event)
             // so that the “nice” part is the first you see in reading
             // direction.
             tempImage = tempImage.mirrored(
-                true,   // horizontally mirrored 
+                true,   // horizontally mirrored
                 false   // vertically mirrored
             );
         }

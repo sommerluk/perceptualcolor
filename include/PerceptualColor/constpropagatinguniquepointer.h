@@ -1,8 +1,8 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2013 Torbjörn Klatt <opensource@torbjoern-klatt.de>
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -11,10 +11,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,28 +28,30 @@
 #ifndef CONSTPROPAGATINGUNIQUEPOINTER_H
 #define CONSTPROPAGATINGUNIQUEPOINTER_H
 
+#include "PerceptualColor/perceptualcolorlib_global.h"
+
 #include <memory>
 
 namespace PerceptualColor {
 
 /** @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
- * 
+ *
  * With normal <tt>std::unique_ptr</tt> pointers (and also with raw
  * C++ pointers), within <tt>const</tt> functions you can do non-const
  * operations <em>on objects that a pointer points to</em>.
- * 
+ *
  * <em>This</em> pointer type is different: It propagates the const-ness of
  * the object members and propagates them to the call through the pointer;
  * it will trigger a compiler error if non-cost access to object members
  * or methods is done from within const functions. Apart from that, it
  * behaves like <tt>std::unique_ptr</tt> (from which it inherits).
- * 
+ *
  * Think of this template as a simple alternative to
  * <tt>std::experimental::propagate_const&lt; std::unique_ptr&lt;T&gt; &gt;</tt>
- * 
+ *
  * Example code:
  * @snippet test/testconstpropagatinguniquepointer.cpp ConstPropagatingUniquePointer Example
- * 
+ *
  * @sa @ref ConstPropagatingRawPointer
  * @sa <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
  * is a more general implementation of this concept, that does not only
@@ -64,29 +66,29 @@ template<typename T> class ConstPropagatingUniquePointer final
 {
 public:
     /** @brief Default constructor
-     * 
+     *
      * Creates a pointer that points to <tt>nullptr</tt>. */
     explicit ConstPropagatingUniquePointer() : std::unique_ptr<T>(nullptr)
     {
     }
 
     /** @brief Constructor
-     * 
+     *
      * @param pointer Object to which to point */
     explicit ConstPropagatingUniquePointer(
         typename std::unique_ptr<T>::element_type* pointer
     ) : std::unique_ptr<T>(pointer)
     {
     }
-    
+
     /** @brief Default destructor
-     * 
+     *
      * This destructor is not marked as <tt>override</tt> because the
      * base class’s destructor is not virtual.*/
     ~ConstPropagatingUniquePointer() noexcept = default;
 
     /** @brief Non-const pointer operator
-     * 
+     *
      * @returns Non-const pointer operator */
     typename std::unique_ptr<T>::element_type* operator->()
     {
@@ -94,7 +96,7 @@ public:
     }
 
     /** @brief Const pointer operator
-     * 
+     *
      * @returns Const pointer */
     const typename std::unique_ptr<T>::element_type* operator->() const
     {
@@ -102,7 +104,7 @@ public:
     }
 
     /** @brief Non-const dereference operator
-     * 
+     *
      * @returns Non-const dereference operator */
     typename std::unique_ptr<T>::element_type& operator*()
     {
@@ -110,7 +112,7 @@ public:
     }
 
     /** @brief Const dereference operator
-     * 
+     *
      * @returns Const dereference operator */
     const typename std::unique_ptr<T>::element_type& operator*() const
     {

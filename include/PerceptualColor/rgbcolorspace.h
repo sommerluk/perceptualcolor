@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -13,7 +13,7 @@
  *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -30,6 +30,8 @@
 #include <QObject>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/perceptualcolorlib_global.h"
+
 #include "PerceptualColor/labdouble.h"
 #include "PerceptualColor/lchdouble.h"
 
@@ -38,10 +40,10 @@
 namespace PerceptualColor {
 
 /** @brief Interface to LittleCMS for working with an RGB color space
- * 
+ *
  * @todo (Optionally) use the fast-float plug-in for faster caluculation?
  * Is this possible as a run-time choise?
- * 
+ *
  * @todo Declare Q_PROPERTY for @ref profileInfoCopyright(),
  * @ref profileInfoDescription(), @ref profileInfoManufacturer(),
  * @ref profileInfoModel(), @ref whitepointL() */
@@ -76,7 +78,7 @@ public:
         const double chroma,
         const double hue
     );
-    Q_INVOKABLE bool inGamut(const PerceptualColor::LchDouble &LCh);
+    Q_INVOKABLE bool inGamut(const PerceptualColor::LchDouble &lch);
     QString profileInfoCopyright() const;
     QString profileInfoDescription() const;
     QString profileInfoManufacturer() const;
@@ -88,7 +90,7 @@ private:
 
     class RgbColorSpacePrivate;
     /** @brief Declare the private implementation as friend class.
-     * 
+     *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
     friend class RgbColorSpacePrivate;

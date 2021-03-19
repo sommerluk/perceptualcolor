@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,18 +27,20 @@
 #ifndef CHROMALIGHTNESSDIAGRAM_H
 #define CHROMALIGHTNESSDIAGRAM_H
 
-#include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/perceptualcolorlib_global.h"
+
+#include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor {
-    
+
 /** @brief A widget that displays a chroma-lightness diagram.
  *
  * This widget displays a chroma-lightness diagram in the LCh color model
  * for a given hue, in a Cartesian coordinate system.
- * 
+ *
  * The widget shows the chroma-lightness diagram at the whole widget extend.
  * At the y axis the diagram always shows the lightness values of 0 at the
  * bottom pixel and the lightness value of 100 at the top pixel. For the
@@ -46,10 +48,10 @@ namespace PerceptualColor {
  * So if the widget size is a square, both x range and y range are from
  * 0 to 100. If the widget width is larger than the widget height, the
  * x range goes beyond 100.
- * 
+ *
  * The widget reacts on mouse events and on keyboard events
  * (see keyPressEvent() for details).
- * 
+ *
  * @note This widget <em>always</em> accepts focus by a mouse
  * click within the displayed gamut. This happens regardless of the
  * <tt>QWidget::focusPolicy</tt> property. If you set the
@@ -57,14 +59,14 @@ namespace PerceptualColor {
  * focus by mouse click, the focus will not only be accepted for
  * clicks within the actual display gamut, but also for clicks
  * within the surrounding rectangle.
- * 
+ *
  * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */
 class ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT
 
     /** @brief Currently selected color
-     * 
+     *
      * @sa color()
      * @sa setColor()
      * @sa colorChanged() */
@@ -102,13 +104,13 @@ private:
 
     class ChromaLightnessDiagramPrivate;
     /** @brief Declare the private implementation as friend class.
-     * 
+     *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
     friend class ChromaLightnessDiagramPrivate;
     /** @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<ChromaLightnessDiagramPrivate> d_pointer;
-    
+
     /** @brief Only for unit tests. */
     friend class TestChromaLightnessDiagram;
 

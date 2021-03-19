@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,6 +28,8 @@
 #define PERCEPTUALCOLOR_ALPHASELECTOR_H
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/perceptualcolorlib_global.h"
+
 #include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
@@ -39,7 +41,7 @@ namespace PerceptualColor {
 /** @brief Widget for selecting an alpha value.
  *
  * This is a widget to display and select an alpha channel value. It combines
- * a @ref GradientSelector with a <tt>QDoubleSpinBox</tt>.
+ * a @ref GradientSlider with a <tt>QDoubleSpinBox</tt>.
  *
  * @todo The API should be similar to QSlider or at lest QAbstractSlider. */
 class AlphaSelector : public QWidget
@@ -47,26 +49,26 @@ class AlphaSelector : public QWidget
     Q_OBJECT
 
     /** @brief Alpha value.
-     * 
+     *
      * Range is 0..1
-     * 
+     *
      * @sa setAlpha()
      */
     Q_PROPERTY(qreal alpha READ alpha WRITE setAlpha NOTIFY alphaChanged USER true)
 
     /** @brief Color.
-     * 
+     *
      * The alpha channel of this property is ignored. See
      * alpha() for the actually used alpha channel.
-     * 
+     *
      * @sa setColor() */
     Q_PROPERTY(PerceptualColor::FullColorDescription color READ color WRITE setColor NOTIFY colorChanged)
 
     /** @brief Representation form in the spin box.
-     * 
+     *
      * @sa setRepresentation() */
     Q_PROPERTY(PerceptualColor::AlphaSelector::NumberFormat representation READ representation WRITE setRepresentation NOTIFY representationChanged)
-    
+
 public:
     /** Constructor */
     Q_INVOKABLE AlphaSelector(
@@ -107,7 +109,7 @@ private:
 
     class AlphaSelectorPrivate;
     /** @brief Declare the private implementation as friend class.
-     * 
+     *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
     friend class AlphaSelectorPrivate;

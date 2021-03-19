@@ -1,7 +1,7 @@
-// // SPDX-License-Identifier: MIT
+﻿// // SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer somerluk@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_qtconfiguration.h"
+#include "perceptualcolorlib_internal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
@@ -70,14 +70,14 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     // We don't use the reset methods as they rely on refreshDiagram()
     // (and refreshDiagram relies itself on m_hue, handleRadius and
     // handleOutlineThickness)
-    cmsCIELCh temp;
+    LchDouble temp;
     temp.h = LchValues::neutralHue;
-    temp.C = LchValues::srgbVersatileChroma;
-    temp.L = LchValues::neutralLightness;
+    temp.c = LchValues::srgbVersatileChroma;
+    temp.l = LchValues::neutralLightness;
     d_pointer->m_color = FullColorDescription(
         d_pointer->m_rgbColorSpace,
         temp,
-        FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+        FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
     );
     d_pointer->updateBorder();
 
@@ -95,7 +95,7 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
 }
 
 /** @brief Constructor
- * 
+ *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
 ChromaLightnessDiagram
@@ -109,7 +109,7 @@ ChromaLightnessDiagram
 }
 
 /** @brief Updates @ref m_border.
- * 
+ *
  * This function can be called after changes to @ref handleRadius or
  * @ref handleOutlineThickness to update @ref m_border(). */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
@@ -130,12 +130,12 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
 // for the border() property: better quint16? No, that's not a good idea...
 
 /** Sets the color values corresponding to image coordinates.
- * 
+ *
  * @param newImageCoordinates A coordinate pair within the image's coordinate
  * system. This does not necessarily need to intersect with the actual
  * displayed diagram or the gamut. It might even be negative or outside the
  * image or even outside widget.
- * 
+ *
  * \post If the coordinates are within the gamut diagram, then
  * the corresponding values are set. If the coordinates
  * are outside the gamut diagram, then a nearest-neighbor-search is done,
@@ -151,19 +151,19 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(
         m_diagramImage
     );
     QPointF chromaLightness;
-    cmsCIELCh lch;
+    LchDouble lch;
     if (correctedImageCoordinates != currentImageCoordinates()) {
         chromaLightness = fromImageCoordinatesToChromaLightness(
             correctedImageCoordinates
         );
-        lch.C = chromaLightness.x();
-        lch.L = chromaLightness.y();
+        lch.c = chromaLightness.x();
+        lch.l = chromaLightness.y();
         lch.h = m_color.toLch().h;
         q_pointer->setColor(
             FullColorDescription(
                 m_rgbColorSpace,
                 lch,
-                FullColorDescription::outOfGamutBehaviour::preserve
+                FullColorDescription::OutOfGamutBehaviour::preserve
             )
         );
     }
@@ -174,14 +174,14 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(
 // precision.
 
 /** @brief React on a mouse press event.
- * 
+ *
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
  * If the mouse is clicked within the <em>displayed</em> gamut, than the
  * handle is placed here and further
  * mouse movements are tracked.
- * 
+ *
  * @param event The corresponding mouse event
  */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
@@ -190,7 +190,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos());
     // TODO In the following “if” condition, also accept out-of-gamut clicks
     // when they are covered by the current handle.
-    if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) { 
+    if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) {
         // Mouse focus is handled manually because so we can accept focus only
         // on mouse clicks within the displayed gamut, while rejecting focus
         // otherwise. In the constructor, therefore Qt::FocusPolicy::TabFocus
@@ -219,10 +219,10 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  * <em>displayed</em> gamut, the handle is displaced there. If the mouse
  * moves outside the <em>displayed</em> gamut, the handle is displaced to
  * the nearest neighbor pixel within gamut.
- * 
+ *
  * If previously there had not been a mouse press event, the mouse move
  * event is ignored.
- * 
+ *
  * @param event The corresponding mouse event
  */
 void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
@@ -251,7 +251,7 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
  * If the mouse is inside the <em>displayed</em> gamut, the handle is
  * displaced there. If the mouse is outside the <em>displayed</em> gamut,
  * the handle is displaced to the nearest neighbor pixel within gamut.
- * 
+ *
  * @param event The corresponding mouse event
  */
 void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
@@ -273,14 +273,14 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 // is out of the _displayed_ diagram? How to handle that?
 
 /** @brief Paint the widget.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * Paints the widget. Takes the existing m_diagramImage and m_diagramPixmap
  * and paints them on the widget. Paints, if appropriate, the focus indicator.
  * Paints the handle. Relies on that m_diagramImage and m_diagramPixmap are
  * up to date.
- * 
+ *
  * @param event the paint event
  */
 void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
@@ -319,24 +319,24 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     );
 
     // Paint a focus indicator.
-    // 
+    //
     // We could paint a focus indicator (round or rectangular) around the
     // handle. Depending on the currently selected hue for the diagram,
     // it looks ugly because the colors of focus indicator and diagram
     // do not harmonize, or it is mostly invisible the the colors are
     // similar. So this approach does not work well.
-    // 
+    //
     // It seems better to paint a focus indicator for the whole widget.
     // We could use the style primitives to paint a rectangular focus
     // indicator around the whole widget:
-    // 
+    //
     // style()->drawPrimitive(
     //     QStyle::PE_FrameFocusRect,
     //     &option,
     //     &painter,
     //     this
     // );
-    // 
+    //
     // However, this does not work well because the chroma-lightness
     // diagram has usually a triangular shape. The style primitive, however,
     // often paints just a line at the bottom of the widget. That does not
@@ -344,7 +344,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     // indicator only on the left of the diagram (which is the place of
     // black/gray/white, so the won't be any problems with non-harmonic
     // colors).
-    // 
+    //
     // Then we have to design the line that we want to display. It is better
     // to do that ourselves instead of relying on generic QStyle::PE_Frame
     // or similar solutions as their result seems to be quite unpredictable
@@ -388,7 +388,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint imageCoordinates = d_pointer->currentImageCoordinates();
     pen.setWidth(handleOutlineThickness());
-    if (d_pointer->m_color.toLch().L >= 50  /* range: 0..100 */) {
+    if (d_pointer->m_color.toLch().l >= 50  /* range: 0..100 */) {
         pen.setColor(Qt::black);
     } else {
         pen.setColor(Qt::white);
@@ -408,7 +408,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
 }
 
 /** @brief Transforms from widget to image coordinates
- * 
+ *
  * @param widgetCoordinates a coordinate pair within the widget’s coordinate
  * system
  * @returns the corresponding coordinate pair within m_diagramImage’s
@@ -425,23 +425,23 @@ QPoint ChromaLightnessDiagram
 }
 
 /** @brief React on key press events.
- * 
+ *
  * Reimplemented from base class.
- * 
+ *
  * Reacts on key press events. When the arrow keys are pressed, it moves the
  * handle by one pixel into the desired direction if this is still within
  * gamut. When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
  * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
  * handle as much as possible into the desired direction as long as this is
  * still in the gamut.
- * 
+ *
  * @param event the paint event
- * 
+ *
  * @warning This function might have an infinite loop if called when the
  * currently selected color has no non-transparent pixel on its row or line.
  * @todo This is a problem because it is well possible this will arrive
  * because of possible rounding errors!
- * 
+ *
  * @todo Still the darkest color is far from RGB zero on usual widget size.
  * This has to get better to allow choosing RGB 0, 0, 0!!!
  */
@@ -449,11 +449,11 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
     // TODO singleStep & pageStep for ALL graphical widgets expressed in LCh
     // values, not in pixel. Use values as inherited from base class!
-    
+
     QPoint newImageCoordinates = d_pointer->currentImageCoordinates();
     d_pointer->updateDiagramCache();
     switch (event->key()) {
-        case Qt::Key_Up: 
+        case Qt::Key_Up:
             if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
                 newImageCoordinates += QPoint(0, -1);
             }
@@ -499,11 +499,11 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
             break;
         default:
             // Quote from Qt documentation:
-            // 
+            //
             //     “If you reimplement this handler, it is very important that
             //      you call the base class implementation if you do not act
             //      upon the key.
-            // 
+            //
             //      The default implementation closes popup widgets if the
             //      user presses the key sequence for QKeySequence::Cancel
             //      (typically the Escape key). Otherwise the event is
@@ -514,7 +514,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // Here we reach only if the key has been recognized. If not, in the
     // default branch of the switch statement, we would have passed the
     // keyPressEvent yet to the parent and returned.
-    
+
     // Set the new image coordinates (only takes effect when image
     // coordinates are indeed different)
     d_pointer->setImageCoordinates(newImageCoordinates);
@@ -550,9 +550,9 @@ QPoint ChromaLightnessDiagram
 {
     updateDiagramCache();
     return QPoint(
-        qRound(m_color.toLch().C * (m_diagramImage.height() - 1) / 100),
+        qRound(m_color.toLch().c * (m_diagramImage.height() - 1) / 100),
         qRound(
-            m_color.toLch().L
+            m_color.toLch().l
                 * (m_diagramImage.height() - 1)
                 / 100
                 * (-1)
@@ -590,9 +590,9 @@ qreal ChromaLightnessDiagram::hue() const
 }
 
 /** @brief Set the hue
- * 
+ *
  * convenience function
- * 
+ *
  *  @param newHue The new hue value to set.
  */
 void ChromaLightnessDiagram::setHue(const qreal newHue)
@@ -600,15 +600,15 @@ void ChromaLightnessDiagram::setHue(const qreal newHue)
     if (newHue == d_pointer->m_color.toLch().h) {
         return;
     }
-    cmsCIELCh lch;
+    LchDouble lch;
     lch.h = newHue;
-    lch.C = d_pointer->m_color.toLch().C;
-    lch.L = d_pointer->m_color.toLch().L;
+    lch.c = d_pointer->m_color.toLch().c;
+    lch.l = d_pointer->m_color.toLch().l;
     setColor(
         FullColorDescription(
             d_pointer->m_rgbColorSpace,
             lch,
-            FullColorDescription::outOfGamutBehaviour::sacrifyChroma
+            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
         )
     );
 }
@@ -636,7 +636,7 @@ void ChromaLightnessDiagram::setColor(const FullColorDescription &newColor)
 /** @brief React on a resize event.
  *
  * Reimplemented from base class.
- * 
+ *
  * @param event The corresponding resize event
  */
 void ChromaLightnessDiagram::resizeEvent(QResizeEvent* event)
@@ -655,9 +655,9 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent* event)
 /** @brief Provide the size hint.
  *
  * Reimplemented from base class.
- * 
+ *
  * @returns the size hint
- * 
+ *
  * @sa minimumSizeHint()
  */
 QSize ChromaLightnessDiagram::sizeHint() const
@@ -668,9 +668,9 @@ QSize ChromaLightnessDiagram::sizeHint() const
 /** @brief Provide the minimum size hint.
  *
  * Reimplemented from base class.
- * 
+ *
  * @returns the minimum size hint
- * 
+ *
  * @sa sizeHint()
  */
 QSize ChromaLightnessDiagram::minimumSizeHint() const
@@ -686,7 +686,7 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 // TODO what if a part of the gamut at the right is not displayed?
 
 /** @brief Color of the current selection
- * 
+ *
  * @returns color of the current selection
  */
 FullColorDescription ChromaLightnessDiagram::color() const
@@ -695,22 +695,22 @@ FullColorDescription ChromaLightnessDiagram::color() const
 }
 
 /** @brief Generates an image of a chroma-lightness diagram.
- * 
+ *
  * (Also, out of the Qt library, it uses only QImage, and not QPixmap,
  * to make sure the result can be passed around between threads.)
- * 
+ *
  * @param imageHue the (LCh) hue of the image
  * @param imageSize the size of the requested image
  * @returns A chroma-lightness diagram for the given hue. For the y axis,
  * its height covers the lightness range 0..100. [Pixel (0) corresponds
  * to value 100. Pixel (height-1) corresponds to value 0.] Its x axis
  * uses always the same scale as the y axis. So if the size
- * is a square, both x range and y range are from 0 to 100. If the 
+ * is a square, both x range and y range are from 0 to 100. If the
  * width is larger than the height, the x range goes beyond 100. The
  * image paints all the LCh values that are within the gamut of the
  * RGB profile. All other values are Qt::transparent. Intentionally
  * there is no anti-aliasing.
- * 
+ *
  * @todo Would anti-aliasing be possible? As there is no mathematical
  * description of the shape of the color solid, the only way to get
  * anti-aliasing would be to render at a higher resolution (say two
@@ -718,11 +718,11 @@ FullColorDescription ChromaLightnessDiagram::color() const
  * downscale it to the final resolution. Would this be an absolute
  * performance killer? Even if not: Is it really worth the performance
  * loss?
- * 
+ *
  * @todo Should this function be made static? Or the opposite: Stay a normal
  * function (but maybe even remove all arguments like imageHue and imageSize
  * because we can get them directly from underlying object data)?
- * 
+ *
  * @todo Possible unit test for this function:
 
 void testChromaLightnessDiagramm() {
@@ -785,7 +785,7 @@ myTimer.start();
     QImage temp_image = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
     const int maxHeight = imageSize.height() - 1;
     const int maxWidth = imageSize.width() - 1;
-    
+
     // Test if image size is too small.
     if ((maxHeight < 1) || (maxWidth < 1)) {
         // TODO How to react correctly here? Exception?
@@ -800,11 +800,11 @@ myTimer.start();
     // Paint the gamut.
     LCh.h = PolarPointF::normalizedAngleDegree(imageHue);
     for (y = 0; y <= maxHeight; ++y) {
-        LCh.L = y * static_cast<cmsFloat64Number>(100) / maxHeight;
+        LCh.l = y * static_cast<cmsFloat64Number>(100) / maxHeight;
         for (x = 0; x <= maxWidth; ++x) {
             // Using the same scale as on the y axis. floating point
             // division thanks to 100 which is a "cmsFloat64Number"
-            LCh.C = x * static_cast<cmsFloat64Number>(100) / maxHeight;
+            LCh.c = x * static_cast<cmsFloat64Number>(100) / maxHeight;
             rgbColor = m_rgbColorSpace->colorRgb(LCh);
             if (rgbColor.isValid()) {
                 // The pixel is within the gamut
@@ -834,16 +834,16 @@ qDebug()
 }
 
 /** @brief Refresh the diagram and associated data
- * 
+ *
  * This class has a cache of various data related to the diagram.
  * This data is cached because it is often needed and it would be
  * expensive to calculate it again and again on the fly.
- * 
+ *
  * Calling this function updates this cached data. This is always
  * necessary if the data the diagram relies on, has changed. For example,
  * if the hue() property or the widget size have changed, this function
  * has to be called.
- * 
+ *
  * This function does not repaint the widget! After calling this function,
  * you have to call manually <tt>update()</tt> to schedule a re-paint of
  * the widget, if you wish so. */
@@ -869,12 +869,12 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
 }
 
 /** @brief Search the nearest non-transparent neighbor pixel
-* 
+*
 * @note This code is a terribly inefficient
 * implementation of a “nearest neighbor search”. See
 * https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast
 * for a better approach.
-* 
+*
 * @param originalPoint The point for which you search the nearest neighbor,
 * expressed in the coordinate system of the image. This point may be within
 * or outside the image.
