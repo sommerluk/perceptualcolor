@@ -178,11 +178,15 @@ void ColorDialog::ColorDialogPrivate::setCurrentFullColor(
     const FullColorDescription& color
 )
 {
+    qreal myAlphaF;
     if (q_pointer->testOption(ColorDialogOption::ShowAlphaChannel)) {
-        m_alphaSelector->setAlpha(color.alpha());
+        myAlphaF = color.alpha();
     } else {
-        m_alphaSelector->setAlpha(1);
+        myAlphaF = 1;
     }
+    m_alphaSelector->setAlpha(myAlphaF);
+    m_alphaGradientSlider->setFraction(myAlphaF);
+    m_alphaSpinBox->setValue(myAlphaF * 100);
     setCurrentOpaqueColor(color);
 }
 
@@ -298,8 +302,12 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
     m_chromaHueDiagram->setColor(color.toLch());
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
 
-    // Update alpha selector
+    // Update alpha
     m_alphaSelector->setColor(m_currentOpaqueColor);
+    FullColorDescription firstColor = m_currentOpaqueColor;
+    firstColor.setAlpha(0);
+    m_alphaGradientSlider->setFirstColor(firstColor);
+    m_alphaGradientSlider->setSecondColor(m_currentOpaqueColor);
 
     // Update widgets that take alpha information
     updateColorPatch();
@@ -825,17 +833,16 @@ void ColorDialog::setOptions(
         true
     );
 
-    // Apply the new options
-    d_pointer->m_alphaSelectorLabel->setVisible(
-        d_pointer->m_options.testFlag(
-            QColorDialog::ColorDialogOption::ShowAlphaChannel
-        )
+    // Apply the new options (alpha)
+    const bool alphaVisibility = d_pointer->m_options.testFlag(
+        QColorDialog::ColorDialogOption::ShowAlphaChannel
     );
-    d_pointer->m_alphaSelector->setVisible(
-        d_pointer->m_options.testFlag(
-            QColorDialog::ColorDialogOption::ShowAlphaChannel
-        )
-    );
+    d_pointer->m_alphaSelectorLabel->setVisible(alphaVisibility);
+    d_pointer->m_alphaSelector->setVisible(alphaVisibility);
+    d_pointer->m_alphaGradientSlider->setVisible(alphaVisibility);
+    d_pointer->m_alphaSpinBox->setVisible(alphaVisibility);
+
+    // Apply the new options (buttons)
     d_pointer->m_buttonBox->setVisible(
         !d_pointer->m_options.testFlag(
             QColorDialog::ColorDialogOption::NoButtons

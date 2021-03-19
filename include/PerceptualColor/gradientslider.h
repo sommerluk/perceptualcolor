@@ -56,7 +56,8 @@ namespace PerceptualColor {
  * a hole in the gradient.
  *
  * @todo Wouldn’t it be better to subclass <tt>QSlider</tt> instead of
- * @ref AbstractDiagram?
+ * @ref AbstractDiagram? Or implement it’s source-code interaface?
+ * Or the source code interface of KGradientSelector?
  *
  * @todo Declare Q_PROPERTY for @ref setFirstColor() and @ref setSecondColor()
  */
