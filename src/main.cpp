@@ -89,6 +89,9 @@ int main(int argc, char *argv[])
         QColorDialog::ColorDialogOption::ShowAlphaChannel,
         true
     );
+QColor myColor = QColor(Qt::yellow);
+myColor.setAlphaF(0.5);
+m_colorDialog.setCurrentColor(myColor);
 //     m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
 //     m_colorDialog.setLayoutDimensions(
 //         PerceptualColor

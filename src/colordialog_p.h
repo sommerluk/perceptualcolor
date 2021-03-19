@@ -31,7 +31,6 @@
 #include "PerceptualColor/colordialog.h"
 #include "constpropagatingrawpointer.h"
 
-#include "PerceptualColor/alphaselector.h"
 #include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/chromahuediagram.h"
 #include "PerceptualColor/fullcolordescription.h"
@@ -63,16 +62,16 @@ public:
 
     /** @brief @ref GradientSlider widget for the alpha channel. */
     QPointer<GradientSlider> m_alphaGradientSlider;
-    /** @brief The layout of the widgets for the alpha channel. */
-    QPointer<QHBoxLayout> m_alphaLayout;
-    /** @brief Pointer to the @ref AlphaSelector for alpha. */
-    QPointer<AlphaSelector> m_alphaSelector;
-    /** @brief Pointer to the QLabel for @ref m_alphaSelector().
+    /** @brief Pointer to the QLabel for the alpha value.
      *
-     * We store this in a
-     * pointer to allow toggle the visibility later. */
-    QPointer<QLabel> m_alphaSelectorLabel;
-    /** @brief Spin box for the alpha channel. */
+     * We store this in a pointer to allow toggle the visibility later. */
+    QPointer<QLabel> m_alphaLabel;
+    /** @brief Spin box for the alpha channel.
+     *
+     * This spin box shows always the value of @ref m_alphaGradientSlider.
+     *
+     * @note It’s value is not set directly, but is updated via signals from
+     * @ref m_alphaGradientSlider. Do not use it directly! */
     QPointer<QDoubleSpinBox> m_alphaSpinBox;
     /** @brief Pointer to the QButtonBox of this dialog.
      *
@@ -87,7 +86,7 @@ public:
      *
      * @note The alpha information within this data member is meaningless.
      * Ignore it. The information about the alpha channel is actually stored
-     * within @ref m_alphaSelector.
+     * within @ref m_alphaGradientSlider.
      *
      * @sa @ref currentColor() */
     FullColorDescription m_currentOpaqueColor;

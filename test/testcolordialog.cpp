@@ -1918,7 +1918,7 @@ private Q_SLOTS:
         );
         QCOMPARE(
             myDialog->d_pointer->m_colorPatch->color().alphaF(),
-            myDialog->d_pointer->m_alphaSelector->alpha()
+            myDialog->d_pointer->m_alphaGradientSlider->fraction()
         );
     }
 

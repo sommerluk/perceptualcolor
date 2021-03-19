@@ -200,7 +200,6 @@
  * probably break ABI compatibility?
  *
  * @todo Review and unit tests for these classes:
- * @ref PerceptualColor::AlphaSelector,
  * @ref PerceptualColor::ChromaLightnessDiagram,
  * @ref PerceptualColor::FullColorDescription,
  * @ref PerceptualColor::GradientSlider,

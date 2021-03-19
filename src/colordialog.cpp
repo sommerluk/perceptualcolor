@@ -137,7 +137,7 @@ QColor ColorDialog::currentColor() const
 {
     QColor temp;
     temp = d_pointer->m_currentOpaqueColor.toRgbQColor();
-    temp.setAlphaF(d_pointer->m_alphaSelector->alpha());
+    temp.setAlphaF(d_pointer->m_alphaGradientSlider->fraction());
     return temp;
 }
 
@@ -184,9 +184,9 @@ void ColorDialog::ColorDialogPrivate::setCurrentFullColor(
     } else {
         myAlphaF = 1;
     }
-    m_alphaSelector->setAlpha(myAlphaF);
     m_alphaGradientSlider->setFraction(myAlphaF);
-    m_alphaSpinBox->setValue(myAlphaF * 100);
+    // No need to update m_alphaSpinBox is this is done
+    // automatically by signals emitted by m_alphaGradientSlider.
     setCurrentOpaqueColor(color);
 }
 
@@ -223,14 +223,13 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(
 
 /** @brief Updates the color patch widget
  *
- * @post The color patch widget will show the color of
- * @ref m_currentOpaqueColor and the alpha value of
- * @ref m_alphaSelector() as available with
- * @ref AlphaSelector::alpha(). */
+ * @post The color patch widget will show the color
+ * of @ref m_currentOpaqueColor and the alpha
+ * value of @ref m_alphaGradientSlider. */
 void ColorDialog::ColorDialogPrivate::updateColorPatch()
 {
     QColor tempRgbQColor = m_currentOpaqueColor.toRgbQColor();
-    tempRgbQColor.setAlphaF(m_alphaSelector->alpha());
+    tempRgbQColor.setAlphaF(m_alphaGradientSlider->fraction());
     m_colorPatch->setColor(tempRgbQColor);
 }
 
@@ -303,7 +302,6 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
 
     // Update alpha
-    m_alphaSelector->setColor(m_currentOpaqueColor);
     FullColorDescription firstColor = m_currentOpaqueColor;
     firstColor.setAlpha(0);
     m_alphaGradientSlider->setFirstColor(firstColor);
@@ -447,24 +445,21 @@ void ColorDialog::ColorDialogPrivate::initialize()
     m_selectorLayout->addWidget(m_tabWidget);
     m_selectorLayout->addWidget(m_numericalWidget);
 
-    // Create alpha selector (old)
-    m_alphaSelector = new AlphaSelector(m_rgbColorSpace);
-    QFormLayout *tempAlphaLayout = new QFormLayout();
-    m_alphaSelectorLabel = new QLabel(tr("O&pacity:"));
-    m_alphaSelector->registerAsBuddy(m_alphaSelectorLabel);
-    tempAlphaLayout->addRow(m_alphaSelectorLabel, m_alphaSelector);
-
     // Create widgets for alpha value
-    m_alphaLayout = new QHBoxLayout();
-    QLabel* tempAlphaLabel = new QLabel(tr("O&pacity:"));
+    QHBoxLayout* m_alphaLayout = new QHBoxLayout();
     m_alphaGradientSlider = new GradientSlider(
         m_rgbColorSpace
     );
     m_alphaGradientSlider->setOrientation(Qt::Orientation::Horizontal);
     m_alphaSpinBox = new QDoubleSpinBox();
-    tempAlphaLabel->setBuddy(m_alphaSpinBox);
     m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
-    m_alphaLayout->addWidget(tempAlphaLabel);
+    m_alphaSpinBox->setMinimum(0);
+    m_alphaSpinBox->setMaximum(100);
+    m_alphaSpinBox->setSuffix(tr("%"));
+    m_alphaSpinBox->setDecimals(0);
+    m_alphaLabel = new QLabel(tr("O&pacity:"));
+    m_alphaLabel->setBuddy(m_alphaSpinBox);
+    m_alphaLayout->addWidget(m_alphaLabel);
     m_alphaLayout->addWidget(m_alphaGradientSlider);
     m_alphaLayout->addWidget(m_alphaSpinBox);
 
@@ -489,7 +484,6 @@ void ColorDialog::ColorDialogPrivate::initialize()
     QVBoxLayout *tempMainLayout = new QVBoxLayout();
     tempMainLayout->addWidget(m_colorPatch);
     tempMainLayout->addLayout(m_selectorLayout);
-    tempMainLayout->addLayout(tempAlphaLayout);
     tempMainLayout->addLayout(m_alphaLayout);
     tempMainLayout->addWidget(m_buttonBox);
     q_pointer->setLayout(tempMainLayout);
@@ -547,10 +541,27 @@ void ColorDialog::ColorDialogPrivate::initialize()
         }
     );
     connect(
-        m_alphaSelector,
-        &AlphaSelector::alphaChanged,
+        m_alphaGradientSlider,
+        &GradientSlider::fractionChanged,
         q_pointer,
         [this]() { updateColorPatch(); }
+    );
+    connect(
+        m_alphaGradientSlider,
+        &GradientSlider::fractionChanged,
+        q_pointer,
+        [this](const qreal newFraction) {
+            const QSignalBlocker blocker(m_alphaSpinBox);
+            m_alphaSpinBox->setValue(newFraction * 100);
+        }
+    );
+    connect(
+        m_alphaSpinBox,
+        QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        q_pointer,
+        [this](const double newValue) {
+            m_alphaGradientSlider->setFraction(newValue / 100);
+        }
     );
 
     // Initialize the options
@@ -566,7 +577,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
     // be enabled. So, users can see the little triangle at the
     // right botton of the dialog (or the left bottom on a
     // right-to-left layout). So, the user will be aware
-    // that he can indeet resize this dialog, which is
+    // that he can indeed resize this dialog, which is
     // important as the users are used to the default
     // platform dialogs, which often do not allow resizing. Therefore,
     // by default, QDialog::isSizeGripEnabled() should be true.
@@ -837,8 +848,7 @@ void ColorDialog::setOptions(
     const bool alphaVisibility = d_pointer->m_options.testFlag(
         QColorDialog::ColorDialogOption::ShowAlphaChannel
     );
-    d_pointer->m_alphaSelectorLabel->setVisible(alphaVisibility);
-    d_pointer->m_alphaSelector->setVisible(alphaVisibility);
+    d_pointer->m_alphaLabel->setVisible(alphaVisibility);
     d_pointer->m_alphaGradientSlider->setVisible(alphaVisibility);
     d_pointer->m_alphaSpinBox->setVisible(alphaVisibility);
 
