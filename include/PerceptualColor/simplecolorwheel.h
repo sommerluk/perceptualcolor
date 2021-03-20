@@ -65,7 +65,7 @@ class SimpleColorWheel : public AbstractDiagram
      *
      * After changing the hue property, the widget gets updated.
      *
-     * @sa hue()
+     * @sa hue() const
      * @sa setHue()
      * @sa resetHue()
      * @sa hueChanged()

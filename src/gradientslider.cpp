@@ -33,11 +33,10 @@
 #include "gradientslider_p.h"
 
 #include <QDebug>
+#include <QGuiApplication>
 #include <QPainter>
-#include <QStyle>
-#include <QStyleOption>
-#include <QMouseEvent>
 
+#include <PerceptualColor/fullcolordescription.h>
 #include <helper.h>
 
 namespace PerceptualColor {
@@ -86,27 +85,19 @@ void GradientSlider::GradientSliderPrivate::initialize(
     q_pointer->setFocusPolicy(Qt::StrongFocus);
     m_rgbColorSpace = colorSpace;
     q_pointer->setOrientation(orientation); // also updates the size policy
-    LchDouble one;
+    LchaDouble one;
     one.l = 50;
     one.c = 65;
     one.h = 100;
-    LchDouble two;
+    one.a = 1;
+    LchaDouble two;
     two.l = 60;
     two.c = 85;
     two.h = 300;
+    two.a = 1;
     q_pointer->setColors(
-        FullColorDescription(
-            m_rgbColorSpace,
-            one,
-            FullColorDescription::OutOfGamutBehaviour::preserve,
-            0
-        ),
-        FullColorDescription(
-            m_rgbColorSpace,
-            two,
-            FullColorDescription::OutOfGamutBehaviour::preserve,
-            1
-        )
+        one,
+        two
     );
     m_gradientImageReady = false;
 }
@@ -203,7 +194,15 @@ void GradientSlider::wheelEvent(QWheelEvent* event)
     qreal steps = standardWheelSteps(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
-        setValue(d_pointer->m_value + steps * d_pointer->m_singleStep);
+        qreal stepSize;
+        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier)
+            || QGuiApplication::keyboardModifiers().testFlag(Qt::ShiftModifier)
+        ) {
+            stepSize = pageStep();
+        } else {
+            stepSize = singleStep();
+        };
+        setValue(d_pointer->m_value + steps * stepSize);
     } else {
         // Don’t accept the event and let it up to the default treatment:
         event->ignore();
@@ -416,47 +415,53 @@ void GradientSlider::setOrientation(Qt::Orientation newOrientation)
 }
 
 void GradientSlider::setColors(
-    const FullColorDescription &col1,
-    const FullColorDescription &col2
+    const PerceptualColor::LchaDouble &newFirstColor,
+    const PerceptualColor::LchaDouble &newSecondColor
 )
 {
-    if (col1 == d_pointer->m_firstColor && col2 == d_pointer->m_secondColor) {
+    if (
+        (d_pointer->m_firstColor.hasSameCoordinates(newFirstColor))
+            && (d_pointer->m_secondColor.hasSameCoordinates(newSecondColor))
+    ) {
         return;
     }
-    d_pointer->m_firstColor = col1;
-    d_pointer->m_secondColor = col2;
+    d_pointer->m_firstColor = newFirstColor;
+    d_pointer->m_secondColor = newSecondColor;
     d_pointer->m_gradientImageReady = false;
     update();
 }
 
-void GradientSlider::setFirstColor(const FullColorDescription &col)
+void GradientSlider::setFirstColor(
+    const PerceptualColor::LchaDouble &newFirstColor
+)
 {
-    setColors(col, d_pointer->m_secondColor);
+    setColors(newFirstColor, d_pointer->m_secondColor);
 }
 
-void GradientSlider::setSecondColor(const FullColorDescription &col)
+void GradientSlider::setSecondColor(
+    const PerceptualColor::LchaDouble &newSecondColor
+)
 {
-    setColors(d_pointer->m_firstColor, col);
+    setColors(d_pointer->m_firstColor, newSecondColor);
 }
 
+/** @returns LchaDouble for intermediate color, and its corresponding alpha
+ * value. */
 QPair<LchDouble, qreal> GradientSlider
     ::GradientSliderPrivate
     ::intermediateColor
 (
-    const LchDouble &firstColor,
-    const LchDouble &secondColor,
+    const LchaDouble &firstColor,
+    const LchaDouble &secondColor,
     qreal value
 )
 {
     LchDouble color;
-    qreal alpha;
     color.l = firstColor.l + (secondColor.l - firstColor.l) * value;
     color.c = firstColor.c + (secondColor.c - firstColor.c) * value;
     color.h = firstColor.h + (secondColor.h - firstColor.h) * value;
-    alpha =
-        m_firstColor.alpha()
-        + (m_secondColor.alpha() - m_firstColor.alpha())
-        * value;
+    qreal alpha = m_firstColor.a
+        + (m_secondColor.a - m_firstColor.a) * value;
     return QPair<LchDouble, qreal>(color, alpha);
 }
 
@@ -485,8 +490,8 @@ void GradientSlider::GradientSliderPrivate::updateGradientImage()
     }
     QImage temp(actualLength, 1, QImage::Format_ARGB32_Premultiplied);
     temp.fill(Qt::transparent); // Initialize the image with transparency.
-    LchDouble firstColor = m_firstColor.toLch();
-    LchDouble secondColor = m_secondColor.toLch();
+    LchaDouble firstColor = m_firstColor;
+    LchaDouble secondColor = m_secondColor;
     if (qAbs(firstColor.h - secondColor.h) > 180) {
         if (firstColor.h > secondColor.h) {
             secondColor.h += 360;
@@ -502,19 +507,18 @@ void GradientSlider::GradientSliderPrivate::updateGradientImage()
             secondColor,
             i / static_cast<qreal>(actualLength)
         );
-        // TODO the in-gamut test fails because of rounding errors for
-        // full-chroma-colors. How can we support ignore out-of-gamut
-        // colors? How should they be rendered? Not identical to transparent,
-        // right?
-        fullColor = FullColorDescription(
-            m_rgbColorSpace,
-            color.first,
-            FullColorDescription::OutOfGamutBehaviour::preserve,
-            color.second // What the hell is the constructor called
-            // with a 4. (!) parameter of tye LchDouble? Is there
-            // a strange hidden overload that is triggered?
+        // TODO Assert that this actually makes sure also out-of-gamut
+        // colors are converted to nearby in-gamut colors.
+        temp.setPixelColor(
+            i,
+            0,
+            FullColorDescription(
+                m_rgbColorSpace,
+                color.first,
+                FullColorDescription::OutOfGamutBehaviour::preserve,
+                color.second
+            ).toRgbQColor()
         );
-        temp.setPixelColor(i, 0, fullColor.toRgbQColor());
     }
     QImage result = QImage(
         actualLength,

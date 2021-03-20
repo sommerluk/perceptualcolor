@@ -42,6 +42,7 @@
 #include <QVBoxLayout>
 
 #include "fallbackiconengine.h"
+#include "helper.h"
 #include "lchvalues.h"
 
 namespace PerceptualColor {
@@ -302,10 +303,14 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
 
     // Update alpha
-    FullColorDescription firstColor = m_currentOpaqueColor;
-    firstColor.setAlpha(0);
-    m_alphaGradientSlider->setFirstColor(firstColor);
-    m_alphaGradientSlider->setSecondColor(m_currentOpaqueColor);
+    LchaDouble tempColor;
+    tempColor.l = m_currentOpaqueColor.toLch().l;
+    tempColor.c = m_currentOpaqueColor.toLch().c;
+    tempColor.h = m_currentOpaqueColor.toLch().h;
+    tempColor.a = 0;
+    m_alphaGradientSlider->setFirstColor(tempColor);
+    tempColor.a = 1;
+    m_alphaGradientSlider->setSecondColor(tempColor);
 
     // Update widgets that take alpha information
     updateColorPatch();
@@ -398,26 +403,17 @@ void ColorDialog::ColorDialogPrivate::initialize()
     tempHueFirstLayout->addWidget(m_wheelColorPicker);
     tempHueFirstWidget->setLayout(tempHueFirstLayout);
     m_lchLightnessSelector = new GradientSlider(m_rgbColorSpace);
-    LchDouble black;
+    LchaDouble black;
     black.l = 0;
     black.c = 0;
     black.h = 0;
-    LchDouble white;
+    black.a = 1;
+    LchaDouble white;
     white.l = 100;
     white.c = 0;
     white.h = 0;
-    m_lchLightnessSelector->setColors(
-        FullColorDescription(
-            m_rgbColorSpace,
-            black,
-            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
-        ),
-        FullColorDescription(
-            m_rgbColorSpace,
-            white,
-            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
-        )
-    );
+    white.a = 1;
+    m_lchLightnessSelector->setColors(black, white);
     m_chromaHueDiagram = new ChromaHueDiagram(m_rgbColorSpace);
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
     tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
@@ -451,12 +447,17 @@ void ColorDialog::ColorDialogPrivate::initialize()
         m_rgbColorSpace,
         Qt::Orientation::Horizontal
     );
+    m_alphaGradientSlider->setSingleStep(singleStepAlpha);
+    m_alphaGradientSlider->setPageStep(pageStepAlpha);
     m_alphaSpinBox = new QDoubleSpinBox();
     m_alphaSpinBox->setAlignment(Qt::AlignmentFlag::AlignRight);
     m_alphaSpinBox->setMinimum(0);
     m_alphaSpinBox->setMaximum(100);
     m_alphaSpinBox->setSuffix(tr("%"));
     m_alphaSpinBox->setDecimals(0);
+    m_alphaSpinBox->setSingleStep(singleStepAlpha);
+    // m_alphaSpinBox is of type QDoubleSpinBox which does not allow to
+    // configure the pageStep.
     m_alphaLabel = new QLabel(tr("O&pacity:"));
     m_alphaLabel->setBuddy(m_alphaSpinBox);
     m_alphaLayout->addWidget(m_alphaLabel);

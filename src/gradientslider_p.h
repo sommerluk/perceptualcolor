@@ -31,7 +31,7 @@
 #include "PerceptualColor/gradientslider.h"
 #include "constpropagatingrawpointer.h"
 
-#include <QPointer>
+#include "PerceptualColor/lchdouble.h"
 
 namespace PerceptualColor {
 
@@ -64,14 +64,14 @@ public:
         const QSharedPointer<RgbColorSpace> &colorSpace,
         Qt::Orientation orientation
     );
-    FullColorDescription m_firstColor;
-    FullColorDescription m_secondColor;
+    LchaDouble m_firstColor;
+    LchaDouble m_secondColor;
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
     void setOrientationAndForceUpdate(const Qt::Orientation newOrientation);
     void updateGradientImage();
     QPair<LchDouble, qreal> intermediateColor(
-        const LchDouble &firstColor,
-        const LchDouble &secondColor,
+        const LchaDouble &firstColor,
+        const LchaDouble &secondColor,
         qreal value
     );
     /** @brief Cache for the gradient image

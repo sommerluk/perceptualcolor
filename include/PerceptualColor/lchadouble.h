@@ -24,8 +24,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef LCHDOUBLE_H
-#define LCHDOUBLE_H
+#ifndef LCHADOUBLE_H
+#define LCHADOUBLE_H
 
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
@@ -33,7 +33,7 @@
 
 namespace PerceptualColor {
 
-/** @brief A LCH color.
+/** @brief A LCH color with alpha channel.
  *
  * Storage of floating point LCH values with <tt>double</tt> precision.
  *
@@ -41,7 +41,7 @@ namespace PerceptualColor {
  * is created.
  *
  * Example:
- * @snippet test/testlchdouble.cpp Use LchDouble
+ * @snippet test/testLchaDouble.cpp Use LchaDouble
  *
  * @sa @ref LchValues explains more details about the valid
  * range.
@@ -59,12 +59,12 @@ namespace PerceptualColor {
  * @ref hasSameCoordinates.
  *
  * This class is declared as type to Qt's type system:
- * <tt>Q_DECLARE_METATYPE(PerceptualColor::LchDouble)</tt>.
+ * <tt>Q_DECLARE_METATYPE(PerceptualColor::LchaDouble)</tt>.
  * Depending on your use case (for example if you want to use it
  * reliably in Qt's signals and slots), you might consider calling
  * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
  * object. */
-struct LchDouble {
+struct LchaDouble {
 public:
     /** @brief Lightness, mesured in percent.
      *
@@ -83,13 +83,18 @@ public:
      *
      * The valid range is <tt>[0, 360[</tt>. */
     double h;
-    bool hasSameCoordinates(const LchDouble &other);
+    /** @brief Opacity (alpha channel)
+     *
+     * The valid range is <tt>[0, 1]</tt>. <tt>0</tt> is fully
+     * transparent, <tt>1</tt> is fully opaque. */
+    double a;
+    bool hasSameCoordinates(const LchaDouble &other);
 };
 
-QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value);
+QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value);
 
 } // namespace PerceptualColor
 
-Q_DECLARE_METATYPE(PerceptualColor::LchDouble)
+Q_DECLARE_METATYPE(PerceptualColor::LchaDouble)
 
-#endif // LCHDOUBLE_H
+#endif // LCHADOUBLE_H

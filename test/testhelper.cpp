@@ -210,6 +210,26 @@ private Q_SLOTS:
             startValue2.h
         );
     }
+
+    void testSteps() {
+        QVERIFY2(
+            pageStepChroma > singleStepChroma,
+            "Chroma page step is bigger than single step."
+        );
+        QVERIFY2(
+            singleStepChroma > 0,
+            "Chroma single step is positive."
+        );
+        QVERIFY2(
+            pageStepHue > singleStepHue,
+            "Hue page step is bigger than single step."
+        );
+        QVERIFY2(
+            singleStepHue > 0,
+            "Hue single step is positive."
+        );
+    }
+
 };
 
 }

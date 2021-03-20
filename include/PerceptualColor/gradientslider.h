@@ -31,7 +31,7 @@
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include <PerceptualColor/abstractdiagram.h>
-#include <PerceptualColor/fullcolordescription.h>
+#include <PerceptualColor/lchadouble.h>
 #include <PerceptualColor/rgbcolorspace.h>
 
 namespace PerceptualColor {
@@ -42,12 +42,12 @@ namespace PerceptualColor {
  * colors. The gradient is an equal gradient calculated indepentendly
  * for each of the four components (lightness, chroma, hue, alpha).
  *
- * The hue component is the only one that is circular (0°=360°): Here,
+ * The hue component is the only one that is circular (0° = 360°): Here,
  * Here, the path via the shorter side is always chosen. Examples:
- * @li If the first hue is 182° and the second hue is 1°, than
- *     the hue will increase from 182° to 360° than 1°.
- * @li If the first hue is 169° and the second hue is 359°, than
- *     the hue will decrease from 169° to 0°, than 359°.
+ * @li If the first hue is 182° and the second hue is 1°, than
+ *     the hue will increase from 182° up to 359°, than 0° and then 1°.
+ * @li If the first hue is 169° and the second hue is 359°, than
+ *     the hue will decrease from 169° down to 0°, and then 359°.
  *
  * This widget considers the alpha channel, using a background
  * of gray squares behind the (semi-)transparent colors.
@@ -62,36 +62,29 @@ namespace PerceptualColor {
  *
  * Note that due to this mathematical model, there might be out-of-gamut
  * colors within the slider even if both, the first and the second color are
- * in-gamut colors. Out-of-gamut colors are not rendered, so you might see
- * a hole in the gradient.
+ * in-gamut colors. Out-of-gamut colors are rendered as nearby in-gamut colors.
  *
  * @todo Declare Q_PROPERTY for @ref setFirstColor() and @ref setSecondColor()
- *
- * @todo Could the API be even smaller? */
+ * Or: Could the API be even smaller? */
 // The API is roughly orientated on QSlider/QAbstractSlider and on
 // KSelecter/KGradientSelector where appicable. Our API is however
-// much smaller.
+// less complete, and of course also a little bit different, as
+// both, QAbstractSlider and KGradientSelector are not directly
+// comparable to this class.
 class GradientSlider : public AbstractDiagram
 {
     Q_OBJECT
 
-
-    /** @brief Orientation of the widget
+    /** @brief Orientation of the widget.
      *
-     * @sa setOrientation()
-     * @sa m_orientation() */
+     * By default, the orientation is horizontal. The possible
+     * orientations are <tt>Qt::Horizontal</tt> and <tt>Qt::Vertical</tt>.
+     *
+     * @sa READ @ref orientation() const
+     * @sa WRITE @ref setOrientation()
+     * @sa NOTIFY @ref orientationChanged()
+     * @sa @ref GradientSliderPrivate::m_orientation */
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
-
-    /** @brief The value of the gradient
-     *
-     * Ranges from 0 to 1.
-     *
-     * - 0 means: totally firstColor()
-     * - 1 means: totally secondColor()
-     *
-     * @sa setValue()
-     * @sa m_value() */
-    Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
     /** @brief This property holds the page step.
      *
@@ -111,6 +104,17 @@ class GradientSlider : public AbstractDiagram
      * @sa m_singleStep() */
     Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep NOTIFY singleStepChanged)
 
+    /** @brief The value of the gradient
+     *
+     * Ranges from 0 to 1.
+     *
+     * - 0 means: totally firstColor()
+     * - 1 means: totally secondColor()
+     *
+     * @sa setValue()
+     * @sa m_value() */
+    Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
+
 public:
     Q_INVOKABLE explicit GradientSlider(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
@@ -122,47 +126,51 @@ public:
         QWidget *parent = nullptr
     );
     virtual ~GradientSlider() noexcept override;
-
-    virtual QSize sizeHint() const override;
-
     virtual QSize minimumSizeHint() const override;
-    Qt::Orientation	orientation() const;
-    qreal value();
-    qreal singleStep();
+    /** @brief Getter for property @ref orientation
+     *  @returns the property */
+    Qt::Orientation orientation() const;
+    /** @brief Getter for property @ref pageStep
+     *  @returns the property */
     qreal pageStep();
+    /** @brief Getter for property @ref singleStep
+     *  @returns the property */
+    qreal singleStep();
+    virtual QSize sizeHint() const override;
+    /** @brief Getter for property @ref value
+     *  @returns the property */
+    qreal value();
 
 Q_SIGNALS:
     /** @brief Signal for value() property. */
-    void valueChanged(const qreal newValue);
     void orientationChanged(const Qt::Orientation newOrientation);
     void pageStepChanged(const qreal newPageStep);
     void singleStepChanged(const qreal newSingleStep);
+    void valueChanged(const qreal newValue);
 
 public Q_SLOTS:
-    void setOrientation(const Qt::Orientation newOrientation);
     void setColors(
-        const PerceptualColor::FullColorDescription &col1,
-        const PerceptualColor::FullColorDescription &col2
+        const PerceptualColor::LchaDouble &newFirstColor,
+        const PerceptualColor::LchaDouble &newSecondColor
     );
-    void setFirstColor(const PerceptualColor::FullColorDescription &col);
-    void setSecondColor(const PerceptualColor::FullColorDescription &col);
-    void setValue(const qreal newValue);
-    void setSingleStep(const qreal newSingleStep);
+    void setFirstColor(const PerceptualColor::LchaDouble &newFirstColor);
+    void setOrientation(const Qt::Orientation newOrientation);
     void setPageStep(const qreal newPageStep);
+    void setSecondColor(const PerceptualColor::LchaDouble &newSecondColor);
+    void setSingleStep(const qreal newSingleStep);
+    void setValue(const qreal newValue);
 
 protected:
-
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void mouseMoveEvent(QMouseEvent *event) override;
-    virtual void wheelEvent(QWheelEvent *event) override;
-    virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void paintEvent(QPaintEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
 
 private:
     Q_DISABLE_COPY(GradientSlider)
-
     class GradientSliderPrivate;
     /** @brief Declare the private implementation as friend class.
      *

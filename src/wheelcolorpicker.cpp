@@ -206,7 +206,7 @@ void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidget()
     );
 }
 
-FullColorDescription WheelColorPicker::currentColor()
+FullColorDescription WheelColorPicker::currentColor() const
 {
     return d_pointer->m_chromaLightnessDiagram->color();
 }

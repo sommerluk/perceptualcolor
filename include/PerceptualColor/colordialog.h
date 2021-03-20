@@ -249,7 +249,7 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * @note The setter @ref setCurrentColor() does not accept all QColor
      * values. See its documentation for details.
      *
-     * @sa READ @ref currentColor()
+     * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged()
      * @sa @ref ColorDialogPrivate::m_currentOpaqueColor */
@@ -284,11 +284,11 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * fail:<br/>
      * <tt>myDialog->setOption(ShowAlphaChannel, false);</tt>
      *
-     * @sa READ @ref options()
+     * @sa READ @ref options() const
      * @sa @ref testOption()
      * @sa WRITE @ref setOptions()
      * @sa @ref setOption()
-     * @sa @ref optionsChanged()
+     * @sa NOTIFY @ref optionsChanged()
      * @sa @ref ColorDialogPrivate::m_options */
     Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
 
@@ -307,9 +307,9 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * is adapted.
      *
      * @sa @ref DialogLayoutDimensions
-     * @sa @ref layoutDimensions()
-     * @sa @ref setLayoutDimensions()
-     * @sa @ref layoutDimensionsChanged */
+     * @sa READ @ref layoutDimensions() const
+     * @sa WRITE @ref setLayoutDimensions()
+     * @sa NOTIFY @ref layoutDimensionsChanged */
     Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
 
 public:

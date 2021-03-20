@@ -93,7 +93,7 @@ class ChromaHueDiagram : public AbstractDiagram
      * values. However, the LCh lightness value cannot be changed by the
      * user, but only by the programmer through this property.
      *
-     * @sa READ @ref color()
+     * @sa READ @ref color() const
      * @sa WRITE @ref setColor()
      * @sa NOTIFY @ref colorChanged() */
     Q_PROPERTY(LchDouble color READ color WRITE setColor NOTIFY colorChanged)

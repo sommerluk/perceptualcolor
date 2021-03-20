@@ -28,7 +28,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/lchdouble.h"
+#include "PerceptualColor/lchadouble.h"
 
 #include <QtTest>
 
@@ -36,13 +36,13 @@
 
 namespace PerceptualColor {
 
-class TestLchDouble : public QObject
+class TestLchaDouble : public QObject
 {
 
     Q_OBJECT
 
 public:
-    TestLchDouble(QObject *parent = nullptr) : QObject(parent) {
+    TestLchaDouble(QObject *parent = nullptr) : QObject(parent) {
     }
 
 private:
@@ -73,18 +73,18 @@ private Q_SLOTS:
 
     void testConstructorDestructor() {
         // This should not crash.
-        LchDouble test;
+        LchaDouble test;
         test.l = 50;
         Q_UNUSED(test);
     }
 
     void testCopyConstructor() {
         // This should not crash.
-        LchDouble test;
+        LchaDouble test;
         test.l = 50;
         test.c = 25;
         test.h = 5;
-        LchDouble copy(test);
+        LchaDouble copy(test);
         QCOMPARE(
             copy.l,
             50
@@ -100,11 +100,11 @@ private Q_SLOTS:
     }
 
     void testHasSameCoordinates() {
-        LchDouble a;
+        LchaDouble a;
         a.l = 50;
         a.c = 20;
         a.h = 5;
-        LchDouble b = a;
+        LchaDouble b = a;
         QVERIFY(a.hasSameCoordinates(b));
         QVERIFY(b.hasSameCoordinates(a));
         QVERIFY(a.hasSameCoordinates(a));
@@ -133,7 +133,7 @@ private Q_SLOTS:
 
     void testQDebugSupport()
     {
-        PerceptualColor::LchDouble test;
+        PerceptualColor::LchaDouble test;
         // suppress warning for generating invalid QColor
         qInstallMessageHandler(voidMessageHandler);
         qDebug() << test;
@@ -141,13 +141,13 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-void testLchDouble1() {
-//! [Use LchDouble]
-PerceptualColor::LchDouble test1;
+void testLchaDouble1() {
+//! [Use LchaDouble]
+PerceptualColor::LchaDouble test1;
 test1.l = 50; // Lightness: 50%
 test1.c = 25; // Chroma: 25
 test1.h = 5;  // Hue: 5°
-//! [Use LchDouble]
+//! [Use LchaDouble]
 Q_UNUSED(test1)
 }
 
@@ -155,7 +155,7 @@ Q_UNUSED(test1)
 
 }
 
-QTEST_MAIN(PerceptualColor::TestLchDouble)
+QTEST_MAIN(PerceptualColor::TestLchaDouble)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testlchdouble.moc"
+#include "testlchadouble.moc"

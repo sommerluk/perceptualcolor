@@ -67,7 +67,7 @@ class ChromaLightnessDiagram : public AbstractDiagram
 
     /** @brief Currently selected color
      *
-     * @sa color()
+     * @sa color() const
      * @sa setColor()
      * @sa colorChanged() */
     Q_PROPERTY(FullColorDescription color READ color WRITE setColor NOTIFY colorChanged USER true)

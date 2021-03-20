@@ -79,6 +79,93 @@ template<typename T> bool inRange(const T& low, const T& x, const T& high)
  * to be sure. */
 constexpr int overlap = 2;
 
+/** @brief Amount of single step for alpha.
+ *
+ * Measured for an alpha range from 0 (transparent) to 1 (opaque).
+ *
+ * The smaller of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * @sa @ref pageStepAlpha */
+constexpr qreal singleStepAlpha = 0.01;
+
+/** @brief Amount of single step for chroma.
+ *
+ * Measured in LCh chroma units.
+ *
+ * The smaller of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * @sa @ref pageStepChroma */
+constexpr int singleStepChroma = 1;
+
+/** @brief Amount of single step for hue.
+ *
+ * Measured in degree.
+ *
+ * The smaller of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * @sa @ref pageStepHue
+ *
+ * @todo What would be a good value for this? Its effect depends on
+ * chroma: On higher chroma, the same step in hue means a bigger visual
+ * color difference. We could even calculate that, but it does not seem to
+ * be very intuitive if the reaction on mouse wheel events are different
+ * depending on chroma - that would not be easy to understand for the
+ * user. And it might be better that the user this way also notices
+ * intuitively that hue changes are not linear across chroma. Anyway:
+ * What would be a sensible default step? */
+constexpr int singleStepHue = 360 / 100;
+
+/** @brief Amount of page step for alpha.
+ *
+ * Measured for an alpha range from 0 (transparent) to 1 (opaque).
+ *
+ * The larger of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * The value is 10 times @ref singleStepChroma. This behavior
+ * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
+ * its single step. */
+constexpr qreal pageStepAlpha = 10 * singleStepAlpha;
+
+/** @brief Amount of page step for chroma.
+ *
+ * Measured in LCh chroma units.
+ *
+ * The larger of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * The value is 10 times @ref singleStepChroma. This behavior
+ * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
+ * its single step. */
+constexpr int pageStepChroma = 10 * singleStepChroma;
+
+/** @brief Amount of page step for hue.
+ *
+ * Measured in degree.
+ *
+ * The larger of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * The value is 10 times @ref singleStepHue. This behavior
+ * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
+ * its single step. */
+constexpr int pageStepHue = 10 * singleStepHue;
+
 qreal standardWheelSteps(QWheelEvent *event);
 
 cmsCIELCh toCmsCieLch(const LchDouble &value);

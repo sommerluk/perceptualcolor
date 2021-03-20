@@ -53,9 +53,9 @@ class WheelColorPicker : public SimpleColorWheel
      *
      * This property is provides as an RGB value.
      *
-     * @sa currentColorRgb()
-     * @sa setCurrentColorRgb()
-     * @sa currentColorRgbChanged()
+     * @sa READ @ref currentColor() const
+     * @sa WRITE @ref setCurrentColor()
+     * @sa NOTIFY @ref currentColorChanged()
      */
      Q_PROPERTY(PerceptualColor::FullColorDescription currentColor
         READ currentColor
@@ -70,7 +70,7 @@ public:
         QWidget *parent = nullptr
     );
     virtual ~WheelColorPicker() noexcept override;
-    FullColorDescription currentColor();
+    FullColorDescription currentColor() const;
     void setCurrentColor(const FullColorDescription &newCurrentColorRgb);
 
 Q_SIGNALS:

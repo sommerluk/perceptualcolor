@@ -198,26 +198,6 @@ private Q_SLOTS:
         );
     }
 
-    void testSteps() {
-        AbstractDiagram temp;
-        QVERIFY2(
-            temp.pageStepChroma > temp.singleStepChroma,
-            "Chroma page step is bigger than single step."
-        );
-        QVERIFY2(
-            temp.singleStepChroma > 0,
-            "Chroma single step is positive."
-        );
-        QVERIFY2(
-            temp.pageStepHue > temp.singleStepHue,
-            "Hue page step is bigger than single step."
-        );
-        QVERIFY2(
-            temp.singleStepHue > 0,
-            "Hue single step is positive."
-        );
-    }
-
 };
 
 }

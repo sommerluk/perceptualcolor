@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MIT
+﻿# SPDX-License-Identifier: MIT
 #
 # Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
 #
@@ -185,6 +185,7 @@ set(perceptualcolor_SRC
   src/gradientslider.cpp
   src/helper.cpp
   src/labdouble.cpp
+  src/lchadouble.cpp
   src/lchdouble.cpp
   src/multispinbox.cpp
   src/polarpointf.cpp
@@ -205,6 +206,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientslider.h
   include/PerceptualColor/labdouble.h
+  include/PerceptualColor/lchadouble.h
   include/PerceptualColor/lchdouble.h
   include/PerceptualColor/multispinbox.h
   include/PerceptualColor/perceptualcolorlib_global.h
@@ -308,6 +310,7 @@ add_unit_test(testextendeddoublevalidator)
 add_unit_test(testfallbackiconengine)
 add_unit_test(testhelper)
 add_unit_test(testlabdouble)
+add_unit_test(testlchadouble)
 add_unit_test(testlchdouble)
 add_unit_test(testlchvalues)
 add_unit_test(testmultispinbox)

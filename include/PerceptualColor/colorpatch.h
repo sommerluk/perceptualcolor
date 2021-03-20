@@ -69,7 +69,7 @@ class ColorPatch : public QFrame
      * @note No color management is applied. The color is used as-is to
      * paint on the canvas provided by the operation system.
      *
-     * @sa @ref color()
+     * @sa @ref color() const
      * @sa @ref setColor()
      * @sa @ref colorChanged()
      * @sa @ref ColorPatchPrivate::m_color

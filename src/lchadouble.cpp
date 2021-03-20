@@ -27,7 +27,7 @@
 #include "perceptualcolorlib_internal.h"
 
 // Own header
-#include "PerceptualColor/lchdouble.h"
+#include "PerceptualColor/lchadouble.h"
 
 #include <type_traits>
 
@@ -36,7 +36,7 @@
 /** @file
  *
  * This file defines some static asserts for the data type
- * @ref PerceptualColor::LchDouble. */
+ * @ref PerceptualColor::LchaDouble. */
 
 namespace PerceptualColor {
 
@@ -54,15 +54,11 @@ static_assert(
 );
 
 static_assert(
-    sizeof(LchDouble) == sizeof(cmsCIELCh)
+    std::is_trivial_v<LchaDouble>
 );
 
 static_assert(
-    std::is_trivial_v<LchDouble>
-);
-
-static_assert(
-    std::is_standard_layout_v<LchDouble>
+    std::is_standard_layout_v<LchaDouble>
 );
 
 /** @brief Adds QDebug() support for this data type.
@@ -71,16 +67,18 @@ static_assert(
  * <tt>typedef</tt> for a LittleCMS type in the global; when declaring
  * this function in @ref PerceptualColor namespace, it would not work
  * in the global namespace. */
-QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value)
+QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
 {
     dbg.nospace()
-        << "LchDouble("
+        << "LchaDouble("
         << value.l
         << "% "
         << value.c
         << " "
         << value.h
-        << "°)";
+        << "° "
+        << value.a
+        << ")";
     return dbg.maybeSpace();
 }
 
@@ -93,9 +91,14 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value)
  * equal @ref c, but one with h = 5° and the other with h = 365°, are
  * considered non-equal thought both describe the same point in the
  * coordinate space. */
-bool LchDouble::hasSameCoordinates(const PerceptualColor::LchDouble& other)
+bool LchaDouble::hasSameCoordinates(const PerceptualColor::LchaDouble& other)
 {
-    return ( (l == other.l) && (c == other.c) && (h == other.h) );
+    return (
+        (l == other.l)
+            && (c == other.c)
+            && (h == other.h)
+            && (a == other.a)
+    );
 }
 
 } // namespace PerceptualColor
