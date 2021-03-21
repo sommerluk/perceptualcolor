@@ -53,19 +53,24 @@ namespace PerceptualColor {
  * of gray squares behind the (semi-)transparent colors.
  *
  * Example:
- * |             |   L |  C |   h  | alpha |
- * | :---------- | --: | -: | ---: | ----: |
- * | firstColor  | 80% |  5 |  15° |   70% |
- * |             | 70% |  7 |   5° |   80% |
- * |             | 60% |  9 | 355° |   90% |
- * | secondcolor | 50% | 11 | 345° |  100% |
+ * |                  |   L |  C |   h  | alpha |
+ * | :--------------- | --: | -: | ---: | ----: |
+ * | @ref firstColor  | 80% |  5 |  15° |   0.7 |
+ * |                  | 70% |  7 |   5° |   0.8 |
+ * |                  | 60% |  9 | 355° |   0.9 |
+ * | @ref secondColor | 50% | 11 | 345° |   1.0 |
  *
- * Note that due to this mathematical model, there might be out-of-gamut
- * colors within the slider even if both, the first and the second color are
- * in-gamut colors. Out-of-gamut colors are rendered as nearby in-gamut colors.
+ * Note that due to this mathematical model, there might be out-of-gamut colors
+ * within the slider even if both, the first and the second color are in-gamut
+ * colors. Out-of-gamut colors are rendered as nearby in-gamut colors.
  *
- * @todo Declare Q_PROPERTY for @ref setFirstColor() and @ref setSecondColor()
- * Or: Could the API be even smaller? */
+ * - In the case of vertical @ref orientation, @ref firstColor is the colour
+ *   at the bottom of the widget and @ref secondColor is the colour at the
+ *   top of the widget.
+ * - In the case of horizontal @ref orientation, @ref firstColor is the
+ *   colour on the left of the widget and @ref secondColor is the colour
+ *   on the right of the widget in LRT layout. In RTL layout it is the
+ *   other way round. */
 // The API is roughly orientated on QSlider/QAbstractSlider and on
 // KSelecter/KGradientSelector where appicable. Our API is however
 // less complete, and of course also a little bit different, as
@@ -74,6 +79,15 @@ namespace PerceptualColor {
 class GradientSlider : public AbstractDiagram
 {
     Q_OBJECT
+
+    /** @brief First color (the one corresponding to a low @ref value)
+     *
+     * @sa READ @ref firstColor() const
+     * @sa WRITE @ref setFirstColor()
+     * @sa NOTIFY @ref firstColorChanged()
+     * @sa @ref GradientSliderPrivate::m_firstColor
+     * @sa @ref secondColor */
+    Q_PROPERTY(PerceptualColor::LchaDouble firstColor READ firstColor WRITE setFirstColor NOTIFY firstColorChanged)
 
     /** @brief Orientation of the widget.
      *
@@ -91,28 +105,45 @@ class GradientSlider : public AbstractDiagram
      * The larger of two natural steps this widget provides.
      * Corresponds to the user pressing PageUp or PageDown.
      *
-     * @sa setPageStep()
-     * @sa m_pageStep() */
+     * @sa READ @ref pageStep() const
+     * @sa WRITE @ref setPageStep()
+     * @sa NOTIFY @ref pageStepChanged()
+     * @sa @ref GradientSliderPrivate::m_pageStep()
+     * @sa @ref singleStep */
     Q_PROPERTY(qreal pageStep READ pageStep WRITE setPageStep NOTIFY pageStepChanged)
+
+    /** @brief Second color (the one corresponding to a low @ref value)
+     *
+     * @sa READ @ref secondColor() const
+     * @sa WRITE @ref setSecondColor()
+     * @sa NOTIFY @ref secondColorChanged()
+     * @sa @ref GradientSliderPrivate::m_secondColor
+     * @sa @ref firstColor */
+    Q_PROPERTY(PerceptualColor::LchaDouble secondColor READ secondColor WRITE setSecondColor NOTIFY secondColorChanged)
 
     /** @brief This property holds the single step.
      *
      * The smaller of two natural steps this widget provides.
      * Corresponds to the user pressing an arrow key.
      *
-     * @sa setSingleStep()
-     * @sa m_singleStep() */
+     * @sa READ @ref singleStep() const
+     * @sa WRITE @ref setSingleStep()
+     * @sa NOTIFY @ref singleStepChanged()
+     * @sa @ref GradientSliderPrivate::m_singleStep()
+     * @sa @ref pageStep */
     Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep NOTIFY singleStepChanged)
 
-    /** @brief The value of the gradient
+    /** @brief The slider’s current value.
      *
-     * Ranges from 0 to 1.
+     * The slider forces the value to be within the legal range:
+     * <tt>0 <= value <= 1</tt>.
+     * - <tt>0</tt> means: totally firstColor()
+     * - <tt>1</tt> means: totally secondColor()
      *
-     * - 0 means: totally firstColor()
-     * - 1 means: totally secondColor()
-     *
-     * @sa setValue()
-     * @sa m_value() */
+     * @sa READ @ref value() const
+     * @sa WRITE @ref setValue()
+     * @sa NOTIFY @ref valueChanged()
+     * @sa @ref GradientSliderPrivate::m_value() */
     Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
@@ -126,26 +157,39 @@ public:
         QWidget *parent = nullptr
     );
     virtual ~GradientSlider() noexcept override;
+    /** @brief Getter for property @ref firstColor
+     *  @returns the property */
+    PerceptualColor::LchaDouble firstColor() const;
     virtual QSize minimumSizeHint() const override;
     /** @brief Getter for property @ref orientation
      *  @returns the property */
     Qt::Orientation orientation() const;
     /** @brief Getter for property @ref pageStep
      *  @returns the property */
-    qreal pageStep();
+    qreal pageStep() const;
+    /** @brief Getter for property @ref secondColor
+     *  @returns the property */
+    PerceptualColor::LchaDouble secondColor() const;
     /** @brief Getter for property @ref singleStep
      *  @returns the property */
-    qreal singleStep();
+    qreal singleStep() const;
     virtual QSize sizeHint() const override;
     /** @brief Getter for property @ref value
      *  @returns the property */
-    qreal value();
+    qreal value() const;
 
 Q_SIGNALS:
-    /** @brief Signal for value() property. */
+    /** @brief Signal for @ref firstColor property. */
+    void firstColorChanged(const PerceptualColor::LchaDouble &newFirstColor);
+    /** @brief Signal for @ref orientation property. */
     void orientationChanged(const Qt::Orientation newOrientation);
+    /** @brief Signal for @ref pageStep property. */
     void pageStepChanged(const qreal newPageStep);
+    /** @brief Signal for @ref secondColor property. */
+    void secondColorChanged(const PerceptualColor::LchaDouble &newSecondColor);
+    /** @brief Signal for @ref singleStep property. */
     void singleStepChanged(const qreal newSingleStep);
+    /** @brief Signal for @ref value property. */
     void valueChanged(const qreal newValue);
 
 public Q_SLOTS:

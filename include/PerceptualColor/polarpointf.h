@@ -58,7 +58,7 @@ namespace PerceptualColor {
  * also 0. This class does <em>not</em> normalize the angle to 0 when the
  * radial is 0 as long as initialized with a radial and an angle. However,
  * when initialized with Cartesian coordinates (0, 0) then the result is
- * radial 0 and angle 0. See also @ref operator==().
+ * radial 0 and angle 0. See also @ref isSamePoint().
  *
  * This class is declared as type to Qt’s type system:
  * <tt>Q_DECLARE_METATYPE(PerceptualColor::PolarPointF)</tt>. Depending on
@@ -118,11 +118,9 @@ public:
      * @param other the object to move-assign */
     PolarPointF& operator=(PolarPointF&& other) noexcept = default;
 
-    bool operator==(const PolarPointF other) const;
-
-    bool operator!=(const PolarPointF other) const;
-
     qreal angleDegree() const;
+
+    bool isSamePoint(const PolarPointF other) const;
 
     static qreal normalizedAngleDegree(const qreal angleDegree);
 

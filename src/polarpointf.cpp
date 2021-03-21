@@ -83,16 +83,16 @@ PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
     }
 }
 
-/** @brief Equal operator
- *
- * Equal means, both values reference to the same point in the coordinates
- * space. So <tt>[@ref radial() 0, @ref angleDegree() 50]</tt> is considered
- * equal to <tt>[@ref radial() 0, @ref angleDegree() 80]</tt> because the
- * @ref angleDegree() is meaningless if the @ref radial() is 0.
+/** @brief Compares with another @ref PolarPointF
  *
  * @param other the polar coordinates to compare with
- * @returns <tt>true</tt> if equal, <tt>false</tt> otherwise */
-bool PolarPointF::operator==(const PolarPointF other) const
+ *
+ * @returns <tt>true</tt> if both, <tt>this</tt> and <tt>other</tt>,
+ * are the same point in the coordinate space. <tt>false</tt> otherwise.
+ * Therefore <tt>[@ref radial() 0, @ref angleDegree() 50]</tt> is considered
+ * to be the same point as <tt>[@ref radial() 0, @ref angleDegree() 80]</tt>
+   because the @ref angleDegree() is meaningless if the @ref radial() is 0.*/
+bool PolarPointF::isSamePoint(const PolarPointF other) const
 {
     return (
         // radial has to be identical
@@ -101,17 +101,6 @@ bool PolarPointF::operator==(const PolarPointF other) const
         // then angle is meaningless)
         ( (m_angleDegree == other.m_angleDegree) || (m_radial == 0) )
     );
-}
-
-/** @brief Unequal operator
- *
- * Inverse coordinates to @ref operator==()
- *
- * @param other the polar coordinates to compare with
- * @returns <tt>true</tt> if unequal, <tt>false</tt> otherwise */
-bool PolarPointF::operator!=(const PolarPointF other) const
-{
-    return !(*this == other);
 }
 
 /** @brief Normalized radial

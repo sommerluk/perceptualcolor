@@ -79,7 +79,7 @@ public:
     );
     virtual ~ChromaLightnessDiagram() noexcept override;
     FullColorDescription color() const;
-    qreal hue() const;
+    Q_INVOKABLE qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
 

@@ -47,33 +47,10 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~GradientSliderPrivate() noexcept = default;
 
-    /** @brief The thickness of the gradient, measured in widget coordinate
-     * system.
-     *
-     * @note It would be interesting to consider the current style’s value for
-     * <tt>QStyle::PixelMetric::PM_SliderControlThickness</tt> for this.
-     * Unfortunally, many styles simply return <tt>0</tt> for this if
-     * the options are not correctly initialized: It seems necessary to
-     * use the protected <tt>QSlider::initStyleOption</tt> and also pass
-     * <tt>this</tt> as last argument (for the widget) to make this work;
-     * therefore, we would have to subclass QSlider. */
-    int m_gradientThickness = 20;
-    int m_gradientMinimumLength = 84;
-    Qt::Orientation m_orientation;
-    void initialize(
-        const QSharedPointer<RgbColorSpace> &colorSpace,
-        Qt::Orientation orientation
-    );
+    // Data members
+// TODO xxx Revision starts here
+// TODO LchaDouble: Normalize! (Performance should not matter for this use case.)!
     LchaDouble m_firstColor;
-    LchaDouble m_secondColor;
-    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
-    void setOrientationAndForceUpdate(const Qt::Orientation newOrientation);
-    void updateGradientImage();
-    QPair<LchDouble, qreal> intermediateColor(
-        const LchaDouble &firstColor,
-        const LchaDouble &secondColor,
-        qreal value
-    );
     /** @brief Cache for the gradient image
      *
      * Holds the current gradient image (without the selection cursor).
@@ -102,19 +79,46 @@ public:
      * \sa updateGradientImage()
      * \sa m_gradientImage() */
     bool m_gradientImageReady = false;
+    int m_gradientMinimumLength = 84;
+    /** @brief The thickness of the gradient, measured in widget coordinate
+     * system.
+     *
+     * @note It would be interesting to consider the current style’s value for
+     * <tt>QStyle::PixelMetric::PM_SliderControlThickness</tt> for this.
+     * Unfortunally, many styles simply return <tt>0</tt> for this if
+     * the options are not correctly initialized: It seems necessary to
+     * use the protected <tt>QSlider::initStyleOption</tt> and also pass
+     * <tt>this</tt> as last argument (for the widget) to make this work;
+     * therefore, we would have to subclass QSlider. */
+    int m_gradientThickness = 20;
+    Qt::Orientation m_orientation;
+    qreal m_pageStep = 0.1;
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace;
+    LchaDouble m_secondColor;
+    qreal m_singleStep = 0.01;
     /** @brief The transform for painting on the widget.
      *
      * Depends on layoutDirection() and orientation() */
     QTransform m_transform;
-    QTransform getTransform() const;
     qreal m_value = 0.5;
+
+    // Methods
     qreal fromWindowCoordinatesToValue(QPoint windowCoordinates);
-    qreal m_singleStep = 0.01;
-    qreal m_pageStep = 0.1;
+    QTransform getTransform() const;
+    void initialize(
+        const QSharedPointer<RgbColorSpace> &colorSpace,
+        Qt::Orientation orientation
+    );
+    QPair<LchDouble, qreal> intermediateColor(
+        const LchaDouble &firstColor,
+        const LchaDouble &secondColor,
+        qreal value
+    );
+    void setOrientationAndForceUpdate(const Qt::Orientation newOrientation);
+    void updateGradientImage();
 
 private:
     Q_DISABLE_COPY(GradientSliderPrivate)
-
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<GradientSlider> q_pointer;

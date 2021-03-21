@@ -102,6 +102,16 @@ void GradientSlider::GradientSliderPrivate::initialize(
     m_gradientImageReady = false;
 }
 
+LchaDouble GradientSlider::firstColor() const
+{
+    return d_pointer->m_firstColor;
+}
+
+LchaDouble GradientSlider::secondColor() const
+{
+    return d_pointer->m_secondColor;
+}
+
 QSize GradientSlider::sizeHint() const
 {
     return minimumSizeHint();
@@ -174,7 +184,7 @@ void GradientSlider::mouseMoveEvent(QMouseEvent* event)
     );
 }
 
-qreal GradientSlider::value()
+qreal GradientSlider::value() const
 {
     return d_pointer->m_value;
 }
@@ -261,28 +271,34 @@ void GradientSlider::keyPressEvent(QKeyEvent* event)
     }
 }
 
-qreal GradientSlider::singleStep()
+qreal GradientSlider::singleStep() const
 {
     return d_pointer->m_singleStep;
 }
 
-qreal GradientSlider::pageStep()
+qreal GradientSlider::pageStep() const
 {
     return d_pointer->m_pageStep;
 }
 
+/** @param newSingleStep Negatif values are interpreted as <tt>0</tt>. */
 void GradientSlider::setSingleStep(qreal newSingleStep)
 {
-    if (newSingleStep != d_pointer->m_singleStep) {
-        d_pointer->m_singleStep = newSingleStep;
+    // Do not use negatif valuge
+    const qreal boundedSingleStep = qMax(newSingleStep, 0.0);
+    if (boundedSingleStep != d_pointer->m_singleStep) {
+        d_pointer->m_singleStep = boundedSingleStep;
         Q_EMIT singleStepChanged(d_pointer->m_singleStep);
     }
 }
 
+/** @param newPageStep Negatif values are interpreted as <tt>0</tt>. */
 void GradientSlider::setPageStep(qreal newPageStep)
 {
-    if (newPageStep != d_pointer->m_pageStep) {
-        d_pointer->m_pageStep = newPageStep;
+    // Do not use negatif valuge
+    const qreal boundedNewPageStep = qMax(newPageStep, 0.0);
+    if (boundedNewPageStep != d_pointer->m_pageStep) {
+        d_pointer->m_pageStep = boundedNewPageStep;
         Q_EMIT pageStepChanged(d_pointer->m_pageStep);
     }
 }
@@ -419,30 +435,32 @@ void GradientSlider::setColors(
     const PerceptualColor::LchaDouble &newSecondColor
 )
 {
-    if (
-        (d_pointer->m_firstColor.hasSameCoordinates(newFirstColor))
-            && (d_pointer->m_secondColor.hasSameCoordinates(newSecondColor))
-    ) {
-        return;
-    }
-    d_pointer->m_firstColor = newFirstColor;
-    d_pointer->m_secondColor = newSecondColor;
-    d_pointer->m_gradientImageReady = false;
-    update();
+    setFirstColor(newFirstColor);
+    setSecondColor(newSecondColor);
 }
 
 void GradientSlider::setFirstColor(
     const PerceptualColor::LchaDouble &newFirstColor
 )
 {
-    setColors(newFirstColor, d_pointer->m_secondColor);
+    if (!d_pointer->m_firstColor.hasSameCoordinates(newFirstColor)) {
+        d_pointer->m_firstColor = newFirstColor;
+        d_pointer->m_gradientImageReady = false;
+        Q_EMIT firstColorChanged(d_pointer->m_firstColor);
+        update();
+    }
 }
 
 void GradientSlider::setSecondColor(
     const PerceptualColor::LchaDouble &newSecondColor
 )
 {
-    setColors(d_pointer->m_firstColor, newSecondColor);
+    if (!d_pointer->m_secondColor.hasSameCoordinates(newSecondColor)) {
+        d_pointer->m_secondColor = newSecondColor;
+        d_pointer->m_gradientImageReady = false;
+        Q_EMIT secondColorChanged(d_pointer->m_secondColor);
+        update();
+    }
 }
 
 /** @returns LchaDouble for intermediate color, and its corresponding alpha

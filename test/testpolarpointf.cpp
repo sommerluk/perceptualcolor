@@ -190,96 +190,47 @@ private Q_SLOTS:
         QCOMPARE(temp01.angleDegree(), static_cast<qreal>(45));
     }
 
-    void testEqualAndUnequalOperator() {
+    void testIsSamePoint() {
         QVERIFY(
-            (
-                PerceptualColor::PolarPointF(0, 0)
-                    != PerceptualColor::PolarPointF(1, 0)
-            )
-        );
-        QVERIFY(
-            !(
-                PerceptualColor::PolarPointF(0, 0)
-                    == PerceptualColor::PolarPointF(1, 0)
+            !PerceptualColor::PolarPointF(0, 0).isSamePoint(
+                PerceptualColor::PolarPointF(1, 0)
             )
         );
 
         // If radial is 0, different angle still means same point
         QVERIFY(
-            (
-                PerceptualColor::PolarPointF(0, 0)
-                    == PerceptualColor::PolarPointF(0, 500)
-            )
-        );
-        QVERIFY(
-            !(
-                PerceptualColor::PolarPointF(0, 0)
-                    != PerceptualColor::PolarPointF(0, 500)
+            PerceptualColor::PolarPointF(0, 0).isSamePoint(
+                PerceptualColor::PolarPointF(0, 500)
             )
         );
 
         QVERIFY(
-            (
-                PerceptualColor::PolarPointF(0, 0)
-                    == PerceptualColor::PolarPointF(0, 300)
-            )
-        );
-        QVERIFY(
-            !(
-                PerceptualColor::PolarPointF(0, 0)
-                    != PerceptualColor::PolarPointF(0, 300)
+            PerceptualColor::PolarPointF(0, 0).isSamePoint(
+                PerceptualColor::PolarPointF(0, 300)
             )
         );
 
         QVERIFY(
-            (
-                PerceptualColor::PolarPointF(0, 0)
-                    == PerceptualColor::PolarPointF(0, -500)
-            )
-        );
-        QVERIFY(
-            !(
-                PerceptualColor::PolarPointF(0, 0)
-                    != PerceptualColor::PolarPointF(0, -500)
+            PerceptualColor::PolarPointF(0, 0).isSamePoint(
+                PerceptualColor::PolarPointF(0, -500)
             )
         );
 
         QVERIFY(
-            (
-                PerceptualColor::PolarPointF(1, 320)
-                    != PerceptualColor::PolarPointF(1, 321)
-            )
-        );
-        QVERIFY(
-            !(
-                PerceptualColor::PolarPointF(1, 320)
-                    == PerceptualColor::PolarPointF(1, 321)
+            !PerceptualColor::PolarPointF(1, 320).isSamePoint(
+                PerceptualColor::PolarPointF(1, 321)
             )
         );
 
         QVERIFY(
-            (
-                PerceptualColor::PolarPointF(5, 90)
-                    == PerceptualColor::PolarPointF(-5, 270)
-            )
-        );
-        QVERIFY(
-            !(
-                PerceptualColor::PolarPointF(5, 90)
-                    != PerceptualColor::PolarPointF(-5, 270)
+            PerceptualColor::PolarPointF(5, 90).isSamePoint(
+                PerceptualColor::PolarPointF(-5, 270)
             )
         );
 
         QVERIFY(
-            (
-                PerceptualColor::PolarPointF(5, 450)
-                    == PerceptualColor::PolarPointF(-5, -90)
-            )
-        );
-        QVERIFY(
-            !(
-                PerceptualColor::PolarPointF(5, 450)
-                    != PerceptualColor::PolarPointF(-5, -90)
+            PerceptualColor::PolarPointF(5, 450).isSamePoint(
+                PerceptualColor::PolarPointF(-5, -90)
             )
         );
     }
@@ -368,7 +319,7 @@ private Q_SLOTS:
         // This following line should throw a compile-time error if meta-type
         // is not declared:
         var.setValue(temp01);
-        QCOMPARE(var.value<PerceptualColor::PolarPointF>(), temp01);
+        QVERIFY(var.value<PerceptualColor::PolarPointF>().isSamePoint(temp01));
     }
 
     void testDebug() {

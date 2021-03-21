@@ -138,7 +138,7 @@
  * @note This library uses the <em>pointer to implementation</em> idiom
  * (also known as pimpl idiom, d-pointer idiom or opaque-pointer idiom)
  * in almost all classes that are part of the public API, and also in
- * some classes that are part of th eprivate API. This idiom is also
+ * some classes that are part of the private API. This idiom is also
  * used by Qt itself, and Qt even provides some macros and extension
  * points (<tt>Q_DECLARE_PRIVATE</tt>, <tt>Q_D</tt>, a protected
  * member called <tt>d_ptr</tt> in almost all classes…), that help dealing
@@ -282,6 +282,13 @@
  * https://doc.qt.io/qt-5/qml-qtquick-dialogs-colordialog.html (or its
  * Qt6 counterpart) we provide a source compatible alternative, like for
  * QColorWidget? Split the library in three parts (Common, Widgets, QML)?
+ *
+ * @todo Apparently QWidget cannot be used from QML. (Though there is
+ * https://www.kdab.com/declarative-widgets/ – how does that work?) Is it
+ * therefore worth to have complete support for signals in all our QWidget
+ * code if this is not really necessary for QWidget (for example for
+ * properties that can only be changed programatically and not by the
+ * user)?
  *
  * @todo Comply with KDE policies: https://community.kde.org/Policies
  *

@@ -54,7 +54,7 @@ class RgbColorSpace : public QObject
 public:
     Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
     virtual ~RgbColorSpace() noexcept override;
-    qreal blackpointL() const;
+    Q_INVOKABLE qreal blackpointL() const;
     Q_INVOKABLE QColor colorRgb(const PerceptualColor::LabDouble &Lab) const;
     Q_INVOKABLE QColor colorRgb(const PerceptualColor::LchDouble &lch) const;
     Q_INVOKABLE PerceptualColor::RgbDouble colorRgbBoundSimple(
@@ -79,11 +79,11 @@ public:
         const double hue
     );
     Q_INVOKABLE bool inGamut(const PerceptualColor::LchDouble &lch);
-    QString profileInfoCopyright() const;
-    QString profileInfoDescription() const;
-    QString profileInfoManufacturer() const;
-    QString profileInfoModel() const;
-    qreal whitepointL() const;
+    Q_INVOKABLE QString profileInfoCopyright() const;
+    Q_INVOKABLE QString profileInfoDescription() const;
+    Q_INVOKABLE QString profileInfoManufacturer() const;
+    Q_INVOKABLE QString profileInfoModel() const;
+    Q_INVOKABLE qreal whitepointL() const;
 
 private:
     Q_DISABLE_COPY(RgbColorSpace)
