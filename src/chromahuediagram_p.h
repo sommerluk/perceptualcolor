@@ -65,8 +65,8 @@ public:
     // Member variables
     /** @brief The image of the chroma-hue diagram itself. */
     ChromaHueImage m_chromaHueImage;
-    /** @brief Internal storage of the @ref color() property */
-    LchDouble m_color;
+    /** @brief Internal storage of the @ref currentColor() property */
+    LchDouble m_currentColor;
     /** @brief Holds if currently a mouse event is active or not.
      *
      * Default value is <tt>false</tt>.

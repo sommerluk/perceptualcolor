@@ -24,47 +24,43 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef LABDOUBLE_H
-#define LABDOUBLE_H
+#include "perceptualcolorlib_internal.h"
 
-#include "PerceptualColor/perceptualcolorlib_global.h"
+// Own header
+#include "version.h"
 
-#include <lcms2.h>
+#include "config.h"
 
-#include <QDebug>
+static_assert(
+    std
+        ::numeric_limits<decltype(PERCEPTUALCOLOR_COMPILE_TIME_VERSION)>
+        ::is_integer
+);
+
+static_assert(PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= 1);
 
 namespace PerceptualColor {
 
-/** @brief A LAB color.
+/** @brief Against which version of this library you are <em>running</em>.
  *
- * Storage of floating point LAB values with <tt>double</tt> precision.
+ * This library uses
+ * <a href="https://semver.org/">Semantic Versioning 2.0.0</a>.
  *
- * The data is not default-initializad; it is undefined when the object
- * is created.
+ * @returns The library version with major, minor and patch version.
+ * Note that there is no pre-release identifier included. For example, if
+ * your application is running against version 1.2.3-alpha of this library,
+ * this function will return <tt>QVersionNumber(1, 2, 3)</tt>.
  *
- * Example:
- * @snippet test/testlabdouble.cpp Use LabDouble
+ * To use this function, include @ref version.h
  *
- * Data members:
- *
- * - L: Lightness, mesured in percent. The valid range  is <tt>[0, 100]</tt>.
- * - a: a axis (red-green-axis).
- * - b: b_axis (yellow-blue-axis).
- *
- * @sa @ref LchValues explains more details about the valid range.
- *
- * This class is declared as type to Qt's type system:
- * <tt>Q_DECLARE_METATYPE(PerceptualColor::LabDouble)</tt>.
- * Depending on your use case (for example if you want to use it
- * reliably in Qt's signals and slots), you might consider calling
- * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
- * object. */
-using LabDouble = cmsCIELab;
+ * @sa @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION */
+QVersionNumber perceptualColorRunTimeVersion()
+{
+    return QVersionNumber(
+        PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR,
+        PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR,
+        PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH
+    );
+}
 
 } // namespace PerceptualColor
-
-QDebug operator<<(QDebug dbg, const PerceptualColor::LabDouble &value);
-
-Q_DECLARE_METATYPE(PerceptualColor::LabDouble)
-
-#endif // LABDOUBLE_H

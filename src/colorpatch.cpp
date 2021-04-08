@@ -32,6 +32,7 @@
 // Second, the private implementation.
 #include "colorpatch_p.h"
 
+#include <QApplication>
 #include <QPainter>
 #include <QStyleOption>
 
@@ -79,7 +80,23 @@ QSize ColorPatch::sizeHint() const
  * @sa @ref sizeHint() */
 QSize ColorPatch::minimumSizeHint() const
 {
-    return QSize(50, 50);
+    // Use a size similar to a QToolButton with an icon (and without text)
+    ensurePolished();
+    QStyleOptionToolButton option;
+    option.initFrom(this);
+    option.font = font();
+    const int iconSize = style()->pixelMetric(
+        QStyle::PM_ButtonIconSize,
+        nullptr,
+        this
+    );
+    option.iconSize = QSize(iconSize, iconSize);
+    return style()->sizeFromContents(
+        QStyle::CT_ToolButton,
+        &option,
+        option.iconSize,
+        this
+    ).expandedTo(QApplication::globalStrut());
 }
 
 // No documentation here (documentation of properties
@@ -171,8 +188,8 @@ void ColorPatch::paintEvent(QPaintEvent *event)
             size().height(),
             d_pointer->m_color
         );
-        // Fill the image with tiles. (QBrush will ignore
-        // the devicePixelRatioF.)
+        // Fill a given rectangle with tiles. (QBrush will ignore
+        // the devicePixelRatioF of the image of the tile.)
         QPainter(&tempImage).fillRect(
             0,
             0,

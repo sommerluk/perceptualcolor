@@ -33,7 +33,6 @@
 
 #include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/chromahuediagram.h"
-#include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/wheelcolorpicker.h"
@@ -89,7 +88,7 @@ public:
      * within @ref m_alphaGradientSlider.
      *
      * @sa @ref currentColor() */
-    FullColorDescription m_currentOpaqueColor;
+    LchDouble m_currentOpaqueColor;
     /** @brief Pointer to the @ref GradientSlider for LCh lightness. */
     QPointer<GradientSlider> m_lchLightnessSelector;
     /** @brief Pointer to the @ref MultiSpinBox for HLC. */
@@ -146,7 +145,7 @@ public:
     void applyLayoutDimensions();
     void initialize();
     QWidget* initializeNumericPage();
-    void setCurrentFullColor(const FullColorDescription& color);
+    void setCurrentFullColor(const LchaDouble& color);
 
 public Q_SLOTS:
     void readHlcNumericValues();
@@ -155,7 +154,7 @@ public Q_SLOTS:
     void readRgbHexValues();
     void readRgbNumericValues();
     void setCurrentOpaqueColor(
-        const PerceptualColor::FullColorDescription &color
+        const PerceptualColor::LchDouble &color
     );
     void setCurrentOpaqueQColor(const QColor &color);
     void updateColorPatch();

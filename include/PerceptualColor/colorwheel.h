@@ -24,8 +24,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef SIMPLECOLORWHEEL_H
-#define SIMPLECOLORWHEEL_H
+#ifndef COLORWHEEL_H
+#define COLORWHEEL_H
 
 #include <QImage>
 #include <QWidget>
@@ -54,7 +54,7 @@ namespace PerceptualColor {
  * is left to allow that the focus indicator can be painted completely
  * even when the widget has the focus. The border is determined
  * automatically, its value depends on @ref handleOutlineThickness(). */
-class SimpleColorWheel : public AbstractDiagram
+class ColorWheel : public AbstractDiagram
 {
     Q_OBJECT
 
@@ -74,11 +74,11 @@ class SimpleColorWheel : public AbstractDiagram
     Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged USER true)
 
 public:
-    Q_INVOKABLE explicit SimpleColorWheel(
+    Q_INVOKABLE explicit ColorWheel(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         QWidget *parent = nullptr
     );
-    virtual ~SimpleColorWheel() noexcept override;
+    virtual ~ColorWheel() noexcept override;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
@@ -111,22 +111,25 @@ protected:
     qreal wheelRibbonChroma() const;
 
 private:
-    Q_DISABLE_COPY(SimpleColorWheel)
+    Q_DISABLE_COPY(ColorWheel)
 
-    class SimpleColorWheelPrivate;
+    class ColorWheelPrivate;
     /** @brief Declare the private implementation as friend class.
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
-    friend class SimpleColorWheelPrivate;
+    friend class ColorWheelPrivate;
     /** @brief Pointer to implementation (pimpl) */
-    ConstPropagatingUniquePointer<SimpleColorWheelPrivate> d_pointer;
+    ConstPropagatingUniquePointer<ColorWheelPrivate> d_pointer;
 
     /** @brief Only for unit tests. */
     friend class TestColorDialog;
 
+    /** @brief Internal friend declaration.
+     * @todo  Remove this friend declaration */
+    friend class WheelColorPicker;
 };
 
 }
 
-#endif // SIMPLECOLORWHEEL_H
+#endif // COLORWHEEL_H

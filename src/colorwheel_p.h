@@ -24,11 +24,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef SIMPLECOLORWHEEL_P_H
-#define SIMPLECOLORWHEEL_P_H
+#ifndef COLORWHEEL_P_H
+#define COLORWHEEL_P_H
 
 // Include the header of the public class of this private implementation.
-#include "PerceptualColor/simplecolorwheel.h"
+#include "PerceptualColor/colorwheel.h"
 #include "constpropagatingrawpointer.h"
 
 #include <QPointer>
@@ -40,18 +40,18 @@ namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class SimpleColorWheel::SimpleColorWheelPrivate final
+class ColorWheel::ColorWheelPrivate final
 {
 public:
-    SimpleColorWheelPrivate(
-        SimpleColorWheel *backLink,
+    ColorWheelPrivate(
+        ColorWheel *backLink,
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
     );
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
-    ~SimpleColorWheelPrivate() noexcept = default;
+    ~ColorWheelPrivate() noexcept = default;
 
     /** @brief If a mouse event is active
      *
@@ -75,13 +75,13 @@ public:
     ) const;
 
 private:
-    Q_DISABLE_COPY(SimpleColorWheelPrivate)
+    Q_DISABLE_COPY(ColorWheelPrivate)
 
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
-    ConstPropagatingRawPointer<SimpleColorWheel> q_pointer;
+    ConstPropagatingRawPointer<ColorWheel> q_pointer;
 };
 
 }
 
-#endif // SIMPLECOLORWHEEL_P_H
+#endif // COLORWHEEL_P_H

@@ -34,6 +34,8 @@
 
 #include "helper.h"
 
+#include "PerceptualColor/polarpointf.h"
+
 #include <QDebug>
 
 namespace PerceptualColor {
@@ -183,6 +185,18 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
     return colorLab(my_rgb);
 }
 
+PerceptualColor::LchDouble RgbColorSpace::colorLch(const QColor &rgbColor) const
+{
+    cmsCIELab lab = colorLab(rgbColor);
+    cmsCIELCh lch;
+    cmsLab2LCh(&lch, &lab);
+    LchDouble result;
+    result.l = lch.L;
+    result.c = lch.C;
+    result.h = lch.h;
+    return result;
+}
+
 /** @brief Calculates the Lab value
  *
  * @param rgb the color that will be converted.
@@ -237,7 +251,11 @@ QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
     const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
     // convert from LCh to Lab
     cmsLCh2Lab(&lab, &myCmsCieLch);
-    return colorRgb(lab);
+    cmsCIELab temp;
+    temp.L = lab.L;
+    temp.a = lab.a;
+    temp.b = lab.b;
+    return colorRgb(temp);
 }
 
 PerceptualColor::RgbDouble RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
@@ -282,7 +300,22 @@ QColor RgbColorSpace::colorRgbBound(
     const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
     // convert from LCh to Lab
     cmsLCh2Lab(&lab, &myCmsCieLch);
-    return colorRgbBound(lab);
+    cmsCIELab temp;
+    temp.L = lab.L;
+    temp.a = lab.a;
+    temp.b = lab.b;
+    return colorRgbBound(temp);
+}
+
+QColor RgbColorSpace::colorRgbBound(const PerceptualColor::LchaDouble &lcha) const
+{
+    LchDouble lch;
+    lch.l = lcha.l;
+    lch.c = lcha.c;
+    lch.h = lcha.h;
+    QColor result = colorRgbBound(lch);
+    result.setAlphaF(lcha.a);
+    return result;
 }
 
 // TODO What to do with in-gamut tests if LittleCMS has fallen back to
@@ -299,7 +332,7 @@ bool RgbColorSpace::inGamut(
     const double lightness,
     const double chroma,
     const double hue
-)
+) const
 {
     // variables
     LchDouble LCh;
@@ -315,28 +348,32 @@ bool RgbColorSpace::inGamut(
  * @param lch the LCh color
  * @returns Returns true if lightness/chroma/hue is in the specified
  * RGB gamut. Returns false otherwise. */
-bool RgbColorSpace::inGamut(const LchDouble &lch)
+bool RgbColorSpace::inGamut(const LchDouble &lch) const
 {
     // variables
-    cmsCIELab Lab; // uses cmsFloat64Number internally
+    cmsCIELab lab; // uses cmsFloat64Number internally
     const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
 
     // code
-    cmsLCh2Lab(&Lab, &myCmsCieLch); // TODO no normalization necessary previously?
-    return inGamut(Lab);
+    cmsLCh2Lab(&lab, &myCmsCieLch); // TODO no normalization necessary previously?
+    cmsCIELab temp;
+    temp.L = lab.L;
+    temp.a = lab.a;
+    temp.b = lab.b;
+    return inGamut(temp);
 }
 
 /** @brief check if a Lab value is within a specific RGB gamut
- * @param Lab the Lab color
+ * @param lab the Lab color
  * @returns Returns true if it is in the specified RGB gamut. Returns
  * false otherwise. */
-bool RgbColorSpace::inGamut(const cmsCIELab &Lab)
+bool RgbColorSpace::inGamut(const cmsCIELab &lab) const
 {
     RgbDouble rgb;
 
     cmsDoTransform(
         d_pointer->m_transformLabToRgbHandle, // handle to transform function
-        &Lab,                                 // input
+        &lab,                                 // input
         &rgb,                                 // output
         1                                     // convert exactly 1 value
     );
@@ -364,9 +401,72 @@ QString RgbColorSpace::profileInfoManufacturer() const
     return d_pointer->m_cmsInfoManufacturer;
 }
 
+/** @brief Convert to LCh
+ *
+ * @param lab a point in Lab representation
+ * @returns the same point in LCh representation */
+PerceptualColor::LchDouble RgbColorSpace::toLch(const cmsCIELab &lab) const
+{
+    cmsCIELCh tempLch;
+    cmsLab2LCh(&tempLch, &lab);
+    return toLchDouble(tempLch);
+}
+
 QString RgbColorSpace::profileInfoModel() const
 {
     return d_pointer->m_cmsInfoModel;
+}
+
+/** @returns A <em>normalized</em> (this is guaranteed!) in-gamut color,
+ * maybe with different chroma (and even lightness??) */
+PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(
+    const PerceptualColor::LchDouble &color
+) const
+{
+    LchDouble result = color;
+    PolarPointF temp(result.c, result.h);
+    result.c = temp.radial();
+    result.h = temp.angleDegree();
+
+    // Test special case: If we are yet in-gamut…
+    if (inGamut(result)) {
+        return result;
+    }
+
+    // Now we know: We are out-of-gamut…
+    LchDouble lowerChroma {result.l, 0, result.h};
+    LchDouble upperChroma {result};
+    LchDouble candidate;
+    if (inGamut(lowerChroma)) {
+        // Now we know for sure that lowerChroma is in-gamut
+        // and upperChroma is out-of-gamut…
+        candidate = upperChroma;
+        while (upperChroma.c - lowerChroma.c > gamutPrecision) {
+            // Our test candidate is half the way between lowerChroma
+            // and upperChroma:
+            candidate.c = (
+                (lowerChroma.c + upperChroma.c) / 2
+            );
+            if (inGamut(candidate)) {
+                lowerChroma = candidate;
+            } else {
+                upperChroma = candidate;
+            }
+        }
+        result = lowerChroma;
+    } else {
+        if (result.l < blackpointL()) {
+            result.l = blackpointL();
+            result.c = 0;
+        } else {
+            if (result.l > whitepointL()) {
+                result.l = blackpointL();
+                result.c = 0;
+            }
+        }
+    }
+
+    return result;
 }
 
 /** @brief Get information from an ICC profile via LittleCMS
@@ -467,7 +567,8 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     // indeed null-terminated.
     // QString::fromWCharArray will return a QString. It accepts arrays of
     // wchar_t. wchar_t might have different sizes, either 16 bit or 32 bit
-    // depending on the operating system. As Qt’s documantation says:
+    // depending on the operating system. As Qt’s documantation of
+    // QString::fromWCharArray() says:
     //
     //     “If wchar is 4 bytes, the string is interpreted as UCS-4,
     //      if wchar is 2 bytes it is interpreted as UTF-16.”

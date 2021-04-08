@@ -70,6 +70,8 @@ namespace PerceptualColor {
  * @todo Example code: How to create the widget at a given
  * lightness.
  *
+ * @todo Allow to touch the widget on the color wheel (and have a reaction).
+ *
  * @todo Use a cross cursor for better usability: The cross cursor indicates
  * to the user that an area can be clicked in. Do it only within the gamut
  * (where the color handle can actually go) or in the hole gray circle,
@@ -93,10 +95,10 @@ class ChromaHueDiagram : public AbstractDiagram
      * values. However, the LCh lightness value cannot be changed by the
      * user, but only by the programmer through this property.
      *
-     * @sa READ @ref color() const
-     * @sa WRITE @ref setColor()
-     * @sa NOTIFY @ref colorChanged() */
-    Q_PROPERTY(LchDouble color READ color WRITE setColor NOTIFY colorChanged)
+     * @sa READ @ref currentColor() const
+     * @sa WRITE @ref setCurrentColor()
+     * @sa NOTIFY @ref currentColorChanged() */
+    Q_PROPERTY(LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
 public:
     Q_INVOKABLE explicit ChromaHueDiagram(
@@ -104,19 +106,21 @@ public:
         QWidget *parent = nullptr
     );
     virtual ~ChromaHueDiagram() noexcept override;
-    /** @brief Getter for property @ref color
-     *  @returns the property @ref color */
-    LchDouble color() const;
+    /** @brief Getter for property @ref currentColor
+     *  @returns the property @ref currentColor */
+    LchDouble currentColor() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setColor(const PerceptualColor::LchDouble &newColor);
+    void setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor);
 
 Q_SIGNALS:
-    /** @brief Notify signal for property @ref color().
-     *  @param color the new color */
-    void colorChanged(const PerceptualColor::LchDouble &color);
+    /** @brief Notify signal for property @ref currentColor.
+     *  @param newCurrentColor the new current color */
+    void currentColorChanged(
+        const PerceptualColor::LchDouble &newCurrentColor
+    );
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
@@ -142,6 +146,7 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestChromaHueDiagram;
+
 };
 
 }

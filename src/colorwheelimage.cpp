@@ -132,7 +132,7 @@ void ColorWheelImage::setImageSize(const int newImageSize)
  * outer outline of the wheel.
  *
  * @param newWheelThickness The new wheel thickness, measured
- * in <em>logical</em> pixels. */
+ * in <em>physical</em> pixels. */
 void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
 {
     qreal temp;

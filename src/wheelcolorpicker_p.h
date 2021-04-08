@@ -34,32 +34,36 @@
 #include <QPointer>
 
 #include "PerceptualColor/chromalightnessdiagram.h"
+#include "PerceptualColor/rgbcolorspace.h"
+#include "PerceptualColor/colorwheel.h"
 
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class WheelColorPicker::WheelColorPickerPrivate final
+class WheelColorPicker::WheelColorPickerPrivate final : public QObject
 {
+Q_OBJECT
 public:
     WheelColorPickerPrivate(WheelColorPicker *backLink);
-    /** @brief Default destructor
-     *
-     * The destructor is non-<tt>virtual</tt> because
-     * the class as a whole is <tt>final</tt>. */
-    ~WheelColorPickerPrivate() noexcept = default;
+    /** @brief Default destructor */
+    virtual ~WheelColorPickerPrivate() noexcept = default;
 
-    /** @brief A pointer to the inner ChromaLightnessDiagram() widget. */
+    /** @brief A pointer to the @ref ChromaLightnessDiagram widget. */
     QPointer<ChromaLightnessDiagram> m_chromaLightnessDiagram;
+    /** @brief A pointer to the color space. */
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
+    /** @brief A pointer to the @ref ColorWheel widget. */
+    QPointer<ColorWheel> m_ColorWheel;
 
-    void resizeChildWidget();
+    void resizeChildWidgets();
     static QSize scaleRectangleToDiagonal(
         const QSize oldRectangle,
         const qreal newDiagonal
     );
 
 public Q_SLOTS:
-    void scheduleUpdate();
+    void handleFocusChanged(QWidget *old, QWidget *now);
 
 private:
     Q_DISABLE_COPY(WheelColorPickerPrivate)

@@ -111,6 +111,31 @@ namespace PerceptualColor {
  * @note This dialog uses icons. See @ref hidpisupport "High DPI support"
  * about how to enable support for high-DPI icons.
  *
+ * @todo BUG: Put hex value ffff00. Push tab key. The value changes to
+ * 000000. It shouldn't.
+ *
+ * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
+ * With each focus switch, the values change. They shouldn't!
+ *
+ * @todo TODO WARNING BUG: We should have a double storage of the color: As
+ * LCH value and also as RGB value. This will prevent rounding errors. (The
+ * application programmer sets an RGB value. He expects that the getter of
+ * the color property returns that very same RGB value without any rounding
+ * errors! Therefore, we need double storage!
+ *
+ * @todo BUG: Apparently, keyboard control of @ref ChromaHueDiagram is
+ * broken. And: keyboard control of the alpha spinbox does not react either.
+ * Are both bugs connected?
+ *
+ * @todo BUG: Start the @ref ColorDialog with the color
+ * <tt>QColor(Qt::yellow)</tt>. The @ref ChromaHueDiagram shows its handle
+ * at a position with a very different (much, much paler) yellow than
+ * indicated. Why is this inconsistent?
+ *
+ * @todo BUG: Start the dialog. → Go to tab “numeric”. → HLC is 270°. → Click
+ * within the “Hex” spinbox. → Click within the “HSV” spinbox. Now, HLC
+ * changes from 270° to 269°. → Why?
+ *
  * @todo The graphical display in @ref WheelColorPicker jumps when you
  * choose a gray color like HSV 20 0 125 and then increment or decrement the
  * V component in the QSpinBox by 1. This is because @ref WheelColorPicker is

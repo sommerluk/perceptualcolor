@@ -55,14 +55,15 @@ set(PROJECT_PATCH_VERSION "1")
 set(PROJECT_VERSION
     "${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION}"
 )
-# # Substitutes all occurrences of @PROJECT_VERSION@ in the source code file
-# # by the actual value in CMake
-# configure_file(
-#     version_config.h.in
-#     ${CMAKE_BINARY_DIR}/generated/version_config.h
-# )
-# # Make sure the generated file can be included:
-# include_directories( ${CMAKE_BINARY_DIR}/generated/ )
+# Substitutes all occurrences of @PROJECT_VERSION@ and similar declaration
+# in the source code file by the actual value in CMake
+configure_file(
+    src/config.h.in
+    ${CMAKE_BINARY_DIR}/generated/config.h
+)
+# TODO WARNING The file ${CMAKE_BINARY_DIR}/generated/version_config.h has to be installed!
+# Make sure the generated file can be included:
+include_directories( ${CMAKE_BINARY_DIR}/generated/ )
 
 
 
@@ -101,6 +102,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
         -Wconversion\
         -Wsign-conversion\
         -finput-charset=UTF-8\
+        -Wzero-as-null-pointer-constant\
     ")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         # TODO Do not enable -Weverything (and the following excluded checks)
@@ -181,17 +183,17 @@ set(perceptualcolor_SRC
   src/colorwheelimage.cpp
   src/extendeddoublevalidator.cpp
   src/fallbackiconengine.cpp
-  src/fullcolordescription.cpp
+  src/gradientimage.cpp
   src/gradientslider.cpp
   src/helper.cpp
-  src/labdouble.cpp
   src/lchadouble.cpp
   src/lchdouble.cpp
   src/multispinbox.cpp
   src/polarpointf.cpp
   src/rgbcolorspace.cpp
   src/rgbdouble.cpp
-  src/simplecolorwheel.cpp
+  src/colorwheel.cpp
+  src/version.cpp
   src/wheelcolorpicker.cpp
 )
 # Set the headers for our library. This list only contains the headers
@@ -203,9 +205,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/colordialog.h
   include/PerceptualColor/colorpatch.h
   include/PerceptualColor/constpropagatinguniquepointer.h
-  include/PerceptualColor/fullcolordescription.h
   include/PerceptualColor/gradientslider.h
-  include/PerceptualColor/labdouble.h
   include/PerceptualColor/lchadouble.h
   include/PerceptualColor/lchdouble.h
   include/PerceptualColor/multispinbox.h
@@ -213,7 +213,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/polarpointf.h
   include/PerceptualColor/rgbcolorspace.h
   include/PerceptualColor/rgbdouble.h
-  include/PerceptualColor/simplecolorwheel.h
+  include/PerceptualColor/colorwheel.h
   include/PerceptualColor/wheelcolorpicker.h
 )
 # Include directories
@@ -308,11 +308,13 @@ add_unit_test(testconstpropagatinguniquepointer)
 add_unit_test(testconstpropagatingrawpointer)
 add_unit_test(testextendeddoublevalidator)
 add_unit_test(testfallbackiconengine)
+add_unit_test(testgradientimage)
+add_unit_test(testgradientslider)
 add_unit_test(testhelper)
-add_unit_test(testlabdouble)
 add_unit_test(testlchadouble)
 add_unit_test(testlchdouble)
 add_unit_test(testlchvalues)
 add_unit_test(testmultispinbox)
 add_unit_test(testpolarpointf)
 add_unit_test(testrgbdouble)
+add_unit_test(testversion)

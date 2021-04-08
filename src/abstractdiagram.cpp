@@ -34,6 +34,7 @@
 
 #include <cmath>
 
+#include <QApplication>
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
@@ -212,19 +213,69 @@ qreal AbstractDiagram::handleRadius() const
     return handleOutlineThickness() * 2.5;
 }
 
-
-/** @brief The thickness of the color wheel.
- * @returns The thickness of the color wheel, measured in widget
- * coordinates. */
-int AbstractDiagram::wheelThickness() const
+/** @brief The thickness of a color gradient.
+ *
+ * This is the thickness of a one-dimensional gradient, for example in
+ * a slider or a color wheel.
+ * @returns The thickness of a slider or a color wheel, measured in widget
+ * coordinates.
+ * @sa @ref gradientMinimumLength() */
+int AbstractDiagram::gradientThickness() const
 {
-    QStyleOption styleOption;
+    ensurePolished();
+    int result = 0;
+    QStyleOptionSlider styleOption;
     styleOption.initFrom(this); // Sets also QStyle::State_MouseOver
-    return qMax(
-        style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this),
+    styleOption.orientation = Qt::Horizontal;
+    result = qMax(
+        result,
+        style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this)
+    );
+    styleOption.orientation = Qt::Vertical;
+    result = qMax(
+        result,
+        style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this)
+    );
+    result = qMax(
+        result,
         qRound(handleRadius())
     );
+    // QApplication::globalStrut() is the minimum.
+    // gradientMinimumLength depends on the following checks!
+    result = qMax(
+        result,
+        QApplication::globalStrut().width()
+    );
+    result = qMax(
+        result,
+        QApplication::globalStrut().height()
+    );
+    // No supplementary space for ticks is added.
+    return result;
+}
 
+/** @brief The minimum length of a color gradient.
+ *
+ * This is the minimum length of a one-dimensional gradient, for example in
+ * a slider or a color wheel. This is also the mimimum width and minimum
+ * height of two-dimensional gradients.
+ * @returns The length of a gradient, measured in widget
+ * coordinates.
+ * @sa @ref gradientThickness() */
+int AbstractDiagram::gradientMinimumLength() const
+{
+    ensurePolished();
+    QStyleOptionSlider option;
+    option.initFrom(this);
+    return qMax(
+        qMax(
+            // Similar to QSlider sizeHint():
+            84,
+             // Similar to QSlider::minimumSizeHint():
+            style()->pixelMetric(QStyle::PM_SliderLength, &option, this)
+        ),
+        gradientThickness() // Considers implicitly QApplication::globalStrut()
+    );
 }
 
 /** @brief The empty space around diagrams reserverd for the focus indicator.
@@ -238,6 +289,21 @@ int AbstractDiagram::spaceForFocusIndicator() const
     return
         handleOutlineThickness() // The space for the focus indicator itself
         + 2 * handleOutlineThickness(); // Add some spacing
+}
+
+/** @brief An appropriate color for a handle, depending on the background
+ * lightness.
+ * @param lightness The background lightness. Valid range: <tt>[0, 100]</tt>.
+ * @returns An appropriate color for a handle. This color will provide
+ * contrast to the background. */
+QColor AbstractDiagram::handleColorFromBackgroundLightness(
+    qreal lightness
+) const
+{
+    if (lightness >= 50) {
+        return Qt::black;
+    }
+    return Qt::white;
 }
 
 }

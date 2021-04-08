@@ -24,9 +24,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef MAINPAGE_H
-#define MAINPAGE_H
-
 /** @mainpage
  * This library provides various Qt GUI components for choosing colors, with
  * focus on an intuitive and perceptually uniform presentation. The GUI
@@ -167,6 +164,19 @@
  *
  * @sa @ref characterset "Character sets"
  *
+ * @todo Review and unit tests for these classes:
+ * @ref PerceptualColor::ChromaLightnessDiagram,
+ * @ref PerceptualColor::RgbColorSpace,
+ * @ref PerceptualColor::ColorWheel,
+ * @ref PerceptualColor::WheelColorPicker
+ *
+ * @todo It might be interesting to use <tt>QStyle::PM_FocusFrameHMargin</tt>
+ * <em>(Horizontal margin that the focus frame will outset the widget
+ * by.)</em> Or: <tt>QStyle::PM_FocusFrameVMargin</tt>. Using this for the
+ * distance between the focus indicator and the actual content of the widget
+ * maybe give a more <tt>QStyle</tt> compliant look. But: If using this,
+ * ensurePolished() must be called before!
+ *
  * @todo Use <tt>explicit</tt> on all constructors?
  *
  * @todo Multi-licensing? Add Boost licence and Unlicense as an additional
@@ -176,7 +186,26 @@
  * asynchronously (in its own thread or even various own threads
  * in parallel). While waiting for the result, an empty image could be used.
  * Or it might be useful to provide first a low-resolution version, and only
- * later-on a high-resolution version.
+ * later-on a high-resolution version. Anyway, KDE provides an interesting
+ * recommandation: <tt>int Units::humanMoment = 2000;</tt> <em>Time in
+ * milliseconds equivalent to the theoretical human moment, which can be
+ * used to determine whether how long to wait until the user should be
+ * informed of something, or can be used as the limit for how long something
+ * should wait before being automatically initiated. / Some examples: /
+ * When the user types text in a search field, wait no longer than this
+ * duration after the user completes typing before starting the search /
+ * When loading data which would commonly arrive rapidly enough to not
+ * require interaction, wait this long before showing a spinner</em> See
+ * https://api.kde.org/frameworks/plasma-framework/html/classUnits.html#ab22ad7033b2e3d00a862650e82f5ba5e
+ * for details.
+ *
+ * @todo HLC @ref PerceptualColor::MultiSpinBox Allow entering (on the
+ * keyboard) of too big hues (361°), negatif hues (-1°), negatif chroma (-20)
+ * and too big chroma (201 or 256) – but do not allow this with the arrows
+ * (and how do the arrows react when currently one of these values is
+ * shown?). Does this make sense? Anyway do <em>not</em> allow this for
+ * lightness, because the lightness is <em>by definition</em> bound
+ * to <tt>[0, 100]</tt>.
  *
  * @todo Multi-threaded application of color transforms. It seems okay to
  * create the color transforms in one thread and use the same color
@@ -198,14 +227,6 @@
  * do it in the constructor function body, this will not work; than
  * we would have to delete the <tt>const</tt> qualifiers, which would
  * probably break ABI compatibility?
- *
- * @todo Review and unit tests for these classes:
- * @ref PerceptualColor::ChromaLightnessDiagram,
- * @ref PerceptualColor::FullColorDescription,
- * @ref PerceptualColor::GradientSlider,
- * @ref PerceptualColor::RgbColorSpace,
- * @ref PerceptualColor::SimpleColorWheel,
- * @ref PerceptualColor::WheelColorPicker
  *
  * @todo Do not use constexpr in public headers as when we change the value
  * later, compile time value and run time value might be different, and
@@ -383,6 +404,10 @@
  * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
  * by Roy S. Berns?
  *
+ * @todo Format source code with
+ * https://invent.kde.org/frameworks/extra-cmake-modules/-/blob/master/kde-modules/KDEClangFormat.cmake
+ * ?
+ *
  * @todo Spell checking for the documentation */
 
 /** @brief The namespace of this library.
@@ -391,5 +416,3 @@
  * namespace. */
 namespace PerceptualColor {
 }
-
-#endif // MAINPAGE_H

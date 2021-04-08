@@ -28,9 +28,9 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/simplecolorwheel.h"
+#include "PerceptualColor/colorwheel.h"
 // Second, the private implementation.
-#include "simplecolorwheel_p.h"
+#include "colorwheel_p.h"
 
 #include "PerceptualColor/lchdouble.h"
 #include "helper.h"
@@ -54,12 +54,12 @@ namespace PerceptualColor {
  * @param colorSpace The color spaces within this widget should operate.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
-SimpleColorWheel::SimpleColorWheel(
+ColorWheel::ColorWheel(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     QWidget *parent
 ) :
     AbstractDiagram(parent),
-    d_pointer(new SimpleColorWheelPrivate(this, colorSpace))
+    d_pointer(new ColorWheelPrivate(this, colorSpace))
 {
     // Setup LittleCMS (must be first thing because other operations
     // rely on working LittleCMS)
@@ -94,7 +94,7 @@ SimpleColorWheel::SimpleColorWheel(
 }
 
 /** @brief Default destructor */
-SimpleColorWheel::~SimpleColorWheel() noexcept
+ColorWheel::~ColorWheel() noexcept
 {
 }
 
@@ -103,8 +103,8 @@ SimpleColorWheel::~SimpleColorWheel() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
  * @param colorSpace The color spaces within this widget should operate. */
-SimpleColorWheel::SimpleColorWheelPrivate::SimpleColorWheelPrivate(
-    SimpleColorWheel *backLink,
+ColorWheel::ColorWheelPrivate::ColorWheelPrivate(
+    ColorWheel *backLink,
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
 ) :
     m_wheelImage(colorSpace),
@@ -120,7 +120,7 @@ SimpleColorWheel::SimpleColorWheelPrivate::SimpleColorWheelPrivate(
  * is actually displayed or not. This value corresponds to the smaller one
  * of width() and height().
  */
-int SimpleColorWheel::contentDiameter() const
+int ColorWheel::contentDiameter() const
 {
     return qMin(width(), height());
 }
@@ -131,8 +131,8 @@ int SimpleColorWheel::contentDiameter() const
  * @returns “wheel” coordinates: Coordinates in a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel.
  */
-PolarPointF SimpleColorWheel
-    ::SimpleColorWheelPrivate
+PolarPointF ColorWheel
+    ::ColorWheelPrivate
     ::fromWidgetCoordinatesToWheelCoordinates
 (
     const QPoint widgetCoordinates
@@ -150,8 +150,8 @@ PolarPointF SimpleColorWheel
  * center is exactly in the middle of the displayed wheel.
  * @returns coordinates in the coordinate system of this widget
  */
-QPointF SimpleColorWheel
-    ::SimpleColorWheelPrivate
+QPointF ColorWheel
+    ::ColorWheelPrivate
     ::fromWheelCoordinatesToWidgetCoordinates
 (
     const PolarPointF wheelCoordinates
@@ -174,7 +174,7 @@ QPointF SimpleColorWheel
  *
  * @param event The corresponding mouse event
  */
-void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
+void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
     PolarPointF myPolarPoint =
@@ -208,7 +208,7 @@ void SimpleColorWheel::mousePressEvent(QMouseEvent *event)
  *
  * @param event The corresponding mouse event
  */
-void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
+void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
         setHue(
@@ -230,7 +230,7 @@ void SimpleColorWheel::mouseMoveEvent(QMouseEvent *event)
  *
  * @param event The corresponding mouse event
  */
-void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
+void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
         d_pointer->m_mouseEventActive = false;
@@ -255,7 +255,7 @@ void SimpleColorWheel::mouseReleaseEvent(QMouseEvent *event)
  *
  * @param event The corresponding mouse event
  */
-void SimpleColorWheel::wheelEvent(QWheelEvent *event)
+void ColorWheel::wheelEvent(QWheelEvent *event)
 {
     // The step (coordinates in degree) that the hue angle is changed when
     // a mouse wheel event occurs.
@@ -297,7 +297,7 @@ void SimpleColorWheel::wheelEvent(QWheelEvent *event)
  *
  * @param event the paint event
  */
-void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
+void ColorWheel::keyPressEvent(QKeyEvent *event)
 {
     constexpr qreal wheelStep = 5;
     constexpr qreal bigWheelStep = 15;
@@ -358,7 +358,7 @@ void SimpleColorWheel::keyPressEvent(QKeyEvent *event)
  *
  * @todo Better design on small widget sizes
  */
-void SimpleColorWheel::paintEvent(QPaintEvent* event)
+void ColorWheel::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
@@ -433,7 +433,7 @@ void SimpleColorWheel::paintEvent(QPaintEvent* event)
  *
  * @param event The corresponding resize event
  */
-void SimpleColorWheel::resizeEvent(QResizeEvent* event)
+void ColorWheel::resizeEvent(QResizeEvent* event)
 {
     Q_UNUSED(event);
     // TODO The image cache is not necessarily invalid now. Thought the widget
@@ -451,12 +451,12 @@ void SimpleColorWheel::resizeEvent(QResizeEvent* event)
      *      be) done inside this handler.” */
 }
 
-qreal SimpleColorWheel::hue() const
+qreal ColorWheel::hue() const
 {
     return d_pointer->m_hue;
 }
 
-qreal SimpleColorWheel::wheelRibbonChroma() const
+qreal ColorWheel::wheelRibbonChroma() const
 {
     return LchValues::srgbVersatileChroma;
 }
@@ -476,7 +476,7 @@ qreal SimpleColorWheel::wheelRibbonChroma() const
  * After changing the hue property, the widget gets updated.
  * @param newHue The new hue value to set.
  */
-void SimpleColorWheel::setHue(const qreal newHue)
+void ColorWheel::setHue(const qreal newHue)
 {
     qreal temp = PolarPointF::normalizedAngleDegree(newHue);
     if (d_pointer->m_hue != temp) {
@@ -496,9 +496,19 @@ void SimpleColorWheel::setHue(const qreal newHue)
  *
  * @sa minimumSizeHint()
  */
-QSize SimpleColorWheel::sizeHint() const
+QSize ColorWheel::sizeHint() const
 {
-    return QSize(300, 300);
+    // We interpretate the gradientMinimumLength() as the length of the
+    // circumference of the inner circle of the wheel. By dividing it by π
+    // we get the requiered inner diameter:
+    const qreal innerDiameter = gradientMinimumLength() / M_PI
+        * scaleFromMinumumSizeHintToSizeHint;
+    const int size = qRound(
+        innerDiameter
+            + 2 * m_wheelThickness
+            + 2 * border
+    );
+    return QSize(size, size);
 }
 
 /** @brief Provide the minimum size hint.
@@ -509,15 +519,24 @@ QSize SimpleColorWheel::sizeHint() const
  *
  * @sa sizeHint()
  */
-QSize SimpleColorWheel::minimumSizeHint() const
+QSize ColorWheel::minimumSizeHint() const
 {
-    return QSize(100, 100);
+    // We interpretate the gradientMinimumLength() as the length of the
+    // circumference of the inner circle of the wheel. By dividing it by π
+    // we get the requiered inner diameter:
+    const qreal innerDiameter = gradientMinimumLength() / M_PI;
+    const int size = qRound(
+        innerDiameter
+            + 2 * m_wheelThickness
+            + 2 * border
+    );
+    return QSize(size, size);
 }
 
 // TODO What when some of the wheel colors are out of gamut?
 
 /** @brief Reset the hue() property. */
-void SimpleColorWheel::resetHue()
+void ColorWheel::resetHue()
 {
     setHue(LchValues::neutralHue);
 }

@@ -70,7 +70,18 @@ namespace PerceptualColor {
  * - In the case of horizontal @ref orientation, @ref firstColor is the
  *   colour on the left of the widget and @ref secondColor is the colour
  *   on the right of the widget in LRT layout. In RTL layout it is the
- *   other way round. */
+ *   other way round.
+ *
+ * @todo A better handle for the slider. Currently, the handle is just a
+ * line. At a handle position at the very beginning or end of the slider,
+ * furthermore only half of the line thickness is visible. It might be better
+ * to have arrows outside the slider to mark the position. (On the other
+ * hand, this would be different to the slider handles of the color
+ * wheels…)
+ *
+ * @todo A better focus indicator. Some example code is commented out
+ * in the implementation of @ref paintEvent().
+ */
 // The API is roughly orientated on QSlider/QAbstractSlider and on
 // KSelecter/KGradientSelector where appicable. Our API is however
 // less complete, and of course also a little bit different, as
@@ -94,6 +105,15 @@ class GradientSlider : public AbstractDiagram
      * By default, the orientation is horizontal. The possible
      * orientations are <tt>Qt::Horizontal</tt> and <tt>Qt::Vertical</tt>.
      *
+     * Also, <tt>Qt::Orientation</tt> is declared in this header as type to
+     * Qt's type system: <tt>Q_DECLARE_METATYPE(Qt::Orientation)</tt>. This
+     * is done because Qt itself does not declare this type as meta type.
+     * Because we use it here in a property including a signal, we have to
+     * declare this type. Depending on your use case (for example if you
+     * want to use it reliably in Qt's signals and slots), you might consider
+     * calling <tt>qRegisterMetaType()</tt> for this type, once you have
+     * a QApplication object.
+     *
      * @sa READ @ref orientation() const
      * @sa WRITE @ref setOrientation()
      * @sa NOTIFY @ref orientationChanged()
@@ -104,6 +124,8 @@ class GradientSlider : public AbstractDiagram
      *
      * The larger of two natural steps this widget provides.
      * Corresponds to the user pressing PageUp or PageDown.
+     *
+     * The valid range is <tt>[0, 1]</tt>.
      *
      * @sa READ @ref pageStep() const
      * @sa WRITE @ref setPageStep()
@@ -126,6 +148,8 @@ class GradientSlider : public AbstractDiagram
      * The smaller of two natural steps this widget provides.
      * Corresponds to the user pressing an arrow key.
      *
+     * The valid range is <tt>[0, 1]</tt>.
+     *
      * @sa READ @ref singleStep() const
      * @sa WRITE @ref setSingleStep()
      * @sa NOTIFY @ref singleStepChanged()
@@ -135,7 +159,9 @@ class GradientSlider : public AbstractDiagram
 
     /** @brief The slider’s current value.
      *
-     * The slider forces the value to be within the legal range:
+     *
+     * The valid range is <tt>[0, 1]</tt>.
+     * The slider forces the value to be within the valid range:
      * <tt>0 <= value <= 1</tt>.
      * - <tt>0</tt> means: totally firstColor()
      * - <tt>1</tt> means: totally secondColor()
@@ -179,17 +205,23 @@ public:
     qreal value() const;
 
 Q_SIGNALS:
-    /** @brief Signal for @ref firstColor property. */
+    /** @brief Signal for @ref firstColor property.
+     * @param newFirstColor the new @ref firstColor */
     void firstColorChanged(const PerceptualColor::LchaDouble &newFirstColor);
-    /** @brief Signal for @ref orientation property. */
+    /** @brief Signal for @ref orientation property.
+     * @param newOrientation the new @ref orientation */
     void orientationChanged(const Qt::Orientation newOrientation);
-    /** @brief Signal for @ref pageStep property. */
+    /** @brief Signal for @ref pageStep property.
+     * @param newPageStep the new @ref pageStep */
     void pageStepChanged(const qreal newPageStep);
-    /** @brief Signal for @ref secondColor property. */
+    /** @brief Signal for @ref secondColor property.
+     * @param newSecondColor the new @ref secondColor */
     void secondColorChanged(const PerceptualColor::LchaDouble &newSecondColor);
-    /** @brief Signal for @ref singleStep property. */
+    /** @brief Signal for @ref singleStep property.
+     * @param newSingleStep the new @ref singleStep */
     void singleStepChanged(const qreal newSingleStep);
-    /** @brief Signal for @ref value property. */
+    /** @brief Signal for @ref value property.
+     * @param newValue the new @ref value */
     void valueChanged(const qreal newValue);
 
 public Q_SLOTS:
@@ -215,6 +247,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(GradientSlider)
+
     class GradientSliderPrivate;
     /** @brief Declare the private implementation as friend class.
      *
@@ -224,8 +257,13 @@ private:
     /** @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<GradientSliderPrivate> d_pointer;
 
+    /** @brief Only for unit tests. */
+    friend class TestGradientSlider;
+
 };
 
-}
+} // namespace PerceptualColor
+
+Q_DECLARE_METATYPE(Qt::Orientation)
 
 #endif // GRADIENTSLIDER_H

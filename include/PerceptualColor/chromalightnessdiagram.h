@@ -31,7 +31,6 @@
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/fullcolordescription.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor {
@@ -67,10 +66,10 @@ class ChromaLightnessDiagram : public AbstractDiagram
 
     /** @brief Currently selected color
      *
-     * @sa color() const
-     * @sa setColor()
-     * @sa colorChanged() */
-    Q_PROPERTY(FullColorDescription color READ color WRITE setColor NOTIFY colorChanged USER true)
+     * @sa currentColor() const
+     * @sa setCurrentColor()
+     * @sa currentColorChanged() */
+    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged USER true)
 
 public:
     Q_INVOKABLE explicit ChromaLightnessDiagram(
@@ -78,18 +77,22 @@ public:
         QWidget *parent = nullptr
     );
     virtual ~ChromaLightnessDiagram() noexcept override;
-    FullColorDescription color() const;
+    PerceptualColor::LchDouble currentColor() const;
     Q_INVOKABLE qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setColor(const PerceptualColor::FullColorDescription &newColor);
+    void setCurrentColor(
+        const PerceptualColor::LchDouble &newCurrentColor
+    );
     void setHue(const qreal newHue);
 
 Q_SIGNALS:
     /** @brief Signal for color() property. */
-    void colorChanged(const PerceptualColor::FullColorDescription &newColor);
+    void currentColorChanged(
+        const PerceptualColor::LchDouble &newCurrentColor
+    );
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;

@@ -65,8 +65,22 @@ namespace PerceptualColor {
  * are planned. However, a full-featured interface could look like that:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
  *
- *  @todo MultiSpinBox should never become 0 because the validator
+ * @todo MultiSpinBox should never become 0 because the validator
  * allows something that the converter cannot convert!
+ *
+ * @todo Bug: In @ref ColorDialog, choose a tab with one of the diagrams.
+ * Then, switch back the the “numeric“ tab. Expected behaviour: When
+ * a @ref MultiSpinBox gets back the focus, always the first section should
+ * be <em>highligted/selected</em>, independent from what was selected or
+ * the cursor position before the @ref MultiSpinBox lost the focus.
+ * (While <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt> don’t do that
+ * either, <tt>QDateTimeEdit</tt> indeed <em>does</em>, and that seems
+ * appropriate also for @ref MultiSpinBox.
+ *
+ * @todo Bug: Enter HLC values like “<tt>80.</tt>” or “<tt>80,</tt>”
+ * or “<tt>80e</tt>”. Depending on the locale, it is possible to
+ * actually enter these characters, but apparently on validation it
+ * is not accepted and the value is replaced by <tt>0</tt>.
  *
  * @todo Sometimes, after a click on the action, the first section
  * is selected. Sometimes not. That’s inconsistant!
@@ -79,7 +93,6 @@ namespace PerceptualColor {
  * was editig before). But it would be great if we could do better here.
  * But: Is this realistic and will the required code work on all
  * platforms?
- *
  *
  * @todo When adding Bengali digits (for example by copy and paste) to a
  * @ref MultiSpinBox that was localized to en_US, than sometimes this is

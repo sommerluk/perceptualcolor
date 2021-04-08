@@ -59,8 +59,8 @@ public:
     int m_border;
     /** @brief Internal storage of the chromaLightness() property */
 //     QPointF m_chromaLightness;
-    /** @brief Internal storage of the color() property */
-    FullColorDescription m_color;
+    /** @brief Internal storage of the @ref currentColor property */
+    LchDouble m_currentColor;
     /** @brief A cache for the diagram as QImage. @sa updateDiagramCache() */
     QImage m_diagramImage;
     /** True if the m_diagramImage cache is up-to-date. False otherwise.

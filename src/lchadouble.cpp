@@ -54,12 +54,24 @@ static_assert(
 );
 
 static_assert(
-    std::is_trivial_v<LchaDouble>
+    std::is_trivially_copyable_v<LchaDouble>
 );
 
 static_assert(
     std::is_standard_layout_v<LchaDouble>
 );
+
+LchaDouble::LchaDouble()
+{
+}
+
+LchaDouble::LchaDouble(double newL, double newC, double newH, double newA) :
+    l(newL),
+    c(newC),
+    h(newH),
+    a(newA)
+{
+}
 
 /** @brief Adds QDebug() support for this data type.
  * @note This is declared outside the global namespace instead of the
@@ -91,7 +103,9 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
  * equal @ref c, but one with h = 5° and the other with h = 365°, are
  * considered non-equal thought both describe the same point in the
  * coordinate space. */
-bool LchaDouble::hasSameCoordinates(const PerceptualColor::LchaDouble& other)
+bool LchaDouble::hasSameCoordinates(
+    const PerceptualColor::LchaDouble& other
+) const
 {
     return (
         (l == other.l)

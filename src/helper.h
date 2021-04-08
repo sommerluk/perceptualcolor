@@ -79,6 +79,15 @@ template<typename T> bool inRange(const T& low, const T& x, const T& high)
  * to be sure. */
 constexpr int overlap = 2;
 
+/** @brief Proposed scale factor for gradients
+ *
+ * Widgets provide a <tt>minimumSizeHint</tt> and a <tt>sizeHint</tt>.
+ * This value provides a scale factor that is multiplied with
+ * <tt>minimumSizeHint</tt> to get an appropriate <tt>sizeHint</tt>.
+ * This scale factor is meant for gradient-based widgets. */
+// This value is somewhat arbitrary…
+constexpr qreal scaleFromMinumumSizeHintToSizeHint = 1.2;
+
 /** @brief Amount of single step for alpha.
  *
  * Measured for an alpha range from 0 (transparent) to 1 (opaque).
@@ -174,6 +183,6 @@ LchDouble toLchDouble(const cmsCIELCh &value);
 
 QImage transparencyBackground(qreal devicePixelRatioF);
 
-}
+} // namespace PerceptualColor
 
 #endif // HELPER_H

@@ -50,7 +50,9 @@ namespace PerceptualColor {
  *
  * This class automatically normalizes the values:
  * @invariant
- * - the @ref radial() is normalized to value ≥ 0
+ * - the @ref radial() is normalized to value ≥ 0. If it was < 0 (but not if
+ *   it was 0 with a negative sign) its  sign is changed and @ref angleDegree
+ *   is turned by 180°.
  * - the @ref angleDegree() is normalized to 0° ≤ value < 360°
  *   (see @ref normalizedAngleDegree() for details)
  *

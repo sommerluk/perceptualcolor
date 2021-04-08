@@ -24,52 +24,14 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_internal.h"
+#ifndef CONFIG_H
+#define CONFIG_H
 
-// First included header is the public header of the class we are testing;
-// this forces the header to be self-contained.
-#include "PerceptualColor/xxx.h"
-#include "xxx_p.h"
+// This header template is processed by CMake, and the actual version
+// numbers (@…@) are pulled in.
 
-#include <QtTest>
+#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR (@PROJECT_MAJOR_VERSION@)
+#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR (@PROJECT_MINOR_VERSION@)
+#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH (@PROJECT_PATCH_VERSION@)
 
-namespace PerceptualColor {
-
-class TestXXX : public QObject
-{
-
-    Q_OBJECT
-
-public:
-    TestXXX(QObject *parent = nullptr) : QObject(parent) {
-    }
-
-private Q_SLOTS:
-    void initTestCase() {
-        // Called before the first test function is executed
-    }
-
-    void cleanupTestCase() {
-        // Called after the last test function was executed
-    }
-
-    void init() {
-        // Called before each test function is executed
-    }
-
-    void cleanup() {
-        // Called after every test function
-    }
-
-    void testDef() {
-        // TODO implement me!
-    }
-
-};
-
-}
-
-QTEST_MAIN(PerceptualColor::TestXXX)
-
-// The following “include” is necessary because we do not use a header file:
-#include "testxxx.moc"
+#endif // CONFIG_H

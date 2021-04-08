@@ -36,19 +36,24 @@ namespace PerceptualColor {
 
 /** @brief A color display widget.
  *
- * This widget simply displays a color. Useful for showing a selected
+ * This widget simply displays a color. Useful for showing a given
  * color. The instantiation and usage is simple. Example:
  * @snippet test/testcolorpatch.cpp ColorPatch Create widget
  *
+ * The default minimum size of this widget is similar to a
+ * <tt>QToolButton</tt>. Depending on your use case, you might
+ * set a bigger minimum size:
+ * @snippet test/testcolorpatch.cpp ColorPatch Bigger minimum size
+ *
  * This class is API-compatible with KColorPatch.
  *
- * @note A similar functionality is available as KColorPatch, but this is part
- * of KDELibs4Support which is available in KF5 but should not be used for new
- * code, but only for legacy code. Also, depending on KDELibs4Support would
- * pull-in another dependency. Furthermore, KColorPatch has support for
+ * <!-- NOTE A similar functionality is available as KColorPatch, but this is
+ * part of KDELibs4Support which is available in KF5 but should not be used
+ * for new code, but only for legacy code. Also, depending on KDELibs4Support
+ * would pull-in another dependency. Furthermore, KColorPatch has support for
  * drag-and-drop, which is not desirable for our use case. Therefore, with
  * @ref ColorPatch there is a lightweight alternative (that, by the way,
- * implements the full  API of KColorPatch).
+ * implements the full  API of KColorPatch). -->
  *
  * @todo The design does not work well on some styles (wrong metrics!) */
 class ColorPatch : public QFrame

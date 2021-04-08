@@ -112,14 +112,16 @@ public:
 
 protected:
     QColor focusIndicatorColor() const;
+    int gradientMinimumLength() const;
+    int gradientThickness() const;
     int maximumPhysicalSquareSize() const;
     qreal maximumWidgetSquareSize() const;
     QSize physicalPixelSize() const;
+    QColor handleColorFromBackgroundLightness(qreal lightness) const;
     int handleOutlineThickness() const;
     qreal handleRadius() const;
     int spaceForFocusIndicator() const;
     QImage transparencyBackground() const;
-    int wheelThickness() const;
 
 private:
     Q_DISABLE_COPY(AbstractDiagram)

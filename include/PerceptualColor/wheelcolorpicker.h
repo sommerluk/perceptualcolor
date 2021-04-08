@@ -30,34 +30,33 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
-#include "PerceptualColor/fullcolordescription.h"
-#include "PerceptualColor/simplecolorwheel.h"
+#include "PerceptualColor/abstractdiagram.h"
+#include "PerceptualColor/lchdouble.h"
+#include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor {
 
 /** @brief Complete wheel-based color picker widget
  *
- * This is a composite widget: It inherits from the SimpleColorWheel() widget
- * and adds a ChromaLightnessDiagram() in its center.
+ * It provides a @ref ColorWheel and, in its inner circle,
+ * a @ref ChromaLightnessDiagram.
  *
- * @todo This class should not derive from @ref SimpleColorWheel because it’s
- * not really an IS-A relationship.
+ * @todo BUG: When the hue changes and the gamut gets smaller than the
+ * current chroma-lightness value, then the marker is not moved into the
+ * new gamut. But it should!
  *
- * @todo Add whatsThis value explaining the accepted keys and mouse
- * movements. */
-class WheelColorPicker : public SimpleColorWheel
+ * @todo Add <tt>whatsThis</tt> value explaining the accepted keys and mouse
+ * movements (and also to other widgets). */
+class WheelColorPicker : public AbstractDiagram
 {
     Q_OBJECT
 
     /** @brief Currently selected color
      *
-     * This property is provides as an RGB value.
-     *
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
-     * @sa NOTIFY @ref currentColorChanged()
-     */
-     Q_PROPERTY(PerceptualColor::FullColorDescription currentColor
+     * @sa NOTIFY @ref currentColorChanged() */
+    Q_PROPERTY(PerceptualColor::LchDouble currentColor
         READ currentColor
         WRITE setCurrentColor
         NOTIFY currentColorChanged
@@ -70,18 +69,22 @@ public:
         QWidget *parent = nullptr
     );
     virtual ~WheelColorPicker() noexcept override;
-    FullColorDescription currentColor() const;
-    void setCurrentColor(const FullColorDescription &newCurrentColorRgb);
+    /** @brief Getter for property @ref currentColor
+     *  @returns the property @ref currentColor */
+    PerceptualColor::LchDouble currentColor() const;
+    virtual QSize minimumSizeHint() const override;
+    void setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor);
+    virtual QSize sizeHint() const override;
 
 Q_SIGNALS:
-    /** @brief Signal for currentColor() property */
+    /** @brief Notify signal for property @ref currentColor.
+     *  @param newCurrentColor the new current color */
     void currentColorChanged(
-        const PerceptualColor::FullColorDescription &newCurrentColor
+        const PerceptualColor::LchDouble &newCurrentColor
     );
 
 protected:
     virtual void resizeEvent(QResizeEvent* event) override;
-    virtual void keyPressEvent(QKeyEvent *event) override;
 
 private:
     Q_DISABLE_COPY(WheelColorPicker)

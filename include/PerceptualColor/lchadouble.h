@@ -63,9 +63,15 @@ namespace PerceptualColor {
  * Depending on your use case (for example if you want to use it
  * reliably in Qt's signals and slots), you might consider calling
  * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
- * object. */
+ * object.
+ *
+ * @todo We could normalize @ref LchaDouble values, just like @ref PolarPointF
+ * also does. Performance should not matter for this use case! But: Does
+ * it make sense? */
 struct LchaDouble {
 public:
+    LchaDouble();
+    LchaDouble(double newL, double newC, double newH, double newA);
     /** @brief Lightness, mesured in percent.
      *
      * The valid range is <tt>[0, 100]</tt>. */
@@ -88,7 +94,7 @@ public:
      * The valid range is <tt>[0, 1]</tt>. <tt>0</tt> is fully
      * transparent, <tt>1</tt> is fully opaque. */
     double a;
-    bool hasSameCoordinates(const LchaDouble &other);
+    bool hasSameCoordinates(const LchaDouble &other) const;
 };
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value);

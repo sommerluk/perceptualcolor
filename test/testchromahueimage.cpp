@@ -32,7 +32,6 @@
 
 #include <QtTest>
 
-#include "PerceptualColor/fullcolordescription.h"
 #include "helper.h"
 #include "lchvalues.h"
 
@@ -492,19 +491,17 @@ private Q_SLOTS:
         constexpr int oddSize = 101;
         test.setImageSize(oddSize); // an odd numer
         constexpr int positionAtCenter = (oddSize - 1) / 2;
-        const qreal chromaAtCenter = FullColorDescription(
-            colorSpace,
+        const qreal chromaAtCenter = colorSpace->colorLch(
             test.getImage().pixelColor(positionAtCenter, positionAtCenter)
-        ).toLch().c;
+        ).c;
         for (int x = positionAtCenter - 2; x <= positionAtCenter + 2; ++x) {
             for (int y = positionAtCenter - 2; y <= positionAtCenter + 2; ++y) {
                 if ( (x == positionAtCenter) && (y == positionAtCenter) ) {
                     continue;
                 }
-                const qreal chromaAround = FullColorDescription(
-                    colorSpace,
+                const qreal chromaAround = colorSpace->colorLch(
                     test.getImage().pixelColor(x, y)
-                ).toLch().c;
+                ).c;
                 QVERIFY2(
                     chromaAtCenter < chromaAround,
                     "The chroma of the pixel at the center of the image "
@@ -524,22 +521,18 @@ private Q_SLOTS:
         test.setImageSize(evenSize); // an odd numer
         constexpr int positionAtCenter2 = evenSize / 2;
         constexpr int positionAtCenter1 = positionAtCenter2 - 1;
-        const qreal chromaAtCenterA = FullColorDescription(
-            colorSpace,
+        const qreal chromaAtCenterA = colorSpace->colorLch(
             test.getImage().pixelColor(positionAtCenter1, positionAtCenter1)
-        ).toLch().c;
-        const qreal chromaAtCenterB = FullColorDescription(
-            colorSpace,
+        ).c;
+        const qreal chromaAtCenterB = colorSpace->colorLch(
             test.getImage().pixelColor(positionAtCenter1, positionAtCenter2)
-        ).toLch().c;
-        const qreal chromaAtCenterC = FullColorDescription(
-            colorSpace,
+        ).c;
+        const qreal chromaAtCenterC = colorSpace->colorLch(
             test.getImage().pixelColor(positionAtCenter2, positionAtCenter1)
-        ).toLch().c;
-        const qreal chromaAtCenterD = FullColorDescription(
-            colorSpace,
+        ).c;
+        const qreal chromaAtCenterD = colorSpace->colorLch(
             test.getImage().pixelColor(positionAtCenter2, positionAtCenter2)
-        ).toLch().c;
+        ).c;
         const qreal maximumChromaAtCenter = qMax(
             qMax(chromaAtCenterA, chromaAtCenterB),
             qMax(chromaAtCenterC, chromaAtCenterD)
@@ -552,10 +545,9 @@ private Q_SLOTS:
                 ) {
                     continue;
                 }
-                const qreal chromaAround = FullColorDescription(
-                    colorSpace,
+                const qreal chromaAround = colorSpace->colorLch(
                     test.getImage().pixelColor(x, y)
-                ).toLch().c;
+                ).c;
                 QVERIFY2(
                     maximumChromaAtCenter < chromaAround,
                     "The chroma of the pixels at the center of the image "

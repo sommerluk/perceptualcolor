@@ -36,9 +36,9 @@ namespace PerceptualColor {
 
 /** @brief Constructor
  *
- * Constructs an object with the given @ref radial() and @ref angleDegree()
- * values. The values get normalized, see the general class description for
- * details.
+ * Normalizes the given polar coordinates and constructs an object with
+ * the <em>normalized</em> polar coordinates. See the general class
+ * description for details about the normalization.
  *
  * @param newRadial the @ref radial() value
  * @param newAngleDegree the @ref angleDegree() value */

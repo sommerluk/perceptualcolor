@@ -27,13 +27,15 @@
 #include "perceptualcolorlib_internal.h"
 
 #include "PerceptualColor/colordialog.h"
-
+#include "PerceptualColor/chromahuediagram.h"
+#include "PerceptualColor/chromalightnessdiagram.h"
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/polarpointf.h"
-#include "PerceptualColor/labdouble.h"
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/rgbdouble.h"
+#include "PerceptualColor/colorwheel.h"
 #include "fallbackiconengine.h"
+#include "version.h"
 
 #include <lcms2.h>
 
@@ -51,6 +53,7 @@
 #include <memory>// Other includes
 #include <QtMath>
 #include <QLabel>
+#include <QVBoxLayout>
 
 // Assert UTF-8 as execution character set as documented
 // in perceptualcolorlib_global.h
@@ -93,17 +96,29 @@ QColor myColor = QColor(Qt::yellow);
 myColor.setAlphaF(0.5);
 m_colorDialog.setCurrentColor(myColor);
 //     m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
-//     m_colorDialog.setLayoutDimensions(
-//         PerceptualColor
-//             ::ColorDialog
-//             ::DialogLayoutDimensions
-//             ::screenSizeDependent
-//     );
+    m_colorDialog.setLayoutDimensions(
+        PerceptualColor
+            ::ColorDialog
+            ::DialogLayoutDimensions
+            ::expanded
+    );
     m_colorDialog.show();
 
 //     m_colorDialog.setStyleSheet(
 //         "background: yellow; color: red; border: 15px solid #FF0000;"
 //     );
+
+
+// QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
+//     new PerceptualColor::RgbColorSpace
+// };
+// QWidget testWidget;
+// QVBoxLayout layout;
+// PerceptualColor::ChromaLightnessDiagram * diagram =
+//     new PerceptualColor::ChromaLightnessDiagram(myColorSpace);
+// layout.addWidget(diagram);
+// testWidget.setLayout(&layout);
+// testWidget.show();
 
     // Run
     return app.exec();

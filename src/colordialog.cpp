@@ -80,13 +80,15 @@ ColorDialog::ColorDialog(QWidget *parent) :
     // parameter was invalid. As m_currentOpaqueColor is invalid
     // be default, and therefor different, setCurrentColor()
     // guaranties to update all widgets.
-    d_pointer->setCurrentFullColor(
-        FullColorDescription(
-            d_pointer->m_rgbColorSpace,
-            initialColor,
-            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
-        )
+    LchDouble lch = d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(
+            initialColor
     );
+    LchaDouble lcha;
+    lcha.l = lch.l;
+    lcha.c = lch.c;
+    lcha.h = lch.h;
+    lcha.a = 1;
+    d_pointer->setCurrentFullColor(lcha);
 }
 
 /** @brief Constructor
@@ -137,7 +139,9 @@ ColorDialog::ColorDialogPrivate::ColorDialogPrivate(
 QColor ColorDialog::currentColor() const
 {
     QColor temp;
-    temp = d_pointer->m_currentOpaqueColor.toRgbQColor();
+    temp = d_pointer->m_rgbColorSpace->colorRgbBound(
+        d_pointer->m_currentOpaqueColor
+    );
     temp.setAlphaF(d_pointer->m_alphaGradientSlider->value());
     return temp;
 }
@@ -166,9 +170,13 @@ void ColorDialog::setCurrentColor(const QColor& color)
         // For invalid colors same behavior as QColorDialog
         temp = QColor(Qt::black);
     }
-    d_pointer->setCurrentFullColor(
-        FullColorDescription(d_pointer->m_rgbColorSpace, temp)
-    );
+    LchDouble lch = d_pointer->m_rgbColorSpace->colorLch(temp);
+    LchaDouble lcha;
+    lcha.l = lch.l;
+    lcha.c = lch.c;
+    lcha.h = lch.h;
+    lcha.a = temp.alphaF();
+    d_pointer->setCurrentFullColor(lcha);
 }
 
 /** @brief Sets the @ref currentColor property.
@@ -176,19 +184,23 @@ void ColorDialog::setCurrentColor(const QColor& color)
  * @param color The new color to set. The alpha value is taken
  * into account. */
 void ColorDialog::ColorDialogPrivate::setCurrentFullColor(
-    const FullColorDescription& color
+    const LchaDouble& color
 )
 {
     qreal myAlphaF;
     if (q_pointer->testOption(ColorDialogOption::ShowAlphaChannel)) {
-        myAlphaF = color.alpha();
+        myAlphaF = color.a;
     } else {
         myAlphaF = 1;
     }
     m_alphaGradientSlider->setValue(myAlphaF);
     // No need to update m_alphaSpinBox is this is done
     // automatically by signals emitted by m_alphaGradientSlider.
-    setCurrentOpaqueColor(color);
+    LchDouble lch;
+    lch.l = color.l;
+    lch.c = color.c;
+    lch.h = color.h;
+    setCurrentOpaqueColor(lch);
 }
 
 /** @brief Opens the dialog and connects its @ref colorSelected() signal to
@@ -215,10 +227,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(
 )
 {
     setCurrentOpaqueColor(
-        FullColorDescription(
-            m_rgbColorSpace,
-            color
-        )
+        m_rgbColorSpace->colorLch(color)
     );
 }
 
@@ -229,7 +238,9 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(
  * value of @ref m_alphaGradientSlider. */
 void ColorDialog::ColorDialogPrivate::updateColorPatch()
 {
-    QColor tempRgbQColor = m_currentOpaqueColor.toRgbQColor();
+    QColor tempRgbQColor = m_rgbColorSpace->colorRgbBound(
+        m_currentOpaqueColor
+    );
     tempRgbQColor.setAlphaF(m_alphaGradientSlider->value());
     m_colorPatch->setColor(tempRgbQColor);
 }
@@ -238,19 +249,18 @@ void ColorDialog::ColorDialogPrivate::updateColorPatch()
  *
  * This function ignores the alpha component!
  * @param color the new color
- * @post If color is invalid, nothing happens. If this function is called
- * recursively, nothing happens. Else @ref m_currentOpaqueColor is updated,
- * and the corresponding widgets are updated.
+ * @post If this function is called recursively, nothing happens. Else
+ * the color is moved into the gamut, then @ref m_currentOpaqueColor is
+ * updated, and the corresponding widgets are updated.
  * @note Recursive functions calls are ignored. This is useful, because you
  * can connect signals from various widgets to this slot without having to
  * worry about infinite recursions. */
 void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
-    const FullColorDescription& color
+    const LchDouble& color
 )
 {
     if (m_isColorChangeInProgress
-        || (!color.isValid())
-        || (color == m_currentOpaqueColor)
+        || (color.hasSameCoordinates(m_currentOpaqueColor))
     ) {
         // Nothing to do!
         return;
@@ -267,7 +277,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
     m_currentOpaqueColor = color;
 
     // Update all the widgets for opaque color…
-    QColor tempRgbQColor = color.toRgbQColor();
+    QColor tempRgbQColor = m_rgbColorSpace->colorRgbBound(color);
     tempRgbQColor.setAlpha(255);
     QList<MultiSpinBox::SectionData> tempSections;
 
@@ -280,33 +290,33 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
 
     // Update HSV widget
     tempSections = m_hsvSpinBox->sections();
-    tempSections[0].value = color.toHsvQColor().hsvHueF() * 360;
-    tempSections[1].value = color.toHsvQColor().hsvSaturationF() * 255;
-    tempSections[2].value = color.toHsvQColor().valueF() * 255;
+    tempSections[0].value = tempRgbQColor.hsvHueF() * 360;
+    tempSections[1].value = tempRgbQColor.hsvSaturationF() * 255;
+    tempSections[2].value = tempRgbQColor.valueF() * 255;
     m_hsvSpinBox->setSections(tempSections);
 
     // Update HLC widget
     tempSections = m_hlcSpinBox->sections();
-    tempSections[0].value = m_currentOpaqueColor.toLch().h;
-    tempSections[1].value = m_currentOpaqueColor.toLch().l;
-    tempSections[2].value = m_currentOpaqueColor.toLch().c;
+    tempSections[0].value = m_currentOpaqueColor.h;
+    tempSections[1].value = m_currentOpaqueColor.l;
+    tempSections[2].value = m_currentOpaqueColor.c;
     m_hlcSpinBox->setSections(tempSections);
 
     // Update RGB hex widget
-    m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
+    m_rgbLineEdit->setText(tempRgbQColor.name());
 
     // Update the diagrams
     m_lchLightnessSelector->setValue(
-        color.toLch().l / static_cast<qreal>(100)
+        color.l / static_cast<qreal>(100)
     );
-    m_chromaHueDiagram->setColor(color.toLch());
+    m_chromaHueDiagram->setCurrentColor(color);
     m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
 
     // Update alpha
     LchaDouble tempColor;
-    tempColor.l = m_currentOpaqueColor.toLch().l;
-    tempColor.c = m_currentOpaqueColor.toLch().c;
-    tempColor.h = m_currentOpaqueColor.toLch().h;
+    tempColor.l = m_currentOpaqueColor.l;
+    tempColor.c = m_currentOpaqueColor.c;
+    tempColor.h = m_currentOpaqueColor.h;
     tempColor.a = 0;
     m_alphaGradientSlider->setFirstColor(tempColor);
     tempColor.a = 1;
@@ -329,14 +339,10 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readLightnessValue()
 {
-    LchDouble lch = m_currentOpaqueColor.toLch();
+    LchDouble lch = m_currentOpaqueColor;
     lch.l = m_lchLightnessSelector->value() * 100;
     setCurrentOpaqueColor(
-        FullColorDescription(
-            m_rgbColorSpace,
-            lch,
-            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
-        )
+        m_rgbColorSpace->nearestInGamutSacrifyingChroma(lch)
     );
 }
 
@@ -382,8 +388,10 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
         setCurrentOpaqueQColor(rgb);
     }
     // Return to the finally considered value (the new one if valid, the old
-    // one otherwise.
-    m_rgbLineEdit->setText(m_currentOpaqueColor.toRgbHexString());
+    // one otherwise.)
+    m_rgbLineEdit->setText(
+        m_rgbColorSpace->colorRgb(m_currentOpaqueColor).name()
+    );
 }
 
 /** @brief Basic initialization.
@@ -432,6 +440,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
 
     // Create the ColorPatch
     m_colorPatch = new ColorPatch();
+    m_colorPatch->setMinimumSize(m_colorPatch->minimumSizeHint() * 1.5);
 
     // Create widget for the numerical values
     m_numericalWidget = initializeNumericPage();
@@ -524,21 +533,16 @@ void ColorDialog::ColorDialogPrivate::initialize()
         m_wheelColorPicker,
         &WheelColorPicker::currentColorChanged,
         q_pointer,
-        [this](const PerceptualColor::FullColorDescription &color) {
+        [this](const PerceptualColor::LchDouble &color) {
             setCurrentOpaqueColor(color);
         }
     );
     connect(
         m_chromaHueDiagram,
-        &ChromaHueDiagram::colorChanged,
+        &ChromaHueDiagram::currentColorChanged,
         q_pointer,
         [this](const PerceptualColor::LchDouble &color) {
-            setCurrentOpaqueColor(
-                FullColorDescription(
-                    m_rgbColorSpace,
-                    color,
-                    FullColorDescription::OutOfGamutBehaviour::preserve)
-            );
+            setCurrentOpaqueColor(color);
         }
     );
     connect(
@@ -624,11 +628,7 @@ void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
     lch.l = hlcSections[1].value;
     lch.c = hlcSections[2].value;
     setCurrentOpaqueColor(
-        FullColorDescription(
-            m_rgbColorSpace,
-            lch,
-            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
-        )
+        m_rgbColorSpace->nearestInGamutSacrifyingChroma(lch)
     );
 }
 
@@ -731,6 +731,12 @@ QWidget* ColorDialog::ColorDialogPrivate::initializeNumericPage()
         || !m_rgbColorSpace->profileInfoManufacturer().isEmpty()
         || !m_rgbColorSpace->profileInfoModel().isEmpty()
     ) {
+        // The profile infos might theoretically contain HTML tagging,
+        // and the whatsThis property might interpretate them as such
+        // (it switches on a heuristic between rich text with HTML tags,
+        // and normal text). However, this is not likely, it would anyway
+        // not be clear which is the correct rendering, and a slightly
+        // wrong rendering will not harm…
         QStringList profileInfo;
         profileInfo.append(
             tr("<b>Information about the currently used RGB color profile</b>")

@@ -93,7 +93,9 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value)
  * equal @ref c, but one with h = 5° and the other with h = 365°, are
  * considered non-equal thought both describe the same point in the
  * coordinate space. */
-bool LchDouble::hasSameCoordinates(const PerceptualColor::LchDouble& other)
+bool LchDouble::hasSameCoordinates(
+    const PerceptualColor::LchDouble& other
+) const
 {
     return ( (l == other.l) && (c == other.c) && (h == other.h) );
 }

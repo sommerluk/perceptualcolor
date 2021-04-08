@@ -32,6 +32,7 @@
 // Second, the private implementation.
 #include "chromalightnessdiagram_p.h"
 
+#include "helper.h"
 #include "lchvalues.h"
 #include "PerceptualColor/polarpointf.h"
 
@@ -74,11 +75,7 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(
     temp.h = LchValues::neutralHue;
     temp.c = LchValues::srgbVersatileChroma;
     temp.l = LchValues::neutralLightness;
-    d_pointer->m_color = FullColorDescription(
-        d_pointer->m_rgbColorSpace,
-        temp,
-        FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
-    );
+    d_pointer->m_currentColor = temp;
     d_pointer->updateBorder();
 
     // Other initialization
@@ -158,14 +155,8 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(
         );
         lch.c = chromaLightness.x();
         lch.l = chromaLightness.y();
-        lch.h = m_color.toLch().h;
-        q_pointer->setColor(
-            FullColorDescription(
-                m_rgbColorSpace,
-                lch,
-                FullColorDescription::OutOfGamutBehaviour::preserve
-            )
-        );
+        lch.h = m_currentColor.h;
+        q_pointer->setCurrentColor(lch);
     }
 }
 
@@ -388,11 +379,11 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint imageCoordinates = d_pointer->currentImageCoordinates();
     pen.setWidth(handleOutlineThickness());
-    if (d_pointer->m_color.toLch().l >= 50  /* range: 0..100 */) {
-        pen.setColor(Qt::black);
-    } else {
-        pen.setColor(Qt::white);
-    }
+    pen.setColor(
+        handleColorFromBackgroundLightness(
+            d_pointer->m_currentColor.l
+        )
+    );
     painter.setPen(pen);
     painter.drawEllipse(
         QRectF(
@@ -550,9 +541,9 @@ QPoint ChromaLightnessDiagram
 {
     updateDiagramCache();
     return QPoint(
-        qRound(m_color.toLch().c * (m_diagramImage.height() - 1) / 100),
+        qRound(m_currentColor.c * (m_diagramImage.height() - 1) / 100),
         qRound(
-            m_color.toLch().l
+                   m_currentColor.l
                 * (m_diagramImage.height() - 1)
                 / 100
                 * (-1)
@@ -586,7 +577,7 @@ bool ChromaLightnessDiagram
 
 qreal ChromaLightnessDiagram::hue() const
 {
-    return d_pointer->m_color.toLch().h;
+    return d_pointer->m_currentColor.h;
 }
 
 /** @brief Set the hue
@@ -597,40 +588,36 @@ qreal ChromaLightnessDiagram::hue() const
  */
 void ChromaLightnessDiagram::setHue(const qreal newHue)
 {
-    if (newHue == d_pointer->m_color.toLch().h) {
+    if (newHue == d_pointer->m_currentColor.h) {
         return;
     }
     LchDouble lch;
     lch.h = newHue;
-    lch.c = d_pointer->m_color.toLch().c;
-    lch.l = d_pointer->m_color.toLch().l;
-    setColor(
-        FullColorDescription(
-            d_pointer->m_rgbColorSpace,
-            lch,
-            FullColorDescription::OutOfGamutBehaviour::sacrifyChroma
-        )
-    );
+    lch.c = d_pointer->m_currentColor.c;
+    lch.l = d_pointer->m_currentColor.l;
+    setCurrentColor(lch);
 }
 
 /** @brief Setter for the color() property */
-void ChromaLightnessDiagram::setColor(const FullColorDescription &newColor)
+void ChromaLightnessDiagram::setCurrentColor(
+    const PerceptualColor::LchDouble &newCurrentColor
+)
 {
-    if (newColor == d_pointer->m_color) {
+    if (newCurrentColor.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
     }
 
-    FullColorDescription oldColor = d_pointer->m_color;
-    d_pointer->m_color = newColor;
+    LchDouble oldColor = d_pointer->m_currentColor;
+    d_pointer->m_currentColor = newCurrentColor;
 
     // update if necessary, the diagram
-    if (d_pointer->m_color.toLch().h != oldColor.toLch().h) {
+    if (d_pointer->m_currentColor.h != oldColor.h) {
         d_pointer->m_diagramCacheReady = false;;
     }
 
     // schedule a paint event
     update();
-    Q_EMIT colorChanged(newColor);
+    Q_EMIT currentColorChanged(newCurrentColor);
 }
 
 /** @brief React on a resize event.
@@ -662,7 +649,11 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent* event)
  */
 QSize ChromaLightnessDiagram::sizeHint() const
 {
-    return QSize(300, 300);
+    const int minimum = qRound(
+        2 * d_pointer->m_border
+            + gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint
+    );
+    return QSize(minimum, minimum);
 }
 
 /** @brief Provide the minimum size hint.
@@ -675,7 +666,8 @@ QSize ChromaLightnessDiagram::sizeHint() const
  */
 QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
-    return QSize(100, 100);
+    const int minimum = 2 * d_pointer->m_border + gradientMinimumLength();
+    return QSize(minimum, minimum);
 }
 
 // TODO rework all "throw" statements (also these in comments) and
@@ -689,9 +681,9 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
  *
  * @returns color of the current selection
  */
-FullColorDescription ChromaLightnessDiagram::color() const
+LchDouble PerceptualColor::ChromaLightnessDiagram::currentColor() const
 {
-    return d_pointer->m_color;
+    return d_pointer->m_currentColor;
 }
 
 /** @brief Generates an image of a chroma-lightness diagram.
@@ -857,7 +849,7 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
     m_diagramImage = QImage();
     // Generate an update QImage
     m_diagramImage = generateDiagramImage(
-        m_color.toLch().h,
+                         m_currentColor.h,
         QSize(
             q_pointer->size().width() - 2 * m_border,
             q_pointer->size().height() - 2 * m_border

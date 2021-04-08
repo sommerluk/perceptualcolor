@@ -28,30 +28,19 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/labdouble.h"
+#include "version.h"
 
 #include <QtTest>
 
-#include <lcms2.h>
-
 namespace PerceptualColor {
 
-class TestLabDouble : public QObject
+class TestVersion : public QObject
 {
 
     Q_OBJECT
 
 public:
-    TestLabDouble(QObject *parent = nullptr) : QObject(parent) {
-    }
-
-private:
-    static void voidMessageHandler(
-        QtMsgType,
-        const QMessageLogContext &,
-        const QString &
-    ) {
-        // dummy message handler that does not print messages
+    TestVersion(QObject *parent = nullptr) : QObject(parent) {
     }
 
 private Q_SLOTS:
@@ -71,59 +60,32 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testConstructorDestructor() {
-        // This should not crash.
-        LabDouble test;
-        test.L = 50;
-        Q_UNUSED(test);
-    }
-
-    void testCopyConstructor() {
-        // This should not crash.
-        LabDouble test;
-        test.L = 50;
-        test.a = 25;
-        test.b = 5;
-        LabDouble copy(test);
-        QCOMPARE(
-            copy.L,
-            50
+    void testPerceptualColorRunTimeVersion() {
+        QVERIFY2(
+            perceptualColorRunTimeVersion() >= QVersionNumber(0, 0, 1),
+            "Verify that the version number is at least 0.0.1."
         );
-        QCOMPARE(
-            copy.a,
-            25
-        );
-        QCOMPARE(
-            copy.b,
-            5
+        QVERIFY2(
+            perceptualColorRunTimeVersion() < QVersionNumber(99, 0, 1),
+            "Verify that the version number is not too big."
         );
     }
 
-    void testQDebugSupport()
-    {
-        PerceptualColor::LabDouble test;
-        // suppress warning for generating invalid QColor
-        qInstallMessageHandler(voidMessageHandler);
-        qDebug() << test;
-        // do not suppress warning for generating invalid QColor anymore
-        qInstallMessageHandler(nullptr);
-    }
-
-void testLabDouble1() {
-//! [Use LabDouble]
-PerceptualColor::LabDouble test1;
-test1.L = 50; // lightness: 50%
-test1.a = 25; // red-green-axis: 25
-test1.b = -5; // yellow-blue-axis: -5
-//! [Use LabDouble]
-Q_UNUSED(test1)
+void testSnippet01() {
+//! [Version Macro usage]
+#if (PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= QT_VERSION_CHECK(1, 2, 3))
+// Some code…
+#else
+// Some different code…
+#endif
+//! [Version Macro usage]
 }
 
 };
 
 }
 
-QTEST_MAIN(PerceptualColor::TestLabDouble)
+QTEST_MAIN(PerceptualColor::TestVersion)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testlabdouble.moc"
+#include "testversion.moc"

@@ -24,31 +24,28 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef CHROMAHUEIMAGE_H
-#define CHROMAHUEIMAGE_H
+#ifndef GRADIENTIMAGE_H
+#define GRADIENTIMAGE_H
 
 #include <QImage>
 #include <QSharedPointer>
 
+#include "PerceptualColor/lchadouble.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor {
 
-/** @brief An image of a chroma hue plane.
+/** @brief An image of a gradient.
  *
- * This is a cut through the gamut body. The cut is orthogonal to
- * the L axis, so it shows the a-b diagram (speaking in terms of LAB
- * color model) also known as chroma-hue diagram (speaking in terms
- * of LCH color model). The center of the coordiante system is in
- * the center of the image. This might be a non-integer value. Each
- * pixel has the color that corresponds to the coordinate point <em>at
- * the middle</em> of the pixel.
+ * As the hue is a circular property, there exists two ways to go one hue to
+ * another (clockwise or counter-clockwise). This gradient takes always the
+ * shortest way.
  *
  * The image has properties that can be accessed by the corresponding setters
  * and getters.
  *
  * This class has a cache. The data is cached because it is expensive to
- * calculate the image again and again on the fly.
+ * calculate it again and again on the fly.
  *
  * When changing one of the properties, the image is <em>not</em> calculated
  * inmediatly. But the old image in the cache is deleted, so that this
@@ -58,18 +55,18 @@ namespace PerceptualColor {
  * it returns just the cache.
  *
  * This class is intended for usage in widgets that need to display a
- * chroma-hue diagram. It is recommended to update the properties of this
- * class as early as possible: If your widget is resized, use inmediatly also
- * @ref setImageSize to update this object. (This will reduce your memory
- * usage, as no memory will be hold for data that will not be
- * needed again.)
+ * gradient. It is recommended to update the properties of this class as
+ * early as possible: If your widget is resized, use inmediatly also
+ * @ref setGradientLength and @ref setGradientThickness to update this object.
+ * (This will reduce your memory usage, as no memory will be hold for
+ * out-of-date cache data.)
  *
  * This class supports HiDPI via its @ref setDevicePixelRatioF function.
  *
  * @note Resetting a property to its very same value does not trigger an
- * image calculation. So, if the border is 5, and you call @ref setBorder
- * <tt>(5)</tt>, than this will not trigger an image calculation, but the
- * cache stays valid and available.
+ * image calculation. So, if @ref setGradientThickness is 5, and you
+ * call @ref setGradientThickness <tt>(5)</tt>, than this will not
+ * trigger an image calculation, but the cache stays valid and available.
  *
  * @note This class is not based on <tt>QCache</tt> or <tt>QPixmapCache</tt>
  * because the semantic is different.
@@ -79,69 +76,79 @@ namespace PerceptualColor {
  * functions that are really used in the rest of the source code (property
  * setters are available, but getters might be missing), and it does not use
  * the pimpl idiom either. */
-class ChromaHueImage final
+class GradientImage final
 {
 public:
-    explicit ChromaHueImage(
+    explicit GradientImage(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
     );
+    LchaDouble colorFromValue(qreal value) const;
     QImage getImage();
-    void setBorder(const qreal newBorder);
-    void setChromaRange(const qreal newChromaRange);
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
-    void setImageSize(const int newImageSize);
-    void setLightness(const qreal newLightness);
+    void setFirstColor(const LchaDouble &newFirstColor);
+    void setGradientLength(const int newGradientLength);
+    void setGradientThickness(const int newGradientThickness);
+    void setSecondColor(const LchaDouble &newFirstColor);
 
 private:
-    Q_DISABLE_COPY(ChromaHueImage)
+    Q_DISABLE_COPY(GradientImage)
 
     /** @brief Only for unit tests. */
-    friend class TestChromaHueImage;
+    friend class TestGradientImage;
 
-    /** @brief Internal store for the border size, measured in physical pixels.
-     *
-     * @sa @ref setBorder() */
-    qreal m_borderPhysical = 0;
-    /** @brief Internal storage of the device pixel ratio property
-     * as floating point.
+    // Methods
+    static LchaDouble completlyNormalizedAndBounded(const LchaDouble &color);
+    void updateSecondColor();
+
+    // Data members
+    /** @brief Internal storage of the device pixel ratio as floating point.
      *
      * @sa @ref setDevicePixelRatioF() */
     qreal m_devicePixelRatioF = 1;
+    /** @brief Internal storage of the first color.
+     *
+     * The color is normalized and bound to the LCH color space.
+     * @sa @ref completlyNormalizedAndBounded() */
+    LchaDouble m_firstColorCorrected;
+    /** @brief Internal storage for the gradient length, measured in
+     * physical pixels.
+     *
+     * @sa @ref setGradientLength() */
+    int m_gradientLength = 0;
+    /** @brief Internal storage for the gradient thickness, measured in
+     * physical pixels.
+     *
+     * @sa @ref setGradientThickness() */
+    int m_gradientThickness = 0;
     /** @brief Internal storage of the image (cache).
      *
      * - If <tt>m_image.isNull()</tt> than either no cache is available
-     *   or @ref m_imageSizePhysical is <tt>0</tt>. Before using it,
-     *   a new image has to be rendered. (If @ref m_imageSizePhysical
-     *   is <tt>0</tt>, this will be extremly fast.)
+     *   or @ref m_gradientLength or @ref m_gradientThickness is <tt>0</tt>.
+     *   Before using it, a new image has to be rendered. (If
+     *   @ref m_gradientLength or @ref m_gradientThickness is
+     *   <tt>0</tt>, this will be extremly fast.)
      * - If <tt>m_image.isNull()</tt> is <tt>false</tt>, than the cache
      *   is valid and can be used directly. */
     QImage m_image;
-    /** @brief Internal store for the image size, measured in physical pixels.
-     *
-     * @sa @ref setImageSize() */
-    int m_imageSizePhysical = 0;
-    /** @brief Internal store for the lightness.
-     *
-     * This is the lightness (L) value in the LCH color model.
-     *
-     * Range: <tt>[0, 100]</tt>
-     *
-     * @sa @ref setLightness() */
-    qreal m_lightness = 50;
-    /** @brief Internal store for the chroma range.
-     *
-     * This is the chroma (C) value in the LCH color model.
-     *
-     * Only the range from <tt>0</tt> up to this value will be visible
-     * in the diagram image.
-     *
-     * @sa @ref setChromaRange() */
-    qreal m_chromaRange = 0;
     /** @brief Pointer to @ref RgbColorSpace object */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
+    /** @brief Internal storage of the second color (corrected and altered
+     * value).
+     *
+     * The color is normalized and bound to the LCH color space. In an
+     * additional step, it has been altered (by increasing or decreasing the
+     * hue component in steps of 360°) to minimize the distance in hue
+     * from this color to @ref m_firstColorCorrected. This is necessary to
+     * easily allow to calculate the intermediate colors of the gradient, so
+     * that they take the shortest way through the color space.
+     * @sa @ref setFirstColor()
+     * @sa @ref setSecondColor()
+     * @sa @ref completlyNormalizedAndBounded()
+     * @sa @ref updateSecondColor() */
+    LchaDouble m_secondColorCorrectedAndAltered;
 
 };
 
 }
 
-#endif // CHROMAHUEIMAGE_H
+#endif // GRADIENTIMAGE_H

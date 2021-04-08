@@ -198,6 +198,44 @@ private Q_SLOTS:
         );
     }
 
+    void testGradientThickness() {
+        AbstractDiagram temp;
+        QVERIFY(temp.gradientThickness() > 0);
+    }
+
+    void testGradientMinimumLength() {
+        AbstractDiagram temp;
+        QVERIFY(temp.gradientMinimumLength() >  temp.gradientThickness());
+    }
+
+    void testHandleColorFromBackgroundLightness() {
+        AbstractDiagram temp;
+        QCOMPARE(
+            temp.handleColorFromBackgroundLightness(-1),
+            QColor(Qt::white)
+        );
+        QCOMPARE(
+            temp.handleColorFromBackgroundLightness(0),
+            QColor(Qt::white)
+        );
+        QCOMPARE(
+            temp.handleColorFromBackgroundLightness(49),
+            QColor(Qt::white)
+        );
+        QCOMPARE(
+            temp.handleColorFromBackgroundLightness(51),
+            QColor(Qt::black)
+        );
+        QCOMPARE(
+            temp.handleColorFromBackgroundLightness(100),
+            QColor(Qt::black)
+        );
+        QCOMPARE(
+            temp.handleColorFromBackgroundLightness(101),
+            QColor(Qt::black)
+        );
+    }
+
 };
 
 }

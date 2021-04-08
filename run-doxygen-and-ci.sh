@@ -66,14 +66,12 @@ CODE_WITHOUT_UNIT_TESTS="include src"
 CODE_AND_UNIT_TESTS="include src test"
 
 # Search for files that do not start with a byte-order-mark (BOM).
-# Limit the search to files names that ends with .cpp or .h
 # We do this because Microsoft’s compiler does require a BOM at the start
 # of the file in order to interpretate it as UTF-8.
 grep \
     --recursive \
     --files-without-match $'\xEF\xBB\xBF' \
-    $CODE_AND_UNIT_TESTS \
-    | grep --perl-regexp "(\.cpp|\.h)$"
+    $CODE_AND_UNIT_TESTS
 
 # Search for some patterns that should not be used in the source code. If
 # these patterns are found, a message is displayed. Otherwise, nothing is

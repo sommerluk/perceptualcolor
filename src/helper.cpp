@@ -96,7 +96,9 @@ LchDouble toLchDouble(const cmsCIELCh &value)
 ** @param devicePixelRatioF The desired device-pixel ratio.
 **
 ** @returns An image of a mosaic of neutral gray rectangles of different
-** lightness. You can use this as tiles to paint a background.
+** lightness. You can use this as tiles to paint a background. The image
+** has its device pixel ratio set to the value that was given in the
+** parameter.
 **
 ** @note The image is considering the given device-pixel ratio to deliver
 ** sharp (and correctly scaled) images also for HiDPI devices.
@@ -112,8 +114,12 @@ LchDouble toLchDouble(const cmsCIELCh &value)
 ** neutral gray depending on the color profile of the monitor… */
 QImage transparencyBackground(qreal devicePixelRatioF)
 {
-    constexpr int lightnessOne = 210; // valid range is [0, 255]
-    constexpr int lightnessTwo = 240; // valid range is [0, 255]
+    // The valid lightness range is [0, 255]. The median is 127/128.
+    // We use two color with equal distance to this median to get a
+    // neutral gray.
+    constexpr int lightnessDistance = 15;
+    constexpr int lightnessOne = 127 - lightnessDistance;
+    constexpr int lightnessTwo = 128 + lightnessDistance;
     constexpr int squareSizeInLogicalPixel = 10;
     const int squareSize = qRound(
         squareSizeInLogicalPixel * devicePixelRatioF
