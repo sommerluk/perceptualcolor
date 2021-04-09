@@ -185,5 +185,23 @@ grep \
 ################# Unit tests #################
 cd build \
     && cmake ../ > /dev/null \
-    && make --jobs > /dev/null \
-    && make --jobs test
+    && make --jobs > /dev/null
+ctest --verbose \
+    | grep --invert-match --perl-regexp "^\d+: PASS   : " \
+    | grep --invert-match --perl-regexp "^\d+: Test command: " \
+    | grep --invert-match --perl-regexp "^\d+: Test timeout computed to be: " \
+    | grep --invert-match --perl-regexp "^\d+: \*\*\*\*\*\*\*\*\*" \
+    | grep --invert-match --perl-regexp "^\d+: Config: " \
+    | grep --invert-match --perl-regexp "^\d+: Totals: " \
+    | grep --invert-match --perl-regexp "^\s*\d+/\d+\sTest\s*#\d+:\s*\w+\s*\.*\s*Passed" \
+    | grep --invert-match --perl-regexp "^test \d+" \
+    | grep --invert-match --perl-regexp "^UpdateCTestConfiguration  from :" \
+    | grep --invert-match --perl-regexp "^Test project " \
+    | grep --invert-match --perl-regexp "^Constructing a list of tests" \
+    | grep --invert-match --perl-regexp "^Done constructing a list of tests" \
+    | grep --invert-match --perl-regexp "^Updating test list for fixtures" \
+    | grep --invert-match --perl-regexp "^Added \d+ tests to meet fixture requirements" \
+    | grep --invert-match --perl-regexp "^Checking test dependency graph\.\.\." \
+    | grep --invert-match --perl-regexp "^Checking test dependency graph end" \
+    | grep --invert-match --perl-regexp "^\d+:\s*[\.0123456789]* msecs per iteration" \
+    | grep --invert-match --perl-regexp "^\d+: RESULT : "

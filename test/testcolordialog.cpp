@@ -25,7 +25,6 @@
  */
 
 #include "perceptualcolorlib_internal.h"
-#undef QT_USE_QSTRINGBUILDER
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
@@ -419,8 +418,9 @@ private Q_SLOTS:
                         + QByteArrayLiteral("/")
                         + colorList.at(j).first;
                 QTest::newRow(
-                    (description
-                        + QByteArrayLiteral("/ShowAlphaChannel/NoButtons")
+                    QByteArray(
+                        description
+                            + QByteArrayLiteral("/ShowAlphaChannel/NoButtons")
                     ).constData()
                 )
                     << colorList.at(i).second
@@ -428,15 +428,19 @@ private Q_SLOTS:
                     << true
                     << true;
                 QTest::newRow(
-                    (description + QByteArrayLiteral("/ShowAlphaChannel"))
-                        .constData()
+                    QByteArray(
+                        description
+                            + QByteArrayLiteral("/ShowAlphaChannel")
+                    ).constData()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
                     << true
                     << false;
                 QTest::newRow(
-                    (description + QByteArrayLiteral("/NoButtons")).constData()
+                    QByteArray(
+                        description + QByteArrayLiteral("/NoButtons")
+                    ).constData()
                 )
                     << colorList.at(i).second
                     << colorList.at(j).second
