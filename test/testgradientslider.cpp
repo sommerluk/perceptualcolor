@@ -559,12 +559,12 @@ private Q_SLOTS:
 
     void testPaintEvent() {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
-        QScopedPointer<QPaintEvent> myPaintEvent {
-            new QPaintEvent(QRect(0, 0, 10, 10))
-        };
+        testSlider.show();
         // Paint event should not crash.
-        testSlider.paintEvent(myPaintEvent.data());
+        // repaint() will call paintEvent()…
+        testSlider.repaint();
     }
+
 };
 
 }
