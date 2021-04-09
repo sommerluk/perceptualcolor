@@ -204,4 +204,5 @@ ctest --verbose \
     | grep --invert-match --perl-regexp "^Checking test dependency graph\.\.\." \
     | grep --invert-match --perl-regexp "^Checking test dependency graph end" \
     | grep --invert-match --perl-regexp "^\d+:\s*[\.0123456789]* msecs per iteration" \
-    | grep --invert-match --perl-regexp "^\d+: RESULT : "
+    | grep --invert-match --perl-regexp "^\d+: RESULT : " \
+    | grep --invert-match --perl-regexp "^$"

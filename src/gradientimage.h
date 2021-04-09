@@ -42,7 +42,8 @@ namespace PerceptualColor {
  * shortest way.
  *
  * The image has properties that can be accessed by the corresponding setters
- * and getters.
+ * and getters. You should explicitly set all values <em>before</em> calling
+ * the first time @ref getImage().
  *
  * This class has a cache. The data is cached because it is expensive to
  * calculate it again and again on the fly.

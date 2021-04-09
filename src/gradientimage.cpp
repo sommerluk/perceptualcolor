@@ -44,6 +44,8 @@ GradientImage::GradientImage(
 ) :
     m_rgbColorSpace (colorSpace)
 {
+    setFirstColor(LchaDouble(0, 0, 0, 1));
+    setFirstColor(LchaDouble(1000, 0, 0, 1));
 }
 
 /** @brief Normalizes the value and bounds it to the LCH color space.

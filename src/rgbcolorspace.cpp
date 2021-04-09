@@ -311,7 +311,9 @@ QColor RgbColorSpace::colorRgbBound(
     return colorRgbBound(temp);
 }
 
-QColor RgbColorSpace::colorRgbBound(const PerceptualColor::LchaDouble &lcha) const
+QColor RgbColorSpace::colorRgbBound(
+    const PerceptualColor::LchaDouble &lcha
+) const
 {
     LchDouble lch;
     lch.l = lcha.l;
