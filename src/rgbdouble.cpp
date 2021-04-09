@@ -27,7 +27,7 @@
 #include "perceptualcolorlib_internal.h"
 
 // Own header
-#include "PerceptualColor/rgbdouble.h"
+#include "rgbdouble.h"
 
 #include <type_traits>
 

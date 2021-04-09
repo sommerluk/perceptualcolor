@@ -31,6 +31,8 @@
 #include "PerceptualColor/rgbcolorspace.h"
 #include "constpropagatingrawpointer.h"
 
+#include "rgbdouble.h"
+
 namespace PerceptualColor {
 
 /** @brief Private implementation within the <em>Pointer to
@@ -55,6 +57,8 @@ public:
     cmsHTRANSFORM m_transformRgbToLabHandle;
     qreal m_whitepointL;
 
+    cmsCIELab colorLab(const RgbDouble &rgb) const;
+    RgbDouble colorRgbBoundSimple(const cmsCIELab &Lab) const;
     static QString getInformationFromProfile(
         cmsHPROFILE profileHandle,
         cmsInfoType infoType

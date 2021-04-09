@@ -64,7 +64,14 @@ namespace PerceptualColor {
  * Depending on your use case (for example if you want to use it
  * reliably in Qt's signals and slots), you might consider calling
  * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
- * object. */
+ * object.
+ *
+ * @todo This data type is only used within @ref RgbColorSpace. It is not
+ * part of the public API. Therefore, it seems more appropriate to either
+ * delete it entirely (substituting its usage by an array of three elements
+ * with LittleCMS data type) or keep it, but use consequently LittleCMS
+ * for the unterlying data and make unit tests with LittleCMS to be
+ * sure it behaves as expected, also when used as a buffer. */
 struct RgbDouble {
     /** @brief The red value. */
     double red;

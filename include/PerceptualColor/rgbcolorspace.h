@@ -35,8 +35,6 @@
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/lchadouble.h"
 
-#include <PerceptualColor/rgbdouble.h>
-
 #include <lcms2.h>
 
 namespace PerceptualColor {
@@ -59,9 +57,6 @@ public:
     Q_INVOKABLE qreal blackpointL() const;
     Q_INVOKABLE QColor colorRgb(const cmsCIELab &Lab) const;
     Q_INVOKABLE QColor colorRgb(const PerceptualColor::LchDouble &lch) const;
-    Q_INVOKABLE PerceptualColor::RgbDouble colorRgbBoundSimple(
-        const cmsCIELab &Lab
-    ) const;
     Q_INVOKABLE QColor colorRgbBound(
         const cmsCIELab &Lab
     ) const;
@@ -70,9 +65,6 @@ public:
     ) const;
     Q_INVOKABLE cmsCIELab colorLab(
         const QColor &rgbColor
-    ) const;
-    Q_INVOKABLE cmsCIELab colorLab(
-        const PerceptualColor::RgbDouble &rgb
     ) const;
     Q_INVOKABLE PerceptualColor::LchDouble colorLch(const QColor &rgbColor) const;
     Q_INVOKABLE bool inGamut(const cmsCIELab &lab) const;

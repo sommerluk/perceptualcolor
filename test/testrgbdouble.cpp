@@ -28,7 +28,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "PerceptualColor/rgbdouble.h"
+#include "rgbdouble.h"
 
 #include <QtTest>
 

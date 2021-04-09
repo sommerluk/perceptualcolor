@@ -180,6 +180,7 @@ set(perceptualcolor_SRC
   src/chromalightnessdiagram.cpp
   src/colordialog.cpp
   src/colorpatch.cpp
+  src/colorwheel.cpp
   src/colorwheelimage.cpp
   src/extendeddoublevalidator.cpp
   src/fallbackiconengine.cpp
@@ -192,7 +193,6 @@ set(perceptualcolor_SRC
   src/polarpointf.cpp
   src/rgbcolorspace.cpp
   src/rgbdouble.cpp
-  src/colorwheel.cpp
   src/version.cpp
   src/wheelcolorpicker.cpp
 )
@@ -204,6 +204,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/chromalightnessdiagram.h
   include/PerceptualColor/colordialog.h
   include/PerceptualColor/colorpatch.h
+  include/PerceptualColor/colorwheel.h
   include/PerceptualColor/constpropagatinguniquepointer.h
   include/PerceptualColor/gradientslider.h
   include/PerceptualColor/lchadouble.h
@@ -212,8 +213,6 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/perceptualcolorlib_global.h
   include/PerceptualColor/polarpointf.h
   include/PerceptualColor/rgbcolorspace.h
-  include/PerceptualColor/rgbdouble.h
-  include/PerceptualColor/colorwheel.h
   include/PerceptualColor/wheelcolorpicker.h
 )
 # Include directories

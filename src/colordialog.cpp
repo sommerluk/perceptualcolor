@@ -464,7 +464,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
     m_alphaSpinBox->setMaximum(100);
     m_alphaSpinBox->setSuffix(tr("%"));
     m_alphaSpinBox->setDecimals(0);
-    m_alphaSpinBox->setSingleStep(singleStepAlpha);
+    m_alphaSpinBox->setSingleStep(singleStepAlpha * 100);
     // m_alphaSpinBox is of type QDoubleSpinBox which does not allow to
     // configure the pageStep.
     m_alphaLabel = new QLabel(tr("O&pacity:"));

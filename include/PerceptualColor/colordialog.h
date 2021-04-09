@@ -111,6 +111,10 @@ namespace PerceptualColor {
  * @note This dialog uses icons. See @ref hidpisupport "High DPI support"
  * about how to enable support for high-DPI icons.
  *
+ * @todo BUG Current behaviour: @ref ColorDialogPrivate::m_wheelColorPicker
+ * is getting the focus by Tab, but is not getting the focus by Shift-Tab.
+ * Expected behaviour: It should get the focus both, on Tab as on Shift-Tab.
+ *
  * @todo BUG: Put hex value ffff00. Push tab key. The value changes to
  * 000000. It shouldn't.
  *

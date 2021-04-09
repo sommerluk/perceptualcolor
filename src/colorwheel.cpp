@@ -179,14 +179,14 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
-    if (
-        inRange<qreal>(
-            radius-m_wheelThickness,
-            myPolarPoint.radial(),
-            radius
-        )
-    ) {
-        setFocus(Qt::MouseFocusReason);
+    if (myPolarPoint.radial() > radius) {
+        // Make sure default coordinates like drag-window
+        // in KDE's Breeze widget style works
+        event->ignore();
+        return;
+    }
+    setFocus(Qt::MouseFocusReason);
+    if (myPolarPoint.radial() > radius - m_wheelThickness) {
         d_pointer->m_mouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
     } else {
@@ -194,6 +194,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         // in KDE's Breeze widget style works
         event->ignore();
     }
+    return;
 }
 
 /** @brief React on a mouse move event.

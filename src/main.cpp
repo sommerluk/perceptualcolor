@@ -32,7 +32,6 @@
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/polarpointf.h"
 #include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/rgbdouble.h"
 #include "PerceptualColor/colorwheel.h"
 #include "fallbackiconengine.h"
 #include "version.h"
@@ -55,22 +54,9 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-// Assert UTF-8 as execution character set as documented
-// in perceptualcolorlib_global.h
-static_assert(
-    (static_cast<quint8>(*(("🖌")+0)) == 0xF0) &&
-        (static_cast<quint8>(*(("🖌")+1)) == 0x9F) &&
-        (static_cast<quint8>(*(("🖌")+2)) == 0x96) &&
-        (static_cast<quint8>(*(("🖌")+3)) == 0x8C) &&
-        (static_cast<quint8>(*(("🖌")+4)) == 0x00),
-    "Compiler must use UTF8 as narrow execution character set. \n"
-        "Example: gcc -fexec-charset=UTF-8"
-);
-
 // TODO Test the main function etc from KColorChooser to see if
 // PerceptualColor::ColorDialog is really a drop-in replacement
 // for QColorDialog.
-
 // TODO Drop this executable in favor of KColorChooser?
 
 int main(int argc, char *argv[])

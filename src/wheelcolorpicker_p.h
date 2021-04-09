@@ -33,9 +33,9 @@
 
 #include <QPointer>
 
+#include "PerceptualColor/colorwheel.h"
 #include "PerceptualColor/chromalightnessdiagram.h"
 #include "PerceptualColor/rgbcolorspace.h"
-#include "PerceptualColor/colorwheel.h"
 
 namespace PerceptualColor {
 

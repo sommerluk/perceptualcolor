@@ -182,7 +182,7 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
     my_rgb.red = rgbColor.redF();
     my_rgb.green = rgbColor.greenF();
     my_rgb.blue = rgbColor.blueF();
-    return colorLab(my_rgb);
+    return d_pointer->colorLab(my_rgb);
 }
 
 PerceptualColor::LchDouble RgbColorSpace::colorLch(const QColor &rgbColor) const
@@ -202,14 +202,16 @@ PerceptualColor::LchDouble RgbColorSpace::colorLch(const QColor &rgbColor) const
  * @param rgb the color that will be converted.
  * @returns If the color is valid, the corresponding LCh value might also
  * be invalid. */
-cmsCIELab RgbColorSpace::colorLab(const PerceptualColor::RgbDouble &rgb) const
+cmsCIELab RgbColorSpace::RgbColorSpacePrivate::colorLab(
+    const RgbDouble &rgb
+) const
 {
     cmsCIELab lab;
     cmsDoTransform(
-        d_pointer->m_transformRgbToLabHandle, // handle to transform function
-        &rgb,                                 // input
-        &lab,                                 // output
-        1                                     // convert exactly 1 value
+        m_transformRgbToLabHandle, // handle to transform function
+        &rgb,                      // input
+        &lab,                      // output
+        1                          // convert exactly 1 value
     );
     return lab;
 }
@@ -258,14 +260,16 @@ QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
     return colorRgb(temp);
 }
 
-PerceptualColor::RgbDouble RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &Lab) const
+RgbDouble RgbColorSpace::RgbColorSpacePrivate::colorRgbBoundSimple(
+    const cmsCIELab &Lab
+) const
 {
     cmsUInt16Number rgb_int[3];
     cmsDoTransform(
-        d_pointer->m_transformLabToRgb16Handle, // handle to transform function
-        &Lab,                                   // input
-        rgb_int,                                // output
-        1                                       // convert exactly 1 value
+        m_transformLabToRgb16Handle, // handle to transform function
+        &Lab,                        // input
+        rgb_int,                     // output
+        1                            // convert exactly 1 value
     );
     RgbDouble temp;
     temp.red = rgb_int[0] / static_cast<qreal>(65535);
@@ -282,7 +286,7 @@ PerceptualColor::RgbDouble RgbColorSpace::colorRgbBoundSimple(const cmsCIELab &L
  */
 QColor RgbColorSpace::colorRgbBound(const cmsCIELab &Lab) const
 {
-    RgbDouble temp = colorRgbBoundSimple(Lab);
+    RgbDouble temp = d_pointer->colorRgbBoundSimple(Lab);
     return QColor::fromRgbF(temp.red, temp.green, temp.blue);
 }
 

@@ -43,6 +43,8 @@ namespace PerceptualColor {
 
 class TestColorDialogSnippetClass : public QWidget {
 Q_OBJECT
+public Q_SLOTS:
+void mySlot(QColor color) {Q_UNUSED(color)}
 public:
 // A constructor that is clazy-conform
 TestColorDialogSnippetClass(QWidget *parent = nullptr) : QWidget(parent) {}
@@ -1608,16 +1610,25 @@ private Q_SLOTS:
             QColorDialog::ColorDialogOption::ShowAlphaChannel,
             true
         );
-        qreal oldAlpha =
-            m_perceptualDialog->d_pointer->m_alphaGradientSlider->value();
+        m_perceptualDialog->d_pointer->m_alphaGradientSlider->setValue(0.5);
+        QCOMPARE(
+            m_perceptualDialog->d_pointer->m_alphaGradientSlider->value(),
+            0.5
+        );
+        QCOMPARE(
+            m_perceptualDialog->d_pointer->m_alphaSpinBox->value(),
+            50
+        );
         QTest::keyClick(
             m_perceptualDialog->d_pointer->m_alphaSpinBox,
             Qt::Key_Up
         );
-        qreal newAlpha =
-            m_perceptualDialog->d_pointer->m_alphaGradientSlider->value();
         QVERIFY2(
-            newAlpha > oldAlpha,
+            m_perceptualDialog->d_pointer->m_alphaGradientSlider->value() > 0.5,
+            "Verify that the alpha value has become higher."
+        );
+        QVERIFY2(
+            m_perceptualDialog->d_pointer->m_alphaSpinBox->value() > 50,
             "Verify that the alpha value has become higher."
         );
     }
@@ -1790,15 +1801,15 @@ private Q_SLOTS:
         myDialog->d_pointer->m_hsvSpinBox->setSections(mySections);
         myDialog->d_pointer->readHsvNumericValues();
         QCOMPARE(
-            qRound(myDialog->currentColor().hue()),
+            myDialog->currentColor().hue(),
             10
         );
         QCOMPARE(
-            qRound(myDialog->currentColor().lightness()),
+            myDialog->currentColor().lightness(),
             11
         );
         QCOMPARE(
-            qRound(myDialog->currentColor().value()),
+            myDialog->currentColor().value(),
             12
         );
     }
