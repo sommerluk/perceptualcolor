@@ -30,9 +30,9 @@
 // First the interface, which forces the header to be self-contained.
 #include "colorwheelimage.h"
 
-#include "PerceptualColor/polarpointf.h"
 #include "helper.h"
 #include "lchvalues.h"
+#include "polarpointf.h"
 
 #include <QtMath>
 #include <QPainter>

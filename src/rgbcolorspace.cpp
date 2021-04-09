@@ -34,7 +34,7 @@
 
 #include "helper.h"
 
-#include "PerceptualColor/polarpointf.h"
+#include "polarpointf.h"
 
 #include <QDebug>
 

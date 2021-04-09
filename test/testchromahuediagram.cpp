@@ -33,7 +33,7 @@
 
 #include <QtTest>
 
-#include "PerceptualColor/polarpointf.h"
+#include "polarpointf.h"
 
 namespace PerceptualColor {
 

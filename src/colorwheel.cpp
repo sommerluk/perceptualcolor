@@ -35,7 +35,7 @@
 #include "PerceptualColor/lchdouble.h"
 #include "helper.h"
 #include "lchvalues.h"
-#include "PerceptualColor/polarpointf.h"
+#include "polarpointf.h"
 
 #include <math.h>
 

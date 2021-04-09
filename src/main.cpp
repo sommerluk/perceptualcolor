@@ -30,7 +30,7 @@
 #include "PerceptualColor/chromahuediagram.h"
 #include "PerceptualColor/chromalightnessdiagram.h"
 #include "PerceptualColor/multispinbox.h"
-#include "PerceptualColor/polarpointf.h"
+#include "polarpointf.h"
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/colorwheel.h"
 #include "fallbackiconengine.h"

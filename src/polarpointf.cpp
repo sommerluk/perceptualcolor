@@ -27,7 +27,7 @@
 #include "perceptualcolorlib_internal.h"
 
 // Own header
-#include "PerceptualColor/polarpointf.h"
+#include "polarpointf.h"
 
 // Other includes
 #include <QtMath>

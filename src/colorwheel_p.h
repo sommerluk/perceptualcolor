@@ -33,8 +33,8 @@
 
 #include <QPointer>
 
-#include "PerceptualColor/polarpointf.h"
 #include "colorwheelimage.h"
+#include "polarpointf.h"
 
 namespace PerceptualColor {
 
