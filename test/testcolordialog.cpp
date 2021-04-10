@@ -38,8 +38,6 @@
 
 #include <PerceptualColor/multispinbox.h>
 
-namespace PerceptualColor {
-
 class TestColorDialogSnippetClass : public QWidget {
 Q_OBJECT
 public Q_SLOTS:
@@ -56,6 +54,66 @@ delete m_dialog;
 }
 };
 
+static void snippet01() {
+// This function will not be called in the unit tests because getColor()
+// does not return without user interaction!
+//! [ColorDialog Get color with alpha channel]
+QColor myColor = PerceptualColor::ColorDialog::getColor(
+    Qt::green,                      // current color at widget startup
+    nullptr,                        // parent widget (or nullptr for no parent)
+    QStringLiteral("Window title"), // window title (or an empty string for default title)
+    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
+);
+//! [ColorDialog Get color with alpha channel]
+Q_UNUSED(myColor);
+}
+
+static void snippet02() {
+//! [ColorDialog Set options with local enum]
+PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
+myDialog->setOption(
+    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel,
+    false
+);
+//! [ColorDialog Set options with local enum]
+QCOMPARE(
+    myDialog->testOption(
+        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
+    ),
+    false
+);
+delete myDialog;
+}
+
+static void snippet03() {
+//! [ColorDialog Set options with QColorDialog enum]
+PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
+myDialog->setOption(
+    QColorDialog::ShowAlphaChannel,
+    false
+);
+//! [ColorDialog Set options with QColorDialog enum]
+QCOMPARE(
+    myDialog->testOption(
+        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
+    ),
+    false
+);
+delete myDialog;
+}
+
+static void snippet04() {
+// This function will not be called in the unit tests because getColor()
+// does not return without user interaction!
+//! [ColorDialog Get color]
+// Show a modal color dialog and get the color that the user has chosen
+QColor myColor = PerceptualColor::ColorDialog::getColor();
+//! [ColorDialog Get color]
+Q_UNUSED(myColor);
+}
+
+namespace PerceptualColor {
+
 class TestColorDialog : public QObject
 {
     Q_OBJECT
@@ -70,27 +128,6 @@ private:
     QScopedPointer<QColorDialog> m_qDialog;
     QScopedPointer<QColorDialog> m_qDialog2;
     QColor m_color;
-
-
-void testSnippet01() {
-//! [ColorDialog Get color with alpha channel]
-QColor myColor = PerceptualColor::ColorDialog::getColor(
-    Qt::green,          // current color at widget startup
-    nullptr,            // parent widget (or nullptr for no parent)
-    tr("Window title"), // window title (or an empty string for default title)
-    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
-);
-//! [ColorDialog Get color with alpha channel]
-Q_UNUSED(myColor);
-}
-
-void testSnippet04() {
-//! [ColorDialog Get color]
-// Show a modal color dialog and get the color that the user has chosen
-QColor myColor = PerceptualColor::ColorDialog::getColor();
-//! [ColorDialog Get color]
-Q_UNUSED(myColor);
-}
 
     static void voidMessageHandler(
         QtMsgType,
@@ -2163,45 +2200,28 @@ private Q_SLOTS:
         }
     }
 
+    void testSnippet02() {
+        snippet02();
+    }
+
+    void testSnippet03() {
+        snippet03();
+    }
+
     void testSnippet05() {
         TestColorDialogSnippetClass mySnippets;
         mySnippets.testSnippet05();
     }
 
-void testSnippet02() {
-//! [ColorDialog Set options with local enum]
-PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
-myDialog->setOption(
-    PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel,
-    false
-);
-//! [ColorDialog Set options with local enum]
-QCOMPARE(
-    myDialog->testOption(
-        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
-    ),
-    false
-);
-delete myDialog;
-}
+private:
+    void unused() {
+        // These will not be called in the unit tests because getColor()
+        // does not return without user interaction!
+        // They are noted here to avoid a warning about “unused function”.
+        snippet01();
+        snippet04();
 
-void testSnippet03() {
-//! [ColorDialog Set options with QColorDialog enum]
-PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
-myDialog->setOption(
-    QColorDialog::ShowAlphaChannel,
-    false
-);
-//! [ColorDialog Set options with QColorDialog enum]
-QCOMPARE(
-    myDialog->testOption(
-        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel
-    ),
-    false
-);
-delete myDialog;
-}
-
+    }
 };
 
 }

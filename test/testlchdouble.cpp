@@ -34,6 +34,15 @@
 
 #include <lcms2.h>
 
+static void snippet01() {
+//! [Use LchDouble]
+PerceptualColor::LchDouble myValue;
+myValue.l = 50; // Lightness: 50%
+myValue.c = 25; // Chroma: 25
+myValue.h = 5;  // Hue: 5°
+//! [Use LchDouble]
+}
+
 namespace PerceptualColor {
 
 class TestLchDouble : public QObject
@@ -141,15 +150,10 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-void testLchDouble1() {
-//! [Use LchDouble]
-PerceptualColor::LchDouble test1;
-test1.l = 50; // Lightness: 50%
-test1.c = 25; // Chroma: 25
-test1.h = 5;  // Hue: 5°
-//! [Use LchDouble]
-Q_UNUSED(test1)
-}
+    void testSnippet01()
+    {
+        snippet01();
+    }
 
 };
 

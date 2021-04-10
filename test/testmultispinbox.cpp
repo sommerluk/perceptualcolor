@@ -39,6 +39,70 @@
 #include <QLineEdit>
 #include <QSpinBox>
 
+static void snippet02() {
+//! [MultiSpinBox Basic example]
+PerceptualColor::MultiSpinBox *myHsvSpinBox =
+    new PerceptualColor::MultiSpinBox();
+PerceptualColor::MultiSpinBox::SectionData mySection;
+QList<PerceptualColor::MultiSpinBox::SectionData> hsvSections;
+
+mySection.decimals = 1;
+
+mySection.prefix = QString();
+mySection.minimum = 0;
+mySection.value = 310;
+mySection.isWrapping = true;
+mySection.maximum = 360;
+mySection.suffix = QStringLiteral(u"° ");
+hsvSections.append(mySection);
+
+mySection.prefix = QStringLiteral(u" ");
+mySection.minimum = 0;
+mySection.value = 200;
+mySection.maximum = 255;
+mySection.isWrapping = false;
+mySection.suffix = QStringLiteral(u" ");
+hsvSections.append(mySection);
+
+mySection.value = 100;
+mySection.suffix = QString();
+hsvSections.append(mySection);
+
+myHsvSpinBox->setSections(hsvSections);
+// Initial content is:  310,0°  200,0  100,0
+//! [MultiSpinBox Basic example]
+delete myHsvSpinBox;
+}
+
+class testSnippet02 {
+//! [MultiSpinBox Full-featured interface]
+void addSection(PerceptualColor::MultiSpinBox::SectionData newSection);
+void addSections(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+void append(PerceptualColor::MultiSpinBox::SectionData newSection);
+void append(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+void clearSections();
+int currentIndex() const;
+PerceptualColor::MultiSpinBox::SectionData currentSection() const;
+PerceptualColor::MultiSpinBox::SectionData firstSection() const;
+void insertSection(int index, PerceptualColor::MultiSpinBox::SectionData newSection);
+void insertSection(int index, QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+PerceptualColor::MultiSpinBox::SectionData lastSection() const;
+void moveSection(int from, int to);
+void prependSection(PerceptualColor::MultiSpinBox::SectionData newSection);
+void prependSections(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+void removeFirstSection();
+void removeLastSection();
+void removeSection(int index);
+void replaceSection(int index, PerceptualColor::MultiSpinBox::SectionData newSection);
+PerceptualColor::MultiSpinBox::SectionData sectionAt(int index) const;
+int sectionCount() const;
+QList<PerceptualColor::MultiSpinBox::SectionData> sections() const;
+void setCurrentIndex(int newIndex);
+void setSections(const QList<PerceptualColor::MultiSpinBox::SectionData> &newSections);
+void swapSections(int i, int j);
+//! [MultiSpinBox Full-featured interface]
+};
+
 namespace PerceptualColor {
 
 class TestMultiSpinBox : public QObject
@@ -1412,74 +1476,9 @@ private Q_SLOTS:
         );
     }
 
-void testSnippet02() {
-//! [MultiSpinBox Basic example]
-PerceptualColor::MultiSpinBox *myHsvSpinBox =
-    new PerceptualColor::MultiSpinBox();
-PerceptualColor::MultiSpinBox::SectionData mySection;
-QList<PerceptualColor::MultiSpinBox::SectionData> hsvSections;
-
-mySection.decimals = 1;
-
-mySection.prefix = QString();
-mySection.minimum = 0;
-mySection.value = 310;
-mySection.isWrapping = true;
-mySection.maximum = 360;
-mySection.suffix = QStringLiteral(u"° ");
-hsvSections.append(mySection);
-
-mySection.prefix = QStringLiteral(u" ");
-mySection.minimum = 0;
-mySection.value = 200;
-mySection.maximum = 255;
-mySection.isWrapping = false;
-mySection.suffix = QStringLiteral(u" ");
-hsvSections.append(mySection);
-
-mySection.value = 100;
-mySection.suffix = QString();
-hsvSections.append(mySection);
-
-myHsvSpinBox->setSections(hsvSections);
-// Initial content is:  310,0°  200,0  100,0
-//! [MultiSpinBox Basic example]
-QCOMPARE(
-    myHsvSpinBox->lineEdit()->text(),
-    QStringLiteral("310,0°  200,0  100,0")
-);
-delete myHsvSpinBox;
-}
-
-private:
-class testSnippet02 {
-//! [MultiSpinBox Full-featured interface]
-void addSection(MultiSpinBox::SectionData newSection);
-void addSections(QList<MultiSpinBox::SectionData> newSections);
-void append(MultiSpinBox::SectionData newSection);
-void append(QList<MultiSpinBox::SectionData> newSections);
-void clearSections();
-int currentIndex() const;
-MultiSpinBox::SectionData currentSection() const;
-MultiSpinBox::SectionData firstSection() const;
-void insertSection(int index, MultiSpinBox::SectionData newSection);
-void insertSection(int index, QList<MultiSpinBox::SectionData> newSections);
-MultiSpinBox::SectionData lastSection() const;
-void moveSection(int from, int to);
-void prependSection(MultiSpinBox::SectionData newSection);
-void prependSections(QList<MultiSpinBox::SectionData> newSections);
-void removeFirstSection();
-void removeLastSection();
-void removeSection(int index);
-void replaceSection(int index, MultiSpinBox::SectionData newSection);
-MultiSpinBox::SectionData sectionAt(int index) const;
-int sectionCount() const;
-QList<MultiSpinBox::SectionData> sections() const;
-void setCurrentIndex(int newIndex);
-void setSections(const QList<MultiSpinBox::SectionData> &newSections);
-void swapSections(int i, int j);
-//! [MultiSpinBox Full-featured interface]
-};
+    void testSnippet02() {
+        snippet02();
+    }
 
 };
 

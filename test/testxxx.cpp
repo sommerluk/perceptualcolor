@@ -67,7 +67,7 @@ private Q_SLOTS:
 
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestXXX)
 

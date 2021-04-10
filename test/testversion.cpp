@@ -32,6 +32,16 @@
 
 #include <QtTest>
 
+static void snippet01() {
+//! [Version Macro usage]
+#if (PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= QT_VERSION_CHECK(1, 2, 3))
+// Some code…
+#else
+// Some different code…
+#endif
+//! [Version Macro usage]
+}
+
 namespace PerceptualColor {
 
 class TestVersion : public QObject
@@ -71,15 +81,9 @@ private Q_SLOTS:
         );
     }
 
-void testSnippet01() {
-//! [Version Macro usage]
-#if (PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= QT_VERSION_CHECK(1, 2, 3))
-// Some code…
-#else
-// Some different code…
-#endif
-//! [Version Macro usage]
-}
+    void testSnippet01() {
+        snippet01();
+    }
 
 };
 

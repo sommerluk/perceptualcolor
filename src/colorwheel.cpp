@@ -71,11 +71,11 @@ ColorWheel::ColorWheel(
     // initialized.
     d_pointer->m_hue = LchValues::neutralHue;
     d_pointer->m_mouseEventActive = false;
-    d_pointer->m_wheelImage.setBorder(border);
+    d_pointer->m_wheelImage.setBorder(d_pointer->border());
     d_pointer->m_wheelImage.setImageSize(
         qMin(width(), height())
     );
-    d_pointer->m_wheelImage.setWheelThickness(m_wheelThickness);
+    d_pointer->m_wheelImage.setWheelThickness(gradientThickness());
 
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
@@ -120,9 +120,9 @@ ColorWheel::ColorWheelPrivate::ColorWheelPrivate(
  * is actually displayed or not. This value corresponds to the smaller one
  * of width() and height().
  */
-int ColorWheel::contentDiameter() const
+int ColorWheel::ColorWheelPrivate::contentDiameter() const
 {
-    return qMin(width(), height());
+    return qMin(q_pointer->width(), q_pointer->height());
 }
 
 /** @brief Converts window coordinates to wheel coordinates.
@@ -138,7 +138,7 @@ PolarPointF ColorWheel
     const QPoint widgetCoordinates
 ) const
 {
-    qreal radius = q_pointer->contentDiameter() / static_cast<qreal>(2);
+    qreal radius = contentDiameter() / static_cast<qreal>(2);
     return PolarPointF(
         QPointF(widgetCoordinates.x() - radius, radius - widgetCoordinates.y())
     );
@@ -157,7 +157,7 @@ QPointF ColorWheel
     const PolarPointF wheelCoordinates
 ) const
 {
-    qreal radius = q_pointer->contentDiameter() / static_cast<qreal>(2);
+    qreal radius = contentDiameter() / static_cast<qreal>(2);
     QPointF temp = wheelCoordinates.toCartesian();
     temp.setX(temp.x() + radius);
     temp.setY(radius - temp.y());
@@ -176,7 +176,9 @@ QPointF ColorWheel
  */
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
-    qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
+    qreal radius =
+        d_pointer->contentDiameter() / static_cast<qreal>(2)
+            - d_pointer->border();
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (myPolarPoint.radial() > radius) {
@@ -186,7 +188,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         return;
     }
     setFocus(Qt::MouseFocusReason);
-    if (myPolarPoint.radial() > radius - m_wheelThickness) {
+    if (myPolarPoint.radial() > radius - gradientThickness()) {
         d_pointer->m_mouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
     } else {
@@ -262,7 +264,9 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
     // a mouse wheel event occurs.
     // TODO What is a reasonable value for this?
     static constexpr qreal wheelStep = 5;
-    qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
+    qreal radius =
+        d_pointer->contentDiameter() / static_cast<qreal>(2)
+            - d_pointer->border();
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
@@ -388,11 +392,13 @@ void ColorWheel::paintEvent(QPaintEvent* event)
     painter.drawImage(0, 0, d_pointer->m_wheelImage.getImage());
 
     // paint the handle
-    qreal radius = contentDiameter() / static_cast<qreal>(2) - border;
+    qreal radius =
+        d_pointer->contentDiameter() / static_cast<qreal>(2)
+            - d_pointer->border();
     // get widget coordinates for our handle
     QPointF myHandleInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
         PolarPointF(
-            radius - m_wheelThickness,
+            radius - gradientThickness(),
             d_pointer->m_hue
         )
     );
@@ -419,8 +425,8 @@ void ColorWheel::paintEvent(QPaintEvent* event)
         painter.drawEllipse(
             handleOutlineThickness() / 2, // Integer division (rounding down)
             handleOutlineThickness() / 2, // Integer division (rounding down)
-            contentDiameter() - handleOutlineThickness(),
-            contentDiameter() - handleOutlineThickness()
+            d_pointer->contentDiameter() - handleOutlineThickness(),
+            d_pointer->contentDiameter() - handleOutlineThickness()
         );
     }
 
@@ -457,7 +463,8 @@ qreal ColorWheel::hue() const
     return d_pointer->m_hue;
 }
 
-qreal ColorWheel::wheelRibbonChroma() const
+/** @brief the chroma with which the wheel ribbon is painted. */
+qreal ColorWheel::ColorWheelPrivate::wheelRibbonChroma() const
 {
     return LchValues::srgbVersatileChroma;
 }
@@ -506,8 +513,8 @@ QSize ColorWheel::sizeHint() const
         * scaleFromMinumumSizeHintToSizeHint;
     const int size = qRound(
         innerDiameter
-            + 2 * m_wheelThickness
-            + 2 * border
+            + 2 * gradientThickness()
+            + 2 * d_pointer->border()
     );
     return QSize(size, size);
 }
@@ -528,8 +535,8 @@ QSize ColorWheel::minimumSizeHint() const
     const qreal innerDiameter = gradientMinimumLength() / M_PI;
     const int size = qRound(
         innerDiameter
-            + 2 * m_wheelThickness
-            + 2 * border
+            + 2 * gradientThickness()
+            + 2 * d_pointer->border()
     );
     return QSize(size, size);
 }
@@ -540,6 +547,11 @@ QSize ColorWheel::minimumSizeHint() const
 void ColorWheel::resetHue()
 {
     setHue(LchValues::neutralHue);
+}
+
+int ColorWheel::ColorWheelPrivate::border() const
+{
+    return 2 * q_pointer->handleOutlineThickness();
 }
 
 }

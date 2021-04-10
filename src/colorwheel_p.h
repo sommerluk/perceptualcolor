@@ -67,12 +67,15 @@ public:
     /** @brief Pointer to RgbColorSpace() object */
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
+    int border() const;
+    int contentDiameter() const;
     QPointF fromWheelCoordinatesToWidgetCoordinates(
         const PolarPointF wheelCoordinates
     ) const;
     PolarPointF fromWidgetCoordinatesToWheelCoordinates(
         const QPoint widgetCoordinates
     ) const;
+    qreal wheelRibbonChroma() const;
 
 private:
     Q_DISABLE_COPY(ColorWheelPrivate)

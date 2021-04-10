@@ -99,16 +99,6 @@ protected:
     virtual void paintEvent(QPaintEvent* event) override;
     virtual void resizeEvent(QResizeEvent* event) override;
     virtual void wheelEvent(QWheelEvent *event) override;
-    int contentDiameter() const;
-    // TODO No const definition in public headers! Better use a function
-    // return value.
-    const int border = 2 * handleOutlineThickness();
-    /** @brief the thickness of the wheel ribbon */
-    // TODO No const definition in public headers! Better use a function
-    // return value.
-    static constexpr int m_wheelThickness = 20;
-    /** @brief the chroma with which the wheel ribbon is painted. */
-    qreal wheelRibbonChroma() const;
 
 private:
     Q_DISABLE_COPY(ColorWheel)

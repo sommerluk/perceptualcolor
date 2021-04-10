@@ -32,8 +32,6 @@
 
 #include <QtTest>
 
-namespace PerceptualColor {
-
 class TestGradientSnippetClass : public QWidget
 {
 Q_OBJECT
@@ -42,10 +40,10 @@ public:
 TestGradientSnippetClass(QWidget *parent = nullptr) : QWidget(parent) {}
 void testSnippet01() {
 //! [GradientImage HiDPI usage]
-QSharedPointer<RgbColorSpace> myColorSpace {
-    new RgbColorSpace
+QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
+    new PerceptualColor::RgbColorSpace
 };
-GradientImage test(myColorSpace);
+PerceptualColor::GradientImage test(myColorSpace);
 // The function setImageSize() expects an int
 // value. static_cast<int> will round down, which
 // is the desired behaviour here. (Rounding up
@@ -57,13 +55,13 @@ test.setGradientLength(
 test.setGradientThickness(
     static_cast<int>(100 * devicePixelRatioF())
 );
-LchaDouble firstColor;
+PerceptualColor::LchaDouble firstColor;
 firstColor.h = 10;
 firstColor.l = 20;
 firstColor.c = 30;
 firstColor.a = 0.4;
 test.setFirstColor(firstColor);
-LchaDouble secondColor;
+PerceptualColor::LchaDouble secondColor;
 secondColor.h = 50;
 secondColor.l = 60;
 secondColor.c = 25;
@@ -75,6 +73,8 @@ QImage myImage = test.getImage();
 Q_UNUSED(myImage)
 }
 };
+
+namespace PerceptualColor {
 
 class TestGradientImage : public QObject
 {

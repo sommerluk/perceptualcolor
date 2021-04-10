@@ -37,8 +37,6 @@
 #include <QPainter>
 #include <QWidget>
 
-namespace PerceptualColor {
-
 class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram
 {
 Q_OBJECT
@@ -51,6 +49,8 @@ TestAbstractDiagramHelperClass(QWidget *parent = nullptr)
 }
 void testSnippet01() {
 //! [AbstractDiagram Use transparency background]
+// Within a class derived from AbstractDiagram, you can use this code:
+
 QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
 
 QPainter myPainter(&myImage);
@@ -81,6 +81,8 @@ myPainter.fillRect(
 //! [AbstractDiagram Use transparency background]
 }
 };
+
+namespace PerceptualColor {
 
 class TestAbstractDiagram : public QObject
 {

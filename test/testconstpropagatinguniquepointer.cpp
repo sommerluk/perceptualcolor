@@ -34,6 +34,15 @@
 
 #include <QRectF>
 
+static void snippet01() {
+//! [ConstPropagatingUniquePointer Example]
+// A ConstPropagatingUniquePointer pointing to a new QObject
+PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
+    new QObject()
+);
+//! [ConstPropagatingUniquePointer Example]
+}
+
 namespace PerceptualColor {
 
 class TestConstPropagatingUniquePointer : public QObject
@@ -115,14 +124,9 @@ private Q_SLOTS:
         Q_UNUSED(temp);
     }
 
-void testSnippet() {
-//! [ConstPropagatingUniquePointer Example]
-// A ConstPropagatingUniquePointer pointing to a new QObject
-PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
-    new QObject()
-);
-//! [ConstPropagatingUniquePointer Example]
-}
+    void testSnippet01() {
+        snippet01();
+    }
 
 };
 

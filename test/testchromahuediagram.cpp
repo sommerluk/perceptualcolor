@@ -35,6 +35,23 @@
 
 #include "polarpointf.h"
 
+static void snippet01() {
+//! [ChromaHueDiagram Instanciate]
+QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
+    new PerceptualColor::RgbColorSpace()
+};
+PerceptualColor::ChromaHueDiagram *myDiagram =
+    new PerceptualColor::ChromaHueDiagram(myColorSpace);
+PerceptualColor::LchDouble myColor;
+myColor.h = 270;
+myColor.l = 50;
+myColor.c = 25;
+myDiagram->setCurrentColor(myColor);
+myDiagram->show();
+//! [ChromaHueDiagram Instanciate]
+delete myDiagram;
+}
+
 namespace PerceptualColor {
 
 class TestChromaHueDiagram : public QObject
@@ -357,22 +374,9 @@ private Q_SLOTS:
         );
     }
 
-void testSnipped1() {
-//! [ChromaHueDiagram Instanciate]
-QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
-    new PerceptualColor::RgbColorSpace()
-};
-PerceptualColor::ChromaHueDiagram *myDiagram =
-    new PerceptualColor::ChromaHueDiagram(myColorSpace);
-LchDouble myColor;
-myColor.h = 270;
-myColor.l = 50;
-myColor.c = 25;
-myDiagram->setCurrentColor(myColor);
-myDiagram->show();
-//! [ChromaHueDiagram Instanciate]
-delete myDiagram;
-}
+    void testSnipped01() {
+        snippet01();
+    }
 
 };
 

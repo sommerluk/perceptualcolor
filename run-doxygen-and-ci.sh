@@ -64,6 +64,7 @@ doxygen > /dev/null
 PUBLIC_HEADERS="include"
 CODE_WITHOUT_UNIT_TESTS="include src"
 CODE_AND_UNIT_TESTS="include src test"
+UNIT_TESTS="test"
 
 # Search for files that do not start with a byte-order-mark (BOM).
 # We do this because Microsoft’s compiler does require a BOM at the start
@@ -72,6 +73,14 @@ grep \
     --recursive \
     --files-without-match $'\xEF\xBB\xBF' \
     $CODE_AND_UNIT_TESTS
+
+# Do not use constexpr in public headers as when we change the value
+# later, compile time value and run time value might be different, and
+# that might be dangerous.
+grep \
+    --recursive \
+    --fixed-strings "constexpr" \
+    $PUBLIC_HEADERS
 
 # Search for some patterns that should not be used in the source code. If
 # these patterns are found, a message is displayed. Otherwise, nothing is
@@ -177,6 +186,22 @@ grep \
     --recursive \
     --perl-regexp "QImage::Format_(?!(ARGB32_Premultiplied|RGB32|RGB16))" \
     $CODE_AND_UNIT_TESTS
+
+# When using snippets, don’t do this within a namespace. As they are
+# meant for documentation, they should always contain fully-qualified
+# names to make sure that they always work:
+# 1) Display all the files that are unit tests (adding “/*” to the UNIT_TESTS
+#    variable to make sure to get a file list that “cat” will understand.
+# 2) For each file, get all lines starting from the first occurence
+#    of “namespace”, using sed.
+# 3) Now, filter only those who actually contain snippet definitions
+#    starting with “//!”, using grep.
+for FILE in $UNIT_TESTS/*
+do
+    cat $FILE \
+        | sed -n -e '/namespace/,$p' \
+        | grep --fixed-strings "//!"
+done
 
 
 

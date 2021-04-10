@@ -32,6 +32,8 @@
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h"
 
+#include "colorwheel_p.h"
+
 #include <math.h>
 
 #include <QApplication>
@@ -189,9 +191,9 @@ void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidgets()
 {
     m_ColorWheel->resize(q_pointer->size());
     int diagonal = qMax(
-        m_ColorWheel->contentDiameter()
-            - 2 * (m_ColorWheel->m_wheelThickness
-                + m_ColorWheel->border),
+        m_ColorWheel->d_pointer->contentDiameter()
+            - 2 * (q_pointer->gradientThickness()
+                + m_ColorWheel->d_pointer->border()),
         0
     );
     // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to
@@ -202,7 +204,7 @@ void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidgets()
     );
     m_chromaLightnessDiagram->resize(newChromaLightnessDiagramSize);
     qreal radius =
-        static_cast<qreal>(m_ColorWheel->contentDiameter()) / 2;
+        static_cast<qreal>(m_ColorWheel->d_pointer->contentDiameter()) / 2;
     m_chromaLightnessDiagram->move(
         // TODO Does qRound make sense here? Does it the right
         // thing (pixel-wise)?

@@ -34,6 +34,35 @@
 
 #include <QRectF>
 
+static void snippet01() {
+//! [ConstPropagatingRawPointer Example]
+// Assuming you have a member variable in your class:
+PerceptualColor::ConstPropagatingRawPointer<QRectF> pointerToQRectF {
+    new QRectF
+};
+
+// Now, you access this member variable from a method within your class:
+
+// Helper variables
+QRectF myRectF;
+qreal myHeight;
+QRectF * normalCppPointerToQRectF;
+
+// The following code works within both, const and non-const contexts:
+myHeight = pointerToQRectF->height();
+myRectF = *pointerToQRectF;
+
+// The following code works only within const contexts.
+// Within non-cost contexts, you will get an error at compile time.
+pointerToQRectF->setHeight(5);
+*pointerToQRectF = myRectF;
+normalCppPointerToQRectF = pointerToQRectF;
+//! [ConstPropagatingRawPointer Example]
+Q_UNUSED(myRectF)
+Q_UNUSED(myHeight)
+Q_UNUSED(normalCppPointerToQRectF)
+}
+
 namespace PerceptualColor {
 
 class TestConstPropagatingRawPointer : public QObject
@@ -122,37 +151,13 @@ private Q_SLOTS:
         Q_UNUSED(temp);
     }
 
-void testSnippet() {
-//! [ConstPropagatingRawPointer Example]
-// Assuming you have a
-// ConstPropagatingRawPointer<QSize> pointerToQRectF
-// as member variable in your class.
-
-// Now, you access this member variable from a method within your class:
-
-// Helper variables
-QRectF myRectF;
-qreal myHeight;
-QRectF * normalCppPointerToQRectF;
-
-// The following code works within both, const and non-const contexts:
-myHeight = pointerToQRectF->height();
-myRectF = *pointerToQRectF;
-
-// The following code works only within const contexts.
-// Within non-cost contexts, you will get an error at compile time.
-pointerToQRectF->setHeight(5);
-*pointerToQRectF = myRectF;
-normalCppPointerToQRectF = pointerToQRectF;
-//! [ConstPropagatingRawPointer Example]
-Q_UNUSED(myRectF)
-Q_UNUSED(myHeight)
-Q_UNUSED(normalCppPointerToQRectF)
-}
+    void testSnippet01() {
+        snippet01();
+    }
 
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestConstPropagatingRawPointer)
 // The following “include” is necessary because we do not use a header file:

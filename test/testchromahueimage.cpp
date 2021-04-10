@@ -35,8 +35,6 @@
 #include "helper.h"
 #include "lchvalues.h"
 
-namespace PerceptualColor {
-
 class TestChromaHueSnippetClass : public QWidget
 {
 Q_OBJECT
@@ -45,10 +43,10 @@ public:
 TestChromaHueSnippetClass(QWidget *parent = nullptr) : QWidget(parent) {}
 void testSnippet01() {
 //! [ChromaHueImage HiDPI usage]
-QSharedPointer<RgbColorSpace> myColorSpace {
-    new RgbColorSpace()
+QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
+    new PerceptualColor::RgbColorSpace()
 };
-ChromaHueImage test(myColorSpace);
+PerceptualColor::ChromaHueImage test(myColorSpace);
 // The function setImageSize() expects an int
 // value. static_cast<int> will round down, which
 // is the desired behaviour here. (Rounding up
@@ -64,6 +62,9 @@ QImage myImage = test.getImage();
 Q_UNUSED(myImage)
 }
 };
+
+namespace PerceptualColor {
+
 
 class TestChromaHueImage : public QObject
 {

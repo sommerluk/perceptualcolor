@@ -95,10 +95,6 @@ namespace PerceptualColor {
  *
  * @todo Circular diagrams should be right-aligned on RTL layouts.
  *
- * @todo Non-private members (like @ref handleRadius) should not be
- * <tt>constexpr</tt> to make sure that changes of these values does
- * not require recomplining the application to take effect!?
- *
  * @todo Touchscreen support: Magnify the handle circle, when diagram is
  * used on a touch device?  */
 class AbstractDiagram : public QWidget

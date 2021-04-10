@@ -147,19 +147,6 @@
  * @todo Support more color spaces? https://pypi.org/project/colorio/ for
  * example supports a lot of (also perceptually uniform) color spaces…
  *
- * @todo All <tt>d_pointer</tt> and <tt>q_pointer</tt> could be changed
- * to <tt>const</tt> which would work without problems with the current
- * code base. Advantage: It communicates clearly that these pointers
- * will not change during live time. But: If ever we cannot initialize
- * these pointers in the constructor initializer, but would have to
- * do it in the constructor function body, this will not work; than
- * we would have to delete the <tt>const</tt> qualifiers, which would
- * probably break ABI compatibility?
- *
- * @todo Do not use constexpr in public headers as when we change the value
- * later, compile time value and run time value might be different, and
- * that might be dangerous.
- *
  * @todo Which symbols should finally be exported? Remove (most of) the other
  * headers from the include directory!
  *
@@ -180,14 +167,6 @@
  * @todo Review all static class functions: Which should be made non-static?
  * (Maybe in the future, it might be necessary to access object data, so
  * better making them non-static so this stays possible.)
- *
- * @todo <tt>private Q_SLOTS</tt> can be connected to (with the old connection
- * syntax) from everywhere, so they are indeed not private. That’s not great.
- * As we use almost exclusively the new connection syntax, we can connect
- * to all functions, not only slots, so we could simply change private slots
- * to private functions. Or, better: If switching to pimpl, in the private
- * class, the private slots will become public slots, which is fine and
- * expressive.
  *
  * @todo mark all public non-slot functions with Q_INVOKABLE (except property
  * setters and getters)
@@ -243,8 +222,6 @@
  *
  * @todo Remove all qDebug calls from the source
  *
- * @todo Provide RESET functions for all properties around the library?
- *
  * @todo Use QObject::tr() for translations.
  * Provide po files? How can a library be localized?
  * See https://community.kde.org/Frameworks/Frameworks_Localization_Policy for
@@ -267,21 +244,10 @@
  * within the library code and within the program code, which might
  * lead to undefined behaviour?
  *
- * @todo When scaling is used, the icons on the OK button and the
- * Cancel button are ugly. Why isn’t this handled automatically correctly,
- * though on other Qt apps it seems to be handled automatically correctly?
- *
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
  *
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
- *
- * @todo A program that uses our library could also use LittleCMS itself. If
- * it would use LittleCMS without thread-save API, but using it always in the
- * very same thread which is <em>not</em> the main thread, this could make
- * problems for our library if we use non-thread-save LittleCMS APIs. So
- * best would be that our library uses exclusively <em>thread-save</em>
- * APIs of LittleCMS.
  *
  * @todo Qt Designer support for the widgets
  *
@@ -422,7 +388,16 @@
  * <a href="https://accu.org/journals/overload/18/100/love_1718/">Interface
  * Versioning in C++</a></em> and KDE’s information document <em>
  * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
- * Binary Compatibility Issues With C++</a></em> and for details. */
+ * Binary Compatibility Issues With C++</a></em> and for details.
+ *
+ * @todo All <tt>d_pointer</tt> and <tt>q_pointer</tt> could be changed
+ * to <tt>const</tt> which would work without problems with the current
+ * code base. Advantage: It communicates clearly that these pointers
+ * will not change during live time. But: If ever we cannot initialize
+ * these pointers in the constructor initializer, but would have to
+ * do it in the constructor function body, this will not work; than
+ * we would have to delete the <tt>const</tt> qualifiers, which would
+ * probably break ABI compatibility? */
 
 /** @brief The namespace of this library.
  *

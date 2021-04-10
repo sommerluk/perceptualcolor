@@ -33,6 +33,19 @@
 
 #include <QtTest>
 
+static void snippet01() {
+//! [ColorPatch Create widget]
+PerceptualColor::ColorPatch *m_patch = new PerceptualColor::ColorPatch;
+m_patch->setColor(Qt::blue);
+//! [ColorPatch Create widget]
+//! [ColorPatch Bigger minimum size]
+m_patch->setMinimumSize(QSize(50, 50));
+//! [ColorPatch Bigger minimum size]
+QCOMPARE(m_patch->color(), QColor(Qt::blue));
+delete m_patch;
+}
+
+
 namespace PerceptualColor {
 
 class TestColorPatch : public QObject
@@ -199,17 +212,9 @@ private Q_SLOTS:
         QCOMPARE(m_color, QColor());
     }
 
-void testSnippet01() {
-//! [ColorPatch Create widget]
-PerceptualColor::ColorPatch *m_patch = new PerceptualColor::ColorPatch;
-m_patch->setColor(Qt::blue);
-//! [ColorPatch Create widget]
-//! [ColorPatch Bigger minimum size]
-m_patch->setMinimumSize(QSize(50, 50));
-//! [ColorPatch Bigger minimum size]
-QCOMPARE(m_patch->color(), QColor(Qt::blue));
-delete m_patch;
-}
+    void testSnippet01() {
+        snippet01();
+    }
 
 };
 

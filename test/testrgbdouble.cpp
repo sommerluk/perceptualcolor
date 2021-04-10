@@ -34,6 +34,37 @@
 
 #include <lcms2.h>
 
+static cmsCIELab snippet01() {
+//! [Use RgbDouble]
+cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
+cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
+cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(
+    rgbProfileHandle,             // input profile handle
+    TYPE_RGB_DBL,                 // input buffer format
+    labProfileHandle,             // output profile handle
+    TYPE_Lab_DBL,                 // output buffer format
+    INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+    0                             // flags
+);
+cmsCloseProfile(labProfileHandle);
+cmsCloseProfile(rgbProfileHandle);
+PerceptualColor::RgbDouble rgb;
+rgb.red = 1;
+rgb.green = 0.5;
+rgb.blue = 0;
+cmsCIELab lab;
+// Convert exactly 1 value:
+cmsDoTransform(
+    m_transformRgbToLabHandle,  // transform handle
+    &rgb,                       // input buffer
+    &lab,                       // output buffer
+    1                           // number of RGB values to convert
+);
+cmsDeleteTransform(m_transformRgbToLabHandle);
+//! [Use RgbDouble]
+return lab;
+}
+
 namespace PerceptualColor {
 
 class TestRgbDouble : public QObject
@@ -168,63 +199,37 @@ private Q_SLOTS:
         cmsDeleteTransform(m_transformLabToRgbHandle);
     }
 
-void testSnippet01() {
-//! [Use RgbDouble]
-cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
-cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(
-    rgbProfileHandle,             // input profile handle
-    TYPE_RGB_DBL,                 // input buffer format
-    labProfileHandle,             // output profile handle
-    TYPE_Lab_DBL,                 // output buffer format
-    INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-    0                             // flags
-);
-cmsCloseProfile(labProfileHandle);
-cmsCloseProfile(rgbProfileHandle);
-PerceptualColor::RgbDouble rgb;
-rgb.red = 1;
-rgb.green = 0.5;
-rgb.blue = 0;
-cmsCIELab lab;
-// Convert exactly 1 value:
-cmsDoTransform(
-    m_transformRgbToLabHandle,  // transform handle
-    &rgb,                       // input buffer
-    &lab,                       // output buffer
-    1                           // number of RGB values to convert
-);
-cmsDeleteTransform(m_transformRgbToLabHandle);
-//! [Use RgbDouble]
-constexpr int tolerance = 5;
-constexpr int expectedL = 68;
-constexpr int expectedA = 46;
-constexpr int expectedB = 75;
-QVERIFY2(
-    (expectedL - tolerance) < lab.L,
-    "Verify that hue is within tolerance."
-);
-QVERIFY2(
-    lab.L < (expectedL + tolerance),
-    "Verify that hue is within tolerance."
-);
-QVERIFY2(
-    (expectedA - tolerance) < lab.a,
-    "Verify that lightness is within tolerance."
-);
-QVERIFY2(
-    lab.a < (expectedA + tolerance),
-    "Verify that lightness is within tolerance."
-);
-QVERIFY2(
-    (expectedB - tolerance) < lab.b,
-    "Verify that chroma is within tolerance."
-);
-QVERIFY2(
-    lab.b < (expectedB + tolerance),
-    "Verify that chroma is within tolerance."
-);
-}
+    void testSnippet01() {
+        cmsCIELab lab = snippet01();
+        constexpr int tolerance = 5;
+        constexpr int expectedL = 68;
+        constexpr int expectedA = 46;
+        constexpr int expectedB = 75;
+        QVERIFY2(
+            (expectedL - tolerance) < lab.L,
+            "Verify that hue is within tolerance."
+        );
+        QVERIFY2(
+            lab.L < (expectedL + tolerance),
+            "Verify that hue is within tolerance."
+        );
+        QVERIFY2(
+            (expectedA - tolerance) < lab.a,
+            "Verify that lightness is within tolerance."
+        );
+        QVERIFY2(
+            lab.a < (expectedA + tolerance),
+            "Verify that lightness is within tolerance."
+        );
+        QVERIFY2(
+            (expectedB - tolerance) < lab.b,
+            "Verify that chroma is within tolerance."
+        );
+        QVERIFY2(
+            lab.b < (expectedB + tolerance),
+            "Verify that chroma is within tolerance."
+        );
+    }
 
 };
 
