@@ -1614,10 +1614,10 @@ private Q_SLOTS:
             QColorDialog::ColorDialogOption::ShowAlphaChannel,
             true
         );
-        m_perceptualDialog->d_pointer->m_alphaGradientSlider->setValue(0.5);
+        m_perceptualDialog->d_pointer->m_alphaGradientSlider->setValue(0.504);
         QCOMPARE(
             m_perceptualDialog->d_pointer->m_alphaGradientSlider->value(),
-            0.5
+            0.504
         );
         QCOMPARE(
             m_perceptualDialog->d_pointer->m_alphaSpinBox->value(),
@@ -1627,13 +1627,13 @@ private Q_SLOTS:
             m_perceptualDialog->d_pointer->m_alphaSpinBox,
             Qt::Key_Up
         );
-        QVERIFY2(
-            m_perceptualDialog->d_pointer->m_alphaGradientSlider->value() > 0.5,
-            "Verify that the alpha value has become higher."
+        QCOMPARE(
+            m_perceptualDialog->d_pointer->m_alphaGradientSlider->value(),
+            0.51
         );
-        QVERIFY2(
-            m_perceptualDialog->d_pointer->m_alphaSpinBox->value() > 50,
-            "Verify that the alpha value has become higher."
+        QCOMPARE(
+            m_perceptualDialog->d_pointer->m_alphaSpinBox->value(),
+            51
         );
     }
 

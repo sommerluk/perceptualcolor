@@ -30,18 +30,68 @@
 #include <QtGlobal>
 #include <QVersionNumber>
 
-#include "config.h"
-
 /** @file
  *
- * This file provides version information for this library. */
+ * This file provides version information for this library at compile
+ * time and at run time.
+ *
+ * @note This is a header template. This file is processed by CMake, and the
+ * actual version numbers (<tt>\@…\@</tt>) are pulled in. If you want
+ * to use it, do not include it, but include <tt>version.h</tt> instead. */
+
+/** @page versioninfo Version information at compiletime and runtime
+ *
+ * This library uses
+ * <a href="https://semver.org/">Semantic Versioning 2.0.0</a>.
+ *
+ * Version information is provided by the header <tt>version.h</tt>
+ *
+ * To know against which version of this library you are <em>running</em>, use
+ * - @ref PerceptualColor::perceptualColorRunTimeVersion
+ *
+ * To know against which version of this library you are <em>compiling</em>,
+ * use
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH */
+
+/** @def PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR
+ *
+ * @returns The <em>major</em> version (as integer) of this library
+ * against which you are compiling. You can use this macro to use the
+ * latest features where available.
+ *
+ * To use this macro, include <tt>version.h</tt>
+ *
+ * @sa @ref versioninfo */
+#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR (@PROJECT_MAJOR_VERSION@)
+
+/** @def PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR
+ *
+ * @returns The <em>minor</em> version (as integer) of this library
+ * against which you are compiling. You can use this macro to use the
+ * latest features where available.
+ *
+ * To use this macro, include <tt>version.h</tt>
+ *
+ * @sa @ref versioninfo */
+#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR (@PROJECT_MINOR_VERSION@)
+
+/** @def PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH
+ *
+ * @returns The <em>patch</em> version (as integer) of this library
+ * against which you are compiling. You can use this macro to use the
+ * latest features where available.
+ *
+ * To use this macro, include <tt>version.h</tt>
+ *
+ * @sa @ref versioninfo */
+#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH (@PROJECT_PATCH_VERSION@)
 
 /** @def PERCEPTUALCOLOR_COMPILE_TIME_VERSION
  *
  * @brief Against which version of this library you are <em>compiling</em>.
- *
- * This library uses
- * <a href="https://semver.org/">Semantic Versioning 2.0.0</a>.
  *
  * This macro has the same semantic as <tt>QT_VERSION</tt>
  *
@@ -54,9 +104,9 @@
  *
  * @snippet test/testversion.cpp Version Macro usage
  *
- * To use this macro, include @ref version.h
+ * To use this macro, include <tt>version.h</tt>
  *
- * @sa @ref perceptualColorRunTimeVersion() */
+ * @sa @ref versioninfo */
 #define PERCEPTUALCOLOR_COMPILE_TIME_VERSION \
     ( \
         QT_VERSION_CHECK( \

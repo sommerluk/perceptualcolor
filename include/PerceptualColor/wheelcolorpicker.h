@@ -41,6 +41,10 @@ namespace PerceptualColor {
  * It provides a @ref ColorWheel and, in its inner circle,
  * a @ref ChromaLightnessDiagram.
  *
+ * @todo BUG: Current behaviour: This class accepts focus by Tab, but it
+ * does not accept focus by Shift-Tab. Expected behaviour: This class
+ * accepts focus by both, Tab and Shift-Tab.
+ *
  * @todo BUG: When the hue changes and the gamut gets smaller than the
  * current chroma-lightness value, then the marker is not moved into the
  * new gamut. But it should!

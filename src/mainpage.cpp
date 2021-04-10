@@ -33,15 +33,6 @@
  * about LCh at all, because the graphical representations is
  * intuitive enough.
  *
- * This library itself lives in the namespace @ref PerceptualColor. Almost
- * all symbols and macros are within this namespace. For the very few
- * exceptions, see <em>Files → File members</em> in this documentationi.
- * However, this library also includes headers from LittleCMS which lives
- * in the <em>global namespace</em>, but has functions and types typically
- * prefixed with <tt>cms</tt>. The library relies internally on LittleCMS
- * for all the color management. Anyway, you can uses this library without
- * knowing about the internals of LittleCMS.
- *
  * How to get started? @ref PerceptualColor::ColorDialog provides a
  * perceptual replacement for QColorDialog:
  * @snippet test/testcolordialog.cpp ColorDialog Get color
@@ -52,11 +43,12 @@
  * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a
  *   given lightness)
  *
- * @anchor hidpisupport <b>High DPI support:</b> This library supports
- * High DPI out of the box. You do not need much to use it. The widgets
- * provide High DPI support automatically. The only problem are icons.
- * Icons are used for @ref PerceptualColor::MultiSpinBox::addActionButton
- * and for the “refresh” icon and (on some widget styles) for the “Ok”
+ * @anchor hidpisupport <b>High DPI support:</b>
+ * This library supports High DPI out of the box. You do not
+ * need much to use it. The widgets provide High DPI support
+ * automatically. The only problem are icons. Icons are used for
+ * @ref PerceptualColor::MultiSpinBox::addActionButton and for
+ * the “refresh” icon and (on some widget styles) for the “Ok”
  * button and the “Cancel” button in @ref PerceptualColor::ColorDialog.
  * - Load icons: This library uses by default a possibly existing icon theme.
  *   Windows and Mac do not provide icon themes by default, though it’s
@@ -82,87 +74,23 @@
  * @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt> anymore.
  * Does this mean that it is set by default and no further action is required?
  *
- * The library depends on (and therefore you has to link against):
- *
- * |                         | Qt                 | LittleCMS               |
- * | :---------------------- | :----------------- | :---------------------- |
- * | <b>Major release</b>    | 5                  | 2                       |
- * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
- * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
- *
- * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
- * used in this library.</em>
- *
- * This library requires minimum C++17.
- * <!--
- *      Qt 5.6 (which is the mimimum Qt version required
- *      by this library) only requires C++03. Only starting
- *      with Qt 5.7, Qt itself requires C++11. Source:
- *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
- *
- *      Qt 6 requires minimum C++17, as
- *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
- *      explains.
- *
- *      Our library code uses C++11 features, for example “constexpr”.
- *
- *      In the CMakeLists.txt file, we set -std=c++17 and we set
- *      also -Wpedantic and -pedantic-errors to enforce it. That is
- *      a useful option for this library if we decide to make it Qt-6-only.
- *      But it is even be useful if we support Qt 5, so we have future-proof
- *      requirements that we do not have to raise soon, and that are a
- *      good base for LTS.
- * -->
- *
- * The library uses in general <tt>int</tt> for integer values, because
- * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
- * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
- * seems reasonable. For the same reason, it uses generally <tt>qreal</tt>
- * for floating point values, because <tt>QPointF()</tt> also does. Output
- * colors that are shown on the screen, are usually 8-bit-per-channel
- * colors. For internal transformation, usually <tt>qreal</tt>
- * is used for each channel, giving a better precision and reducing rounding
- * errors.
- *
- * The source code of the library is in UTF8. A static_assert within the
- * header @ref helper.h makes sure your compiler actually treats it as UTF8.
+ * @anchor namespacepollution <b>Name space pollution:</b>
+ * To avoid namespace pollution, this library itself lives in the
+ * namespace @ref PerceptualColor. All symbols are within this namespace
+ * Macros are prefixed with <tt>PERCEPTUALCOLOR</tt> to avoid collisions.
+ * (See <em>Files → File members</em> for a list of all macros.) However,
+ * this library also includes headers from LittleCMS which lives within the
+ * <em>global namespace</em>, but has functions and types typically
+ * prefixed with <tt>cms</tt>. The library relies internally on LittleCMS
+ * for all the color management. Anyway, you can uses this library without
+ * knowing about the internals of LittleCMS.
  *
  * @copyright Almost all the code is published under MIT License. Only
  * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
  * license. The <tt>LICENSES</tt> subfolder contains copies of the licence
  * texts.
  *
- * @note This library uses the <em>pointer to implementation</em> idiom
- * (also known as pimpl idiom, d-pointer idiom or opaque-pointer idiom)
- * in almost all classes that are part of the public API, and also in
- * some classes that are part of the private API. This idiom is also
- * used by Qt itself, and Qt even provides some macros and extension
- * points (<tt>Q_DECLARE_PRIVATE</tt>, <tt>Q_D</tt>, a protected
- * member called <tt>d_ptr</tt> in almost all classes…), that help dealing
- * with the pimpl idiom. Though available, these Qt features are not
- * officially documentated; and they would also interfer with private
- * implementations of Qt itself without documented behaviour, which seems
- * inappropriate. Furthermore, the Qt pimpl idiom is complicate because
- * it uses (for performance reasons) inheritance between the private
- * implementation classes. This breaks, however, the encapsulation, because
- * all formerly private elements of a class become protected know. Our class
- * hierarchy is not that deep, so the performance gain might not be worth
- * the additional code complexity. Therefore, this library uses a more simple
- * pimpl idiom without inheritance of the private implementation. It has
- * however all the other features of the Qt pimpl idiom, including
- * <tt>const</tt> propagating access to the private implementation
- * thanks to @ref PerceptualColor::ConstPropagatingUniquePointer and
- * @ref PerceptualColor::ConstPropagatingRawPointer. And, at difference
- * to Qt’s pimpl idiom, it keeps private code strictly private.
- * Note however, that switching later from our current pimpl idiom to
- * the polymorph Qt pimpl idiom would break the binary
- * compatibility. See also the document <em>
- * <a href="https://accu.org/journals/overload/18/100/love_1718/">Interface
- * Versioning in C++</a></em> and KDE’s information document <em>
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
- * Binary Compatibility Issues With C++</a></em> and for details.
- *
- * @sa @ref characterset "Character sets"
+ * @sa @ref compile
  *
  * @todo Review and unit tests for these classes:
  * @ref PerceptualColor::ChromaLightnessDiagram,
@@ -410,9 +338,95 @@
  *
  * @todo Spell checking for the documentation */
 
+/** @page datatypes Data types
+ *
+ * The library uses in general <tt>int</tt> for integer values, because
+ * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
+ * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
+ * seems reasonable.
+ *
+ * For the same reason, it uses generally <tt>qreal</tt>
+ * for floating point values, because <tt>QPointF()</tt> also does.
+ *
+ * Output colors that are shown on the screen, are usually 8-bit-per-channel
+ * colors. For internal transformation, usually <tt>qreal</tt>
+ * is used for each channel, giving a better precision and reducing rounding
+ * errors. */
+
+/** @page compile Compile this library (dependencies and requirements)
+ * The library depends on (and therefore you has to link against):
+ *
+ * |                         | Qt                 | LittleCMS               |
+ * | :---------------------- | :----------------- | :---------------------- |
+ * | <b>Major release</b>    | 5                  | 2                       |
+ * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
+ * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
+ *
+ * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
+ * used in this library.</em>
+ *
+ * This library requires minimum C++17.
+ * <!--
+ *      Qt 5.6 (which is the mimimum Qt version required
+ *      by this library) only requires C++03. Only starting
+ *      with Qt 5.7, Qt itself requires C++11. Source:
+ *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
+ *
+ *      Qt 6 requires minimum C++17, as
+ *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
+ *      explains.
+ *
+ *      Our library code uses C++11 features, for example “constexpr”.
+ *
+ *      In the CMakeLists.txt file, we set -std=c++17 and we set
+ *      also -Wpedantic and -pedantic-errors to enforce it. That is
+ *      a useful option for this library if we decide to make it Qt-6-only.
+ *      But it is even be useful if we support Qt 5, so we have future-proof
+ *      requirements that we do not have to raise soon, and that are a
+ *      good base for LTS.
+ * -->
+ *
+ * To compile this library, both the input character set and the execution
+ * character set have to be UTF8. (See @ref characterset for the reasons
+ * behind this choise.) */
+
+/** @page pimpl Pointer to implementation idiom
+ *
+ * This library uses the <em>pointer to implementation</em> idiom
+ * (also known as pimpl idiom, d-pointer idiom or opaque-pointer idiom)
+ * in almost all classes that are part of the public API, and also in
+ * some classes that are part of the private API.
+ *
+ * This idiom is also
+ * used by Qt itself, and Qt even provides some macros and extension
+ * points (<tt>Q_DECLARE_PRIVATE</tt>, <tt>Q_D</tt>, a protected
+ * member called <tt>d_ptr</tt> in almost all classes…), that help dealing
+ * with the pimpl idiom. Though available, these Qt features are not
+ * officially documentated; and they would also interfer with private
+ * implementations of Qt itself without documented behaviour, which seems
+ * inappropriate. Furthermore, the Qt pimpl idiom is complicate because
+ * it uses (for performance reasons) inheritance between the private
+ * implementation classes. This breaks, however, the encapsulation, because
+ * all formerly private elements of a class become protected know. Our class
+ * hierarchy is not that deep, so the performance gain might not be worth
+ * the additional code complexity. Therefore, this library uses a more simple
+ * pimpl idiom without inheritance of the private implementation. It has
+ * however all the other features of the Qt pimpl idiom, including
+ * <tt>const</tt> propagating access to the private implementation
+ * thanks to @ref PerceptualColor::ConstPropagatingUniquePointer and
+ * @ref PerceptualColor::ConstPropagatingRawPointer. And, at difference
+ * to Qt’s pimpl idiom, it keeps private code strictly private.
+ * Note however, that switching later from our current pimpl idiom to
+ * the polymorph Qt pimpl idiom would break the binary
+ * compatibility. See also the document <em>
+ * <a href="https://accu.org/journals/overload/18/100/love_1718/">Interface
+ * Versioning in C++</a></em> and KDE’s information document <em>
+ * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
+ * Binary Compatibility Issues With C++</a></em> and for details. */
+
 /** @brief The namespace of this library.
  *
- * Everything that is provides in this library is encapsulated within this
+ * All symbols that are provided in this library are encapsulated within this
  * namespace. */
 namespace PerceptualColor {
 }
