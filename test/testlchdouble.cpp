@@ -41,6 +41,7 @@ myValue.l = 50; // Lightness: 50%
 myValue.c = 25; // Chroma: 25
 myValue.h = 5;  // Hue: 5°
 //! [Use LchDouble]
+Q_UNUSED(myValue)
 }
 
 namespace PerceptualColor {

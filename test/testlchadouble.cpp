@@ -42,6 +42,7 @@ myValue.c = 25;  // Chroma: 25
 myValue.h = 5;   // Hue: 5°
 myValue.a = 0.5; // Alpha: 0.5 (semi-transparent)
 //! [Use LchaDouble]
+Q_UNUSED(myValue)
 }
 
 namespace PerceptualColor {
