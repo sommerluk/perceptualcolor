@@ -1116,7 +1116,7 @@ private Q_SLOTS:
         QCOMPARE(m_color, Qt::black);
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
         // Return key really emits a signal
-        QCOMPARE(m_color, Qt::red); // xxx
+        QCOMPARE(m_color, Qt::red);
         m_perceptualDialog->show();
         m_perceptualDialog->setCurrentColor(Qt::green);
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
@@ -1701,7 +1701,7 @@ private Q_SLOTS:
         QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
         QTest::keyClick(m_qDialog.data(), Qt::Key_Return);
-        QCOMPARE( // xxx
+        QCOMPARE(
             m_perceptualDialog->selectedColor(),
             m_qDialog->selectedColor()
         );

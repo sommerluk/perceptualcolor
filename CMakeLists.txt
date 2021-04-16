@@ -61,7 +61,7 @@ configure_file(
     src/version.h.in
     ${CMAKE_BINARY_DIR}/generated/version.h
 )
-# TODO WARNING The file ${CMAKE_BINARY_DIR}/generated/version_config.h has to be installed (added to install targer)!
+# TODO WARNING The file ${CMAKE_BINARY_DIR}/generated/version_config.h has to be added to the install target!
 # Make sure the generated file can be included:
 include_directories( ${CMAKE_BINARY_DIR}/generated/ )
 
