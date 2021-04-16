@@ -71,7 +71,8 @@ QColor AbstractDiagram::focusIndicatorColor() const
     // however are drawn in orange. This function returns red in this case,
     // which is wrong. However, I do not know how to get around this
     // limitation.
-    return palette().color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
+    return
+        palette().color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
 }
 
 /** @brief The rounded size of the widget measured in <em>physical</em>
@@ -117,7 +118,8 @@ QSize AbstractDiagram::physicalPixelSize() const
     static_assert(static_cast<int>(1.0) == 1);
     // Multiply the size with the (floating point) scale factor
     // and than round down (by using static_cast<int>).
-    return QSize(static_cast<int>(size().width() * devicePixelRatioF()), static_cast<int>(size().height() * devicePixelRatioF()));
+    return
+        QSize(static_cast<int>(size().width() * devicePixelRatioF()), static_cast<int>(size().height() * devicePixelRatioF()));
 }
 
 /** @brief The maximum possible size of a square within the widget, measured
@@ -244,12 +246,15 @@ int AbstractDiagram::gradientMinimumLength() const
     ensurePolished();
     QStyleOptionSlider option;
     option.initFrom(this);
-    return qMax(qMax(
-                    // Similar to QSlider sizeHint():
-                    84,
-                    // Similar to QSlider::minimumSizeHint():
-                    style()->pixelMetric(QStyle::PM_SliderLength, &option, this)),
-                gradientThickness() // Considers implicitly QApplication::globalStrut()
+    return qMax(
+        // Parameter: style-based value:
+        qMax(
+            // Similar to QSlider sizeHint():
+            84,
+            // Similar to QSlider::minimumSizeHint():
+            style()->pixelMetric(QStyle::PM_SliderLength, &option, this)),
+        // Parameter: (Considers implicitly QApplication::globalStrut)
+        gradientThickness()
     );
 }
 
@@ -261,8 +266,8 @@ int AbstractDiagram::gradientMinimumLength() const
  * indicator. */
 int AbstractDiagram::spaceForFocusIndicator() const
 {
-    return handleOutlineThickness()     // The space for the focus indicator itself
-        + 2 * handleOutlineThickness(); // Add some spacing
+    return handleOutlineThickness()     // Space for the focus indicator itself
+        + 2 * handleOutlineThickness(); // Add some more spacing
 }
 
 /** @brief An appropriate color for a handle, depending on the background

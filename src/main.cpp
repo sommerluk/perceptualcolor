@@ -51,7 +51,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QtMath>
-#include <memory> // Other includes
+
+#include <memory>
 
 // TODO Test the main function etc from KColorChooser to see if
 // PerceptualColor::ColorDialog is really a drop-in replacement
