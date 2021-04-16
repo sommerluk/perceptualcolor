@@ -234,7 +234,7 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH} ${ECM_MODULE_DIR})
 # TODO This should not be an absolute path… (but using a relative path does not work!)
 include(/usr/share/ECM/kde-modules/KDEClangFormat.cmake)
-file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES src/*.cpp src/*.h include/PerceptualColor/*.cpp include/PerceptualColor/*.h)
+file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES src/* include/PerceptualColor/* test/*)
 # The following line should make available the target “make clang-format”.
 # It requires the clang-format binary (Ubuntu package “clang-format”).
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
