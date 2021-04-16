@@ -116,6 +116,6 @@ private:
     ConstPropagatingRawPointer<MultiSpinBox> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // MULTISPINBOX_P_H

@@ -406,4 +406,4 @@
  * namespace. */
 namespace PerceptualColor
 {
-}
+} // namespace PerceptualColor

@@ -825,4 +825,4 @@ QPoint ChromaLightnessDiagram ::ChromaLightnessDiagramPrivate ::nearestNeighborS
     return QPoint(currentBestX, currentBestY);
 }
 
-}
+} // namespace PerceptualColor

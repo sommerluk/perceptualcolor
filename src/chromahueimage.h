@@ -139,6 +139,6 @@ private:
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // CHROMAHUEIMAGE_H

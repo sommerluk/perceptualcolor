@@ -189,4 +189,4 @@ QSize WheelColorPicker::sizeHint() const
 // TODO Choose HLC x 50 1. Then push the Page-up button. Why does the chroma
 // value change from 1 to 0?
 
-}
+} // namespace PerceptualColor

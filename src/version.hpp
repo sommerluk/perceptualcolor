@@ -111,8 +111,9 @@
 
 namespace PerceptualColor
 {
+
 QVersionNumber perceptualColorRunTimeVersion();
 
-}
+} // namespace PerceptualColor
 
 #endif // VERSION_H

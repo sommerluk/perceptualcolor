@@ -34,6 +34,7 @@
 
 namespace PerceptualColor
 {
+
 class TestPolarPointF : public QObject
 {
     Q_OBJECT
@@ -260,7 +261,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestPolarPointF)
 // The following “include” is necessary because we do not use a header file:

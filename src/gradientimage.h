@@ -147,6 +147,6 @@ private:
     LchaDouble m_secondColorCorrectedAndAltered;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // GRADIENTIMAGE_H

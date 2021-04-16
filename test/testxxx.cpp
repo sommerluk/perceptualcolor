@@ -36,6 +36,7 @@
 
 namespace PerceptualColor
 {
+
 class TestXXX : public QObject
 {
     Q_OBJECT

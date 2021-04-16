@@ -277,4 +277,4 @@ FallbackIconEngine::FallbackIconEngine(const FallbackIconEngine &other)
     m_referenceWidget = other.m_referenceWidget;
 }
 
-}
+} // namespace PerceptualColor

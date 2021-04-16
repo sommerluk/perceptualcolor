@@ -428,6 +428,6 @@ private:
     friend class TestColorDialog;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // COLORDIALOG_H

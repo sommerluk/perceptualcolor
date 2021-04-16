@@ -49,6 +49,6 @@ private:
     Q_DISABLE_COPY(AbstractDiagramPrivate)
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // ABSTRACTDIAGRAM_P_H

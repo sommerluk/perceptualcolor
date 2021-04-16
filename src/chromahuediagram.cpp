@@ -754,4 +754,4 @@ int ChromaHueDiagram::ChromaHueDiagramPrivate::diagramBorder() const
         + 2 * q_pointer->handleOutlineThickness();
 }
 
-}
+} // namespace PerceptualColor

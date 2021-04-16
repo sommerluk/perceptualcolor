@@ -36,6 +36,7 @@
 
 namespace PerceptualColor
 {
+
 class TestLchValues : public QObject
 {
     Q_OBJECT
@@ -147,7 +148,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestLchValues)
 // The following “include” is necessary because we do not use a header file:

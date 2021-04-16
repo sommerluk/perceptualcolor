@@ -39,6 +39,7 @@ Q_DECLARE_METATYPE(QIcon::State)
 
 namespace PerceptualColor
 {
+
 class TestFallbackIconEngine : public QObject
 {
     Q_OBJECT
@@ -255,7 +256,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestFallbackIconEngine)
 

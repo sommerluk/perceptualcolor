@@ -74,6 +74,7 @@ public:
 
 namespace PerceptualColor
 {
+
 class TestGradientImage : public QObject
 {
     Q_OBJECT
@@ -277,7 +278,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestGradientImage)
 

@@ -96,6 +96,6 @@ private:
     ConstPropagatingRawPointer<ChromaLightnessDiagram> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // CHROMALIGHTNESSDIAGRAM_P_H

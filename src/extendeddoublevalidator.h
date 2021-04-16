@@ -111,6 +111,6 @@ private:
     friend class TestExtendedDoubleValidator;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // EXTENDEDDOUBLEVALIDATOR_H

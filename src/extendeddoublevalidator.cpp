@@ -122,4 +122,4 @@ QValidator::State ExtendedDoubleValidator::validate(QString &input, int &pos) co
     return result;
 }
 
-}
+} // namespace PerceptualColor

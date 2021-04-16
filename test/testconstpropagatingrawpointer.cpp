@@ -67,6 +67,7 @@ static void snippet01()
 
 namespace PerceptualColor
 {
+
 class TestConstPropagatingRawPointer : public QObject
 {
     Q_OBJECT

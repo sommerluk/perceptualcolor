@@ -259,4 +259,4 @@ QImage ChromaHueImage::getImage()
     return m_image;
 }
 
-}
+} // namespace PerceptualColor

@@ -136,6 +136,6 @@ private:
     LchValues() = delete;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // LCHVALUES_H

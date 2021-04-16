@@ -117,6 +117,6 @@ private:
     friend class WheelColorPicker;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // COLORWHEEL_H

@@ -45,6 +45,7 @@ static void snippet01()
 
 namespace PerceptualColor
 {
+
 class TestVersion : public QObject
 {
     Q_OBJECT
@@ -88,7 +89,7 @@ private Q_SLOTS:
     }
 };
 
-}
+}// flags
 
 QTEST_MAIN(PerceptualColor::TestVersion)
 

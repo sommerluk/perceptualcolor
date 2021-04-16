@@ -56,6 +56,6 @@ private:
     Q_DISABLE_COPY(ColorPatchPrivate)
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // COLORPATCH_P_H

@@ -111,6 +111,6 @@ private:
     friend class TestChromaLightnessDiagram;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // CHROMALIGHTNESSDIAGRAM_H

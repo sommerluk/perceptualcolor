@@ -49,6 +49,7 @@ static void snippet01()
 
 namespace PerceptualColor
 {
+
 class TestColorPatch : public QObject
 {
     Q_OBJECT
@@ -208,7 +209,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestColorPatch)
 #include "testcolorpatch.moc" // necessary because we do not use a header file

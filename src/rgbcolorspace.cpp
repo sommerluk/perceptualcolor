@@ -553,4 +553,4 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFI
     return result;
 }
 
-}
+} // namespace PerceptualColor

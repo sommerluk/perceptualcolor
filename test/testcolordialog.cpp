@@ -114,6 +114,7 @@ static void snippet04()
 
 namespace PerceptualColor
 {
+
 class TestColorDialog : public QObject
 {
     Q_OBJECT
@@ -1241,7 +1242,7 @@ private:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestColorDialog)
 // The following “include” is necessary because we do not use a header file:

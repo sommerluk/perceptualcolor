@@ -39,12 +39,19 @@ static cmsCIELab snippet01()
     //! [Use RgbDouble]
     cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-    cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(rgbProfileHandle,             // input profile handle
-                                                                 TYPE_RGB_DBL,                 // input buffer format
-                                                                 labProfileHandle,             // output profile handle
-                                                                 TYPE_Lab_DBL,                 // output buffer format
-                                                                 INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-                                                                 0                             // flags
+    cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(
+        // Input profile handle:
+        rgbProfileHandle,
+        // Input buffer format:
+        TYPE_RGB_DBL,
+        // Output profile handle:
+        labProfileHandle,
+        // Output buffer format:
+        TYPE_Lab_DBL,
+        // Rendering intent:
+        INTENT_ABSOLUTE_COLORIMETRIC,
+        // Flags:
+        0
     );
     cmsCloseProfile(labProfileHandle);
     cmsCloseProfile(rgbProfileHandle);
@@ -66,6 +73,7 @@ static cmsCIELab snippet01()
 
 namespace PerceptualColor
 {
+
 class TestRgbDouble : public QObject
 {
     Q_OBJECT
@@ -200,7 +208,7 @@ private Q_SLOTS:
     }
 };
 
-}
+}// input profile
 
 QTEST_MAIN(PerceptualColor::TestRgbDouble)
 

@@ -69,6 +69,6 @@ private:
     ConstPropagatingRawPointer<RgbColorSpace> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // RGBCOLORSPACE_P_H

@@ -180,4 +180,4 @@ void ColorPatch::paintEvent(QPaintEvent *event)
     widgetPainter.drawImage(contentsMargins().left(), contentsMargins().top(), tempImage);
 }
 
-}
+} // namespace PerceptualColor

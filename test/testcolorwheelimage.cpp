@@ -63,6 +63,7 @@ public:
 
 namespace PerceptualColor
 {
+
 class TestColorWheelImage : public QObject
 {
     Q_OBJECT
@@ -275,7 +276,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestColorWheelImage)
 

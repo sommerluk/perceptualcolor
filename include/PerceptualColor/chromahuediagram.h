@@ -142,6 +142,6 @@ private:
     friend class TestChromaHueDiagram;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // CHROMAHUEDIAGRAM_H

@@ -55,6 +55,6 @@ private:
     Q_DISABLE_COPY(ExtendedDoubleValidatorPrivate)
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // EXTENDEDDOUBLEVALIDATOR_P_H

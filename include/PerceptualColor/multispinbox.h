@@ -237,6 +237,6 @@ private:
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value);
 
-}
+} // namespace PerceptualColor
 
 #endif // MULTISPINBOX_H

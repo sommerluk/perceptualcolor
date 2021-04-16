@@ -164,6 +164,6 @@ private:
     ConstPropagatingRawPointer<ColorDialog> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // COLORDIALOG_P_H

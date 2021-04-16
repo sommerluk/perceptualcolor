@@ -48,6 +48,7 @@ static void snippet01()
 
 namespace PerceptualColor
 {
+
 class TestLchaDouble : public QObject
 {
     Q_OBJECT
@@ -155,7 +156,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestLchaDouble)
 

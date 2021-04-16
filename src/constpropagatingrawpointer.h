@@ -122,6 +122,6 @@ private:
     T *m_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // CONSTPROPAGATINGUNIQUEPOINTER_H

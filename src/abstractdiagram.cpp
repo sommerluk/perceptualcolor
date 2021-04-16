@@ -283,4 +283,4 @@ QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness) cons
     return Qt::white;
 }
 
-}
+} // namespace PerceptualColor

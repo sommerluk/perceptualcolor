@@ -70,6 +70,6 @@ private:
     ConstPropagatingRawPointer<WheelColorPicker> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // WHEELCOLORPICKER_P_H

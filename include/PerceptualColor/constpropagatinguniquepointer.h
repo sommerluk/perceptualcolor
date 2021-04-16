@@ -120,6 +120,6 @@ public:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // CONSTPROPAGATINGUNIQUEPOINTER_H

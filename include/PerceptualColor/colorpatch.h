@@ -118,6 +118,6 @@ private:
     friend class TestColorPatch;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // COLORPATCH_H

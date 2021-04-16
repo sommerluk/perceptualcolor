@@ -753,4 +753,4 @@ void MultiSpinBox::MultiSpinBoxPrivate::reactOnCursorPositionChange(const int ol
     q_pointer->update();
 }
 
-}
+} // namespace PerceptualColor

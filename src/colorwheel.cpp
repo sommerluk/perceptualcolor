@@ -492,4 +492,4 @@ int ColorWheel::ColorWheelPrivate::border() const
     return 2 * q_pointer->handleOutlineThickness();
 }
 
-}
+} // namespace PerceptualColor

@@ -78,6 +78,6 @@ private:
     ConstPropagatingRawPointer<ColorWheel> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // COLORWHEEL_P_H

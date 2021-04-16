@@ -85,6 +85,6 @@ private:
     ConstPropagatingRawPointer<GradientSlider> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // GRADIENTSLIDER_P_H

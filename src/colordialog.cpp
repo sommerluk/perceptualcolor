@@ -880,4 +880,4 @@ void ColorDialog::ColorDialogPrivate::applyLayoutDimensions()
     }
 }
 
-}
+} // namespace PerceptualColor

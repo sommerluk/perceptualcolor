@@ -90,6 +90,6 @@ private:
     friend class TestFallbackIconEngine;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // FALLBACKICONENGINE_H

@@ -619,4 +619,4 @@ void GradientSlider::paintEvent(QPaintEvent *event)
     //     }
 }
 
-}
+} // namespace PerceptualColor

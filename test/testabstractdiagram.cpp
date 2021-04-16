@@ -75,6 +75,7 @@ public:
 
 namespace PerceptualColor
 {
+
 class TestAbstractDiagram : public QObject
 {
     Q_OBJECT
@@ -190,7 +191,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestAbstractDiagram)
 // The following “include” is necessary because we do not use a header file:

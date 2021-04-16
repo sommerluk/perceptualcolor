@@ -106,6 +106,7 @@ class testSnippet02
 
 namespace PerceptualColor
 {
+
 class TestMultiSpinBox : public QObject
 {
     Q_OBJECT
@@ -1174,7 +1175,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestMultiSpinBox)
 

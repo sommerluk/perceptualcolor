@@ -242,4 +242,4 @@ void GradientImage::setGradientThickness(const int newGradientThickness)
     }
 }
 
-}
+} // namespace PerceptualColor

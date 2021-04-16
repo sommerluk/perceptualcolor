@@ -104,6 +104,6 @@ private:
     ConstPropagatingRawPointer<ChromaHueDiagram> q_pointer;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // CHROMAHUEDIAGRAM_P_H

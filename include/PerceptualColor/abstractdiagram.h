@@ -135,6 +135,6 @@ private:
     friend class TestAbstractDiagram;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // ABSTRACTDIAGRAM_H

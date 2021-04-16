@@ -117,6 +117,6 @@ private:
     qreal m_wheelThicknessPhysical = 0;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // COLORWHEELIMAGE_H

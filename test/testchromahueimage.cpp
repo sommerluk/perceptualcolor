@@ -65,6 +65,7 @@ public:
 
 namespace PerceptualColor
 {
+
 class TestChromaHueImage : public QObject
 {
     Q_OBJECT
@@ -443,7 +444,7 @@ private Q_SLOTS:
     }
 };
 
-}
+} // namespace PerceptualColor
 
 QTEST_MAIN(PerceptualColor::TestChromaHueImage)
 

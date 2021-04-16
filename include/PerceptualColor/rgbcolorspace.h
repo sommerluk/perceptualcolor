@@ -89,6 +89,6 @@ private:
     friend class TestRgbColorSpace;
 };
 
-}
+} // namespace PerceptualColor
 
 #endif // RGBCOLORSPACE_H

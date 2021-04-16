@@ -132,4 +132,4 @@ QImage transparencyBackground(qreal devicePixelRatioF)
     return temp;
 }
 
-}
+} // namespace PerceptualColor
