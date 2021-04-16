@@ -58,10 +58,10 @@ set(PROJECT_VERSION
 # Substitutes all occurrences of @PROJECT_VERSION@ and similar declaration
 # in the source code file by the actual value in CMake
 configure_file(
-    src/version.in.h
+    src/version.h.in
     ${CMAKE_BINARY_DIR}/generated/version.h
 )
-# TODO WARNING The file ${CMAKE_BINARY_DIR}/generated/version_config.h has to be installed!
+# TODO WARNING The file ${CMAKE_BINARY_DIR}/generated/version_config.h has to be installed (added to install targer)!
 # Make sure the generated file can be included:
 include_directories( ${CMAKE_BINARY_DIR}/generated/ )
 
@@ -217,6 +217,27 @@ set(perceptualcolor_HEADERS
 # Include directories
 include_directories("${CMAKE_SOURCE_DIR}/src/")
 include_directories("${CMAKE_SOURCE_DIR}/include/")
+
+
+
+
+
+################# Clang format #################
+# TODO This KDE dependency should not apply for simple compiling, but
+# just for development
+#
+# Finding ECM also allows for calling CMake like this:
+# export CXX=$(which clang++)
+# cmake -DENABLE_CLAZY=ON ..
+find_package(ECM REQUIRED)
+set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH} ${ECM_MODULE_DIR})
+# TODO This should not be an absolute path… (but using a relative path does not work!)
+include(/usr/share/ECM/kde-modules/KDEClangFormat.cmake)
+file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES src/*.cpp src/*.h include/PerceptualColor/*.cpp include/PerceptualColor/*.h)
+# The following line should make available the target “make clang-format”.
+# It requires the clang-format binary (Ubuntu package “clang-format”).
+kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 
 
 
