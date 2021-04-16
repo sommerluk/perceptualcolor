@@ -730,7 +730,8 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
  * @param on the new value of the option
  */
 void ColorDialog::setOption(
-    PerceptualColor::ColorDialog::ColorDialogOption option, bool on)
+    PerceptualColor::ColorDialog::ColorDialogOption option,
+    bool on)
 {
     QColorDialog::ColorDialogOptions temp = d_pointer->m_options;
     temp.setFlag(option, on);

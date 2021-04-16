@@ -730,7 +730,8 @@ void testChromaLightnessDiagramm() {
 */
 QImage
 ChromaLightnessDiagram ::ChromaLightnessDiagramPrivate ::generateDiagramImage(
-    const qreal imageHue, const QSize imageSize) const
+    const qreal imageHue,
+    const QSize imageSize) const
 {
     QElapsedTimer myTimer;
     myTimer.start();
@@ -837,7 +838,8 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
  *     <tt>0, 0</tt> is returned, but this is a very slow case. */
 QPoint
 ChromaLightnessDiagram ::ChromaLightnessDiagramPrivate ::nearestNeighborSearch(
-    const QPoint originalPoint, const QImage &image)
+    const QPoint originalPoint,
+    const QImage &image)
 {
     // Test for special case:
     // originalPoint itself is within the image and non-transparent

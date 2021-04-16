@@ -114,8 +114,9 @@ public:
      * Neutral gray is a good choice for the background, as it is equally
      * distant from black and white, and also quite distant from any
      * saturated color. */
-    static constexpr LchDouble neutralGray {
-        neutralLightness, neutralChroma, neutralHue};
+    static constexpr LchDouble neutralGray {neutralLightness,
+                                            neutralChroma,
+                                            neutralHue};
     /** @brief Maximum chroma value in
      * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
      * sRGB gamut

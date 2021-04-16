@@ -464,7 +464,8 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(
  * localization. Note that the returned QString() might be empty if the
  * requested information is not available in the ICC profile. */
 QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
-    cmsHPROFILE profileHandle, cmsInfoType infoType)
+    cmsHPROFILE profileHandle,
+    cmsInfoType infoType)
 {
     // Initialize a char array of 3 values (two for actual characters and a
     // one for a terminating null)cmsFloat64Number

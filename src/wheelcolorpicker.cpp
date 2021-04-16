@@ -147,7 +147,8 @@ void WheelColorPicker::WheelColorPickerPrivate::handleFocusChanged(QWidget *old,
  * the next smaller integer!
  */
 QSize WheelColorPicker::WheelColorPickerPrivate::scaleRectangleToDiagonal(
-    const QSize oldRectangle, const qreal newDiagonal)
+    const QSize oldRectangle,
+    const qreal newDiagonal)
 {
     if (oldRectangle.isEmpty()) {
         return QSize();

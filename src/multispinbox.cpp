@@ -769,7 +769,8 @@ bool MultiSpinBox::event(QEvent *event)
  * @param oldPos the old cursor position (previous position)
  * @param newPos the new cursor position (current position) */
 void MultiSpinBox::MultiSpinBoxPrivate::reactOnCursorPositionChange(
-    const int oldPos, const int newPos)
+    const int oldPos,
+    const int newPos)
 {
     // This slot is meant to be connected to the
     // QLineEdit::cursorPositionChanged() signal of

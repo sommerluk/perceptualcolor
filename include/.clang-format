@@ -61,8 +61,8 @@ AlignAfterOpenBracket: Align
 # align trailing comments
 AlignTrailingComments: true
 
-# don't move all parameters to new line NOTE changed
-AllowAllParametersOfDeclarationOnNextLine: true
+# don't move all parameters to new line
+AllowAllParametersOfDeclarationOnNextLine: false
 
 # no single line functions
 AllowShortFunctionsOnASingleLine: None
