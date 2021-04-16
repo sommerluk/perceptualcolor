@@ -149,27 +149,26 @@ qreal AbstractDiagram::maximumWidgetSquareSize() const
 }
 
 /** @brief Background for semi-transparent colors.
-**
-** When showing a semi-transparent color, there has to be a background
-** on which it is shown. This function provides a suitable background
-** for showcasing a color.
-**
-** Example code (to use within a class that inherits from
-** @ref PerceptualColor::AbstractDiagram):
-** @snippet test/testabstractdiagram.cpp AbstractDiagram Use transparency
-*background
-**
-** @returns An image of a mosaic of neutral gray rectangles of different
-** lightness. You can use this as tiles to paint a background.
-**
-** @note The image is considering QWidget::devicePixelRatioF() to deliver
-** sharp (and correctly scaled) images also for HiDPI devices.
-** The painting does not use floating point drawing, but rounds
-** to full integers. Therefore, the result is always a sharp image.
-** This function takes care that each square has the same pixel size,
-** without scaling errors or anti-aliasing errors.
-**
-** @sa @ref transparencyBackground(qreal devicePixelRatioF) */
+ *
+ * When showing a semi-transparent color, there has to be a background
+ * on which it is shown. This function provides a suitable background
+ * for showcasing a color.
+ *
+ * Example code (to use within a class that inherits from
+ * @ref PerceptualColor::AbstractDiagram):
+ * @snippet test/testabstractdiagram.cpp useTransparencyBackground
+ *
+ * @returns An image of a mosaic of neutral gray rectangles of different
+ * lightness. You can use this as tiles to paint a background.
+ *
+ * @note The image is considering QWidget::devicePixelRatioF() to deliver
+ * sharp (and correctly scaled) images also for HiDPI devices.
+ * The painting does not use floating point drawing, but rounds
+ * to full integers. Therefore, the result is always a sharp image.
+ * This function takes care that each square has the same pixel size,
+ * without scaling errors or anti-aliasing errors.
+ *
+ * @sa @ref transparencyBackground(qreal devicePixelRatioF) */
 QImage AbstractDiagram::transparencyBackground() const
 {
     return PerceptualColor::transparencyBackground(devicePixelRatioF());

@@ -36,7 +36,7 @@
 
 static void snippet01()
 {
-    //! [ConstPropagatingRawPointer Example]
+    //! [example]
     // Assuming you have a member variable in your class:
     PerceptualColor::ConstPropagatingRawPointer<QRectF> pointerToQRectF {new QRectF};
 
@@ -59,7 +59,7 @@ static void snippet01()
 
     // Deleting works like for normal pointers
     delete pointerToQRectF;
-    //! [ConstPropagatingRawPointer Example]
+    //! [example]
     Q_UNUSED(myRectF)
     Q_UNUSED(myHeight)
     Q_UNUSED(normalCppPointerToQRectF)

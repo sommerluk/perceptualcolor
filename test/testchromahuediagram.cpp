@@ -38,7 +38,7 @@
 
 static void snippet01()
 {
-    //! [ChromaHueDiagram Instanciate]
+    //! [instanciate]
     QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {new PerceptualColor::RgbColorSpace()};
     PerceptualColor::ChromaHueDiagram *myDiagram = new PerceptualColor::ChromaHueDiagram(myColorSpace);
     PerceptualColor::LchDouble myColor;
@@ -47,7 +47,7 @@ static void snippet01()
     myColor.c = 25;
     myDiagram->setCurrentColor(myColor);
     myDiagram->show();
-    //! [ChromaHueDiagram Instanciate]
+    //! [instanciate]
     delete myDiagram;
 }
 

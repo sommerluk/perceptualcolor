@@ -53,8 +53,7 @@ namespace PerceptualColor
  * polar coordinate system and to capture easily the current radial
  * and angle.
  *
- * Usage example: @snippet test/testchromahuediagram.cpp ChromaHueDiagram
- * Instanciate
+ * Usage example: @snippet test/testchromahuediagram.cpp instanciate
  *
  * @note This widget <em>always</em> accepts focus by a mouse click within
  * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>

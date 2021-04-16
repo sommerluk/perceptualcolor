@@ -47,8 +47,7 @@ namespace PerceptualColor
  * <tt>std::experimental::propagate_const&lt; T* &gt;</tt>
  *
  * Example code:
- * @snippet test/testconstpropagatingrawpointer.cpp ConstPropagatingRawPointer
- * Example
+ * @snippet test/testconstpropagatingrawpointer.cpp example
  *
  * @sa @ref ConstPropagatingUniquePointer
  *

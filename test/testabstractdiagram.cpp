@@ -50,7 +50,7 @@ public:
     }
     void testSnippet01()
     {
-        //! [AbstractDiagram Use transparency background]
+        //! [useTransparencyBackground]
         // Within a class derived from AbstractDiagram, you can use this code:
 
         QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
@@ -62,13 +62,14 @@ public:
                            0,
                            150,
                            200,
-                           // During painting, QBrush will ignore the device pixel ratio
-                           // of the underlying transparencyBackground image!
+                           // During painting, QBrush will ignore the
+                           // device pixel ratio of the underlying
+                           // transparencyBackground image!
                            QBrush(transparencyBackground()));
 
         // Paint semi-transparent red color above
         myPainter.fillRect(0, 0, 150, 200, QBrush(QColor(255, 0, 0, 128)));
-        //! [AbstractDiagram Use transparency background]
+        //! [useTransparencyBackground]
     }
 };
 

@@ -40,15 +40,13 @@ namespace PerceptualColor
  * - LAB/LCH lightness: <tt>[0, 100]</tt>
  * - LCH hue: The full circle, <tt>[0°, 360°[</tt>.
  *
- * |                               |        a         |         b         | C |
- * | :---------------------------  |:---------------: | :---------------: |
- * :---------: | | Usual implementation¹         |   [−128, 127]    |
- * [−128, 127]    |             | | Human perception (Wikipedia)² | [−170, 100]
- * |    [−100, 150]    |             | | Human perception (2° D50)³
- * |[−165.39, 129.05] | [−132.62, 146.69] | [0, 183.42] | | Human perception (2°
- * D65)³    |[−170.84, 147.84] | [−129.66, 146.78] | [0, 194.84] | | Human
- * perception (10° D65)³   |[−164.29, 115.14] | [−116.10, 145.53] | [0, 186.17]
- * |
+ * |                               |        a          |         b         | C           |
+ * | :---------------------------- |:----------------: | :---------------: | :---------: |
+ * | Usual implementation¹         |    [−128, 127]    |    [−128, 127]    |             |
+ * | Human perception (Wikipedia)² |    [−170, 100]    |    [−100, 150]    |             |
+ * | Human perception (2° D50)³    | [−165.39, 129.05] | [−132.62, 146.69] | [0, 183.42] |
+ * | Human perception (2° D65)³    | [−170.84, 147.84] | [−129.66, 146.78] | [0, 194.84] |
+ * | Human perception (10° D65)³   | [−164.29, 115.14] | [−116.10, 145.53] | [0, 186.17] |
  *
  * 1. The range of  <tt>[−128, 127]</tt> is in C++ a signed 8‑bit integer. But
  *    this data type usually used in software implementations is (as the table

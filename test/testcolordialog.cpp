@@ -68,7 +68,9 @@ static void snippet01()
     // This function will not be called in the unit tests because getColor()
     // does not return without user interaction!
     //! [ColorDialog Get color with alpha channel]
-    QColor myColor = PerceptualColor::ColorDialog::getColor(Qt::green,                      // current color at widget startup
+    QColor myColor =
+        PerceptualColor::ColorDialog::getColor(
+            Qt::green,                      // current color at widget startup
                                                             nullptr,                        // parent widget (or nullptr for no parent)
                                                             QStringLiteral("Window title"), // window title (or an empty string for
                                                                                             // default title)
@@ -79,20 +81,20 @@ static void snippet01()
 
 static void snippet02()
 {
-    //! [ColorDialog Set options with local enum]
+    //! [setOptionsWithLocalEnum]
     PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
     myDialog->setOption(PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel, false);
-    //! [ColorDialog Set options with local enum]
+    //! [setOptionsWithLocalEnum]
     QCOMPARE(myDialog->testOption(PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel), false);
     delete myDialog;
 }
 
 static void snippet03()
 {
-    //! [ColorDialog Set options with QColorDialog enum]
+    //! [setOptionsWithQColorDialogEnum]
     PerceptualColor::ColorDialog *myDialog = new PerceptualColor::ColorDialog();
     myDialog->setOption(QColorDialog::ShowAlphaChannel, false);
-    //! [ColorDialog Set options with QColorDialog enum]
+    //! [setOptionsWithQColorDialogEnum]
     QCOMPARE(myDialog->testOption(PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel), false);
     delete myDialog;
 }

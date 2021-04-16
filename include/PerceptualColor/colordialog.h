@@ -292,11 +292,9 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      *
      * | Option              | Default value | Description
      * | :------------------ | :------------ | :----------
-     * | ShowAlphaChannel    | false         | Allow the user to select the
-     * alpha component of a color. | NoButtons           | false         | Don't
-     * display OK and Cancel buttons. (Useful for “live dialogs”.) |
-     * DontUseNativeDialog | true          | Use Qt’s standard color dialog
-     * instead of the operating system native color dialog.
+     * | ShowAlphaChannel    | false         | Allow the user to select the alpha component of a color.
+     * | NoButtons           | false         | Don't display OK and Cancel buttons. (Useful for “live dialogs”.)
+     * | DontUseNativeDialog | true          | Use Qt’s standard color dialog instead of the operating system native color dialog.
      *
      *   @invariant The option
      *   <tt>ColorDialogOption::DontUseNativeDialog</tt> will
@@ -308,10 +306,9 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      *   applied.)
      *
      * Example:
-     * @snippet test/testcolordialog.cpp ColorDialog Set options with local enum
+     * @snippet test/testcolordialog.cpp setOptionsWithLocalEnum
      * Or:
-     * @snippet test/testcolordialog.cpp ColorDialog Set options with
-     * QColorDialog enum
+     * @snippet test/testcolordialog.cpp setOptionsWithQColorDialogEnum
      * @note At difference to QColorDialog, you need a fully qualified
      * identifier for the enum values. The following code would therefore
      * fail:<br/>
