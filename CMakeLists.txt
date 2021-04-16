@@ -58,7 +58,7 @@ set(PROJECT_VERSION
 # Substitutes all occurrences of @PROJECT_VERSION@ and similar declaration
 # in the source code file by the actual value in CMake
 configure_file(
-    src/version.h.in
+    src/version.in.h
     ${CMAKE_BINARY_DIR}/generated/version.h
 )
 # TODO WARNING The file ${CMAKE_BINARY_DIR}/generated/version_config.h has to be added to the install target!
