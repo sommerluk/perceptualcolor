@@ -34,100 +34,96 @@
 
 #include <lcms2.h>
 
-static cmsCIELab snippet01() {
-//! [Use RgbDouble]
-cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
-cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-cmsHTRANSFORM m_transformRgbToLabHandle = cmsCreateTransform(
-    rgbProfileHandle,             // input profile handle
-    TYPE_RGB_DBL,                 // input buffer format
-    labProfileHandle,             // output profile handle
-    TYPE_Lab_DBL,                 // output buffer format
-    INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-    0                             // flags
-);
-cmsCloseProfile(labProfileHandle);
-cmsCloseProfile(rgbProfileHandle);
-PerceptualColor::RgbDouble rgb;
-rgb.red = 1;
-rgb.green = 0.5;
-rgb.blue = 0;
-cmsCIELab lab;
-// Convert exactly 1 value:
-cmsDoTransform(
-    m_transformRgbToLabHandle,  // transform handle
-    &rgb,                       // input buffer
-    &lab,                       // output buffer
-    1                           // number of RGB values to convert
-);
-cmsDeleteTransform(m_transformRgbToLabHandle);
-//! [Use RgbDouble]
-return lab;
+static cmsCIELab snippet01()
+{
+    //! [Use RgbDouble]
+    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
+    cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
+    cmsHTRANSFORM m_transformRgbToLabHandle =
+        cmsCreateTransform(rgbProfileHandle, // input profile handle
+                           TYPE_RGB_DBL,     // input buffer format
+                           labProfileHandle, // output profile handle
+                           TYPE_Lab_DBL,     // output buffer format
+                           INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+                           0                             // flags
+        );
+    cmsCloseProfile(labProfileHandle);
+    cmsCloseProfile(rgbProfileHandle);
+    PerceptualColor::RgbDouble rgb;
+    rgb.red = 1;
+    rgb.green = 0.5;
+    rgb.blue = 0;
+    cmsCIELab lab;
+    // Convert exactly 1 value:
+    cmsDoTransform(m_transformRgbToLabHandle, // transform handle
+                   &rgb,                      // input buffer
+                   &lab,                      // output buffer
+                   1                          // number of RGB values to convert
+    );
+    cmsDeleteTransform(m_transformRgbToLabHandle);
+    //! [Use RgbDouble]
+    return lab;
 }
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestRgbDouble : public QObject
 {
-
     Q_OBJECT
 
 public:
-    TestRgbDouble(QObject *parent = nullptr) : QObject(parent) {
+    TestRgbDouble(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private:
-    static void voidMessageHandler(
-        QtMsgType,
-        const QMessageLogContext &,
-        const QString &
-    ) {
+    static void
+    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
         // dummy message handler that does not print messages
     }
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testConstructorDestructor() {
+    void testConstructorDestructor()
+    {
         // This should not crash.
         RgbDouble test;
         test.red = 0.5;
         Q_UNUSED(test);
     }
 
-    void testCopyConstructor() {
+    void testCopyConstructor()
+    {
         // This should not crash.
         RgbDouble test;
         test.red = 0.5;
         test.green = 0.6;
         test.blue = 0.7;
         RgbDouble copy(test);
-        QCOMPARE(
-            copy.red,
-            0.5
-        );
-        QCOMPARE(
-            copy.green,
-            0.6
-        );
-        QCOMPARE(
-            copy.blue,
-            0.7
-        );
+        QCOMPARE(copy.red, 0.5);
+        QCOMPARE(copy.green, 0.6);
+        QCOMPARE(copy.blue, 0.7);
     }
 
     void testQDebugSupport()
@@ -140,17 +136,18 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-    void testRgbDouble() {
+    void testRgbDouble()
+    {
         cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr);
         cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-        cmsHTRANSFORM m_transformLabToRgbHandle = cmsCreateTransform(
-            labProfileHandle,             // input profile handle
-            TYPE_Lab_DBL,                 // input buffer format
-            rgbProfileHandle,             // output profile handle
-            TYPE_RGB_DBL,                 // output buffer format
-            INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-            0                             // flags
-        );
+        cmsHTRANSFORM m_transformLabToRgbHandle =
+            cmsCreateTransform(labProfileHandle, // input profile handle
+                               TYPE_Lab_DBL,     // input buffer format
+                               rgbProfileHandle, // output profile handle
+                               TYPE_RGB_DBL,     // output buffer format
+                               INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+                               0                             // flags
+            );
         cmsCloseProfile(labProfileHandle);
         cmsCloseProfile(rgbProfileHandle);
         PerceptualColor::RgbDouble rgb;
@@ -172,65 +169,47 @@ private Q_SLOTS:
         lab.b = 67;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(
-            rgb.red > 0.8,
-            "Test if Red is at the correct position in memory"
-        );
+        QVERIFY2(rgb.red > 0.8,
+                 "Test if Red is at the correct position in memory");
         lab.L = 87;
         lab.a = -86;
         lab.b = 83;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(
-            rgb.green > 0.8,
-            "Test if Green is at the correct position in memory"
-        );
+        QVERIFY2(rgb.green > 0.8,
+                 "Test if Green is at the correct position in memory");
         lab.L = 32;
         lab.a = 79;
         lab.b = -107;
         // Convert exactly 1 value.
         cmsDoTransform(m_transformLabToRgbHandle, &lab, &rgb, 1);
-        QVERIFY2(
-            rgb.blue > 0.8,
-            "Test if Blue is at the correct position in memory"
-        );
+        QVERIFY2(rgb.blue > 0.8,
+                 "Test if Blue is at the correct position in memory");
 
         // Clean up
         cmsDeleteTransform(m_transformLabToRgbHandle);
     }
 
-    void testSnippet01() {
+    void testSnippet01()
+    {
         cmsCIELab lab = snippet01();
         constexpr int tolerance = 5;
         constexpr int expectedL = 68;
         constexpr int expectedA = 46;
         constexpr int expectedB = 75;
-        QVERIFY2(
-            (expectedL - tolerance) < lab.L,
-            "Verify that hue is within tolerance."
-        );
-        QVERIFY2(
-            lab.L < (expectedL + tolerance),
-            "Verify that hue is within tolerance."
-        );
-        QVERIFY2(
-            (expectedA - tolerance) < lab.a,
-            "Verify that lightness is within tolerance."
-        );
-        QVERIFY2(
-            lab.a < (expectedA + tolerance),
-            "Verify that lightness is within tolerance."
-        );
-        QVERIFY2(
-            (expectedB - tolerance) < lab.b,
-            "Verify that chroma is within tolerance."
-        );
-        QVERIFY2(
-            lab.b < (expectedB + tolerance),
-            "Verify that chroma is within tolerance."
-        );
+        QVERIFY2((expectedL - tolerance) < lab.L,
+                 "Verify that hue is within tolerance.");
+        QVERIFY2(lab.L < (expectedL + tolerance),
+                 "Verify that hue is within tolerance.");
+        QVERIFY2((expectedA - tolerance) < lab.a,
+                 "Verify that lightness is within tolerance.");
+        QVERIFY2(lab.a < (expectedA + tolerance),
+                 "Verify that lightness is within tolerance.");
+        QVERIFY2((expectedB - tolerance) < lab.b,
+                 "Verify that chroma is within tolerance.");
+        QVERIFY2(lab.b < (expectedB + tolerance),
+                 "Verify that chroma is within tolerance.");
     }
-
 };
 
 }

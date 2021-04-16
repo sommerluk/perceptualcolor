@@ -34,82 +34,80 @@
 
 #include <lcms2.h>
 
-static void snippet01() {
-//! [Use LchDouble]
-PerceptualColor::LchDouble myValue;
-myValue.l = 50; // Lightness: 50%
-myValue.c = 25; // Chroma: 25
-myValue.h = 5;  // Hue: 5°
-//! [Use LchDouble]
-Q_UNUSED(myValue)
+static void snippet01()
+{
+    //! [Use LchDouble]
+    PerceptualColor::LchDouble myValue;
+    myValue.l = 50; // Lightness: 50%
+    myValue.c = 25; // Chroma: 25
+    myValue.h = 5;  // Hue: 5°
+    //! [Use LchDouble]
+    Q_UNUSED(myValue)
 }
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestLchDouble : public QObject
 {
-
     Q_OBJECT
 
 public:
-    TestLchDouble(QObject *parent = nullptr) : QObject(parent) {
+    TestLchDouble(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private:
-    static void voidMessageHandler(
-        QtMsgType,
-        const QMessageLogContext &,
-        const QString &
-    ) {
+    static void
+    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
         // dummy message handler that does not print messages
     }
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testConstructorDestructor() {
+    void testConstructorDestructor()
+    {
         // This should not crash.
         LchDouble test;
         test.l = 50;
         Q_UNUSED(test);
     }
 
-    void testCopyConstructor() {
+    void testCopyConstructor()
+    {
         // This should not crash.
         LchDouble test;
         test.l = 50;
         test.c = 25;
         test.h = 5;
         LchDouble copy(test);
-        QCOMPARE(
-            copy.l,
-            50
-        );
-        QCOMPARE(
-            copy.c,
-            25
-        );
-        QCOMPARE(
-            copy.h,
-            5
-        );
+        QCOMPARE(copy.l, 50);
+        QCOMPARE(copy.c, 25);
+        QCOMPARE(copy.h, 5);
     }
 
-    void testHasSameCoordinates() {
+    void testHasSameCoordinates()
+    {
         LchDouble a;
         a.l = 50;
         a.c = 20;
@@ -155,7 +153,6 @@ private Q_SLOTS:
     {
         snippet01();
     }
-
 };
 
 }

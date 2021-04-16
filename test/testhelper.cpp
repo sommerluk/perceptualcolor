@@ -32,37 +32,44 @@
 
 #include <QtTest>
 
-#include <QPainter>
 #include <PerceptualColor/rgbcolorspace.h>
+#include <QPainter>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestHelper : public QObject
 {
     Q_OBJECT
 
 public:
-    TestHelper(QObject *parent = nullptr) : QObject(parent) {
+    TestHelper(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private Q_SLOTS:
 
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testInRangeInt() {
+    void testInRangeInt()
+    {
         QCOMPARE(PerceptualColor::inRange<int>(3, 3, 2), false);
         QCOMPARE(PerceptualColor::inRange<int>(3, 2, 2), false);
         QCOMPARE(PerceptualColor::inRange<int>(3, 0, 2), false);
@@ -128,108 +135,68 @@ private Q_SLOTS:
         QCOMPARE(PerceptualColor::inRange<double>(-3, -4, -1), false);
         QCOMPARE(PerceptualColor::inRange<double>(-3, 0, -1), false);
 
-        QCOMPARE(
-            PerceptualColor::inRange<double>(-3.1, 0.2, -1.3),
-            false
-        );
+        QCOMPARE(PerceptualColor::inRange<double>(-3.1, 0.2, -1.3), false);
     }
 
-    void testGamutPrecision() {
+    void testGamutPrecision()
+    {
         // The value is somewhat arbitrary.
         // Make sure that at least it is not too high.
-        QVERIFY2(
-            PerceptualColor::gamutPrecision < 1,
-            "Verify that gamut precision value is not too high"
-        );
+        QVERIFY2(PerceptualColor::gamutPrecision < 1,
+                 "Verify that gamut precision value is not too high");
     }
 
-    void testTransparencyBackground() {
+    void testTransparencyBackground()
+    {
         QImage temp = transparencyBackground(1);
-        QVERIFY2(
-            temp.size().width() > 0,
-            "Width of image is bigger than 0."
-        );
-        QVERIFY2(
-            temp.size().height() > 0,
-            "Height of image is bigger than 0."
-        );
-        QVERIFY2(
-            temp.allGray(),
-            "Image is neutral gray."
-        );
+        QVERIFY2(temp.size().width() > 0, "Width of image is bigger than 0.");
+        QVERIFY2(temp.size().height() > 0, "Height of image is bigger than 0.");
+        QVERIFY2(temp.allGray(), "Image is neutral gray.");
     }
 
-    void testStandardWheelSteps() {
-        QWheelEvent temp(
-            QPointF(),
-            QPointF(),
-            QPoint(),
-            QPoint(200, 120),
-            0,
-            Qt::Orientation::Vertical,
-            Qt::MouseButton::MiddleButton,
-            Qt::KeyboardModifier::NoModifier
-        );
+    void testStandardWheelSteps()
+    {
+        QWheelEvent temp(QPointF(),
+                         QPointF(),
+                         QPoint(),
+                         QPoint(200, 120),
+                         0,
+                         Qt::Orientation::Vertical,
+                         Qt::MouseButton::MiddleButton,
+                         Qt::KeyboardModifier::NoModifier);
         QCOMPARE(PerceptualColor::standardWheelSteps(&temp), 1);
     }
 
-    void testLchConvertion() {
+    void testLchConvertion()
+    {
         // Check if round-trips work fine.
         // One sense
         cmsCIELCh startValue;
         startValue.L = 50.1;
         startValue.C = 20.1;
         startValue.h = 80.1;
-        QCOMPARE(
-            toCmsCieLch(toLchDouble(startValue)).L,
-            startValue.L
-        );
-        QCOMPARE(
-            toCmsCieLch(toLchDouble(startValue)).C,
-            startValue.C
-        );
-        QCOMPARE(
-            toCmsCieLch(toLchDouble(startValue)).h,
-            startValue.h
-        );
+        QCOMPARE(toCmsCieLch(toLchDouble(startValue)).L, startValue.L);
+        QCOMPARE(toCmsCieLch(toLchDouble(startValue)).C, startValue.C);
+        QCOMPARE(toCmsCieLch(toLchDouble(startValue)).h, startValue.h);
         // The other sense
         LchDouble startValue2;
         startValue2.l = 50.1;
         startValue2.c = 20.1;
         startValue2.h = 80.1;
-        QCOMPARE(
-            toLchDouble(toCmsCieLch(startValue2)).l,
-            startValue2.l
-        );
-        QCOMPARE(
-            toLchDouble(toCmsCieLch(startValue2)).c,
-            startValue2.c
-        );
-        QCOMPARE(
-            toLchDouble(toCmsCieLch(startValue2)).h,
-            startValue2.h
-        );
+        QCOMPARE(toLchDouble(toCmsCieLch(startValue2)).l, startValue2.l);
+        QCOMPARE(toLchDouble(toCmsCieLch(startValue2)).c, startValue2.c);
+        QCOMPARE(toLchDouble(toCmsCieLch(startValue2)).h, startValue2.h);
     }
 
-    void testSteps() {
-        QVERIFY2(
-            pageStepChroma > singleStepChroma,
-            "Chroma page step is bigger than single step."
-        );
-        QVERIFY2(
-            singleStepChroma > 0,
-            "Chroma single step is positive."
-        );
-        QVERIFY2(
-            pageStepHue > singleStepHue,
-            "Hue page step is bigger than single step."
-        );
-        QVERIFY2(
-            singleStepHue > 0,
-            "Hue single step is positive."
-        );
+    void testSteps()
+    {
+        QVERIFY2(pageStepChroma > singleStepChroma,
+                 "Chroma page step is bigger than single step.");
+        QVERIFY2(singleStepChroma > 0, "Chroma single step is positive.");
+        QVERIFY2(pageStepHue > singleStepHue,
+                 "Hue page step is bigger than single step.");
+        QVERIFY2(singleStepHue > 0, "Hue single step is positive.");
     }
-
 };
 
 }

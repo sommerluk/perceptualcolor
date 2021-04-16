@@ -32,41 +32,46 @@
 
 #include <QtTest>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestPolarPointF : public QObject
 {
     Q_OBJECT
 
 public:
-    TestPolarPointF(QObject *parent = nullptr) : QObject(parent) {
+    TestPolarPointF(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private:
-    static void voidMessageHandler(
-        QtMsgType,
-        const QMessageLogContext &,
-        const QString &
-    ) {
+    static void
+    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
         // dummy message handler that does not print messages
     }
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testConstructorRadialAngle() {
+    void testConstructorRadialAngle()
+    {
         PerceptualColor::PolarPointF temp01;
 
         // Default value is 0, 0°
@@ -122,7 +127,6 @@ private Q_SLOTS:
         QCOMPARE(temp01.radial(), 0);
         QCOMPARE(temp01.angleDegree(), 10);
 
-
         // Edge case: 360°
         temp01 = PerceptualColor::PolarPointF(0, 360);
         QCOMPARE(temp01.radial(), 0);
@@ -132,7 +136,8 @@ private Q_SLOTS:
         QCOMPARE(temp01.angleDegree(), 0);
     }
 
-    void testCopyAndAsignmentConstructor() {
+    void testCopyAndAsignmentConstructor()
+    {
         PerceptualColor::PolarPointF temp01;
         PerceptualColor::PolarPointF temp02;
         PerceptualColor::PolarPointF temp03;
@@ -168,7 +173,8 @@ private Q_SLOTS:
         QCOMPARE(temp03.angleDegree(), 183);
     }
 
-    void testConstructorCartesian() {
+    void testConstructorCartesian()
+    {
         PerceptualColor::PolarPointF temp01;
         temp01 = PerceptualColor::PolarPointF(QPointF(0, 0));
         QCOMPARE(temp01.radial(), 0);
@@ -190,130 +196,73 @@ private Q_SLOTS:
         QCOMPARE(temp01.angleDegree(), static_cast<qreal>(45));
     }
 
-    void testIsSamePoint() {
-        QVERIFY(
-            !PerceptualColor::PolarPointF(0, 0).isSamePoint(
-                PerceptualColor::PolarPointF(1, 0)
-            )
-        );
+    void testIsSamePoint()
+    {
+        QVERIFY(!PerceptualColor::PolarPointF(0, 0).isSamePoint(
+            PerceptualColor::PolarPointF(1, 0)));
 
         // If radial is 0, different angle still means same point
-        QVERIFY(
-            PerceptualColor::PolarPointF(0, 0).isSamePoint(
-                PerceptualColor::PolarPointF(0, 500)
-            )
-        );
+        QVERIFY(PerceptualColor::PolarPointF(0, 0).isSamePoint(
+            PerceptualColor::PolarPointF(0, 500)));
 
-        QVERIFY(
-            PerceptualColor::PolarPointF(0, 0).isSamePoint(
-                PerceptualColor::PolarPointF(0, 300)
-            )
-        );
+        QVERIFY(PerceptualColor::PolarPointF(0, 0).isSamePoint(
+            PerceptualColor::PolarPointF(0, 300)));
 
-        QVERIFY(
-            PerceptualColor::PolarPointF(0, 0).isSamePoint(
-                PerceptualColor::PolarPointF(0, -500)
-            )
-        );
+        QVERIFY(PerceptualColor::PolarPointF(0, 0).isSamePoint(
+            PerceptualColor::PolarPointF(0, -500)));
 
-        QVERIFY(
-            !PerceptualColor::PolarPointF(1, 320).isSamePoint(
-                PerceptualColor::PolarPointF(1, 321)
-            )
-        );
+        QVERIFY(!PerceptualColor::PolarPointF(1, 320).isSamePoint(
+            PerceptualColor::PolarPointF(1, 321)));
 
-        QVERIFY(
-            PerceptualColor::PolarPointF(5, 90).isSamePoint(
-                PerceptualColor::PolarPointF(-5, 270)
-            )
-        );
+        QVERIFY(PerceptualColor::PolarPointF(5, 90).isSamePoint(
+            PerceptualColor::PolarPointF(-5, 270)));
 
-        QVERIFY(
-            PerceptualColor::PolarPointF(5, 450).isSamePoint(
-                PerceptualColor::PolarPointF(-5, -90)
-            )
-        );
+        QVERIFY(PerceptualColor::PolarPointF(5, 450).isSamePoint(
+            PerceptualColor::PolarPointF(-5, -90)));
     }
 
-    void testNormalizeAngle() {
-        QCOMPARE(
-            PerceptualColor::PolarPointF::normalizedAngleDegree(0),
-            0
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF::normalizedAngleDegree(359.9),
-            359.9
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF::normalizedAngleDegree(360),
-            0
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF::normalizedAngleDegree(720),
-            0
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF::normalizedAngleDegree(-1),
-            359
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF::normalizedAngleDegree(-1.3),
-            358.7
-        );
+    void testNormalizeAngle()
+    {
+        QCOMPARE(PerceptualColor::PolarPointF::normalizedAngleDegree(0), 0);
+        QCOMPARE(PerceptualColor::PolarPointF::normalizedAngleDegree(359.9),
+                 359.9);
+        QCOMPARE(PerceptualColor::PolarPointF::normalizedAngleDegree(360), 0);
+        QCOMPARE(PerceptualColor::PolarPointF::normalizedAngleDegree(720), 0);
+        QCOMPARE(PerceptualColor::PolarPointF::normalizedAngleDegree(-1), 359);
+        QCOMPARE(PerceptualColor::PolarPointF::normalizedAngleDegree(-1.3),
+                 358.7);
     }
 
-    void testToCartesian() {
-        QCOMPARE(
-            PerceptualColor::PolarPointF(0, 0).toCartesian(),
-            QPointF(0, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(0, 90).toCartesian(),
-            QPointF(0, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(0, 361).toCartesian(),
-            QPointF(0, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(0, -1).toCartesian(),
-            QPointF(0, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(1, 0).toCartesian(),
-            QPointF(1, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(1, 90).toCartesian(),
-            QPointF(0, 1)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(1, 180).toCartesian(),
-            QPointF(-1, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(1, 270).toCartesian(),
-            QPointF(0, -1)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(1, 360).toCartesian(),
-            QPointF(1, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(1, 720).toCartesian(),
-            QPointF(1, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(1, -360).toCartesian(),
-            QPointF(1, 0)
-        );
-        QCOMPARE(
-            PerceptualColor::PolarPointF(sqrt(8), 45).toCartesian(),
-            QPointF(2, 2)
-        );
+    void testToCartesian()
+    {
+        QCOMPARE(PerceptualColor::PolarPointF(0, 0).toCartesian(),
+                 QPointF(0, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(0, 90).toCartesian(),
+                 QPointF(0, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(0, 361).toCartesian(),
+                 QPointF(0, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(0, -1).toCartesian(),
+                 QPointF(0, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(1, 0).toCartesian(),
+                 QPointF(1, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(1, 90).toCartesian(),
+                 QPointF(0, 1));
+        QCOMPARE(PerceptualColor::PolarPointF(1, 180).toCartesian(),
+                 QPointF(-1, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(1, 270).toCartesian(),
+                 QPointF(0, -1));
+        QCOMPARE(PerceptualColor::PolarPointF(1, 360).toCartesian(),
+                 QPointF(1, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(1, 720).toCartesian(),
+                 QPointF(1, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(1, -360).toCartesian(),
+                 QPointF(1, 0));
+        QCOMPARE(PerceptualColor::PolarPointF(sqrt(8), 45).toCartesian(),
+                 QPointF(2, 2));
     }
 
-    void testMetaType() {
+    void testMetaType()
+    {
         PerceptualColor::PolarPointF temp01(17, 18);
         QVariant var;
         // This following line should throw a compile-time error if meta-type
@@ -322,7 +271,8 @@ private Q_SLOTS:
         QVERIFY(var.value<PerceptualColor::PolarPointF>().isSamePoint(temp01));
     }
 
-    void testDebug() {
+    void testDebug()
+    {
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if QDebug support does not make a crash.
@@ -330,7 +280,6 @@ private Q_SLOTS:
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
     }
-
 };
 
 }

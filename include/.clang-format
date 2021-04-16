@@ -37,7 +37,7 @@ Standard: Cpp11
 TabWidth: 4
 
 # 3 * 80 wide lines NOTE changed from KDE original file
-ColumnLimit: 0
+ColumnLimit: 80
 
 # NOTE More elgant would be to use “BasedOnStyle: InheritParentConfig”
 # for our modifications, but this works only on newer versions of clang-format.

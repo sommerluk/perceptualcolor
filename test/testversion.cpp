@@ -32,59 +32,62 @@
 
 #include <QtTest>
 
-static void snippet01() {
+static void snippet01()
+{
 //! [Version Macro usage]
 #if (PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= QT_VERSION_CHECK(1, 2, 3))
 // Some code…
 #else
 // Some different code…
 #endif
-//! [Version Macro usage]
+    //! [Version Macro usage]
 }
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestVersion : public QObject
 {
-
     Q_OBJECT
 
 public:
-    TestVersion(QObject *parent = nullptr) : QObject(parent) {
+    TestVersion(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testPerceptualColorRunTimeVersion() {
-        QVERIFY2(
-            perceptualColorRunTimeVersion() >= QVersionNumber(0, 0, 1),
-            "Verify that the version number is at least 0.0.1."
-        );
-        QVERIFY2(
-            perceptualColorRunTimeVersion() < QVersionNumber(99, 0, 1),
-            "Verify that the version number is not too big."
-        );
+    void testPerceptualColorRunTimeVersion()
+    {
+        QVERIFY2(perceptualColorRunTimeVersion() >= QVersionNumber(0, 0, 1),
+                 "Verify that the version number is at least 0.0.1.");
+        QVERIFY2(perceptualColorRunTimeVersion() < QVersionNumber(99, 0, 1),
+                 "Verify that the version number is not too big.");
     }
 
-    void testSnippet01() {
+    void testSnippet01()
+    {
         snippet01();
     }
-
 };
 
 }

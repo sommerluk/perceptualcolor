@@ -34,55 +34,50 @@
 
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestLchValues : public QObject
 {
     Q_OBJECT
 
 public:
-    TestLchValues(QObject *parent = nullptr) : QObject(parent) {
+    TestLchValues(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private Q_SLOTS:
 
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testLchValues() {
+    void testLchValues()
+    {
+        // Is the value as documented?
+        QCOMPARE(static_cast<qreal>(PerceptualColor::LchValues::neutralChroma),
+                 0);
+        // Is the value as documented?
+        QCOMPARE(static_cast<qreal>(PerceptualColor::LchValues::neutralHue), 0);
         // Is the value as documented?
         QCOMPARE(
-            static_cast<qreal>(
-                PerceptualColor::LchValues::neutralChroma
-            ),
-            0
-        );
-        // Is the value as documented?
-        QCOMPARE(
-            static_cast<qreal>(
-                PerceptualColor::LchValues::neutralHue
-            ),
-            0
-        );
-        // Is the value as documented?
-        QCOMPARE(
-            static_cast<qreal>(
-                PerceptualColor::LchValues::neutralLightness
-            ),
-            50
-        );
+            static_cast<qreal>(PerceptualColor::LchValues::neutralLightness),
+            50);
 
         PerceptualColor::RgbColorSpace temp;
         LchDouble color;
@@ -90,46 +85,23 @@ private Q_SLOTS:
 
         // Test if maxSrgbChroma is big enough
         qreal precisionDegreeMaxSrgbChroma =
-            presicion
-                / 360
-                * 2
-                * M_PI
-                * PerceptualColor::LchValues::srgbMaximumChroma;
+            presicion / 360 * 2 * M_PI * LchValues::srgbMaximumChroma;
         color.c = PerceptualColor::LchValues::srgbMaximumChroma;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionDegreeMaxSrgbChroma
-        ) {
+        for (qreal hue = 0; hue <= 360; hue += precisionDegreeMaxSrgbChroma) {
             color.h = hue;
-            for (
-                qreal lightness = 0;
-                lightness < 100;
-                lightness += presicion
-            ) {
+            for (qreal lightness = 0; lightness < 100; lightness += presicion) {
                 color.l = lightness;
-                QVERIFY2(
-                    !temp.inGamut(color),
-                    "Test if maxSrgbChroma is big enough"
-                );
+                QVERIFY2(!temp.inGamut(color),
+                         "Test if maxSrgbChroma is big enough");
             }
-
         }
 
         // Test if maxSrgbChroma is as small as possible
         color.c = PerceptualColor::LchValues::srgbMaximumChroma - 1;
         bool inGamutValueFound = false;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionDegreeMaxSrgbChroma
-        ) {
+        for (qreal hue = 0; hue <= 360; hue += precisionDegreeMaxSrgbChroma) {
             color.h = hue;
-            for (
-                qreal lightness = 0;
-                lightness < 100;
-                lightness += presicion
-            ) {
+            for (qreal lightness = 0; lightness < 100; lightness += presicion) {
                 color.l = lightness;
                 if (temp.inGamut(color)) {
                     inGamutValueFound = true;
@@ -140,71 +112,46 @@ private Q_SLOTS:
                 break;
             }
         }
-        QVERIFY2(
-            inGamutValueFound,
-            "Test if maxSrgbChroma.h is as small as possible"
-        );
+        QVERIFY2(inGamutValueFound,
+                 "Test if maxSrgbChroma.h is as small as possible");
 
         // Test if versatile is small enough
-        qreal precisionVersatileSrgbChroma =
-            presicion
-                / 360
-                * 2
-                * M_PI
-                * PerceptualColor::LchValues::srgbVersatileChroma;
+        qreal precisionVersatileSrgbChroma = presicion / 360 * 2 * M_PI *
+            PerceptualColor::LchValues::srgbVersatileChroma;
         color.c = PerceptualColor::LchValues::srgbVersatileChroma;
         color.l = 50;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionVersatileSrgbChroma
-        ) {
+        for (qreal hue = 0; hue <= 360; hue += precisionVersatileSrgbChroma) {
             color.h = hue;
-            QVERIFY2(
-                temp.inGamut(color),
-                "Test if versatile is small enough"
-            );
+            QVERIFY2(temp.inGamut(color), "Test if versatile is small enough");
         }
 
         // Test if versatile is as big as possible
-        color.c =
-            PerceptualColor::LchValues::srgbVersatileChroma + 1;
+        color.c = PerceptualColor::LchValues::srgbVersatileChroma + 1;
         color.l = 50;
         inGamutValueFound = true;
-        for (
-            qreal hue = 0;
-            hue <= 360;
-            hue += precisionVersatileSrgbChroma
-        ) {
+        for (qreal hue = 0; hue <= 360; hue += precisionVersatileSrgbChroma) {
             color.h = hue;
             if (!temp.inGamut(color)) {
                 inGamutValueFound = false;
                 break;
             }
         }
-        QVERIFY2(
-            !inGamutValueFound,
-            "Test if versatile is as big as possible"
-        );
-
+        QVERIFY2(!inGamutValueFound, "Test if versatile is as big as possible");
     }
 
-    void testNeutralGray() {
+    void testNeutralGray()
+    {
         // Test that the unified initialization is done in the correct order.
-        QCOMPARE(
-            LchValues::neutralGray.l,
-            50 // Should be half the way between light and dark
+        QCOMPARE(LchValues::neutralGray.l,
+                 50 // Should be half the way between light and dark
         );
-        QCOMPARE(
-            LchValues::neutralGray.c,
-            0 // Should have no chroma
+        QCOMPARE(LchValues::neutralGray.c,
+                 0 // Should have no chroma
         );
-        QCOMPARE(
-            LchValues::neutralGray.h,
-            0 // Hue does not matter, but by convention should be 0
+        QCOMPARE(LchValues::neutralGray.h,
+                 0 // Hue does not matter, but by convention should be 0
         );
     }
-
 };
 
 }

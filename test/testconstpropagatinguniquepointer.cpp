@@ -34,27 +34,25 @@
 
 #include <QRectF>
 
-static void snippet01() {
-//! [ConstPropagatingUniquePointer Example]
-// A ConstPropagatingUniquePointer pointing to a new QObject
-PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
-    new QObject()
-);
-//! [ConstPropagatingUniquePointer Example]
+static void snippet01()
+{
+    //! [ConstPropagatingUniquePointer Example]
+    // A ConstPropagatingUniquePointer pointing to a new QObject
+    PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
+        new QObject());
+    //! [ConstPropagatingUniquePointer Example]
 }
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestConstPropagatingUniquePointer : public QObject
 {
     Q_OBJECT
 
 public:
-    TestConstPropagatingUniquePointer(
-        QObject *parent = nullptr
-    ) :
-        QObject(parent),
-        pointerToQRectF(new QRectF)
+    TestConstPropagatingUniquePointer(QObject *parent = nullptr)
+        : QObject(parent)
+        , pointerToQRectF(new QRectF)
     {
     }
 
@@ -63,71 +61,80 @@ private:
 
 private Q_SLOTS:
 
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testConstructorDestructor() {
+    void testConstructorDestructor()
+    {
         ConstPropagatingUniquePointer<QObject> test;
     }
 
-    void testDefaultConstructor() {
+    void testDefaultConstructor()
+    {
         ConstPropagatingUniquePointer<QObject> test;
-        QCOMPARE(
-            test,
-            nullptr
-        );
+        QCOMPARE(test, nullptr);
     }
 
     // NOTE Should break on compile time when the function is const.
-    void testNonConstAccess() {
+    void testNonConstAccess()
+    {
         // The following line should not break
         pointerToQRectF->setHeight(5);
     }
 
     // NOTE Should break on compile time when the function is const.
-    void testBackCopy01() {
+    void testBackCopy01()
+    {
         QRectF temp;
         *pointerToQRectF = temp;
     }
 
-    void testConstAccess01() const {
+    void testConstAccess01() const
+    {
         // The following line should not break
         qreal height = pointerToQRectF->height();
         Q_UNUSED(height)
     }
 
-    void testConstAccess02() {
+    void testConstAccess02()
+    {
         // The following line should not break
         qreal height = pointerToQRectF->height();
         Q_UNUSED(height)
     }
 
-    void testCopy01() const {
+    void testCopy01() const
+    {
         QRectF temp = *pointerToQRectF;
         Q_UNUSED(temp);
     }
 
-    void testCopy02() {
+    void testCopy02()
+    {
         QRectF temp = *pointerToQRectF;
         Q_UNUSED(temp);
     }
 
-    void testSnippet01() {
+    void testSnippet01()
+    {
         snippet01();
     }
-
 };
 
 }

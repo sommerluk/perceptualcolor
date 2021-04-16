@@ -39,205 +39,163 @@
 
 class TestAbstractDiagramHelperClass : public PerceptualColor::AbstractDiagram
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-TestAbstractDiagramHelperClass(QWidget *parent = nullptr)
-: AbstractDiagram(parent) {
-// This constuctor exists only to satisfy Clazy code checker, which
-// expects constructors taking QWidget* as argument for all classes
-// that inherit from QWidget.
-}
-void testSnippet01() {
-//! [AbstractDiagram Use transparency background]
-// Within a class derived from AbstractDiagram, you can use this code:
+    TestAbstractDiagramHelperClass(QWidget *parent = nullptr)
+        : AbstractDiagram(parent)
+    {
+        // This constuctor exists only to satisfy Clazy code checker, which
+        // expects constructors taking QWidget* as argument for all classes
+        // that inherit from QWidget.
+    }
+    void testSnippet01()
+    {
+        //! [AbstractDiagram Use transparency background]
+        // Within a class derived from AbstractDiagram, you can use this code:
 
-QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
+        QImage myImage(150, 200, QImage::Format_ARGB32_Premultiplied);
 
-QPainter myPainter(&myImage);
+        QPainter myPainter(&myImage);
 
-// Fill the hole image with tiles made of transparencyBackground()
-myPainter.fillRect(
-    0,
-    0,
-    150,
-    200,
-    // During painting, QBrush will ignore the device pixel ratio
-    // of the underlying transparencyBackground image!
-    QBrush(
-        transparencyBackground()
-    )
-);
+        // Fill the hole image with tiles made of transparencyBackground()
+        myPainter.fillRect(
+            0,
+            0,
+            150,
+            200,
+            // During painting, QBrush will ignore the device pixel ratio
+            // of the underlying transparencyBackground image!
+            QBrush(transparencyBackground()));
 
-// Paint semi-transparent red color above
-myPainter.fillRect(
-    0,
-    0,
-    150,
-    200,
-    QBrush(
-        QColor(255, 0, 0, 128)
-    )
-);
-//! [AbstractDiagram Use transparency background]
-}
+        // Paint semi-transparent red color above
+        myPainter.fillRect(0, 0, 150, 200, QBrush(QColor(255, 0, 0, 128)));
+        //! [AbstractDiagram Use transparency background]
+    }
 };
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestAbstractDiagram : public QObject
 {
     Q_OBJECT
 
 public:
-    TestAbstractDiagram(QObject *parent = nullptr) : QObject(parent) {
+    TestAbstractDiagram(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testBasic() {
+    void testBasic()
+    {
         // Just test if instanciation does not crash:
         PerceptualColor::AbstractDiagram myDiagram;
         myDiagram.show();
-        QVERIFY2(
-            myDiagram.isVisible(),
-            "Test is diagram was shown correctly."
-        );
+        QVERIFY2(myDiagram.isVisible(), "Test is diagram was shown correctly.");
     }
 
-    void testSnippet01() {
+    void testSnippet01()
+    {
         TestAbstractDiagramHelperClass helper;
         helper.testSnippet01();
     }
 
-    void testTransparencyBackground() {
+    void testTransparencyBackground()
+    {
         PerceptualColor::AbstractDiagram myDiagram;
-        QImage temp =
-            myDiagram.transparencyBackground();
-        QVERIFY2(
-            temp.size().width() > 0,
-            "Width of image is bigger than 0."
-        );
-        QVERIFY2(
-            temp.size().height() > 0,
-            "Height of image is bigger than 0."
-        );
-        QVERIFY2(
-            temp.allGray(),
-            "Image is neutral gray."
-        );
+        QImage temp = myDiagram.transparencyBackground();
+        QVERIFY2(temp.size().width() > 0, "Width of image is bigger than 0.");
+        QVERIFY2(temp.size().height() > 0, "Height of image is bigger than 0.");
+        QVERIFY2(temp.allGray(), "Image is neutral gray.");
     }
 
-    void testFocusIndicatorColor() {
-        QVERIFY2(
-            AbstractDiagram().focusIndicatorColor().isValid(),
-            "focusIndicatorColor() returns a valid color."
-        );
+    void testFocusIndicatorColor()
+    {
+        QVERIFY2(AbstractDiagram().focusIndicatorColor().isValid(),
+                 "focusIndicatorColor() returns a valid color.");
     }
 
-    void testPhysicalPixelSize() {
+    void testPhysicalPixelSize()
+    {
         AbstractDiagram temp;
         temp.show();
-        qreal widthError =
-            (temp.width() * temp.devicePixelRatioF())
-            - temp.physicalPixelSize().width();
-        QVERIFY2(
-            qAbs(widthError) < 1,
-            "Rounding width with error < 1."
-        );
-        qreal heightError =
-            (temp.height() * temp.devicePixelRatioF())
-            - temp.physicalPixelSize().height();
-        QVERIFY2(
-            qAbs(heightError) < 1,
-            "Rounding height with error < 1."
-        );
+        qreal widthError = (temp.width() * temp.devicePixelRatioF()) -
+            temp.physicalPixelSize().width();
+        QVERIFY2(qAbs(widthError) < 1, "Rounding width with error < 1.");
+        qreal heightError = (temp.height() * temp.devicePixelRatioF()) -
+            temp.physicalPixelSize().height();
+        QVERIFY2(qAbs(heightError) < 1, "Rounding height with error < 1.");
     }
 
-    void testDiagramOffset() {
+    void testDiagramOffset()
+    {
         AbstractDiagram myDiagram;
         myDiagram.resize(50, 50);
-        QVERIFY2(
-            inRange(49.0, myDiagram.maximumWidgetSquareSize(), 50.0),
-            "Verify that maximumWidgetSquareSize is within expected "
-                "rounding range."
-        );
+        QVERIFY2(inRange(49.0, myDiagram.maximumWidgetSquareSize(), 50.0),
+                 "Verify that maximumWidgetSquareSize is within expected "
+                 "rounding range.");
         // Next try: off by one.
         myDiagram.resize(51, 51);
-        QVERIFY2(
-            inRange(50.0, myDiagram.maximumWidgetSquareSize(), 51.0),
-            "Verify that maximumWidgetSquareSize is within expected "
-                "rounding range."
-        );
+        QVERIFY2(inRange(50.0, myDiagram.maximumWidgetSquareSize(), 51.0),
+                 "Verify that maximumWidgetSquareSize is within expected "
+                 "rounding range.");
     }
 
-    void testHandle() {
+    void testHandle()
+    {
         AbstractDiagram temp;
-        QVERIFY2(
-            temp.handleRadius() > 0,
-            "Radius is positive."
-        );
-        QVERIFY2(
-            temp.handleOutlineThickness() > 0,
-            "Thickness is positive."
-        );
-        QVERIFY2(
-            temp.handleRadius() > temp.handleOutlineThickness(),
-            "Radius is bigger than thickness. "
-            "(Otherwise, there would be no hole in the middle.)"
-        );
+        QVERIFY2(temp.handleRadius() > 0, "Radius is positive.");
+        QVERIFY2(temp.handleOutlineThickness() > 0, "Thickness is positive.");
+        QVERIFY2(temp.handleRadius() > temp.handleOutlineThickness(),
+                 "Radius is bigger than thickness. "
+                 "(Otherwise, there would be no hole in the middle.)");
     }
 
-    void testGradientThickness() {
+    void testGradientThickness()
+    {
         AbstractDiagram temp;
         QVERIFY(temp.gradientThickness() > 0);
     }
 
-    void testGradientMinimumLength() {
+    void testGradientMinimumLength()
+    {
         AbstractDiagram temp;
-        QVERIFY(temp.gradientMinimumLength() >  temp.gradientThickness());
+        QVERIFY(temp.gradientMinimumLength() > temp.gradientThickness());
     }
 
-    void testHandleColorFromBackgroundLightness() {
+    void testHandleColorFromBackgroundLightness()
+    {
         AbstractDiagram temp;
-        QCOMPARE(
-            temp.handleColorFromBackgroundLightness(-1),
-            QColor(Qt::white)
-        );
-        QCOMPARE(
-            temp.handleColorFromBackgroundLightness(0),
-            QColor(Qt::white)
-        );
-        QCOMPARE(
-            temp.handleColorFromBackgroundLightness(49),
-            QColor(Qt::white)
-        );
-        QCOMPARE(
-            temp.handleColorFromBackgroundLightness(51),
-            QColor(Qt::black)
-        );
-        QCOMPARE(
-            temp.handleColorFromBackgroundLightness(100),
-            QColor(Qt::black)
-        );
-        QCOMPARE(
-            temp.handleColorFromBackgroundLightness(101),
-            QColor(Qt::black)
-        );
+        QCOMPARE(temp.handleColorFromBackgroundLightness(-1),
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(0), QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(49),
+                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(51),
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(100),
+                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(101),
+                 QColor(Qt::black));
     }
-
 };
 
 }

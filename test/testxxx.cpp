@@ -29,42 +29,48 @@
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
 #include "PerceptualColor/xxx.h"
+// Second, the private implementation.
 #include "xxx_p.h"
 
 #include <QtTest>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestXXX : public QObject
 {
-
     Q_OBJECT
 
 public:
-    TestXXX(QObject *parent = nullptr) : QObject(parent) {
+    TestXXX(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testDef() {
+    void testDef()
+    {
         // TODO implement me!
     }
-
 };
 
 } // namespace PerceptualColor

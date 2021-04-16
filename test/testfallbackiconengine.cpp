@@ -37,28 +37,27 @@
 Q_DECLARE_METATYPE(QIcon::Mode)
 Q_DECLARE_METATYPE(QIcon::State)
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestFallbackIconEngine : public QObject
 {
-
     Q_OBJECT
 
 public:
-    TestFallbackIconEngine(QObject *parent = nullptr) : QObject(parent) {
+    TestFallbackIconEngine(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private:
-
-    static void voidMessageHandler(
-        QtMsgType,
-        const QMessageLogContext &,
-        const QString &
-    ) {
+    static void
+    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
         // dummy message handler that does not print messages
     }
 
-    void helperProvideTestData() {
+    void helperProvideTestData()
+    {
         QTest::addColumn<QRect>("rect");
         QTest::addColumn<QIcon::Mode>("mode");
         QTest::addColumn<QIcon::State>("state");
@@ -97,8 +96,7 @@ private:
                     for (int l = 0; l < stateList.size(); ++l) {
                         QTest::newRow(
                             QStringLiteral(
-                                "QRect(QPoint(%1, %2), QSize(%3, %4)) %5 %6"
-                            )
+                                "QRect(QPoint(%1, %2), QSize(%3, %4)) %5 %6")
                                 .arg(rectPointList.at(i).x())
                                 .arg(rectPointList.at(i).y())
                                 .arg(rectSizeList.at(j).width())
@@ -106,11 +104,9 @@ private:
                                 .arg(modeList.at(k))
                                 .arg(stateList.at(l))
                                 .toUtf8()
-                                .data()
-                        )
+                                .data())
                             << QRect(rectPointList.at(i), rectSizeList.at(j))
-                            << modeList.at(k)
-                            << stateList.at(l);
+                            << modeList.at(k) << stateList.at(l);
                     }
                 }
             }
@@ -118,58 +114,61 @@ private:
     }
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testConstructorDestructorOnStack() {
+    void testConstructorDestructorOnStack()
+    {
         // The class should instanciate on the stack without crash.
         FallbackIconEngine test;
     }
 
-    void testConstructorDestructorOnHeap() {
+    void testConstructorDestructorOnHeap()
+    {
         // The class should instanciate on the heap without crash.
-        QScopedPointer<FallbackIconEngine> test { new FallbackIconEngine };
+        QScopedPointer<FallbackIconEngine> test {new FallbackIconEngine};
     }
 
-    void testClone() {
-        QScopedPointer<FallbackIconEngine> test1 { new FallbackIconEngine };
+    void testClone()
+    {
+        QScopedPointer<FallbackIconEngine> test1 {new FallbackIconEngine};
         QWidget testWidget;
         test1->setReferenceWidget(&testWidget);
         // The clone function should not crash.
-        QScopedPointer<QIconEngine> test2 { test1->clone() };
-        FallbackIconEngine* test2a = dynamic_cast<FallbackIconEngine*>(
-            test2.data()
-        );
-        QVERIFY2(
-            test2a != nullptr,
-            "The clone should correctly cast dynamically "
-                "to FallbackIconEngine*."
-        );
+        QScopedPointer<QIconEngine> test2 {test1->clone()};
+        FallbackIconEngine *test2a =
+            dynamic_cast<FallbackIconEngine *>(test2.data());
+        QVERIFY2(test2a != nullptr,
+                 "The clone should correctly cast dynamically "
+                 "to FallbackIconEngine*.");
         // Test if the reference widget was copied correctly.
-        QCOMPARE(
-            test2a->m_referenceWidget,
-            &testWidget
-        );
+        QCOMPARE(test2a->m_referenceWidget, &testWidget);
     }
 
-    void testPaint_data() {
+    void testPaint_data()
+    {
         helperProvideTestData();
     }
 
-    void testPaint() {
+    void testPaint()
+    {
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
         QFETCH(QIcon::State, state);
@@ -188,11 +187,13 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-    void testPaintRefreshFallbackIcon_data() {
+    void testPaintRefreshFallbackIcon_data()
+    {
         helperProvideTestData();
     }
 
-    void testPaintRefreshFallbackIcon() {
+    void testPaintRefreshFallbackIcon()
+    {
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
         QImage myImage(10, 10, QImage::Format::Format_ARGB32_Premultiplied);
@@ -210,11 +211,13 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-    void testPixmap_data() {
+    void testPixmap_data()
+    {
         helperProvideTestData();
     }
 
-    void testPixmap() {
+    void testPixmap()
+    {
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
         QFETCH(QIcon::State, state);
@@ -231,59 +234,38 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-    void testSetReferenceWidget() {
+    void testSetReferenceWidget()
+    {
         FallbackIconEngine myEngine;
-        QScopedPointer<QWidget> myWidget { new QWidget };
+        QScopedPointer<QWidget> myWidget {new QWidget};
         // Setting reference widget shall not crash.
         myEngine.setReferenceWidget(myWidget.data());
-        QCOMPARE(
-            myEngine.m_referenceWidget,
-            myWidget.data()
-        );
+        QCOMPARE(myEngine.m_referenceWidget, myWidget.data());
         QImage myImage(10, 10, QImage::Format::Format_ARGB32_Premultiplied);
         QPainter myPainter(&myImage);
         // Should not crash
-        myEngine.paint(
-            &myPainter,
-            QRect(1, 1, 11, 11),
-            QIcon::Mode::Active,
-            QIcon::State::On
-        );
+        myEngine.paint(&myPainter,
+                       QRect(1, 1, 11, 11),
+                       QIcon::Mode::Active,
+                       QIcon::State::On);
         // Should not crash
         myEngine.paintRefreshFallbackIcon(
-            &myPainter,
-            QRect(1, 1, 11, 11),
-            QIcon::Mode::Active
-        );
+            &myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
         // Should not crash
-        myEngine.pixmap(
-            QSize(11, 11),
-            QIcon::Mode::Active,
-            QIcon::State::On
-        );
+        myEngine.pixmap(QSize(11, 11), QIcon::Mode::Active, QIcon::State::On);
         // Now delete the widget, then test again for crashs
         myWidget.reset();
         // Should not crash
-        myEngine.paint(
-            &myPainter,
-            QRect(1, 1, 11, 11),
-            QIcon::Mode::Active,
-            QIcon::State::On
-        );
+        myEngine.paint(&myPainter,
+                       QRect(1, 1, 11, 11),
+                       QIcon::Mode::Active,
+                       QIcon::State::On);
         // Should not crash
         myEngine.paintRefreshFallbackIcon(
-            &myPainter,
-            QRect(1, 1, 11, 11),
-            QIcon::Mode::Active
-        );
+            &myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
         // Should not crash
-        myEngine.pixmap(
-            QSize(11, 11),
-            QIcon::Mode::Active,
-            QIcon::State::On
-        );
+        myEngine.pixmap(QSize(11, 11), QIcon::Mode::Active, QIcon::State::On);
     }
-
 };
 
 }

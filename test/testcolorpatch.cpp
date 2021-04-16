@@ -29,44 +29,45 @@
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
 #include "PerceptualColor/colorpatch.h"
+// Second, the private implementation.
 #include "colorpatch_p.h"
 
 #include <QtTest>
 
-static void snippet01() {
-//! [ColorPatch Create widget]
-PerceptualColor::ColorPatch *m_patch = new PerceptualColor::ColorPatch;
-m_patch->setColor(Qt::blue);
-//! [ColorPatch Create widget]
-//! [ColorPatch Bigger minimum size]
-m_patch->setMinimumSize(QSize(50, 50));
-//! [ColorPatch Bigger minimum size]
-QCOMPARE(m_patch->color(), QColor(Qt::blue));
-delete m_patch;
+static void snippet01()
+{
+    //! [ColorPatch Create widget]
+    PerceptualColor::ColorPatch *m_patch = new PerceptualColor::ColorPatch;
+    m_patch->setColor(Qt::blue);
+    //! [ColorPatch Create widget]
+    //! [ColorPatch Bigger minimum size]
+    m_patch->setMinimumSize(QSize(50, 50));
+    //! [ColorPatch Bigger minimum size]
+    QCOMPARE(m_patch->color(), QColor(Qt::blue));
+    delete m_patch;
 }
 
-
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestColorPatch : public QObject
 {
     Q_OBJECT
 
 public:
-    TestColorPatch(QObject *parent = nullptr) : QObject(parent) {
+    TestColorPatch(QObject *parent = nullptr)
+        : QObject(parent)
+    {
     }
 
 private:
-
-    static void voidMessageHandler(
-        QtMsgType,
-        const QMessageLogContext &,
-        const QString &
-    ) {
+    static void
+    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    {
         // dummy message handler that does not print messages
     }
 
-    void helperProvideQColors() {
+    void helperProvideQColors()
+    {
         // suppress warning for generating invalid QColor
         qInstallMessageHandler(voidMessageHandler);
 
@@ -79,16 +80,14 @@ private:
         QTest::newRow("RGB 0.1 0.2 0.3") << QColor::fromRgbF(0.1, 0.2, 0.3);
         QTest::newRow("RGBA 0.1 0.2 0.3 0.4")
             << QColor::fromRgbF(0.1, 0.2, 0.3, 0.4);
-        QTest::newRow("RGB 0.1 6.2 0.300")
-            << QColor::fromRgbF(0.1, 6.2, 0.300);
+        QTest::newRow("RGB 0.1 6.2 0.300") << QColor::fromRgbF(0.1, 6.2, 0.300);
         QTest::newRow("RGBA 0.1 6.2 0.300 0.4")
             << QColor::fromRgbF(0.1, 6.2, 0.300, 0.4);
 
         QTest::newRow("CMYK 1 2 3 4") << QColor::fromCmyk(1, 2, 3, 4);
         QTest::newRow("CMYK 1 2 3 4 5") << QColor::fromCmyk(1, 2, 3, 4, 5);
         QTest::newRow("CMYK 1 2 300 4") << QColor::fromCmyk(1, 2, 300, 4);
-        QTest::newRow("CMYK 1 2 300 4 5")
-            << QColor::fromCmyk(1, 2, 300, 4, 5);
+        QTest::newRow("CMYK 1 2 300 4 5") << QColor::fromCmyk(1, 2, 300, 4, 5);
         QTest::newRow("CMYK 0.1 0.2 0.300 0.4")
             << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4);
         QTest::newRow("CMYK 0.1 0.2 0.300 0.4 0.6495217645")
@@ -102,12 +101,10 @@ private:
         QTest::newRow("HSL 2 3 4 5") << QColor::fromHsl(2, 3, 4, 5);
         QTest::newRow("HSL 2 300 4") << QColor::fromHsl(2, 300, 4);
         QTest::newRow("HSL 2 300 4 5") << QColor::fromHsl(2, 300, 4, 5);
-        QTest::newRow("HSL 0.2 0.300 0.4")
-            << QColor::fromHslF(0.2, 0.300, 0.4);
+        QTest::newRow("HSL 0.2 0.300 0.4") << QColor::fromHslF(0.2, 0.300, 0.4);
         QTest::newRow("HSL 0.2 0.300 0.4 0.6495217645")
             << QColor::fromHslF(0.2, 0.300, 0.4, 0.6495217645);
-        QTest::newRow("HSL 6.2 0.300 0.4")
-            << QColor::fromHslF(6.2, 0.300, 0.4);
+        QTest::newRow("HSL 6.2 0.300 0.4") << QColor::fromHslF(6.2, 0.300, 0.4);
         QTest::newRow("HSL 6.2 0.300 0.4 0.6495217645")
             << QColor::fromHslF(6.2, 0.300, 0.4, 0.6495217645);
 
@@ -115,12 +112,10 @@ private:
         QTest::newRow("HSV 2 3 4 5") << QColor::fromHsv(2, 3, 4, 5);
         QTest::newRow("HSV 2 300 4") << QColor::fromHsv(2, 300, 4);
         QTest::newRow("HSV 2 300 4 5") << QColor::fromHsv(2, 300, 4, 5);
-        QTest::newRow("HSV 0.2 0.300 0.4")
-        << QColor::fromHsvF(0.2, 0.300, 0.4);
+        QTest::newRow("HSV 0.2 0.300 0.4") << QColor::fromHsvF(0.2, 0.300, 0.4);
         QTest::newRow("HSV 0.2 0.300 0.4 0.6495217645")
             << QColor::fromHsvF(0.2, 0.300, 0.4, 0.6495217645);
-        QTest::newRow("HSV 6.2 0.300 0.4")
-            << QColor::fromHsvF(6.2, 0.300, 0.4);
+        QTest::newRow("HSV 6.2 0.300 0.4") << QColor::fromHsvF(6.2, 0.300, 0.4);
         QTest::newRow("HSV 6.2 0.300 0.4 0.6495217645")
             << QColor::fromHsvF(6.2, 0.300, 0.4, 0.6495217645);
 
@@ -133,63 +128,72 @@ private:
     QColor m_color;
 
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testInitialazation() {
+    void testInitialazation()
+    {
         PerceptualColor::ColorPatch thePatch;
         // Test initial value (an invalid color following the documentation)
         QCOMPARE(thePatch.color(), QColor());
     }
 
-    void testM_color() {
+    void testM_color()
+    {
         PerceptualColor::ColorPatch thePatch;
         thePatch.setColor(Qt::red);
         QCOMPARE(thePatch.color(), Qt::red);
         QCOMPARE(thePatch.d_pointer->m_color, Qt::red);
     }
 
-    void testApplyColors() {
+    void testApplyColors()
+    {
         PerceptualColor::ColorPatch thePatch;
         // Test initial value (an invalid color following the documentation)
         QCOMPARE(thePatch.color(), QColor());
     }
 
-    void testColorProperty_data() {
+    void testColorProperty_data()
+    {
         helperProvideQColors();
     }
 
-    void testColorProperty() {
+    void testColorProperty()
+    {
         QFETCH(QColor, color);
         PerceptualColor::ColorPatch thePatch;
         thePatch.setColor(color);
         QCOMPARE(thePatch.color(), color);
     }
 
-    void helperReceiveSignals(QColor color) {
+    void helperReceiveSignals(QColor color)
+    {
         m_color = color;
     }
 
-    void testColorChanged() {
+    void testColorChanged()
+    {
         // Initialization
         PerceptualColor::ColorPatch thePatch;
-        connect(
-            &thePatch,
-            &PerceptualColor::ColorPatch::colorChanged,
-            this,
-            &TestColorPatch::helperReceiveSignals
-        );
+        connect(&thePatch,
+                &PerceptualColor::ColorPatch::colorChanged,
+                this,
+                &TestColorPatch::helperReceiveSignals);
 
         m_color = Qt::red;
         thePatch.setColor(QColor()); // invalid like initial value
@@ -212,10 +216,10 @@ private Q_SLOTS:
         QCOMPARE(m_color, QColor());
     }
 
-    void testSnippet01() {
+    void testSnippet01()
+    {
         snippet01();
     }
-
 };
 
 }

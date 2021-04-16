@@ -34,50 +34,48 @@
 
 #include <QRectF>
 
-static void snippet01() {
-//! [ConstPropagatingRawPointer Example]
-// Assuming you have a member variable in your class:
-PerceptualColor::ConstPropagatingRawPointer<QRectF> pointerToQRectF {
-    new QRectF
-};
+static void snippet01()
+{
+    //! [ConstPropagatingRawPointer Example]
+    // Assuming you have a member variable in your class:
+    PerceptualColor::ConstPropagatingRawPointer<QRectF> pointerToQRectF {
+        new QRectF};
 
-// Now, you access this member variable from a method within your class:
+    // Now, you access this member variable from a method within your class:
 
-// Helper variables
-QRectF myRectF;
-qreal myHeight;
-QRectF * normalCppPointerToQRectF;
+    // Helper variables
+    QRectF myRectF;
+    qreal myHeight;
+    QRectF *normalCppPointerToQRectF;
 
-// The following code works within both, const and non-const contexts:
-myHeight = pointerToQRectF->height();
-myRectF = *pointerToQRectF;
+    // The following code works within both, const and non-const contexts:
+    myHeight = pointerToQRectF->height();
+    myRectF = *pointerToQRectF;
 
-// The following code works only within const contexts.
-// Within non-cost contexts, you will get an error at compile time.
-pointerToQRectF->setHeight(5);
-*pointerToQRectF = myRectF;
-normalCppPointerToQRectF = pointerToQRectF;
+    // The following code works only within const contexts.
+    // Within non-cost contexts, you will get an error at compile time.
+    pointerToQRectF->setHeight(5);
+    *pointerToQRectF = myRectF;
+    normalCppPointerToQRectF = pointerToQRectF;
 
-// Deleting works like for normal pointers
-delete pointerToQRectF;
-//! [ConstPropagatingRawPointer Example]
-Q_UNUSED(myRectF)
-Q_UNUSED(myHeight)
-Q_UNUSED(normalCppPointerToQRectF)
+    // Deleting works like for normal pointers
+    delete pointerToQRectF;
+    //! [ConstPropagatingRawPointer Example]
+    Q_UNUSED(myRectF)
+    Q_UNUSED(myHeight)
+    Q_UNUSED(normalCppPointerToQRectF)
 }
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 class TestConstPropagatingRawPointer : public QObject
 {
     Q_OBJECT
 
 public:
-    TestConstPropagatingRawPointer(
-        QObject *parent = nullptr
-    ) :
-        QObject(parent),
-        pointerToQRectF(new QRectF)
+    TestConstPropagatingRawPointer(QObject *parent = nullptr)
+        : QObject(parent)
+        , pointerToQRectF(new QRectF)
     {
     }
 
@@ -86,78 +84,90 @@ private:
 
 private Q_SLOTS:
 
-    void initTestCase() {
+    void initTestCase()
+    {
         // Called before the first test function is executed
     }
 
-    void cleanupTestCase() {
+    void cleanupTestCase()
+    {
         // Called after the last test function was executed
         delete pointerToQRectF;
     }
 
-    void init() {
+    void init()
+    {
         // Called before each test function is executed
     }
-    void cleanup() {
+    void cleanup()
+    {
         // Called after every test function
     }
 
-    void testConstructorDestructor() {
+    void testConstructorDestructor()
+    {
         ConstPropagatingRawPointer<QObject> test;
     }
 
-    void testDefaultConstructor() {
+    void testDefaultConstructor()
+    {
         ConstPropagatingRawPointer<QObject> test;
         QVERIFY2(
             !test,
-            "Verify that default constructor produced an invalid pointer."
-        );
+            "Verify that default constructor produced an invalid pointer.");
     }
 
     // NOTE Should break on compile time if the method is const.
-    void testNonConstAccess() {
+    void testNonConstAccess()
+    {
         pointerToQRectF->setHeight(5);
     }
 
     // NOTE Should break on compile time if the method is const.
-    void testBackCopy01() {
+    void testBackCopy01()
+    {
         QRectF temp;
         *pointerToQRectF = temp;
     }
 
     // NOTE Should break on compile time if the method is const.
-    void testCastToNormalRawPointer() {
+    void testCastToNormalRawPointer()
+    {
         QRectF *temp;
         temp = pointerToQRectF;
         Q_UNUSED(temp)
     }
 
-    void testConstAccess01() const {
+    void testConstAccess01() const
+    {
         // The following line should not break
         qreal height = pointerToQRectF->height();
         Q_UNUSED(height)
     }
 
-    void testConstAccess02() {
+    void testConstAccess02()
+    {
         // The following line should not break
         qreal height = pointerToQRectF->height();
         Q_UNUSED(height)
     }
 
-    void testCopy01() const {
+    void testCopy01() const
+    {
         QRectF temp = *pointerToQRectF;
         Q_UNUSED(temp);
     }
 
-    void testCopy02() {
+    void testCopy02()
+    {
         QRectF temp = *pointerToQRectF;
         Q_UNUSED(temp);
     }
 
-    void testSnippet01() {
+    void testSnippet01()
+    {
         snippet01();
     }
-
 };
 
 } // namespace PerceptualColor
