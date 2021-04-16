@@ -58,14 +58,13 @@ public:
         QPainter myPainter(&myImage);
 
         // Fill the hole image with tiles made of transparencyBackground()
-        myPainter.fillRect(
-            0,
-            0,
-            150,
-            200,
-            // During painting, QBrush will ignore the device pixel ratio
-            // of the underlying transparencyBackground image!
-            QBrush(transparencyBackground()));
+        myPainter.fillRect(0,
+                           0,
+                           150,
+                           200,
+                           // During painting, QBrush will ignore the device pixel ratio
+                           // of the underlying transparencyBackground image!
+                           QBrush(transparencyBackground()));
 
         // Paint semi-transparent red color above
         myPainter.fillRect(0, 0, 150, 200, QBrush(QColor(255, 0, 0, 128)));
@@ -129,19 +128,16 @@ private Q_SLOTS:
 
     void testFocusIndicatorColor()
     {
-        QVERIFY2(AbstractDiagram().focusIndicatorColor().isValid(),
-                 "focusIndicatorColor() returns a valid color.");
+        QVERIFY2(AbstractDiagram().focusIndicatorColor().isValid(), "focusIndicatorColor() returns a valid color.");
     }
 
     void testPhysicalPixelSize()
     {
         AbstractDiagram temp;
         temp.show();
-        qreal widthError = (temp.width() * temp.devicePixelRatioF()) -
-            temp.physicalPixelSize().width();
+        qreal widthError = (temp.width() * temp.devicePixelRatioF()) - temp.physicalPixelSize().width();
         QVERIFY2(qAbs(widthError) < 1, "Rounding width with error < 1.");
-        qreal heightError = (temp.height() * temp.devicePixelRatioF()) -
-            temp.physicalPixelSize().height();
+        qreal heightError = (temp.height() * temp.devicePixelRatioF()) - temp.physicalPixelSize().height();
         QVERIFY2(qAbs(heightError) < 1, "Rounding height with error < 1.");
     }
 
@@ -184,17 +180,12 @@ private Q_SLOTS:
     void testHandleColorFromBackgroundLightness()
     {
         AbstractDiagram temp;
-        QCOMPARE(temp.handleColorFromBackgroundLightness(-1),
-                 QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(-1), QColor(Qt::white));
         QCOMPARE(temp.handleColorFromBackgroundLightness(0), QColor(Qt::white));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(49),
-                 QColor(Qt::white));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(51),
-                 QColor(Qt::black));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(100),
-                 QColor(Qt::black));
-        QCOMPARE(temp.handleColorFromBackgroundLightness(101),
-                 QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(49), QColor(Qt::white));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(51), QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(100), QColor(Qt::black));
+        QCOMPARE(temp.handleColorFromBackgroundLightness(101), QColor(Qt::black));
     }
 };
 

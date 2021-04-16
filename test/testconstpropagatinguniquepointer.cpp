@@ -38,8 +38,7 @@ static void snippet01()
 {
     //! [ConstPropagatingUniquePointer Example]
     // A ConstPropagatingUniquePointer pointing to a new QObject
-    PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(
-        new QObject());
+    PerceptualColor::ConstPropagatingUniquePointer<QObject> myPointer(new QObject());
     //! [ConstPropagatingUniquePointer Example]
 }
 

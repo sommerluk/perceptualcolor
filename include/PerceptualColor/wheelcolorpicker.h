@@ -60,13 +60,10 @@ class WheelColorPicker : public AbstractDiagram
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged() */
-    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE
-                   setCurrentColor NOTIFY currentColorChanged USER true)
+    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged USER true)
 
 public:
-    Q_INVOKABLE explicit WheelColorPicker(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr);
+    Q_INVOKABLE explicit WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~WheelColorPicker() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */

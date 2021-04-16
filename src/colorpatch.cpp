@@ -85,13 +85,9 @@ QSize ColorPatch::minimumSizeHint() const
     QStyleOptionToolButton option;
     option.initFrom(this);
     option.font = font();
-    const int iconSize =
-        style()->pixelMetric(QStyle::PM_ButtonIconSize, nullptr, this);
+    const int iconSize = style()->pixelMetric(QStyle::PM_ButtonIconSize, nullptr, this);
     option.iconSize = QSize(iconSize, iconSize);
-    return style()
-        ->sizeFromContents(
-            QStyle::CT_ToolButton, &option, option.iconSize, this)
-        .expandedTo(QApplication::globalStrut());
+    return style()->sizeFromContents(QStyle::CT_ToolButton, &option, option.iconSize, this).expandedTo(QApplication::globalStrut());
 }
 
 // No documentation here (documentation of properties
@@ -125,8 +121,7 @@ void ColorPatch::paintEvent(QPaintEvent *event)
     widgetPainter.setRenderHint(QPainter::Antialiasing, true);
     QStyleOptionFrame opt;
     opt.initFrom(this); // Sets also QStyle::State_MouseOver if appropriate
-    const int defaultFrameWidth =
-        qMax(style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt), 1);
+    const int defaultFrameWidth = qMax(style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt), 1);
 
     // Draw content of an invalid color (and return)
     if (!d_pointer->m_color.isValid()) {
@@ -144,16 +139,9 @@ void ColorPatch::paintEvent(QPaintEvent *event)
         // Calculate an adjustmend to allow for rounded line caps without
         // touching the frame.
         const qreal adjustmentForRoundedLineCaps = pen.widthF() / 2.0;
-        const QRectF noColorMarkerRectangle =
-            QRectF(contentsRect())
-                .adjusted(adjustmentForRoundedLineCaps,
-                          adjustmentForRoundedLineCaps,
-                          -adjustmentForRoundedLineCaps,
-                          -adjustmentForRoundedLineCaps);
-        widgetPainter.drawLine(noColorMarkerRectangle.topLeft(),
-                               noColorMarkerRectangle.bottomRight());
-        widgetPainter.drawLine(noColorMarkerRectangle.topRight(),
-                               noColorMarkerRectangle.bottomLeft());
+        const QRectF noColorMarkerRectangle = QRectF(contentsRect()).adjusted(adjustmentForRoundedLineCaps, adjustmentForRoundedLineCaps, -adjustmentForRoundedLineCaps, -adjustmentForRoundedLineCaps);
+        widgetPainter.drawLine(noColorMarkerRectangle.topLeft(), noColorMarkerRectangle.bottomRight());
+        widgetPainter.drawLine(noColorMarkerRectangle.topRight(), noColorMarkerRectangle.bottomLeft());
         return;
     }
 
@@ -170,17 +158,10 @@ void ColorPatch::paintEvent(QPaintEvent *event)
         // Background for colors that are not fully opaque
         QImage tempBackground = transparencyBackground(devicePixelRatioF());
         // Paint the color above
-        QPainter(&tempBackground)
-            .fillRect(
-                0, 0, size().width(), size().height(), d_pointer->m_color);
+        QPainter(&tempBackground).fillRect(0, 0, size().width(), size().height(), d_pointer->m_color);
         // Fill a given rectangle with tiles. (QBrush will ignore
         // the devicePixelRatioF of the image of the tile.)
-        QPainter(&tempImage)
-            .fillRect(0,
-                      0,
-                      tempImage.width(),
-                      tempImage.height(),
-                      QBrush(tempBackground));
+        QPainter(&tempImage).fillRect(0, 0, tempImage.width(), tempImage.height(), QBrush(tempBackground));
         if (layoutDirection() == Qt::RightToLeft) {
             // Horizontally mirrored image for right-to-left layout,
             // so that the “nice” part is the first you see in reading
@@ -196,8 +177,7 @@ void ColorPatch::paintEvent(QPaintEvent *event)
     // Set correct devicePixelRatioF for image
     tempImage.setDevicePixelRatio(devicePixelRatioF());
     // Paint the image on the widget
-    widgetPainter.drawImage(
-        contentsMargins().left(), contentsMargins().top(), tempImage);
+    widgetPainter.drawImage(contentsMargins().left(), contentsMargins().top(), tempImage);
 }
 
 }

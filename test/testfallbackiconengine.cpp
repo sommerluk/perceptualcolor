@@ -50,8 +50,7 @@ public:
     }
 
 private:
-    static void
-    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
         // dummy message handler that does not print messages
     }
@@ -94,19 +93,16 @@ private:
             for (int j = 0; j < rectSizeList.size(); ++j) {
                 for (int k = 0; k < modeList.size(); ++k) {
                     for (int l = 0; l < stateList.size(); ++l) {
-                        QTest::newRow(
-                            QStringLiteral(
-                                "QRect(QPoint(%1, %2), QSize(%3, %4)) %5 %6")
-                                .arg(rectPointList.at(i).x())
-                                .arg(rectPointList.at(i).y())
-                                .arg(rectSizeList.at(j).width())
-                                .arg(rectSizeList.at(j).height())
-                                .arg(modeList.at(k))
-                                .arg(stateList.at(l))
-                                .toUtf8()
-                                .data())
-                            << QRect(rectPointList.at(i), rectSizeList.at(j))
-                            << modeList.at(k) << stateList.at(l);
+                        QTest::newRow(QStringLiteral("QRect(QPoint(%1, %2), QSize(%3, %4)) %5 %6")
+                                          .arg(rectPointList.at(i).x())
+                                          .arg(rectPointList.at(i).y())
+                                          .arg(rectSizeList.at(j).width())
+                                          .arg(rectSizeList.at(j).height())
+                                          .arg(modeList.at(k))
+                                          .arg(stateList.at(l))
+                                          .toUtf8()
+                                          .data())
+                            << QRect(rectPointList.at(i), rectSizeList.at(j)) << modeList.at(k) << stateList.at(l);
                     }
                 }
             }
@@ -153,8 +149,7 @@ private Q_SLOTS:
         test1->setReferenceWidget(&testWidget);
         // The clone function should not crash.
         QScopedPointer<QIconEngine> test2 {test1->clone()};
-        FallbackIconEngine *test2a =
-            dynamic_cast<FallbackIconEngine *>(test2.data());
+        FallbackIconEngine *test2a = dynamic_cast<FallbackIconEngine *>(test2.data());
         QVERIFY2(test2a != nullptr,
                  "The clone should correctly cast dynamically "
                  "to FallbackIconEngine*.");
@@ -244,25 +239,17 @@ private Q_SLOTS:
         QImage myImage(10, 10, QImage::Format::Format_ARGB32_Premultiplied);
         QPainter myPainter(&myImage);
         // Should not crash
-        myEngine.paint(&myPainter,
-                       QRect(1, 1, 11, 11),
-                       QIcon::Mode::Active,
-                       QIcon::State::On);
+        myEngine.paint(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active, QIcon::State::On);
         // Should not crash
-        myEngine.paintRefreshFallbackIcon(
-            &myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
+        myEngine.paintRefreshFallbackIcon(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
         // Should not crash
         myEngine.pixmap(QSize(11, 11), QIcon::Mode::Active, QIcon::State::On);
         // Now delete the widget, then test again for crashs
         myWidget.reset();
         // Should not crash
-        myEngine.paint(&myPainter,
-                       QRect(1, 1, 11, 11),
-                       QIcon::Mode::Active,
-                       QIcon::State::On);
+        myEngine.paint(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active, QIcon::State::On);
         // Should not crash
-        myEngine.paintRefreshFallbackIcon(
-            &myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
+        myEngine.paintRefreshFallbackIcon(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
         // Should not crash
         myEngine.pixmap(QSize(11, 11), QIcon::Mode::Active, QIcon::State::On);
     }

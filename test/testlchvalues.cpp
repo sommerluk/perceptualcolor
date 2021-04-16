@@ -70,29 +70,24 @@ private Q_SLOTS:
     void testLchValues()
     {
         // Is the value as documented?
-        QCOMPARE(static_cast<qreal>(PerceptualColor::LchValues::neutralChroma),
-                 0);
+        QCOMPARE(static_cast<qreal>(PerceptualColor::LchValues::neutralChroma), 0);
         // Is the value as documented?
         QCOMPARE(static_cast<qreal>(PerceptualColor::LchValues::neutralHue), 0);
         // Is the value as documented?
-        QCOMPARE(
-            static_cast<qreal>(PerceptualColor::LchValues::neutralLightness),
-            50);
+        QCOMPARE(static_cast<qreal>(PerceptualColor::LchValues::neutralLightness), 50);
 
         PerceptualColor::RgbColorSpace temp;
         LchDouble color;
         qreal presicion = 0.1;
 
         // Test if maxSrgbChroma is big enough
-        qreal precisionDegreeMaxSrgbChroma =
-            presicion / 360 * 2 * M_PI * LchValues::srgbMaximumChroma;
+        qreal precisionDegreeMaxSrgbChroma = presicion / 360 * 2 * M_PI * LchValues::srgbMaximumChroma;
         color.c = PerceptualColor::LchValues::srgbMaximumChroma;
         for (qreal hue = 0; hue <= 360; hue += precisionDegreeMaxSrgbChroma) {
             color.h = hue;
             for (qreal lightness = 0; lightness < 100; lightness += presicion) {
                 color.l = lightness;
-                QVERIFY2(!temp.inGamut(color),
-                         "Test if maxSrgbChroma is big enough");
+                QVERIFY2(!temp.inGamut(color), "Test if maxSrgbChroma is big enough");
             }
         }
 
@@ -112,12 +107,10 @@ private Q_SLOTS:
                 break;
             }
         }
-        QVERIFY2(inGamutValueFound,
-                 "Test if maxSrgbChroma.h is as small as possible");
+        QVERIFY2(inGamutValueFound, "Test if maxSrgbChroma.h is as small as possible");
 
         // Test if versatile is small enough
-        qreal precisionVersatileSrgbChroma = presicion / 360 * 2 * M_PI *
-            PerceptualColor::LchValues::srgbVersatileChroma;
+        qreal precisionVersatileSrgbChroma = presicion / 360 * 2 * M_PI * PerceptualColor::LchValues::srgbVersatileChroma;
         color.c = PerceptualColor::LchValues::srgbVersatileChroma;
         color.l = 50;
         for (qreal hue = 0; hue <= 360; hue += precisionVersatileSrgbChroma) {

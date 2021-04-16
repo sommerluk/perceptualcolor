@@ -71,8 +71,7 @@ QColor AbstractDiagram::focusIndicatorColor() const
     // however are drawn in orange. This function returns red in this case,
     // which is wrong. However, I do not know how to get around this
     // limitation.
-    return palette().color(QPalette::ColorGroup::Active,
-                           QPalette::ColorRole::Highlight);
+    return palette().color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
 }
 
 /** @brief The rounded size of the widget measured in <em>physical</em>
@@ -118,8 +117,7 @@ QSize AbstractDiagram::physicalPixelSize() const
     static_assert(static_cast<int>(1.0) == 1);
     // Multiply the size with the (floating point) scale factor
     // and than round down (by using static_cast<int>).
-    return QSize(static_cast<int>(size().width() * devicePixelRatioF()),
-                 static_cast<int>(size().height() * devicePixelRatioF()));
+    return QSize(static_cast<int>(size().width() * devicePixelRatioF()), static_cast<int>(size().height() * devicePixelRatioF()));
 }
 
 /** @brief The maximum possible size of a square within the widget, measured
@@ -222,13 +220,9 @@ int AbstractDiagram::gradientThickness() const
     QStyleOptionSlider styleOption;
     styleOption.initFrom(this); // Sets also QStyle::State_MouseOver
     styleOption.orientation = Qt::Horizontal;
-    result = qMax(
-        result,
-        style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this));
+    result = qMax(result, style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this));
     styleOption.orientation = Qt::Vertical;
-    result = qMax(
-        result,
-        style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this));
+    result = qMax(result, style()->pixelMetric(QStyle::PM_SliderThickness, &styleOption, this));
     result = qMax(result, qRound(handleRadius()));
     // QApplication::globalStrut() is the minimum.
     // gradientMinimumLength depends on the following checks!
@@ -251,13 +245,12 @@ int AbstractDiagram::gradientMinimumLength() const
     ensurePolished();
     QStyleOptionSlider option;
     option.initFrom(this);
-    return qMax(
-        qMax(
-            // Similar to QSlider sizeHint():
-            84,
-            // Similar to QSlider::minimumSizeHint():
-            style()->pixelMetric(QStyle::PM_SliderLength, &option, this)),
-        gradientThickness() // Considers implicitly QApplication::globalStrut()
+    return qMax(qMax(
+                    // Similar to QSlider sizeHint():
+                    84,
+                    // Similar to QSlider::minimumSizeHint():
+                    style()->pixelMetric(QStyle::PM_SliderLength, &option, this)),
+                gradientThickness() // Considers implicitly QApplication::globalStrut()
     );
 }
 
@@ -269,7 +262,7 @@ int AbstractDiagram::gradientMinimumLength() const
  * indicator. */
 int AbstractDiagram::spaceForFocusIndicator() const
 {
-    return handleOutlineThickness() // The space for the focus indicator itself
+    return handleOutlineThickness()     // The space for the focus indicator itself
         + 2 * handleOutlineThickness(); // Add some spacing
 }
 
@@ -278,8 +271,7 @@ int AbstractDiagram::spaceForFocusIndicator() const
  * @param lightness The background lightness. Valid range: <tt>[0, 100]</tt>.
  * @returns An appropriate color for a handle. This color will provide
  * contrast to the background. */
-QColor
-AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness) const
+QColor AbstractDiagram::handleColorFromBackgroundLightness(qreal lightness) const
 {
     if (lightness >= 50) {
         return Qt::black;

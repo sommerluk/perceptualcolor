@@ -48,8 +48,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace {
-        new RgbColorSpace()};
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace {new RgbColorSpace()};
 
 private Q_SLOTS:
     void initTestCase()
@@ -104,8 +103,7 @@ private Q_SLOTS:
         color.c = 50;
         color.h = 50;
         color.a = 1;
-        QSignalSpy spy(&testSlider,
-                       &PerceptualColor::GradientSlider::firstColorChanged);
+        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::firstColorChanged);
         testSlider.setFirstColor(color);
         QVERIFY(testSlider.firstColor().hasSameCoordinates(color));
         QCOMPARE(spy.count(), 1);
@@ -119,8 +117,7 @@ private Q_SLOTS:
         color.c = 50;
         color.h = 50;
         color.a = 1;
-        QSignalSpy spy(&testSlider,
-                       &PerceptualColor::GradientSlider::secondColorChanged);
+        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::secondColorChanged);
         testSlider.setSecondColor(color);
         QVERIFY(testSlider.secondColor().hasSameCoordinates(color));
         QCOMPARE(spy.count(), 1);
@@ -134,10 +131,8 @@ private Q_SLOTS:
         color.c = 50;
         color.h = 50;
         color.a = 1;
-        QSignalSpy spyFirst(
-            &testSlider, &PerceptualColor::GradientSlider::firstColorChanged);
-        QSignalSpy spySecond(
-            &testSlider, &PerceptualColor::GradientSlider::secondColorChanged);
+        QSignalSpy spyFirst(&testSlider, &PerceptualColor::GradientSlider::firstColorChanged);
+        QSignalSpy spySecond(&testSlider, &PerceptualColor::GradientSlider::secondColorChanged);
         testSlider.setColors(color, color);
         QVERIFY(testSlider.firstColor().hasSameCoordinates(color));
         QCOMPARE(spyFirst.count(), 1);
@@ -148,21 +143,15 @@ private Q_SLOTS:
     void testMinimalSizeHint()
     {
         GradientSlider testWidget(m_rgbColorSpace);
-        QVERIFY2(testWidget.minimumSizeHint().width() > 0,
-                 "minimalSizeHint width is implemented.");
-        QVERIFY2(testWidget.minimumSizeHint().height() > 0,
-                 "minimalSizeHint height is implemented.");
+        QVERIFY2(testWidget.minimumSizeHint().width() > 0, "minimalSizeHint width is implemented.");
+        QVERIFY2(testWidget.minimumSizeHint().height() > 0, "minimalSizeHint height is implemented.");
     }
 
     void testSizeHint()
     {
         GradientSlider testWidget(m_rgbColorSpace);
-        QVERIFY2(
-            testWidget.sizeHint().width() >=
-                testWidget.minimumSizeHint().width(),
-            "sizeHint width is bigger than or equal to minimalSizeHint width.");
-        QVERIFY2(testWidget.sizeHint().height() >=
-                     testWidget.minimumSizeHint().height(),
+        QVERIFY2(testWidget.sizeHint().width() >= testWidget.minimumSizeHint().width(), "sizeHint width is bigger than or equal to minimalSizeHint width.");
+        QVERIFY2(testWidget.sizeHint().height() >= testWidget.minimumSizeHint().height(),
                  "sizeHint height is bigger than or equal to minimalSizeHint "
                  "height.");
     }
@@ -170,8 +159,7 @@ private Q_SLOTS:
     void testSingleStep()
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
-        QSignalSpy spy(&testSlider,
-                       &PerceptualColor::GradientSlider::singleStepChanged);
+        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::singleStepChanged);
         testSlider.setSingleStep(0.5);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(testSlider.singleStep(), 0.5);
@@ -193,8 +181,7 @@ private Q_SLOTS:
     void testPageStep()
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
-        QSignalSpy spy(&testSlider,
-                       &PerceptualColor::GradientSlider::pageStepChanged);
+        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::pageStepChanged);
         testSlider.setPageStep(0.5);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(testSlider.pageStep(), 0.5);
@@ -217,8 +204,7 @@ private Q_SLOTS:
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
         testSlider.setValue(0.3);
-        QSignalSpy spy(&testSlider,
-                       &PerceptualColor::GradientSlider::valueChanged);
+        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::valueChanged);
         testSlider.setValue(0.5);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(testSlider.value(), 0.5);
@@ -299,28 +285,23 @@ private Q_SLOTS:
     {
         GradientSlider testSlider(m_rgbColorSpace);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
-        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(),
-                 QSizePolicy::Fixed);
-        QCOMPARE(testSlider.sizePolicy().verticalPolicy(),
-                 QSizePolicy::Expanding);
+        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Fixed);
+        QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Expanding);
     }
 
     void testOrientationVerticalConstructor()
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Orientation::Vertical);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
-        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(),
-                 QSizePolicy::Fixed);
-        QCOMPARE(testSlider.sizePolicy().verticalPolicy(),
-                 QSizePolicy::Expanding);
+        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Fixed);
+        QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Expanding);
     }
 
     void testOrientationHorizontalConstructor()
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Orientation::Horizontal);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Horizontal);
-        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(),
-                 QSizePolicy::Expanding);
+        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Expanding);
         QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Fixed);
     }
 
@@ -328,20 +309,16 @@ private Q_SLOTS:
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
-        QSignalSpy spy(&testSlider,
-                       &PerceptualColor::GradientSlider::orientationChanged);
+        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::orientationChanged);
         testSlider.setOrientation(Qt::Orientation::Horizontal);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Horizontal);
-        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(),
-                 QSizePolicy::Expanding);
+        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Expanding);
         QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Fixed);
         QCOMPARE(spy.count(), 1);
         testSlider.setOrientation(Qt::Orientation::Vertical);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
-        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(),
-                 QSizePolicy::Fixed);
-        QCOMPARE(testSlider.sizePolicy().verticalPolicy(),
-                 QSizePolicy::Expanding);
+        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Fixed);
+        QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Expanding);
         QCOMPARE(spy.count(), 2);
     }
 
@@ -349,20 +326,15 @@ private Q_SLOTS:
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Vertical);
-        QSignalSpy spy(&testSlider,
-                       &PerceptualColor::GradientSlider::orientationChanged);
-        testSlider.d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(
-            Qt::Orientation::Horizontal);
+        QSignalSpy spy(&testSlider, &PerceptualColor::GradientSlider::orientationChanged);
+        testSlider.d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation::Horizontal);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Horizontal);
-        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(),
-                 QSizePolicy::Expanding);
+        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Expanding);
         QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Fixed);
         QCOMPARE(spy.count(), 0);
-        testSlider.d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(
-            Qt::Orientation::Horizontal);
+        testSlider.d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation::Horizontal);
         QCOMPARE(testSlider.orientation(), Qt::Orientation::Horizontal);
-        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(),
-                 QSizePolicy::Expanding);
+        QCOMPARE(testSlider.sizePolicy().horizontalPolicy(), QSizePolicy::Expanding);
         QCOMPARE(testSlider.sizePolicy().verticalPolicy(), QSizePolicy::Fixed);
         QCOMPARE(spy.count(), 0);
     }
@@ -370,33 +342,25 @@ private Q_SLOTS:
     void testPhysicalPixelLength()
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
-        QVERIFY2(testSlider.d_pointer->physicalPixelLength() >= 0,
-                 "physicalPixelLength() should be ≥ 0.");
+        QVERIFY2(testSlider.d_pointer->physicalPixelLength() >= 0, "physicalPixelLength() should be ≥ 0.");
     }
 
     void testPhysicalPixelThickness()
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
-        QVERIFY2(testSlider.d_pointer->physicalPixelThickness() >= 0,
-                 "physicalPixelLength() should be ≥ 0.");
+        QVERIFY2(testSlider.d_pointer->physicalPixelThickness() >= 0, "physicalPixelLength() should be ≥ 0.");
     }
 
     void testFromWidgetPositionToValue()
     {
         GradientSlider testSlider(m_rgbColorSpace, Qt::Vertical);
         qreal value;
-        value =
-            testSlider.d_pointer->fromWidgetPixelPositionToValue(QPoint(0, 0));
-        QVERIFY2((value >= 0) && (value <= 1),
-                 "fromWidgetPixelPositionToValue() should be 0 ≤ value ≤ 1.");
-        value = testSlider.d_pointer->fromWidgetPixelPositionToValue(
-            QPoint(-100, -100));
-        QVERIFY2((value >= 0) && (value <= 1),
-                 "fromWidgetPixelPositionToValue() should be 0 ≤ value ≤ 1.");
-        value = testSlider.d_pointer->fromWidgetPixelPositionToValue(
-            QPoint(10000, 10000));
-        QVERIFY2((value >= 0) && (value <= 1),
-                 "fromWidgetPixelPositionToValue() should be 0 ≤ value ≤ 1.");
+        value = testSlider.d_pointer->fromWidgetPixelPositionToValue(QPoint(0, 0));
+        QVERIFY2((value >= 0) && (value <= 1), "fromWidgetPixelPositionToValue() should be 0 ≤ value ≤ 1.");
+        value = testSlider.d_pointer->fromWidgetPixelPositionToValue(QPoint(-100, -100));
+        QVERIFY2((value >= 0) && (value <= 1), "fromWidgetPixelPositionToValue() should be 0 ≤ value ≤ 1.");
+        value = testSlider.d_pointer->fromWidgetPixelPositionToValue(QPoint(10000, 10000));
+        QVERIFY2((value >= 0) && (value <= 1), "fromWidgetPixelPositionToValue() should be 0 ≤ value ≤ 1.");
     }
 
     void testPaintEvent()

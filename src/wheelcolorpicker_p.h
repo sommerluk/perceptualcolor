@@ -57,8 +57,7 @@ public:
     QPointer<ColorWheel> m_ColorWheel;
 
     void resizeChildWidgets();
-    static QSize scaleRectangleToDiagonal(const QSize oldRectangle,
-                                          const qreal newDiagonal);
+    static QSize scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal);
 
 public Q_SLOTS:
     void handleFocusChanged(QWidget *old, QWidget *now);

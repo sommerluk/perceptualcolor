@@ -75,8 +75,7 @@ namespace PerceptualColor
 class ColorWheelImage final
 {
 public:
-    explicit ColorWheelImage(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+    explicit ColorWheelImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     QImage getImage();
     void setBorder(const qreal newBorder);
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);

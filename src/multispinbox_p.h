@@ -96,8 +96,7 @@ public:
      * difficult to differenciate from the actual value. */
     QPointer<ExtendedDoubleValidator> m_validator;
 
-    static MultiSpinBox::SectionData
-    fixedSection(const MultiSpinBox::SectionData &section);
+    static MultiSpinBox::SectionData fixedSection(const MultiSpinBox::SectionData &section);
     QString formattedValue(const SectionData &mySection) const;
     bool isCursorPositionAtCurrentSectionValue(const int cursorPosition) const;
     void setCurrentIndexAndUpdateTextAndSelectValue(int newIndex = 0);

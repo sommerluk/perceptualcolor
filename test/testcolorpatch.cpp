@@ -60,8 +60,7 @@ public:
     }
 
 private:
-    static void
-    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
         // dummy message handler that does not print messages
     }
@@ -78,46 +77,36 @@ private:
         QTest::newRow("RGBA 1 2 300 4") << QColor(1, 2, 300, 4);
 
         QTest::newRow("RGB 0.1 0.2 0.3") << QColor::fromRgbF(0.1, 0.2, 0.3);
-        QTest::newRow("RGBA 0.1 0.2 0.3 0.4")
-            << QColor::fromRgbF(0.1, 0.2, 0.3, 0.4);
+        QTest::newRow("RGBA 0.1 0.2 0.3 0.4") << QColor::fromRgbF(0.1, 0.2, 0.3, 0.4);
         QTest::newRow("RGB 0.1 6.2 0.300") << QColor::fromRgbF(0.1, 6.2, 0.300);
-        QTest::newRow("RGBA 0.1 6.2 0.300 0.4")
-            << QColor::fromRgbF(0.1, 6.2, 0.300, 0.4);
+        QTest::newRow("RGBA 0.1 6.2 0.300 0.4") << QColor::fromRgbF(0.1, 6.2, 0.300, 0.4);
 
         QTest::newRow("CMYK 1 2 3 4") << QColor::fromCmyk(1, 2, 3, 4);
         QTest::newRow("CMYK 1 2 3 4 5") << QColor::fromCmyk(1, 2, 3, 4, 5);
         QTest::newRow("CMYK 1 2 300 4") << QColor::fromCmyk(1, 2, 300, 4);
         QTest::newRow("CMYK 1 2 300 4 5") << QColor::fromCmyk(1, 2, 300, 4, 5);
-        QTest::newRow("CMYK 0.1 0.2 0.300 0.4")
-            << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4);
-        QTest::newRow("CMYK 0.1 0.2 0.300 0.4 0.6495217645")
-            << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4, 0.6495217645);
-        QTest::newRow("CMYK 0.1 6.2 0.300 0.4")
-            << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4);
-        QTest::newRow("CMYK 0.1 6.2 0.300 0.4 0.6495217645")
-            << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("CMYK 0.1 0.2 0.300 0.4") << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4);
+        QTest::newRow("CMYK 0.1 0.2 0.300 0.4 0.6495217645") << QColor::fromCmykF(0.1, 0.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("CMYK 0.1 6.2 0.300 0.4") << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4);
+        QTest::newRow("CMYK 0.1 6.2 0.300 0.4 0.6495217645") << QColor::fromCmykF(0.1, 6.2, 0.300, 0.4, 0.6495217645);
 
         QTest::newRow("HSL 2 3 4") << QColor::fromHsl(2, 3, 4);
         QTest::newRow("HSL 2 3 4 5") << QColor::fromHsl(2, 3, 4, 5);
         QTest::newRow("HSL 2 300 4") << QColor::fromHsl(2, 300, 4);
         QTest::newRow("HSL 2 300 4 5") << QColor::fromHsl(2, 300, 4, 5);
         QTest::newRow("HSL 0.2 0.300 0.4") << QColor::fromHslF(0.2, 0.300, 0.4);
-        QTest::newRow("HSL 0.2 0.300 0.4 0.6495217645")
-            << QColor::fromHslF(0.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSL 0.2 0.300 0.4 0.6495217645") << QColor::fromHslF(0.2, 0.300, 0.4, 0.6495217645);
         QTest::newRow("HSL 6.2 0.300 0.4") << QColor::fromHslF(6.2, 0.300, 0.4);
-        QTest::newRow("HSL 6.2 0.300 0.4 0.6495217645")
-            << QColor::fromHslF(6.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSL 6.2 0.300 0.4 0.6495217645") << QColor::fromHslF(6.2, 0.300, 0.4, 0.6495217645);
 
         QTest::newRow("HSV 2 3 4") << QColor::fromHsv(2, 3, 4);
         QTest::newRow("HSV 2 3 4 5") << QColor::fromHsv(2, 3, 4, 5);
         QTest::newRow("HSV 2 300 4") << QColor::fromHsv(2, 300, 4);
         QTest::newRow("HSV 2 300 4 5") << QColor::fromHsv(2, 300, 4, 5);
         QTest::newRow("HSV 0.2 0.300 0.4") << QColor::fromHsvF(0.2, 0.300, 0.4);
-        QTest::newRow("HSV 0.2 0.300 0.4 0.6495217645")
-            << QColor::fromHsvF(0.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSV 0.2 0.300 0.4 0.6495217645") << QColor::fromHsvF(0.2, 0.300, 0.4, 0.6495217645);
         QTest::newRow("HSV 6.2 0.300 0.4") << QColor::fromHsvF(6.2, 0.300, 0.4);
-        QTest::newRow("HSV 6.2 0.300 0.4 0.6495217645")
-            << QColor::fromHsvF(6.2, 0.300, 0.4, 0.6495217645);
+        QTest::newRow("HSV 6.2 0.300 0.4 0.6495217645") << QColor::fromHsvF(6.2, 0.300, 0.4, 0.6495217645);
 
         QTest::newRow("invalid") << QColor();
 
@@ -190,10 +179,7 @@ private Q_SLOTS:
     {
         // Initialization
         PerceptualColor::ColorPatch thePatch;
-        connect(&thePatch,
-                &PerceptualColor::ColorPatch::colorChanged,
-                this,
-                &TestColorPatch::helperReceiveSignals);
+        connect(&thePatch, &PerceptualColor::ColorPatch::colorChanged, this, &TestColorPatch::helperReceiveSignals);
 
         m_color = Qt::red;
         thePatch.setColor(QColor()); // invalid like initial value

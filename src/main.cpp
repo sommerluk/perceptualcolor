@@ -71,14 +71,12 @@ int main(int argc, char *argv[])
 
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
-    m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel,
-                            true);
+    m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
     QColor myColor = QColor(Qt::yellow);
     myColor.setAlphaF(0.5);
     m_colorDialog.setCurrentColor(myColor);
     //     m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
-    m_colorDialog.setLayoutDimensions(
-        PerceptualColor ::ColorDialog ::DialogLayoutDimensions ::expanded);
+    m_colorDialog.setLayoutDimensions(PerceptualColor ::ColorDialog ::DialogLayoutDimensions ::expanded);
     m_colorDialog.show();
 
     //     m_colorDialog.setStyleSheet(

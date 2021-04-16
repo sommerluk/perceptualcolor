@@ -71,13 +71,10 @@ class ColorWheel : public AbstractDiagram
      * @sa hueChanged()
      * @sa default_hue
      */
-    Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged
-                   USER true)
+    Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged USER true)
 
 public:
-    Q_INVOKABLE explicit ColorWheel(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~ColorWheel() noexcept override;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;

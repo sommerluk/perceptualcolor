@@ -127,8 +127,7 @@ QImage transparencyBackground(qreal devicePixelRatioF)
     QPainter painter(&temp);
     QColor foregroundColor(lightnessTwo, lightnessTwo, lightnessTwo);
     painter.fillRect(0, 0, squareSize, squareSize, foregroundColor);
-    painter.fillRect(
-        squareSize, squareSize, squareSize, squareSize, foregroundColor);
+    painter.fillRect(squareSize, squareSize, squareSize, squareSize, foregroundColor);
     temp.setDevicePixelRatio(devicePixelRatioF);
     return temp;
 }

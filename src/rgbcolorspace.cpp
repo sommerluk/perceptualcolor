@@ -52,20 +52,15 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     // TODO How to handle that?
 
     // Create an ICC v4 profile object for the Lab color space.
-    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(
-        nullptr // nullptr means: Default white point (D50)
-        // TODO Does this make sense? sRGB white point is D65!
+    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr // nullptr means: Default white point (D50)
+                                                                // TODO Does this make sense? sRGB white point is D65!
     );
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-    d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(
-        rgbProfileHandle, cmsInfoDescription);
-    d_pointer->m_cmsInfoCopyright = d_pointer->getInformationFromProfile(
-        rgbProfileHandle, cmsInfoCopyright);
-    d_pointer->m_cmsInfoManufacturer = d_pointer->getInformationFromProfile(
-        rgbProfileHandle, cmsInfoManufacturer);
-    d_pointer->m_cmsInfoModel =
-        d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoModel);
+    d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoDescription);
+    d_pointer->m_cmsInfoCopyright = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoCopyright);
+    d_pointer->m_cmsInfoManufacturer = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoManufacturer);
+    d_pointer->m_cmsInfoModel = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoModel);
     // TODO Only change the description to "sRGB" if the build-in sRGB is
     // used, not when an actual external ICC profile is used.
     //    m_cmsInfoDescription = tr("sRGB"); // TODO ???
@@ -77,30 +72,27 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     // so anyway it is not likely to have two consecutive pixels with
     // the same color, which is the only situation where the 1-pixel-cache
     // makes processing faster.
-    d_pointer->m_transformLabToRgbHandle =
-        cmsCreateTransform(labProfileHandle, // input profile handle
-                           TYPE_Lab_DBL,     // input buffer format
-                           rgbProfileHandle, // output profile handle
-                           TYPE_RGB_DBL,     // output buffer format
-                           INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-                           cmsFLAGS_NOCACHE              // flags
-        );
-    d_pointer->m_transformLabToRgb16Handle =
-        cmsCreateTransform(labProfileHandle, // input profile handle
-                           TYPE_Lab_DBL,     // input buffer format
-                           rgbProfileHandle, // output profile handle
-                           TYPE_RGB_16,      // output buffer format
-                           INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-                           cmsFLAGS_NOCACHE              // flags
-        );
-    d_pointer->m_transformRgbToLabHandle =
-        cmsCreateTransform(rgbProfileHandle, // input profile handle
-                           TYPE_RGB_DBL,     // input buffer format
-                           labProfileHandle, // output profile handle
-                           TYPE_Lab_DBL,     // output buffer format
-                           INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-                           cmsFLAGS_NOCACHE              // flags
-        );
+    d_pointer->m_transformLabToRgbHandle = cmsCreateTransform(labProfileHandle,             // input profile handle
+                                                              TYPE_Lab_DBL,                 // input buffer format
+                                                              rgbProfileHandle,             // output profile handle
+                                                              TYPE_RGB_DBL,                 // output buffer format
+                                                              INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+                                                              cmsFLAGS_NOCACHE              // flags
+    );
+    d_pointer->m_transformLabToRgb16Handle = cmsCreateTransform(labProfileHandle,             // input profile handle
+                                                                TYPE_Lab_DBL,                 // input buffer format
+                                                                rgbProfileHandle,             // output profile handle
+                                                                TYPE_RGB_16,                  // output buffer format
+                                                                INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+                                                                cmsFLAGS_NOCACHE              // flags
+    );
+    d_pointer->m_transformRgbToLabHandle = cmsCreateTransform(rgbProfileHandle,             // input profile handle
+                                                              TYPE_RGB_DBL,                 // input buffer format
+                                                              labProfileHandle,             // output profile handle
+                                                              TYPE_Lab_DBL,                 // output buffer format
+                                                              INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+                                                              cmsFLAGS_NOCACHE              // flags
+    );
     // Close profile (free memory)
     cmsCloseProfile(labProfileHandle);
     cmsCloseProfile(rgbProfileHandle);
@@ -138,8 +130,7 @@ RgbColorSpace::~RgbColorSpace() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation. */
-RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(
-    RgbColorSpace *backLink)
+RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(RgbColorSpace *backLink)
     : q_pointer(backLink)
 {
 }
@@ -193,8 +184,7 @@ PerceptualColor::LchDouble RgbColorSpace::colorLch(const QColor &rgbColor) const
  * @param rgb the color that will be converted.
  * @returns If the color is valid, the corresponding LCh value might also
  * be invalid. */
-cmsCIELab
-RgbColorSpace::RgbColorSpacePrivate::colorLab(const RgbDouble &rgb) const
+cmsCIELab RgbColorSpace::RgbColorSpacePrivate::colorLab(const RgbDouble &rgb) const
 {
     cmsCIELab lab;
     cmsDoTransform(m_transformRgbToLabHandle, // handle to transform function
@@ -215,15 +205,12 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 {
     QColor temp; // By default, without initialization this is an invalid color
     RgbDouble rgb;
-    cmsDoTransform(
-        d_pointer->m_transformLabToRgbHandle, // handle to transform function
-        &Lab,                                 // input
-        &rgb,                                 // output
-        1                                     // convert exactly 1 value
+    cmsDoTransform(d_pointer->m_transformLabToRgbHandle, // handle to transform function
+                   &Lab,                                 // input
+                   &rgb,                                 // output
+                   1                                     // convert exactly 1 value
     );
-    if (inRange<cmsFloat64Number>(0, rgb.red, 1) &&
-        inRange<cmsFloat64Number>(0, rgb.green, 1) &&
-        inRange<cmsFloat64Number>(0, rgb.blue, 1)) {
+    if (inRange<cmsFloat64Number>(0, rgb.red, 1) && inRange<cmsFloat64Number>(0, rgb.green, 1) && inRange<cmsFloat64Number>(0, rgb.blue, 1)) {
         // We are within the gamut
         temp = QColor::fromRgbF(rgb.red, rgb.green, rgb.blue);
     }
@@ -249,8 +236,7 @@ QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
     return colorRgb(temp);
 }
 
-RgbDouble RgbColorSpace::RgbColorSpacePrivate::colorRgbBoundSimple(
-    const cmsCIELab &Lab) const
+RgbDouble RgbColorSpace::RgbColorSpacePrivate::colorRgbBoundSimple(const cmsCIELab &Lab) const
 {
     cmsUInt16Number rgb_int[3];
     cmsDoTransform(m_transformLabToRgb16Handle, // handle to transform function
@@ -296,8 +282,7 @@ QColor RgbColorSpace::colorRgbBound(const LchDouble &lch) const
     return colorRgbBound(temp);
 }
 
-QColor
-RgbColorSpace::colorRgbBound(const PerceptualColor::LchaDouble &lcha) const
+QColor RgbColorSpace::colorRgbBound(const PerceptualColor::LchaDouble &lcha) const
 {
     LchDouble lch;
     lch.l = lcha.l;
@@ -318,9 +303,7 @@ RgbColorSpace::colorRgbBound(const PerceptualColor::LchaDouble &lcha) const
  * @param hue The hue value (angle in degree)
  * @returns Returns true if lightness/chroma/hue is in the specified
  * RGB gamut. Returns false otherwise. */
-bool RgbColorSpace::inGamut(const double lightness,
-                            const double chroma,
-                            const double hue) const
+bool RgbColorSpace::inGamut(const double lightness, const double chroma, const double hue) const
 {
     // variables
     LchDouble LCh;
@@ -360,16 +343,13 @@ bool RgbColorSpace::inGamut(const cmsCIELab &lab) const
 {
     RgbDouble rgb;
 
-    cmsDoTransform(
-        d_pointer->m_transformLabToRgbHandle, // handle to transform function
-        &lab,                                 // input
-        &rgb,                                 // output
-        1                                     // convert exactly 1 value
+    cmsDoTransform(d_pointer->m_transformLabToRgbHandle, // handle to transform function
+                   &lab,                                 // input
+                   &rgb,                                 // output
+                   1                                     // convert exactly 1 value
     );
 
-    return (inRange<cmsFloat64Number>(0, rgb.red, 1) &&
-            inRange<cmsFloat64Number>(0, rgb.green, 1) &&
-            inRange<cmsFloat64Number>(0, rgb.blue, 1));
+    return (inRange<cmsFloat64Number>(0, rgb.red, 1) && inRange<cmsFloat64Number>(0, rgb.green, 1) && inRange<cmsFloat64Number>(0, rgb.blue, 1));
 }
 
 QString RgbColorSpace::profileInfoCopyright() const
@@ -406,8 +386,7 @@ QString RgbColorSpace::profileInfoModel() const
 
 /** @returns A <em>normalized</em> (this is guaranteed!) in-gamut color,
  * maybe with different chroma (and even lightness??) */
-PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(
-    const PerceptualColor::LchDouble &color) const
+PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(const PerceptualColor::LchDouble &color) const
 {
     LchDouble result = color;
     PolarPointF temp(result.c, result.h);
@@ -463,9 +442,7 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(
  * available in this locale, it silently falls back to another available
  * localization. Note that the returned QString() might be empty if the
  * requested information is not available in the ICC profile. */
-QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
-    cmsHPROFILE profileHandle,
-    cmsInfoType infoType)
+QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType)
 {
     // Initialize a char array of 3 values (two for actual characters and a
     // one for a terminating null)cmsFloat64Number
@@ -565,10 +542,9 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(
     // not really know the encoding of the buffer that LittleCMS returns.
     // Therefore, it is a good idea to be compatible for various
     // interpretations.
-    QString result =
-        QString::fromWCharArray(buffer, // read from this buffer
-                                -1      // read until the first null element
-        );
+    QString result = QString::fromWCharArray(buffer, // read from this buffer
+                                             -1      // read until the first null element
+    );
 
     // Free allocated memory of the buffer
     delete[] buffer;

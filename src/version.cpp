@@ -29,20 +29,16 @@
 // Own header
 #include "version.h"
 
-static_assert(std ::numeric_limits<decltype(
-                  PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR)>::is_integer);
+static_assert(std ::numeric_limits<decltype(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR)>::is_integer);
 static_assert(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR >= 0);
 
-static_assert(std ::numeric_limits<decltype(
-                  PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR)>::is_integer);
+static_assert(std ::numeric_limits<decltype(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR)>::is_integer);
 static_assert(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR >= 0);
 
-static_assert(std ::numeric_limits<decltype(
-                  PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH)>::is_integer);
+static_assert(std ::numeric_limits<decltype(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH)>::is_integer);
 static_assert(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH >= 0);
 
-static_assert(std ::numeric_limits<
-              decltype(PERCEPTUALCOLOR_COMPILE_TIME_VERSION)>::is_integer);
+static_assert(std ::numeric_limits<decltype(PERCEPTUALCOLOR_COMPILE_TIME_VERSION)>::is_integer);
 static_assert(PERCEPTUALCOLOR_COMPILE_TIME_VERSION >= 1);
 
 namespace PerceptualColor
@@ -59,9 +55,7 @@ namespace PerceptualColor
  * @sa @ref versioninfo */
 QVersionNumber perceptualColorRunTimeVersion()
 {
-    return QVersionNumber(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR,
-                          PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR,
-                          PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH);
+    return QVersionNumber(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR, PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR, PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH);
 }
 
 } // namespace PerceptualColor

@@ -99,13 +99,10 @@ class ChromaHueDiagram : public AbstractDiagram
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged() */
-    Q_PROPERTY(LchDouble currentColor READ currentColor WRITE setCurrentColor
-                   NOTIFY currentColorChanged)
+    Q_PROPERTY(LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
 public:
-    Q_INVOKABLE explicit ChromaHueDiagram(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~ChromaHueDiagram() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */

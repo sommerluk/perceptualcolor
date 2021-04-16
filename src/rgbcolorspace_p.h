@@ -59,8 +59,7 @@ public:
 
     cmsCIELab colorLab(const RgbDouble &rgb) const;
     RgbDouble colorRgbBoundSimple(const cmsCIELab &Lab) const;
-    static QString getInformationFromProfile(cmsHPROFILE profileHandle,
-                                             cmsInfoType infoType);
+    static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
 
 private:
     Q_DISABLE_COPY(RgbColorSpacePrivate)

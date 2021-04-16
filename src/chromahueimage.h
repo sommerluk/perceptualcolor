@@ -82,8 +82,7 @@ namespace PerceptualColor
 class ChromaHueImage final
 {
 public:
-    explicit ChromaHueImage(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+    explicit ChromaHueImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     QImage getImage();
     void setBorder(const qreal newBorder);
     void setChromaRange(const qreal newChromaRange);

@@ -52,9 +52,7 @@ namespace PerceptualColor
 class ChromaHueDiagram::ChromaHueDiagramPrivate final
 {
 public:
-    ChromaHueDiagramPrivate(
-        ChromaHueDiagram *backLink,
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+    ChromaHueDiagramPrivate(ChromaHueDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -94,8 +92,7 @@ public:
     QPointF diagramCenterInWidgetCoordinates() const;
     qreal diagramOffset() const;
     cmsCIELab fromWidgetPixelPositionToLab(const QPoint position) const;
-    bool isWidgetPixelPositionWithinMouseSensibleCircle(
-        const QPoint widgetCoordinates) const;
+    bool isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint widgetCoordinates) const;
     void setColorFromWidgetPixelPosition(const QPoint position);
     QPointF widgetCoordinatesFromCurrentColor() const;
 

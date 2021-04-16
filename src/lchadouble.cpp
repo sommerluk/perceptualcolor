@@ -70,8 +70,7 @@ LchaDouble::LchaDouble(double newL, double newC, double newH, double newA)
  * in the global namespace. */
 QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
 {
-    dbg.nospace() << "LchaDouble(" << value.l << "% " << value.c << " "
-                  << value.h << "° " << value.a << ")";
+    dbg.nospace() << "LchaDouble(" << value.l << "% " << value.c << " " << value.h << "° " << value.a << ")";
     return dbg.maybeSpace();
 }
 
@@ -84,11 +83,9 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
  * equal @ref c, but one with h = 5° and the other with h = 365°, are
  * considered non-equal thought both describe the same point in the
  * coordinate space. */
-bool LchaDouble::hasSameCoordinates(
-    const PerceptualColor::LchaDouble &other) const
+bool LchaDouble::hasSameCoordinates(const PerceptualColor::LchaDouble &other) const
 {
-    return ((l == other.l) && (c == other.c) && (h == other.h) &&
-            (a == other.a));
+    return ((l == other.l) && (c == other.c) && (h == other.h) && (a == other.a));
 }
 
 } // namespace PerceptualColor

@@ -78,16 +78,12 @@ public:
     /** @brief Pointer to RgbColorSpace() object */
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
-    QImage generateDiagramImage(const qreal imageHue,
-                                const QSize imageSize) const;
+    QImage generateDiagramImage(const qreal imageHue, const QSize imageSize) const;
     QPoint currentImageCoordinates();
-    QPointF
-    fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates);
-    QPoint fromWidgetCoordinatesToImageCoordinates(
-        const QPoint widgetCoordinates) const;
+    QPointF fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates);
+    QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
     bool imageCoordinatesInGamut(const QPoint imageCoordinates);
-    static QPoint nearestNeighborSearch(const QPoint originalPoint,
-                                        const QImage &image);
+    static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
     void updateDiagramCache();
     void setImageCoordinates(const QPoint newImageCoordinates);
     void updateBorder();

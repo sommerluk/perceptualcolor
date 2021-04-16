@@ -142,8 +142,7 @@ private Q_SLOTS:
     {
         // The value is somewhat arbitrary.
         // Make sure that at least it is not too high.
-        QVERIFY2(PerceptualColor::gamutPrecision < 1,
-                 "Verify that gamut precision value is not too high");
+        QVERIFY2(PerceptualColor::gamutPrecision < 1, "Verify that gamut precision value is not too high");
     }
 
     void testTransparencyBackground()
@@ -156,14 +155,7 @@ private Q_SLOTS:
 
     void testStandardWheelSteps()
     {
-        QWheelEvent temp(QPointF(),
-                         QPointF(),
-                         QPoint(),
-                         QPoint(200, 120),
-                         0,
-                         Qt::Orientation::Vertical,
-                         Qt::MouseButton::MiddleButton,
-                         Qt::KeyboardModifier::NoModifier);
+        QWheelEvent temp(QPointF(), QPointF(), QPoint(), QPoint(200, 120), 0, Qt::Orientation::Vertical, Qt::MouseButton::MiddleButton, Qt::KeyboardModifier::NoModifier);
         QCOMPARE(PerceptualColor::standardWheelSteps(&temp), 1);
     }
 
@@ -190,11 +182,9 @@ private Q_SLOTS:
 
     void testSteps()
     {
-        QVERIFY2(pageStepChroma > singleStepChroma,
-                 "Chroma page step is bigger than single step.");
+        QVERIFY2(pageStepChroma > singleStepChroma, "Chroma page step is bigger than single step.");
         QVERIFY2(singleStepChroma > 0, "Chroma single step is positive.");
-        QVERIFY2(pageStepHue > singleStepHue,
-                 "Hue page step is bigger than single step.");
+        QVERIFY2(pageStepHue > singleStepHue, "Hue page step is bigger than single step.");
         QVERIFY2(singleStepHue > 0, "Hue single step is positive.");
     }
 };

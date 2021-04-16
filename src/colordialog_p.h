@@ -102,8 +102,7 @@ public:
      * @sa @ref setCurrentOpaqueColor() */
     bool m_isColorChangeInProgress = false;
     /** @brief Internal storage for property @ref layoutDimensions */
-    PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions =
-        ColorDialog::DialogLayoutDimensions::collapsed;
+    PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions = ColorDialog::DialogLayoutDimensions::collapsed;
     /** @brief Pointer to the graphical selector widget that groups lightness
      *  and chroma-hue selector. */
     QPointer<QWidget> m_lightnessFirstWidget;

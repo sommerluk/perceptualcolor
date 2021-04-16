@@ -78,10 +78,8 @@ private Q_SLOTS:
 
     void testPerceptualColorRunTimeVersion()
     {
-        QVERIFY2(perceptualColorRunTimeVersion() >= QVersionNumber(0, 0, 1),
-                 "Verify that the version number is at least 0.0.1.");
-        QVERIFY2(perceptualColorRunTimeVersion() < QVersionNumber(99, 0, 1),
-                 "Verify that the version number is not too big.");
+        QVERIFY2(perceptualColorRunTimeVersion() >= QVersionNumber(0, 0, 1), "Verify that the version number is at least 0.0.1.");
+        QVERIFY2(perceptualColorRunTimeVersion() < QVersionNumber(99, 0, 1), "Verify that the version number is not too big.");
     }
 
     void testSnippet01()

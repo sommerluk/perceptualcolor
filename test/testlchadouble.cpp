@@ -59,8 +59,7 @@ public:
     }
 
 private:
-    static void
-    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
         // dummy message handler that does not print messages
     }

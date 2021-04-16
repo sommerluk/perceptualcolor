@@ -78,8 +78,7 @@ QString ExtendedDoubleValidator::suffix() const
     return d_pointer->m_suffix;
 }
 
-QValidator::State ExtendedDoubleValidator::validate(QString &input,
-                                                    int &pos) const
+QValidator::State ExtendedDoubleValidator::validate(QString &input, int &pos) const
 {
     QString myInput = input;
     int myPos = pos;

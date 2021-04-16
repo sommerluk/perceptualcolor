@@ -38,8 +38,7 @@ static void snippet01()
 {
     //! [ConstPropagatingRawPointer Example]
     // Assuming you have a member variable in your class:
-    PerceptualColor::ConstPropagatingRawPointer<QRectF> pointerToQRectF {
-        new QRectF};
+    PerceptualColor::ConstPropagatingRawPointer<QRectF> pointerToQRectF {new QRectF};
 
     // Now, you access this member variable from a method within your class:
 
@@ -112,9 +111,7 @@ private Q_SLOTS:
     void testDefaultConstructor()
     {
         ConstPropagatingRawPointer<QObject> test;
-        QVERIFY2(
-            !test,
-            "Verify that default constructor produced an invalid pointer.");
+        QVERIFY2(!test, "Verify that default constructor produced an invalid pointer.");
     }
 
     // NOTE Should break on compile time if the method is const.

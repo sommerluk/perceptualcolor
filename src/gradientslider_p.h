@@ -40,9 +40,7 @@ namespace PerceptualColor
 class GradientSlider::GradientSliderPrivate final
 {
 public:
-    GradientSliderPrivate(
-        GradientSlider *backLink,
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+    GradientSliderPrivate(GradientSlider *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -51,10 +49,8 @@ public:
 
     // Methods
     qreal fromWidgetPixelPositionToValue(QPoint pixelPosition);
-    void initialize(const QSharedPointer<RgbColorSpace> &colorSpace,
-                    Qt::Orientation orientation);
-    void setOrientationWithoutSignalAndForceNewSizePolicy(
-        Qt::Orientation newOrientation);
+    void initialize(const QSharedPointer<RgbColorSpace> &colorSpace, Qt::Orientation orientation);
+    void setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation newOrientation);
     int physicalPixelLength() const;
     int physicalPixelThickness() const;
 

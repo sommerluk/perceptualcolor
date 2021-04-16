@@ -73,13 +73,11 @@ private Q_SLOTS:
     void testConstructor2()
     {
         QPointer<QObject> myObject(new QObject());
-        QPointer<PerceptualColor::ExtendedDoubleValidator> myGuardedPointer =
-            new ExtendedDoubleValidator(myObject);
+        QPointer<PerceptualColor::ExtendedDoubleValidator> myGuardedPointer = new ExtendedDoubleValidator(myObject);
         delete myObject;
-        QVERIFY2(
-            myGuardedPointer.isNull(),
-            "Verify that the guarded pointer “QPointer” becomes nullptr if "
-            "the parent is deleted.");
+        QVERIFY2(myGuardedPointer.isNull(),
+                 "Verify that the guarded pointer “QPointer” becomes nullptr if "
+                 "the parent is deleted.");
     }
 
     void testPrefix()
@@ -93,26 +91,19 @@ private Q_SLOTS:
         QString testString;
         int testPosition = 0;
         testString = QStringLiteral("abc1");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Acceptable);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Acceptable);
         testString = QStringLiteral("abc1000");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Acceptable);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Acceptable);
         testString = QStringLiteral("ab1");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QStringLiteral("ab1000");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QStringLiteral("1");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QStringLiteral("1000");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QLatin1String();
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
     }
 
     void testSuffix()
@@ -126,26 +117,19 @@ private Q_SLOTS:
         QString testString;
         int testPosition = 0;
         testString = QStringLiteral("1abc");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Acceptable);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Acceptable);
         testString = QStringLiteral("1000abc");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Acceptable);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Acceptable);
         testString = QStringLiteral("1ab");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QStringLiteral("1000ab");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QStringLiteral("1");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QStringLiteral("1000");
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
         testString = QLatin1String();
-        QCOMPARE(myValidator.validate(testString, testPosition),
-                 QValidator::State::Invalid);
+        QCOMPARE(myValidator.validate(testString, testPosition), QValidator::State::Invalid);
     }
 
     void testValidate()

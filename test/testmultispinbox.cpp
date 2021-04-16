@@ -42,8 +42,7 @@
 static void snippet02()
 {
     //! [MultiSpinBox Basic example]
-    PerceptualColor::MultiSpinBox *myHsvSpinBox =
-        new PerceptualColor::MultiSpinBox();
+    PerceptualColor::MultiSpinBox *myHsvSpinBox = new PerceptualColor::MultiSpinBox();
     PerceptualColor::MultiSpinBox::SectionData mySection;
     QList<PerceptualColor::MultiSpinBox::SectionData> hsvSections;
 
@@ -79,35 +78,28 @@ class testSnippet02
 {
     //! [MultiSpinBox Full-featured interface]
     void addSection(PerceptualColor::MultiSpinBox::SectionData newSection);
-    void
-    addSections(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+    void addSections(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
     void append(PerceptualColor::MultiSpinBox::SectionData newSection);
     void append(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
     void clearSections();
     int currentIndex() const;
     PerceptualColor::MultiSpinBox::SectionData currentSection() const;
     PerceptualColor::MultiSpinBox::SectionData firstSection() const;
-    void insertSection(int index,
-                       PerceptualColor::MultiSpinBox::SectionData newSection);
-    void insertSection(
-        int index,
-        QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+    void insertSection(int index, PerceptualColor::MultiSpinBox::SectionData newSection);
+    void insertSection(int index, QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
     PerceptualColor::MultiSpinBox::SectionData lastSection() const;
     void moveSection(int from, int to);
     void prependSection(PerceptualColor::MultiSpinBox::SectionData newSection);
-    void prependSections(
-        QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+    void prependSections(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
     void removeFirstSection();
     void removeLastSection();
     void removeSection(int index);
-    void replaceSection(int index,
-                        PerceptualColor::MultiSpinBox::SectionData newSection);
+    void replaceSection(int index, PerceptualColor::MultiSpinBox::SectionData newSection);
     PerceptualColor::MultiSpinBox::SectionData sectionAt(int index) const;
     int sectionCount() const;
     QList<PerceptualColor::MultiSpinBox::SectionData> sections() const;
     void setCurrentIndex(int newIndex);
-    void setSections(
-        const QList<PerceptualColor::MultiSpinBox::SectionData> &newSections);
+    void setSections(const QList<PerceptualColor::MultiSpinBox::SectionData> &newSections);
     void swapSections(int i, int j);
     //! [MultiSpinBox Full-featured interface]
 };
@@ -126,8 +118,7 @@ public:
 
 private:
     QList<MultiSpinBox::SectionData> myConfiguration;
-    static void
-    voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
+    static void voidMessageHandler(QtMsgType, const QMessageLogContext &, const QString &)
     {
         // dummy message handler that does not print messages
     }
@@ -172,15 +163,13 @@ private Q_SLOTS:
         // Test the the constructor does not crash
         PerceptualColor::MultiSpinBox myMulti;
         // Test basic constructor results
-        QVERIFY2(myMulti.d_pointer->m_sections.length() > 0,
-                 "Make sure the default configuration has at least 1 section.");
+        QVERIFY2(myMulti.d_pointer->m_sections.length() > 0, "Make sure the default configuration has at least 1 section.");
     }
 
     void testInteraction()
     {
         // This test is suprisingly slow.
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         widget->show();
         widget->setSections(myConfiguration);
         // Assert that the setup is okay.
@@ -231,18 +220,12 @@ private Q_SLOTS:
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Test if setting negative value is ignored
-        QVERIFY_EXCEPTION_THROWN(
-            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-1),
-            int);
+        QVERIFY_EXCEPTION_THROWN(test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-1), int);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
-        QVERIFY_EXCEPTION_THROWN(
-            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-100),
-            int);
+        QVERIFY_EXCEPTION_THROWN(test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(-100), int);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
         // Test setting too high values is ignored
-        QVERIFY_EXCEPTION_THROWN(
-            test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(100),
-            int);
+        QVERIFY_EXCEPTION_THROWN(test.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(100), int);
         QCOMPARE(test.d_pointer->m_currentIndex, 0);
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
@@ -280,15 +263,9 @@ private Q_SLOTS:
         myInvalidSection.maximum = 30;
         mySectionList.append(myInvalidSection);
         test.setSections(mySectionList);
-        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <=
-                     test.d_pointer->m_sections.at(0).maximum,
-                 "minimum <= maximum");
-        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <=
-                     test.d_pointer->m_sections.at(0).value,
-                 "minimum <= value");
-        QVERIFY2(test.d_pointer->m_sections.at(0).value <=
-                     test.d_pointer->m_sections.at(0).maximum,
-                 "value <= maximum");
+        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <= test.d_pointer->m_sections.at(0).maximum, "minimum <= maximum");
+        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <= test.d_pointer->m_sections.at(0).value, "minimum <= value");
+        QVERIFY2(test.d_pointer->m_sections.at(0).value <= test.d_pointer->m_sections.at(0).maximum, "value <= maximum");
 
         // Invalid values should be adapted
         mySectionList.clear();
@@ -297,15 +274,9 @@ private Q_SLOTS:
         myInvalidSection.maximum = -70;
         mySectionList.append(myInvalidSection);
         test.setSections(mySectionList);
-        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <=
-                     test.d_pointer->m_sections.at(0).maximum,
-                 "minimum <= maximum");
-        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <=
-                     test.d_pointer->m_sections.at(0).value,
-                 "minimum <= value");
-        QVERIFY2(test.d_pointer->m_sections.at(0).value <=
-                     test.d_pointer->m_sections.at(0).maximum,
-                 "value <= maximum");
+        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <= test.d_pointer->m_sections.at(0).maximum, "minimum <= maximum");
+        QVERIFY2(test.d_pointer->m_sections.at(0).minimum <= test.d_pointer->m_sections.at(0).value, "minimum <= value");
+        QVERIFY2(test.d_pointer->m_sections.at(0).value <= test.d_pointer->m_sections.at(0).maximum, "value <= maximum");
     }
 
     void testMinimalSizeHint()
@@ -392,12 +363,9 @@ private Q_SLOTS:
         myMulti.setSections(config);
         myMulti.d_pointer->m_currentIndex = 1;
         myMulti.d_pointer->updatePrefixValueSuffixText();
-        QCOMPARE(myMulti.d_pointer->m_textBeforeCurrentValue,
-                 QStringLiteral(u"abc8defghi"));
-        QCOMPARE(myMulti.d_pointer->m_textOfCurrentValue,
-                 QStringLiteral(u"80"));
-        QCOMPARE(myMulti.d_pointer->m_textAfterCurrentValue,
-                 QStringLiteral(u"jkl"));
+        QCOMPARE(myMulti.d_pointer->m_textBeforeCurrentValue, QStringLiteral(u"abc8defghi"));
+        QCOMPARE(myMulti.d_pointer->m_textOfCurrentValue, QStringLiteral(u"80"));
+        QCOMPARE(myMulti.d_pointer->m_textAfterCurrentValue, QStringLiteral(u"jkl"));
     }
 
     void testSetCurrentSectionIndexWithoutSelectingText()
@@ -420,8 +388,7 @@ private Q_SLOTS:
         myMulti.setSections(config);
         myMulti.d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QCOMPARE(myMulti.d_pointer->m_currentIndex, 1);
-        QVERIFY2(!myMulti.lineEdit()->hasSelectedText(),
-                 "No text should be selected.");
+        QVERIFY2(!myMulti.lineEdit()->hasSelectedText(), "No text should be selected.");
     }
 
     void testSetCurrentSectionIndex()
@@ -473,55 +440,43 @@ private Q_SLOTS:
         config.append(section);
         myMulti.setSections(config);
         QAbstractSpinBox::StepEnabled flags = myMulti.stepEnabled();
-        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled),
-                 "Step up should be enabled");
-        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepDownEnabled),
-                 "Step down should be enabled");
+        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), "Step up should be enabled");
+        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepDownEnabled), "Step down should be enabled");
         section.value = 9;
         config.clear();
         config.append(section);
         myMulti.setSections(config);
         flags = myMulti.stepEnabled();
-        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepUpEnabled),
-                 "Step up should be disabled");
-        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepDownEnabled),
-                 "Step down should be enabled");
+        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepUpEnabled), "Step up should be disabled");
+        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepDownEnabled), "Step down should be enabled");
         section.value = 10;
         config.clear();
         config.append(section);
         myMulti.setSections(config);
         flags = myMulti.stepEnabled();
-        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepUpEnabled),
-                 "Step up should be disabled");
-        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepDownEnabled),
-                 "Step down should be enabled");
+        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepUpEnabled), "Step up should be disabled");
+        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepDownEnabled), "Step down should be enabled");
         section.value = 1;
         config.clear();
         config.append(section);
         myMulti.setSections(config);
         flags = myMulti.stepEnabled();
-        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled),
-                 "Step up should be enabled");
-        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepDownEnabled),
-                 "Step down should be disabled");
+        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), "Step up should be enabled");
+        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepDownEnabled), "Step down should be disabled");
         section.value = 0;
         config.clear();
         config.append(section);
         myMulti.setSections(config);
         flags = myMulti.stepEnabled();
-        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled),
-                 "Step up should be enabled");
-        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepDownEnabled),
-                 "Step down should be disabled");
+        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), "Step up should be enabled");
+        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepDownEnabled), "Step down should be disabled");
         section.value = -1;
         config.clear();
         config.append(section);
         myMulti.setSections(config);
         flags = myMulti.stepEnabled();
-        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled),
-                 "Step up should be enabled");
-        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepDownEnabled),
-                 "Step down should be disabled");
+        QVERIFY2(flags.testFlag(QAbstractSpinBox::StepUpEnabled), "Step up should be enabled");
+        QVERIFY2(!flags.testFlag(QAbstractSpinBox::StepDownEnabled), "Step down should be disabled");
     }
 
     void testStepEnabledAndSectionIndex_data()
@@ -546,15 +501,13 @@ private Q_SLOTS:
 
     void testStepEnabledAndSectionIndex()
     {
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections(specialConfiguration);
-        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
-            sampleSectionNumber);
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(sampleSectionNumber);
         // Assert that the setup is okay.
         if (widget->lineEdit()->text() != QStringLiteral(u"0°  5%  0")) {
             // Throw an exception instead of using an assert statement.
@@ -584,22 +537,11 @@ private Q_SLOTS:
         }
         flags = widget->stepEnabled();
         QCOMPARE(widget->d_pointer->m_currentIndex, sectionIndex);
-        QCOMPARE(
-            widget->d_pointer->m_sections.at(widget->d_pointer->m_currentIndex)
-                .minimum,
-            minimum);
-        QCOMPARE(
-            widget->d_pointer->m_sections.at(widget->d_pointer->m_currentIndex)
-                .value,
-            value);
-        QCOMPARE(
-            widget->d_pointer->m_sections.at(widget->d_pointer->m_currentIndex)
-                .maximum,
-            maximum);
-        QCOMPARE(flags.testFlag(QAbstractSpinBox::StepUpEnabled),
-                 StepUpEnabled);
-        QCOMPARE(flags.testFlag(QAbstractSpinBox::StepDownEnabled),
-                 StepDownEnabled);
+        QCOMPARE(widget->d_pointer->m_sections.at(widget->d_pointer->m_currentIndex).minimum, minimum);
+        QCOMPARE(widget->d_pointer->m_sections.at(widget->d_pointer->m_currentIndex).value, value);
+        QCOMPARE(widget->d_pointer->m_sections.at(widget->d_pointer->m_currentIndex).maximum, maximum);
+        QCOMPARE(flags.testFlag(QAbstractSpinBox::StepUpEnabled), StepUpEnabled);
+        QCOMPARE(flags.testFlag(QAbstractSpinBox::StepDownEnabled), StepDownEnabled);
     }
 
     void testConfiguration()
@@ -631,14 +573,12 @@ private Q_SLOTS:
         QScopedPointer<QWidget> parentWidget(new QWidget());
         QSpinBox *widget1 = new QSpinBox(parentWidget.data());
         widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        PerceptualColor::MultiSpinBox *widget2 =
-            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        PerceptualColor::MultiSpinBox *widget2 = new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setSections(myConfiguration);
         QSpinBox *widget3 = new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        QLabel *label2 =
-            new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
+        QLabel *label2 = new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
         label2->setBuddy(widget2);
         widget1->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -707,14 +647,12 @@ private Q_SLOTS:
         QScopedPointer<QWidget> parentWidget(new QWidget());
         QSpinBox *widget1 = new QSpinBox(parentWidget.data());
         widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        PerceptualColor::MultiSpinBox *widget2 =
-            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        PerceptualColor::MultiSpinBox *widget2 = new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setSections(myConfiguration);
         QSpinBox *widget3 = new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        QLabel *label2 =
-            new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
+        QLabel *label2 = new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
         label2->setBuddy(widget2);
         widget3->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -750,27 +688,19 @@ private Q_SLOTS:
 
         // Start actual testing
         // Move focus from widget3 to widget2/section2
-        QTest::keyClick(QApplication::focusWidget(),
-                        Qt::Key::Key_Tab,
-                        Qt::KeyboardModifier::ShiftModifier);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab, Qt::KeyboardModifier::ShiftModifier);
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 2);
         // Move focus from widget2/section2 to widget2/section1
-        QTest::keyClick(QApplication::focusWidget(),
-                        Qt::Key::Key_Tab,
-                        Qt::KeyboardModifier::ShiftModifier);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab, Qt::KeyboardModifier::ShiftModifier);
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget2/section0
-        QTest::keyClick(QApplication::focusWidget(),
-                        Qt::Key::Key_Tab,
-                        Qt::KeyboardModifier::ShiftModifier);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab, Qt::KeyboardModifier::ShiftModifier);
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget1
-        QTest::keyClick(QApplication::focusWidget(),
-                        Qt::Key::Key_Tab,
-                        Qt::KeyboardModifier::ShiftModifier);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab, Qt::KeyboardModifier::ShiftModifier);
         QCOMPARE(QApplication::focusWidget(), widget1);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
     }
@@ -784,18 +714,15 @@ private Q_SLOTS:
         QScopedPointer<QWidget> parentWidget(new QWidget());
         QSpinBox *widget1 = new QSpinBox(parentWidget.data());
         widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        PerceptualColor::MultiSpinBox *widget2 =
-            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        PerceptualColor::MultiSpinBox *widget2 = new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setSections(myConfiguration);
         widget2->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(1);
         QSpinBox *widget3 = new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        QLabel *label2 =
-            new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
+        QLabel *label2 = new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
         label2->setBuddy(widget2);
-        QLabel *label3 =
-            new QLabel(QStringLiteral(u"&Other widget"), parentWidget.data());
+        QLabel *label3 = new QLabel(QStringLiteral(u"&Other widget"), parentWidget.data());
         label3->setBuddy(widget3);
         widget3->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -836,9 +763,7 @@ private Q_SLOTS:
 
         // Start actual testing
         // Move focus from widget3 to widget2/section0
-        QTest::keyClick(QApplication::focusWidget(),
-                        Qt::Key::Key_T,
-                        Qt::KeyboardModifier::AltModifier);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_T, Qt::KeyboardModifier::AltModifier);
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
         // Move focus from widget2/section0 to widget2/section1
@@ -846,16 +771,12 @@ private Q_SLOTS:
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 1);
         // Move focus from widget2/section1 to widget3
-        QTest::keyClick(QApplication::focusWidget(),
-                        Qt::Key::Key_O,
-                        Qt::KeyboardModifier::AltModifier);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_O, Qt::KeyboardModifier::AltModifier);
         QCOMPARE(QApplication::focusWidget(), widget3);
         // Move focus from widget3 to widget2/section0
         // This has to move to section0 (even if before this event, the last
         // selected section of widget2 was NOT section0.
-        QTest::keyClick(QApplication::focusWidget(),
-                        Qt::Key::Key_T,
-                        Qt::KeyboardModifier::AltModifier);
+        QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_T, Qt::KeyboardModifier::AltModifier);
         QCOMPARE(QApplication::focusWidget(), widget2);
         QCOMPARE(widget2->d_pointer->m_currentIndex, 0);
     }
@@ -869,17 +790,14 @@ private Q_SLOTS:
         QScopedPointer<QWidget> parentWidget(new QWidget());
         QSpinBox *widget1 = new QSpinBox(parentWidget.data());
         widget1->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        PerceptualColor::MultiSpinBox *widget2 =
-            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        PerceptualColor::MultiSpinBox *widget2 = new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setSections(myConfiguration);
         QSpinBox *widget3 = new QSpinBox(parentWidget.data());
         widget3->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        QLabel *label2 =
-            new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
+        QLabel *label2 = new QLabel(QStringLiteral(u"&Test"), parentWidget.data());
         label2->setBuddy(widget2);
-        QLabel *label3 =
-            new QLabel(QStringLiteral(u"&Other widget"), parentWidget.data());
+        QLabel *label3 = new QLabel(QStringLiteral(u"&Other widget"), parentWidget.data());
         label3->setBuddy(widget3);
         widget3->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
@@ -938,8 +856,7 @@ private Q_SLOTS:
 
     void testStepBy()
     {
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         widget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget->setSections(myConfiguration);
         widget->d_pointer->setCurrentIndexWithoutUpdatingText(0);
@@ -955,34 +872,29 @@ private Q_SLOTS:
 
     void testUpdateValueFromText1()
     {
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         widget->setSections(myConfiguration);
         const quint8 sampleSectionNumber = 1;
-        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
-            sampleSectionNumber);
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(sampleSectionNumber);
         // Assert that the setup is okay.
         if (widget->lineEdit()->text() != QStringLiteral(u"0°  0%  0")) {
             // Throw an exception instead of using an assert statement.
             // Assert statements seem to be not always reliably within QTest.
             throw 0;
         }
-        widget->d_pointer->updateCurrentValueFromText(
-            QStringLiteral(u"0°  9%  0"));
+        widget->d_pointer->updateCurrentValueFromText(QStringLiteral(u"0°  9%  0"));
         QCOMPARE(widget->sections().at(sampleSectionNumber).value, 9);
     }
 
     void testUpdateValueFromText2()
     {
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections(specialConfiguration);
-        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
-            sampleSectionNumber);
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(sampleSectionNumber);
         // Assert that the setup is okay.
         if (widget->lineEdit()->text() != QStringLiteral(u"0°  5%  0")) {
             // Throw an exception instead of using an assert statement.
@@ -997,8 +909,7 @@ private Q_SLOTS:
         // suppress warnings
         qInstallMessageHandler(voidMessageHandler);
         // Execute the tested function (with an invalid argument)
-        widget->d_pointer->updateCurrentValueFromText(
-            QStringLiteral(u"abcdef"));
+        widget->d_pointer->updateCurrentValueFromText(QStringLiteral(u"abcdef"));
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
         // The original value should not have changed.
@@ -1008,15 +919,13 @@ private Q_SLOTS:
     void testUpdateSectionFromCursorPosition()
     {
         // Setup
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
         specialConfiguration[sampleSectionNumber].value = sampleValue;
         widget->setSections(specialConfiguration);
-        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(
-            sampleSectionNumber);
+        widget->d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(sampleSectionNumber);
         // Assert that the setup is okay.
         if (widget->lineEdit()->text() != QStringLiteral(u"0°  5%  0")) {
             // Throw an exception instead of using an assert statement.
@@ -1051,8 +960,7 @@ private Q_SLOTS:
     void testInitialLineEditValue()
     {
         // Setup
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         QList<MultiSpinBox::SectionData> specialConfiguration = myConfiguration;
         const quint8 sampleSectionNumber = 1;
         const quint8 sampleValue = 5;
@@ -1065,8 +973,7 @@ private Q_SLOTS:
     void testLocalizationAndInternationalization()
     {
         // Setup
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         QList<MultiSpinBox::SectionData> mySectionList;
         MultiSpinBox::SectionData mySection;
         mySection.decimals = 1;
@@ -1097,8 +1004,7 @@ private Q_SLOTS:
     void testArrowKeys()
     {
         QScopedPointer<QWidget> parentWidget(new QWidget());
-        PerceptualColor::MultiSpinBox *widget2 =
-            new PerceptualColor::MultiSpinBox(parentWidget.data());
+        PerceptualColor::MultiSpinBox *widget2 = new PerceptualColor::MultiSpinBox(parentWidget.data());
         widget2->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
         widget2->setSections(myConfiguration);
         widget2->setFocus();
@@ -1151,23 +1057,17 @@ private Q_SLOTS:
         int oldWidth = 0;
         QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 0);
         oldWidth = mySpinBox.sizeHint().width();
-        mySpinBox.addActionButton(
-            new QAction(QStringLiteral(u"test"), &mySpinBox),
-            QLineEdit::ActionPosition::TrailingPosition);
+        mySpinBox.addActionButton(new QAction(QStringLiteral(u"test"), &mySpinBox), QLineEdit::ActionPosition::TrailingPosition);
         QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 1);
-        QVERIFY2(
-            mySpinBox.sizeHint().width() > oldWidth,
-            "Verify that the size hint has a bigger width than before after "
-            "an action button has been added.");
+        QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
+                 "Verify that the size hint has a bigger width than before after "
+                 "an action button has been added.");
         oldWidth = mySpinBox.sizeHint().width();
-        mySpinBox.addActionButton(
-            new QAction(QStringLiteral(u"test"), &mySpinBox),
-            QLineEdit::ActionPosition::TrailingPosition);
+        mySpinBox.addActionButton(new QAction(QStringLiteral(u"test"), &mySpinBox), QLineEdit::ActionPosition::TrailingPosition);
         QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 2);
-        QVERIFY2(
-            mySpinBox.sizeHint().width() > oldWidth,
-            "Verify that the size hint has a bigger width than before after "
-            "an action button has been added.");
+        QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
+                 "Verify that the size hint has a bigger width than before after "
+                 "an action button has been added.");
     }
 
     void testFixedSection_data()
@@ -1199,13 +1099,9 @@ private Q_SLOTS:
 
         mySection.value = value;
         mySection.isWrapping = false;
-        QCOMPARE(
-            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
-            expectedOnIsWrappigFalse);
+        QCOMPARE(MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value, expectedOnIsWrappigFalse);
         mySection.isWrapping = true;
-        QCOMPARE(
-            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
-            expectedOnIsWrappigTrue);
+        QCOMPARE(MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value, expectedOnIsWrappigTrue);
     }
 
     void testFixedSectionOther_data()
@@ -1237,19 +1133,14 @@ private Q_SLOTS:
 
         mySection.value = value;
         mySection.isWrapping = false;
-        QCOMPARE(
-            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
-            expectedOnIsWrappigFalse);
+        QCOMPARE(MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value, expectedOnIsWrappigFalse);
         mySection.isWrapping = true;
-        QCOMPARE(
-            MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value,
-            expectedOnIsWrappigTrue);
+        QCOMPARE(MultiSpinBox::MultiSpinBoxPrivate::fixedSection(mySection).value, expectedOnIsWrappigTrue);
     }
 
     void testReturnKey()
     {
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(
-            new PerceptualColor::MultiSpinBox());
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
         widget->show();
         widget->setSections(myConfiguration);
         // Assert that the setup is okay.

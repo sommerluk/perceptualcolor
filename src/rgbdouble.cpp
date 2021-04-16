@@ -43,8 +43,7 @@ namespace PerceptualColor
 /** @brief Adds QDebug() support for this data type. */
 QDebug operator<<(QDebug dbg, const PerceptualColor::RgbDouble &value)
 {
-    dbg.nospace() << "RgbDouble(" << value.red << " " << value.green << " "
-                  << value.blue << ")";
+    dbg.nospace() << "RgbDouble(" << value.red << " " << value.green << " " << value.blue << ")";
     return dbg.maybeSpace();
 }
 

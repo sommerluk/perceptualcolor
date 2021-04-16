@@ -54,9 +54,7 @@ namespace PerceptualColor
  * @param colorSpace The color spaces within this widget should operate.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
-ColorWheel::ColorWheel(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    QWidget *parent)
+ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ColorWheelPrivate(this, colorSpace))
 {
@@ -100,9 +98,7 @@ ColorWheel::~ColorWheel() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
  * @param colorSpace The color spaces within this widget should operate. */
-ColorWheel::ColorWheelPrivate::ColorWheelPrivate(
-    ColorWheel *backLink,
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+ColorWheel::ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_wheelImage(colorSpace)
     , q_pointer(backLink)
 {
@@ -127,13 +123,10 @@ int ColorWheel::ColorWheelPrivate::contentDiameter() const
  * @returns “wheel” coordinates: Coordinates in a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel.
  */
-PolarPointF
-ColorWheel ::ColorWheelPrivate ::fromWidgetCoordinatesToWheelCoordinates(
-    const QPoint widgetCoordinates) const
+PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetCoordinatesToWheelCoordinates(const QPoint widgetCoordinates) const
 {
     qreal radius = contentDiameter() / static_cast<qreal>(2);
-    return PolarPointF(QPointF(widgetCoordinates.x() - radius,
-                               radius - widgetCoordinates.y()));
+    return PolarPointF(QPointF(widgetCoordinates.x() - radius, radius - widgetCoordinates.y()));
 }
 
 /** @brief Converts wheel coordinates to widget coordinates.
@@ -142,9 +135,7 @@ ColorWheel ::ColorWheelPrivate ::fromWidgetCoordinatesToWheelCoordinates(
  * center is exactly in the middle of the displayed wheel.
  * @returns coordinates in the coordinate system of this widget
  */
-QPointF
-ColorWheel ::ColorWheelPrivate ::fromWheelCoordinatesToWidgetCoordinates(
-    const PolarPointF wheelCoordinates) const
+QPointF ColorWheel ::ColorWheelPrivate ::fromWheelCoordinatesToWidgetCoordinates(const PolarPointF wheelCoordinates) const
 {
     qreal radius = contentDiameter() / static_cast<qreal>(2);
     QPointF temp = wheelCoordinates.toCartesian();
@@ -165,10 +156,8 @@ ColorWheel ::ColorWheelPrivate ::fromWheelCoordinatesToWidgetCoordinates(
  */
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
-    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) -
-        d_pointer->border();
-    PolarPointF myPolarPoint =
-        d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
+    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
+    PolarPointF myPolarPoint = d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (myPolarPoint.radial() > radius) {
         // Make sure default coordinates like drag-window
         // in KDE's Breeze widget style works
@@ -202,8 +191,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
-        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos())
-                   .angleDegree());
+        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
         // widget style works
@@ -222,8 +210,7 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
         d_pointer->m_mouseEventActive = false;
-        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos())
-                   .angleDegree());
+        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
         // widget style works
@@ -246,10 +233,8 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
     // a mouse wheel event occurs.
     // TODO What is a reasonable value for this?
     static constexpr qreal wheelStep = 5;
-    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) -
-        d_pointer->border();
-    PolarPointF myPolarPoint =
-        d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
+    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
+    PolarPointF myPolarPoint = d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
         // Do nothing while mouse movement is tracked anyway. This would
         // be confusing.
@@ -370,13 +355,10 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     painter.drawImage(0, 0, d_pointer->m_wheelImage.getImage());
 
     // paint the handle
-    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) -
-        d_pointer->border();
+    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
     // get widget coordinates for our handle
-    QPointF myHandleInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
-        PolarPointF(radius - gradientThickness(), d_pointer->m_hue));
-    QPointF myHandleOuter = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
-        PolarPointF(radius, d_pointer->m_hue));
+    QPointF myHandleInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(PolarPointF(radius - gradientThickness(), d_pointer->m_hue));
+    QPointF myHandleOuter = d_pointer->fromWheelCoordinatesToWidgetCoordinates(PolarPointF(radius, d_pointer->m_hue));
     // draw the line
     QPen pen;
     pen.setWidth(handleOutlineThickness());
@@ -391,11 +373,10 @@ void ColorWheel::paintEvent(QPaintEvent *event)
         pen.setWidth(handleOutlineThickness());
         pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
-        painter.drawEllipse(
-            handleOutlineThickness() / 2, // Integer division (rounding down)
-            handleOutlineThickness() / 2, // Integer division (rounding down)
-            d_pointer->contentDiameter() - handleOutlineThickness(),
-            d_pointer->contentDiameter() - handleOutlineThickness());
+        painter.drawEllipse(handleOutlineThickness() / 2, // Integer division (rounding down)
+                            handleOutlineThickness() / 2, // Integer division (rounding down)
+                            d_pointer->contentDiameter() - handleOutlineThickness(),
+                            d_pointer->contentDiameter() - handleOutlineThickness());
     }
 
     // Paint the buffer to the actual widget
@@ -475,10 +456,8 @@ QSize ColorWheel::sizeHint() const
     // We interpretate the gradientMinimumLength() as the length of the
     // circumference of the inner circle of the wheel. By dividing it by π
     // we get the requiered inner diameter:
-    const qreal innerDiameter =
-        gradientMinimumLength() / M_PI * scaleFromMinumumSizeHintToSizeHint;
-    const int size = qRound(innerDiameter + 2 * gradientThickness() +
-                            2 * d_pointer->border());
+    const qreal innerDiameter = gradientMinimumLength() / M_PI * scaleFromMinumumSizeHintToSizeHint;
+    const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * d_pointer->border());
     return QSize(size, size);
 }
 
@@ -496,8 +475,7 @@ QSize ColorWheel::minimumSizeHint() const
     // circumference of the inner circle of the wheel. By dividing it by π
     // we get the requiered inner diameter:
     const qreal innerDiameter = gradientMinimumLength() / M_PI;
-    const int size = qRound(innerDiameter + 2 * gradientThickness() +
-                            2 * d_pointer->border());
+    const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * d_pointer->border());
     return QSize(size, size);
 }
 

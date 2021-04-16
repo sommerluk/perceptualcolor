@@ -72,20 +72,14 @@ public:
     /** @brief Default destructor. */
     virtual ~FallbackIconEngine() override = default;
     virtual QIconEngine *clone() const override;
-    virtual void paint(QPainter *painter,
-                       const QRect &rect,
-                       QIcon::Mode mode,
-                       QIcon::State state) override;
-    virtual QPixmap
-    pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
+    virtual void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
+    virtual QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
     void setReferenceWidget(QWidget *referenceWidget);
 
 private:
     // Functions
     explicit FallbackIconEngine(const FallbackIconEngine &other);
-    void paintRefreshFallbackIcon(QPainter *painter,
-                                  const QRect rect,
-                                  QIcon::Mode mode);
+    void paintRefreshFallbackIcon(QPainter *painter, const QRect rect, QIcon::Mode mode);
 
     // Data members
     /** @brief Holds a guarded pointer to the reference widget.

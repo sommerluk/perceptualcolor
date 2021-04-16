@@ -105,8 +105,7 @@ public:
     //      operator must be an lvalue reference type”
     // Therefore, we exclude the following line from this specific clazy check,
     // by adding a magic comment after it.
-    PolarPointF &operator=(const PolarPointF &other) =
-        default; // clazy:exclude=function-args-by-value
+    PolarPointF &operator=(const PolarPointF &other) = default; // clazy:exclude=function-args-by-value
 
     /** @brief Default move assignment operator
      *

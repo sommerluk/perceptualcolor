@@ -80,8 +80,7 @@ ColorDialog::ColorDialog(QWidget *parent)
     // parameter was invalid. As m_currentOpaqueColor is invalid
     // be default, and therefor different, setCurrentColor()
     // guaranties to update all widgets.
-    LchDouble lch = d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(
-        initialColor);
+    LchDouble lch = d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(initialColor);
     LchaDouble lcha;
     lcha.l = lch.l;
     lcha.c = lch.c;
@@ -137,8 +136,7 @@ ColorDialog::ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink)
 QColor ColorDialog::currentColor() const
 {
     QColor temp;
-    temp = d_pointer->m_rgbColorSpace->colorRgbBound(
-        d_pointer->m_currentOpaqueColor);
+    temp = d_pointer->m_rgbColorSpace->colorRgbBound(d_pointer->m_currentOpaqueColor);
     temp.setAlphaF(d_pointer->m_alphaGradientSlider->value());
     return temp;
 }
@@ -180,8 +178,7 @@ void ColorDialog::setCurrentColor(const QColor &color)
  *
  * @param color The new color to set. The alpha value is taken
  * into account. */
-void ColorDialog::ColorDialogPrivate::setCurrentFullColor(
-    const LchaDouble &color)
+void ColorDialog::ColorDialogPrivate::setCurrentFullColor(const LchaDouble &color)
 {
     qreal myAlphaF;
     if (q_pointer->testOption(ColorDialogOption::ShowAlphaChannel)) {
@@ -218,8 +215,7 @@ void ColorDialog::open(QObject *receiver, const char *member)
  * QColor
  * @param color the new color. Expected to be in RGB color
  *              space (RGB, HSV etc.) */
-void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(
-    const QColor &color)
+void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(const QColor &color)
 {
     setCurrentOpaqueColor(m_rgbColorSpace->colorLch(color));
 }
@@ -246,11 +242,9 @@ void ColorDialog::ColorDialogPrivate::updateColorPatch()
  * @note Recursive functions calls are ignored. This is useful, because you
  * can connect signals from various widgets to this slot without having to
  * worry about infinite recursions. */
-void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(
-    const LchDouble &color)
+void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &color)
 {
-    if (m_isColorChangeInProgress ||
-        (color.hasSameCoordinates(m_currentOpaqueColor))) {
+    if (m_isColorChangeInProgress || (color.hasSameCoordinates(m_currentOpaqueColor))) {
         // Nothing to do!
         return;
     }
@@ -336,10 +330,7 @@ void ColorDialog::ColorDialogPrivate::readLightnessValue()
 void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 {
     QList<MultiSpinBox::SectionData> hsvSections = m_hsvSpinBox->sections();
-    setCurrentOpaqueQColor(
-        QColor::fromHsvF(hsvSections[0].value / static_cast<qreal>(360),
-                         hsvSections[1].value / static_cast<qreal>(255),
-                         hsvSections[2].value / static_cast<qreal>(255)));
+    setCurrentOpaqueQColor(QColor::fromHsvF(hsvSections[0].value / static_cast<qreal>(360), hsvSections[1].value / static_cast<qreal>(255), hsvSections[2].value / static_cast<qreal>(255)));
 }
 
 /** @brief Reads the decimal RGB numbers in the dialog and
@@ -347,10 +338,7 @@ void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 void ColorDialog::ColorDialogPrivate::readRgbNumericValues()
 {
     QList<MultiSpinBox::SectionData> rgbSections = m_rgbSpinBox->sections();
-    setCurrentOpaqueQColor(
-        QColor::fromRgbF(rgbSections[0].value / static_cast<qreal>(255),
-                         rgbSections[1].value / static_cast<qreal>(255),
-                         rgbSections[2].value / static_cast<qreal>(255)));
+    setCurrentOpaqueQColor(QColor::fromRgbF(rgbSections[0].value / static_cast<qreal>(255), rgbSections[1].value / static_cast<qreal>(255), rgbSections[2].value / static_cast<qreal>(255)));
 }
 
 /** @brief Reads the hexadecimal RGB numbers in the dialog and
@@ -368,8 +356,7 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
     }
     // Return to the finally considered value (the new one if valid, the old
     // one otherwise.)
-    m_rgbLineEdit->setText(
-        m_rgbColorSpace->colorRgb(m_currentOpaqueColor).name());
+    m_rgbLineEdit->setText(m_rgbColorSpace->colorRgb(m_currentOpaqueColor).name());
 }
 
 /** @brief Basic initialization.
@@ -422,8 +409,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
 
     // Create widgets for alpha value
     QHBoxLayout *m_alphaLayout = new QHBoxLayout();
-    m_alphaGradientSlider =
-        new GradientSlider(m_rgbColorSpace, Qt::Orientation::Horizontal);
+    m_alphaGradientSlider = new GradientSlider(m_rgbColorSpace, Qt::Orientation::Horizontal);
     m_alphaGradientSlider->setSingleStep(singleStepAlpha);
     m_alphaGradientSlider->setPageStep(pageStepAlpha);
     m_alphaSpinBox = new QDoubleSpinBox();
@@ -442,16 +428,9 @@ void ColorDialog::ColorDialogPrivate::initialize()
     m_alphaLayout->addWidget(m_alphaSpinBox);
 
     // Create the default buttons
-    m_buttonBox =
-        new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(m_buttonBox,
-            &QDialogButtonBox::accepted,
-            q_pointer,
-            &PerceptualColor::ColorDialog::accept);
-    connect(m_buttonBox,
-            &QDialogButtonBox::rejected,
-            q_pointer,
-            &PerceptualColor::ColorDialog::reject);
+    m_buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(m_buttonBox, &QDialogButtonBox::accepted, q_pointer, &PerceptualColor::ColorDialog::accept);
+    connect(m_buttonBox, &QDialogButtonBox::rejected, q_pointer, &PerceptualColor::ColorDialog::reject);
 
     // Create the main layout
     QVBoxLayout *tempMainLayout = new QVBoxLayout();
@@ -462,51 +441,19 @@ void ColorDialog::ColorDialogPrivate::initialize()
     q_pointer->setLayout(tempMainLayout);
 
     // initialize signal-slot-connections
-    connect(m_rgbSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() {
-        readRgbNumericValues();
+    connect(m_rgbSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() { readRgbNumericValues(); });
+    connect(m_rgbLineEdit, &QLineEdit::editingFinished, q_pointer, [this]() { readRgbHexValues(); });
+    connect(m_hsvSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() { readHsvNumericValues(); });
+    connect(m_hlcSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() { readHlcNumericValues(); });
+    connect(m_lchLightnessSelector, &GradientSlider::valueChanged, q_pointer, [this]() { readLightnessValue(); });
+    connect(m_wheelColorPicker, &WheelColorPicker::currentColorChanged, q_pointer, [this](const PerceptualColor::LchDouble &color) { setCurrentOpaqueColor(color); });
+    connect(m_chromaHueDiagram, &ChromaHueDiagram::currentColorChanged, q_pointer, [this](const PerceptualColor::LchDouble &color) { setCurrentOpaqueColor(color); });
+    connect(m_alphaGradientSlider, &GradientSlider::valueChanged, q_pointer, [this]() { updateColorPatch(); });
+    connect(m_alphaGradientSlider, &GradientSlider::valueChanged, q_pointer, [this](const qreal newFraction) {
+        const QSignalBlocker blocker(m_alphaSpinBox);
+        m_alphaSpinBox->setValue(newFraction * 100);
     });
-    connect(m_rgbLineEdit, &QLineEdit::editingFinished, q_pointer, [this]() {
-        readRgbHexValues();
-    });
-    connect(m_hsvSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() {
-        readHsvNumericValues();
-    });
-    connect(m_hlcSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() {
-        readHlcNumericValues();
-    });
-    connect(m_lchLightnessSelector,
-            &GradientSlider::valueChanged,
-            q_pointer,
-            [this]() { readLightnessValue(); });
-    connect(m_wheelColorPicker,
-            &WheelColorPicker::currentColorChanged,
-            q_pointer,
-            [this](const PerceptualColor::LchDouble &color) {
-                setCurrentOpaqueColor(color);
-            });
-    connect(m_chromaHueDiagram,
-            &ChromaHueDiagram::currentColorChanged,
-            q_pointer,
-            [this](const PerceptualColor::LchDouble &color) {
-                setCurrentOpaqueColor(color);
-            });
-    connect(m_alphaGradientSlider,
-            &GradientSlider::valueChanged,
-            q_pointer,
-            [this]() { updateColorPatch(); });
-    connect(m_alphaGradientSlider,
-            &GradientSlider::valueChanged,
-            q_pointer,
-            [this](const qreal newFraction) {
-                const QSignalBlocker blocker(m_alphaSpinBox);
-                m_alphaSpinBox->setValue(newFraction * 100);
-            });
-    connect(m_alphaSpinBox,
-            QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-            q_pointer,
-            [this](const double newValue) {
-                m_alphaGradientSlider->setValue(newValue / 100);
-            });
+    connect(m_alphaSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), q_pointer, [this](const double newValue) { m_alphaGradientSlider->setValue(newValue / 100); });
 
     // Initialize the options
     q_pointer->setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
@@ -535,19 +482,15 @@ void ColorDialog::ColorDialogPrivate::initialize()
     // myIcon takes ownership of myIconEngine, therefore we won’t
     // delete myIconEngine manually.
     QIcon myIcon = QIcon(myIconEngine);
-    QAction *myAction = new QAction(
-        myIcon,          // icon
-        QLatin1String(), // text
-        // The q_pointer’s object is still not fully initialized at
-        // this point, but it’s base class constructor has fully run;
-        // this should be enough to use functionality based on QWidget.
-        q_pointer // parent object
+    QAction *myAction = new QAction(myIcon,          // icon
+                                    QLatin1String(), // text
+                                    // The q_pointer’s object is still not fully initialized at
+                                    // this point, but it’s base class constructor has fully run;
+                                    // this should be enough to use functionality based on QWidget.
+                                    q_pointer // parent object
     );
-    m_hlcSpinBox->addActionButton(myAction,
-                                  QLineEdit::ActionPosition::TrailingPosition);
-    connect(myAction, &QAction::triggered, q_pointer, [this]() {
-        readHlcNumericValues();
-    });
+    m_hlcSpinBox->addActionButton(myAction, QLineEdit::ActionPosition::TrailingPosition);
+    connect(myAction, &QAction::triggered, q_pointer, [this]() { readHlcNumericValues(); });
 }
 
 /** @brief Reads the HLC numbers in the dialog and
@@ -589,10 +532,8 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     // Create widget for the hex style color representation
     m_rgbLineEdit = new QLineEdit();
     m_rgbLineEdit->setMaxLength(7);
-    QRegularExpression tempRegularExpression(
-        QStringLiteral(u"#?[0-9A-Fa-f]{0,6}"));
-    QRegularExpressionValidator *validator =
-        new QRegularExpressionValidator(tempRegularExpression, q_pointer);
+    QRegularExpression tempRegularExpression(QStringLiteral(u"#?[0-9A-Fa-f]{0,6}"));
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator(tempRegularExpression, q_pointer);
     m_rgbLineEdit->setValidator(validator);
     m_rgbLineEdit->setWhatsThis(
         tr("<p>Hexadecimal color code, as used in HTML</p>"
@@ -646,9 +587,7 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     // The “copyright” field is not really interesting for the user; we do
     // not use it here.
     rgbGroupBox->setTitle(m_rgbColorSpace->profileInfoDescription());
-    if (!m_rgbColorSpace->profileInfoDescription().isEmpty() ||
-        !m_rgbColorSpace->profileInfoManufacturer().isEmpty() ||
-        !m_rgbColorSpace->profileInfoModel().isEmpty()) {
+    if (!m_rgbColorSpace->profileInfoDescription().isEmpty() || !m_rgbColorSpace->profileInfoManufacturer().isEmpty() || !m_rgbColorSpace->profileInfoModel().isEmpty()) {
         // The profile infos might theoretically contain HTML tagging,
         // and the whatsThis property might interpretate them as such
         // (it switches on a heuristic between rich text with HTML tags,
@@ -656,21 +595,15 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
         // not be clear which is the correct rendering, and a slightly
         // wrong rendering will not harm…
         QStringList profileInfo;
-        profileInfo.append(tr(
-            "<b>Information about the currently used RGB color profile</b>"));
+        profileInfo.append(tr("<b>Information about the currently used RGB color profile</b>"));
         if (!m_rgbColorSpace->profileInfoDescription().isEmpty()) {
-            profileInfo.append(
-                tr("Description: <i>%1</i>")
-                    .arg(m_rgbColorSpace->profileInfoDescription()));
+            profileInfo.append(tr("Description: <i>%1</i>").arg(m_rgbColorSpace->profileInfoDescription()));
         }
         if (!m_rgbColorSpace->profileInfoManufacturer().isEmpty()) {
-            profileInfo.append(
-                tr("Manufacturer: <i>%1</i>")
-                    .arg(m_rgbColorSpace->profileInfoManufacturer()));
+            profileInfo.append(tr("Manufacturer: <i>%1</i>").arg(m_rgbColorSpace->profileInfoManufacturer()));
         }
         if (!m_rgbColorSpace->profileInfoModel().isEmpty()) {
-            profileInfo.append(tr("Model: <i>%1</i>")
-                                   .arg(m_rgbColorSpace->profileInfoModel()));
+            profileInfo.append(tr("Model: <i>%1</i>").arg(m_rgbColorSpace->profileInfoModel()));
         }
         // Set help text.
         rgbGroupBox->setWhatsThis(profileInfo.join(QStringLiteral("<br>")));
@@ -729,9 +662,7 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
  * @param option the option to set
  * @param on the new value of the option
  */
-void ColorDialog::setOption(
-    PerceptualColor::ColorDialog::ColorDialogOption option,
-    bool on)
+void ColorDialog::setOption(PerceptualColor::ColorDialog::ColorDialogOption option, bool on)
 {
     QColorDialog::ColorDialogOptions temp = d_pointer->m_options;
     temp.setFlag(option, on);
@@ -739,8 +670,7 @@ void ColorDialog::setOption(
 }
 
 /** @brief Setter for @ref options */
-void ColorDialog::setOptions(
-    PerceptualColor::ColorDialog::ColorDialogOptions newOptions)
+void ColorDialog::setOptions(PerceptualColor::ColorDialog::ColorDialogOptions newOptions)
 {
     if (newOptions == d_pointer->m_options) {
         return;
@@ -750,19 +680,16 @@ void ColorDialog::setOptions(
     d_pointer->m_options = newOptions;
     // Correct QColorDialog::ColorDialogOption::DontUseNativeDialog
     // which must be always on
-    d_pointer->m_options.setFlag(
-        QColorDialog::ColorDialogOption::DontUseNativeDialog, true);
+    d_pointer->m_options.setFlag(QColorDialog::ColorDialogOption::DontUseNativeDialog, true);
 
     // Apply the new options (alpha)
-    const bool alphaVisibility = d_pointer->m_options.testFlag(
-        QColorDialog::ColorDialogOption::ShowAlphaChannel);
+    const bool alphaVisibility = d_pointer->m_options.testFlag(QColorDialog::ColorDialogOption::ShowAlphaChannel);
     d_pointer->m_alphaLabel->setVisible(alphaVisibility);
     d_pointer->m_alphaGradientSlider->setVisible(alphaVisibility);
     d_pointer->m_alphaSpinBox->setVisible(alphaVisibility);
 
     // Apply the new options (buttons)
-    d_pointer->m_buttonBox->setVisible(!d_pointer->m_options.testFlag(
-        QColorDialog::ColorDialogOption::NoButtons));
+    d_pointer->m_buttonBox->setVisible(!d_pointer->m_options.testFlag(QColorDialog::ColorDialogOption::NoButtons));
 
     // Notify
     Q_EMIT optionsChanged(d_pointer->m_options);
@@ -775,8 +702,7 @@ void ColorDialog::setOptions(
  * @param option the requested option
  * @returns the value of the requested option
  */
-bool ColorDialog::testOption(
-    PerceptualColor::ColorDialog::ColorDialogOption option) const
+bool ColorDialog::testOption(PerceptualColor::ColorDialog::ColorDialogOption option) const
 {
     return d_pointer->m_options.testFlag(option);
 }
@@ -792,10 +718,7 @@ bool ColorDialog::testOption(
  *                dialog
  * @returns       selectedColor(): The color the user has selected; or an
  *                invalid color if the user has canceled the dialog. */
-QColor ColorDialog::getColor(const QColor &initial,
-                             QWidget *parent,
-                             const QString &title,
-                             QColorDialog::ColorDialogOptions options)
+QColor ColorDialog::getColor(const QColor &initial, QWidget *parent, const QString &title, QColorDialog::ColorDialogOptions options)
 {
     ColorDialog temp(parent);
     if (!title.isEmpty()) {
@@ -870,10 +793,7 @@ void ColorDialog::done(int result)
         // syntax, given that d_pointer->m_memberToBeDisconnected
         // can contain different classes, which would be difficult
         // it typing the class name directly in the new syntax.
-        disconnect(this,
-                   SIGNAL(colorSelected(QColor)),
-                   d_pointer->m_receiverToBeDisconnected,
-                   d_pointer->m_memberToBeDisconnected.constData());
+        disconnect(this, SIGNAL(colorSelected(QColor)), d_pointer->m_receiverToBeDisconnected, d_pointer->m_memberToBeDisconnected.constData());
         d_pointer->m_receiverToBeDisconnected = nullptr;
     }
 }
@@ -886,8 +806,7 @@ ColorDialog::DialogLayoutDimensions ColorDialog::layoutDimensions() const
 }
 
 /** @brief Setter for property @ref layoutDimensions */
-void ColorDialog::setLayoutDimensions(
-    const ColorDialog::DialogLayoutDimensions newLayoutDimensions)
+void ColorDialog::setLayoutDimensions(const ColorDialog::DialogLayoutDimensions newLayoutDimensions)
 {
     d_pointer->m_layoutDimensions = newLayoutDimensions;
     d_pointer->applyLayoutDimensions();
@@ -918,15 +837,13 @@ void ColorDialog::ColorDialogPrivate::applyLayoutDimensions()
         // We should not use more than 70% of the screen for a dialog.
         // That's roughly the same as the default maximum sizes for
         // a QDialog.
-        effectivelyAvailableScreenWidth = qRound(
-            QGuiApplication::primaryScreen()->availableSize().width() * 0.7);
+        effectivelyAvailableScreenWidth = qRound(QGuiApplication::primaryScreen()->availableSize().width() * 0.7);
 
         // Now we calculate the space we need for displaying the
         // graphical selectors and the numerical selector at their
         // preferred size in an expanded layout.
         // Start with the size of the graphical selectors.
-        widthThreeshold = qMax(m_wheelColorPicker->sizeHint().width(),
-                               m_lightnessFirstWidget->sizeHint().width());
+        widthThreeshold = qMax(m_wheelColorPicker->sizeHint().width(), m_lightnessFirstWidget->sizeHint().width());
         // Add the size of the numerical selector.
         widthThreeshold += m_numericalWidget->sizeHint().width();
         // Add some space for margins.

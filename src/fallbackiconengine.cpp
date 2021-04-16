@@ -111,9 +111,7 @@ void FallbackIconEngine::setReferenceWidget(QWidget *referenceWidget)
  * @param state The state of the icon.
  * @returns The icon as a pixmap with the required size,
  * mode, and state. */
-QPixmap FallbackIconEngine::pixmap(const QSize &size,
-                                   QIcon::Mode mode,
-                                   QIcon::State state)
+QPixmap FallbackIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
 {
     QImage iconImage {size, QImage::Format_ARGB32_Premultiplied};
     iconImage.fill(Qt::transparent);
@@ -138,9 +136,7 @@ QPixmap FallbackIconEngine::pixmap(const QSize &size,
  * @param painter Uses the given painter to paint the icon
  * @param rect into the rectangle rect
  * @param mode with the required mode. */
-void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter,
-                                                  const QRect rect,
-                                                  QIcon::Mode mode)
+void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter, const QRect rect, QIcon::Mode mode)
 {
     if (rect.isEmpty()) {
         // Return on empty rectangles. This avoids bad calculations with
@@ -159,10 +155,8 @@ void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter,
     constexpr int designSpace = 16;
     const int destinationSpace = qMin(rect.width(), rect.height());
     const qreal halfDestinationSpace = destinationSpace / 2.0;
-    const qreal scaleFactor =
-        static_cast<qreal>(destinationSpace) / designSpace;
-    const qreal radius =
-        halfDestinationSpace - 0.5 * unscaledPenWidth * scaleFactor;
+    const qreal scaleFactor = static_cast<qreal>(destinationSpace) / designSpace;
+    const qreal radius = halfDestinationSpace - 0.5 * unscaledPenWidth * scaleFactor;
     painter->setRenderHint(QPainter::RenderHint::Antialiasing);
     painter->setCompositionMode(
         // While CompositionMode_SourceOver is the default value
@@ -193,13 +187,9 @@ void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter,
     } else {
         referencePalette = m_referenceWidget->palette();
     }
-    pen.setColor(
-        referencePalette.color(paletteColorGroup, QPalette::ColorRole::Text));
+    pen.setColor(referencePalette.color(paletteColorGroup, QPalette::ColorRole::Text));
     painter->setPen(pen);
-    painter->drawEllipse(QPointF(halfDestinationSpace + rect.left(),
-                                 halfDestinationSpace + rect.top()),
-                         radius,
-                         radius);
+    painter->drawEllipse(QPointF(halfDestinationSpace + rect.left(), halfDestinationSpace + rect.top()), radius, radius);
 }
 
 /** @brief Paints the icon.
@@ -210,10 +200,7 @@ void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter,
  * @param rect into the rectangle rect
  * @param mode with the required mode
  * @param state and state. */
-void FallbackIconEngine::paint(QPainter *painter,
-                               const QRect &rect,
-                               QIcon::Mode mode,
-                               QIcon::State state)
+void FallbackIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
 {
     // Initialize
     QIcon myIcon;
@@ -241,8 +228,7 @@ void FallbackIconEngine::paint(QPainter *painter,
     } else {
         referenceStyle = m_referenceWidget->style();
     }
-    myIcon =
-        referenceStyle->standardIcon(QStyle::StandardPixmap::SP_BrowserReload);
+    myIcon = referenceStyle->standardIcon(QStyle::StandardPixmap::SP_BrowserReload);
     if (!myIcon.isNull()) {
         myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
         return;

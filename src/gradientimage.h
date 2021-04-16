@@ -80,8 +80,7 @@ namespace PerceptualColor
 class GradientImage final
 {
 public:
-    explicit GradientImage(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
+    explicit GradientImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     LchaDouble colorFromValue(qreal value) const;
     QImage getImage();
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);

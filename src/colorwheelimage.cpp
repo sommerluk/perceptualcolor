@@ -40,8 +40,7 @@
 namespace PerceptualColor
 {
 /** @brief Constructor */
-ColorWheelImage::ColorWheelImage(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+ColorWheelImage::ColorWheelImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_rgbColorSpace(colorSpace)
 {
 }
@@ -174,13 +173,11 @@ QImage ColorWheelImage::getImage()
     }
 
     // construct our final QImage with transparent background
-    m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical),
-                     QImage::Format_ARGB32_Premultiplied);
+    m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical), QImage::Format_ARGB32_Premultiplied);
     m_image.fill(Qt::transparent);
 
     // Calculate diameter of the outer circle
-    const qreal outerCircleDiameter =
-        m_imageSizePhysical - 2 * m_borderPhysical;
+    const qreal outerCircleDiameter = m_imageSizePhysical - 2 * m_borderPhysical;
 
     // Special case: an empty image
     if (outerCircleDiameter <= 0) {
@@ -203,8 +200,7 @@ QImage ColorWheelImage::getImage()
     QColor rgbColor;
     LchDouble lch;
     qreal center = (m_imageSizePhysical - 1) / static_cast<qreal>(2);
-    m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical),
-                     QImage::Format_ARGB32_Premultiplied);
+    m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical), QImage::Format_ARGB32_Premultiplied);
     // Because there may be out-of-gamut colors for some hue (depending on the
     // given lightness and chroma value) which are drawn transparent, it is
     // important to initialize this image with a transparent background.
@@ -214,14 +210,12 @@ QImage ColorWheelImage::getImage()
     // minimumRadial: Adding "+ 1" would reduce the workload (less pixel to
     // process) and still work mostly, but not completely. It creates sometimes
     // artifacts in the anti-aliasing process. So we don't do that.
-    const qreal minimumRadial =
-        center - m_wheelThicknessPhysical - m_borderPhysical - overlap;
+    const qreal minimumRadial = center - m_wheelThicknessPhysical - m_borderPhysical - overlap;
     const qreal maximumRadial = center - m_borderPhysical + overlap;
     for (x = 0; x < m_imageSizePhysical; ++x) {
         for (y = 0; y < m_imageSizePhysical; ++y) {
             polarCoordinates = PolarPointF(QPointF(x - center, center - y));
-            if (inRange<qreal>(
-                    minimumRadial, polarCoordinates.radial(), maximumRadial)
+            if (inRange<qreal>(minimumRadial, polarCoordinates.radial(), maximumRadial)
 
             ) {
                 // We are within the wheel
@@ -242,34 +236,27 @@ QImage ColorWheelImage::getImage()
     // seem to work. Therefore, we use a workaround and draw a very think
     // circle outline around the circle with QPainter::CompositionMode_Clear.
     const qreal circleRadius = outerCircleDiameter / 2;
-    const qreal cutOffThickness =
-        qSqrt(qPow(m_imageSizePhysical, 2) * 2) / 2 // ½ of image diagonal
-        - circleRadius                              // circle radius
-        + overlap;                                  // just to be sure
+    const qreal cutOffThickness = qSqrt(qPow(m_imageSizePhysical, 2) * 2) / 2 // ½ of image diagonal
+        - circleRadius                                                        // circle radius
+        + overlap;                                                            // just to be sure
     QPainter myPainter(&m_image);
     myPainter.setRenderHint(QPainter::Antialiasing, true);
     myPainter.setPen(QPen(Qt::SolidPattern, cutOffThickness));
     myPainter.setCompositionMode(QPainter::CompositionMode_Clear);
-    myPainter.drawEllipse(
-        QPointF(static_cast<qreal>(m_imageSizePhysical) / 2,
-                static_cast<qreal>(m_imageSizePhysical) / 2), // center
-        circleRadius + cutOffThickness / 2,                   // width
-        circleRadius + cutOffThickness / 2                    // height
+    myPainter.drawEllipse(QPointF(static_cast<qreal>(m_imageSizePhysical) / 2,
+                                  static_cast<qreal>(m_imageSizePhysical) / 2), // center
+                          circleRadius + cutOffThickness / 2,                   // width
+                          circleRadius + cutOffThickness / 2                    // height
     );
 
     // set the inner circle of the wheel to anti-aliased transparency
-    const qreal innerCircleDiameter =
-        m_imageSizePhysical - 2 * (m_wheelThicknessPhysical + m_borderPhysical);
+    const qreal innerCircleDiameter = m_imageSizePhysical - 2 * (m_wheelThicknessPhysical + m_borderPhysical);
     if (innerCircleDiameter > 0) {
         myPainter.setCompositionMode(QPainter::CompositionMode_Clear);
         myPainter.setRenderHint(QPainter::Antialiasing, true);
         myPainter.setPen(QPen(Qt::NoPen));
         myPainter.setBrush(QBrush(Qt::SolidPattern));
-        myPainter.drawEllipse(
-            QRectF(m_wheelThicknessPhysical + m_borderPhysical,
-                   m_wheelThicknessPhysical + m_borderPhysical,
-                   innerCircleDiameter,
-                   innerCircleDiameter));
+        myPainter.drawEllipse(QRectF(m_wheelThicknessPhysical + m_borderPhysical, m_wheelThicknessPhysical + m_borderPhysical, innerCircleDiameter, innerCircleDiameter));
     }
 
     // Set the correct scaling information for the image and return

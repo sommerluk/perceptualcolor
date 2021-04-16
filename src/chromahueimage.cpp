@@ -39,8 +39,7 @@
 namespace PerceptualColor
 {
 /** @brief Constructor */
-ChromaHueImage::ChromaHueImage(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+ChromaHueImage::ChromaHueImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_rgbColorSpace(colorSpace)
 {
 }
@@ -128,8 +127,7 @@ void ChromaHueImage::setImageSize(const int newImageSize)
  * @param newLightness The new lightness. Valid range is <tt>[0, 100]</tt>. */
 void ChromaHueImage::setLightness(const qreal newLightness)
 {
-    const qreal temp =
-        qBound(static_cast<qreal>(0), newLightness, static_cast<qreal>(100));
+    const qreal temp = qBound(static_cast<qreal>(0), newLightness, static_cast<qreal>(100));
     if (m_lightness != temp) {
         m_lightness = temp;
         // Free the memory used by the old image.
@@ -143,10 +141,7 @@ void ChromaHueImage::setLightness(const qreal newLightness)
  * range is <tt>[0, @ref LchValues::humanMaximumChroma]</tt>. */
 void ChromaHueImage::setChromaRange(const qreal newChromaRange)
 {
-    const qreal temp =
-        qBound(static_cast<qreal>(0),
-               static_cast<qreal>(newChromaRange),
-               static_cast<qreal>(LchValues::humanMaximumChroma));
+    const qreal temp = qBound(static_cast<qreal>(0), static_cast<qreal>(newChromaRange), static_cast<qreal>(LchValues::humanMaximumChroma));
     if (m_chromaRange != temp) {
         m_chromaRange = temp;
         // Free the memory used by the old image.
@@ -173,13 +168,11 @@ QImage ChromaHueImage::getImage()
 
     // If no image is in cache, create a new one (in the cache) with
     // correct image size.
-    m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical),
-                     QImage::Format_ARGB32_Premultiplied);
+    m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical), QImage::Format_ARGB32_Premultiplied);
     // Calculate the radius of the circle we want to paint (and which will
     // finally have the background color, while everything around will be
     // transparent).
-    const qreal circleRadius =
-        (m_imageSizePhysical - 2 * m_borderPhysical) / 2.;
+    const qreal circleRadius = (m_imageSizePhysical - 2 * m_borderPhysical) / 2.;
     if (circleRadius <= 0) {
         // The border is too big the and image size too small: The size
         // of the circle is zero. The image will therefore be transparent.
@@ -220,13 +213,10 @@ QImage ChromaHueImage::getImage()
     // work) is only done when within a given diameter, reducing loop runs
     // itself might also increase performance at least a little bit…
     for (y = 0; y < m_imageSizePhysical; ++y) {
-        lab.b =
-            m_chromaRange - (y + pixelOffset - m_borderPhysical) * scaleFactor;
+        lab.b = m_chromaRange - (y + pixelOffset - m_borderPhysical) * scaleFactor;
         for (x = 0; x < m_imageSizePhysical; ++x) {
-            lab.a = (x + pixelOffset - m_borderPhysical) * scaleFactor -
-                m_chromaRange;
-            if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <=
-                (qPow(m_chromaRange + overlap, 2))) {
+            lab.a = (x + pixelOffset - m_borderPhysical) * scaleFactor - m_chromaRange;
+            if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= (qPow(m_chromaRange + overlap, 2))) {
                 tempColor = m_rgbColorSpace->colorRgb(lab);
                 if (tempColor.isValid()) {
                     // The pixel is within the gamut!
@@ -247,19 +237,17 @@ QImage ChromaHueImage::getImage()
     // everything that is not in the circle. Unfourtunally, this does not
     // seem to work. Therefore, we use a workaround and draw a very think
     // circle outline around the circle with QPainter::CompositionMode_Clear.
-    const qreal cutOffThickness =
-        qSqrt(qPow(m_imageSizePhysical, 2) * 2) / 2 // ½ of image diagonal
-        - circleRadius                              // circle radius
-        + overlap;                                  // just to be sure
+    const qreal cutOffThickness = qSqrt(qPow(m_imageSizePhysical, 2) * 2) / 2 // ½ of image diagonal
+        - circleRadius                                                        // circle radius
+        + overlap;                                                            // just to be sure
     QPainter myPainter(&m_image);
     myPainter.setRenderHint(QPainter::Antialiasing, true);
     myPainter.setPen(QPen(Qt::SolidPattern, cutOffThickness));
     myPainter.setCompositionMode(QPainter::CompositionMode_Clear);
-    myPainter.drawEllipse(
-        QPointF(static_cast<qreal>(m_imageSizePhysical) / 2,
-                static_cast<qreal>(m_imageSizePhysical) / 2), // center
-        circleRadius + cutOffThickness / 2,                   // width
-        circleRadius + cutOffThickness / 2                    // height
+    myPainter.drawEllipse(QPointF(static_cast<qreal>(m_imageSizePhysical) / 2,
+                                  static_cast<qreal>(m_imageSizePhysical) / 2), // center
+                          circleRadius + cutOffThickness / 2,                   // width
+                          circleRadius + cutOffThickness / 2                    // height
     );
 
     // Set the correct scaling information for the image and return

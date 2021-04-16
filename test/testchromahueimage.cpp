@@ -47,8 +47,7 @@ public:
     void testSnippet01()
     {
         //! [ChromaHueImage HiDPI usage]
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
-            new PerceptualColor::RgbColorSpace()};
+        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {new PerceptualColor::RgbColorSpace()};
         PerceptualColor::ChromaHueImage test(myColorSpace);
         // The function setImageSize() expects an int
         // value. static_cast<int> will round down, which
@@ -153,14 +152,10 @@ private Q_SLOTS:
         ChromaHueImage test(colorSpace);
         test.setImageSize(99);
         // Default border is zero: no transparent border.
-        QVERIFY2(test.getImage().pixelColor(49, 0).alpha() > 0,
-                 "Verify that pixel top center is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(49, 98).alpha() > 0,
-                 "Verify that pixel bottom center is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(0, 49).alpha() > 0,
-                 "Verify that pixel left is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(98, 49).alpha() > 0,
-                 "Verify that pixel right is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(49, 0).alpha() > 0, "Verify that pixel top center is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(49, 98).alpha() > 0, "Verify that pixel bottom center is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(0, 49).alpha() > 0, "Verify that pixel left is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(98, 49).alpha() > 0, "Verify that pixel right is not transparent.");
         test.setBorder(1);
         // Now, the pixels should become transparent.
         QCOMPARE(test.getImage().pixelColor(49, 0).alpha(), 0);
@@ -174,22 +169,14 @@ private Q_SLOTS:
         ChromaHueImage test(colorSpace);
         test.setImageSize(100);
         // Default border is zero: no transparent border.
-        QVERIFY2(test.getImage().pixelColor(49, 0).alpha() > 0,
-                 "Verify that pixel top center is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(50, 0).alpha() > 0,
-                 "Verify that pixel top center is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(49, 99).alpha() > 0,
-                 "Verify that pixel bottom center is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(50, 99).alpha() > 0,
-                 "Verify that pixel bottom center is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(0, 49).alpha() > 0,
-                 "Verify that pixel left is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(0, 50).alpha() > 0,
-                 "Verify that pixel left is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(99, 49).alpha() > 0,
-                 "Verify that pixel right is not transparent.");
-        QVERIFY2(test.getImage().pixelColor(99, 50).alpha() > 0,
-                 "Verify that pixel right is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(49, 0).alpha() > 0, "Verify that pixel top center is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(50, 0).alpha() > 0, "Verify that pixel top center is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(49, 99).alpha() > 0, "Verify that pixel bottom center is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(50, 99).alpha() > 0, "Verify that pixel bottom center is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(0, 49).alpha() > 0, "Verify that pixel left is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(0, 50).alpha() > 0, "Verify that pixel left is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(99, 49).alpha() > 0, "Verify that pixel right is not transparent.");
+        QVERIFY2(test.getImage().pixelColor(99, 50).alpha() > 0, "Verify that pixel right is not transparent.");
         test.setBorder(1);
         // Now, the pixels should become transparent.
         QCOMPARE(test.getImage().pixelColor(49, 0).alpha(), 0);
@@ -206,14 +193,11 @@ private Q_SLOTS:
     {
         ChromaHueImage test(colorSpace);
         test.setImageSize(50); // Set a non-zero image size
-        QVERIFY2(test.m_image.isNull(),
-                 "Verify that instantiation is done with empty cache.");
+        QVERIFY2(test.m_image.isNull(), "Verify that instantiation is done with empty cache.");
         test.setBorder(5);
-        QVERIFY2(test.m_image.isNull(),
-                 "Verify that setting border does not trigger re-calculation.");
+        QVERIFY2(test.m_image.isNull(), "Verify that setting border does not trigger re-calculation.");
         test.getImage();
-        QVERIFY2(!test.m_image.isNull(),
-                 "Verify that getImage() triggers re-calculation.");
+        QVERIFY2(!test.m_image.isNull(), "Verify that getImage() triggers re-calculation.");
         test.setBorder(5);
         QVERIFY2(!test.m_image.isNull(),
                  "Verify that setBorder() does not erease the cache"
@@ -323,13 +307,7 @@ private Q_SLOTS:
         test.setLightness(lightness);
         // Test the lightness. We are using QColor’s simple (non-color-managed)
         // lightness property. Therefore, we allow a tolerance up to 10%.
-        QVERIFY2(PerceptualColor::inRange(
-                     lightness * 0.9,
-                     test.getImage()
-                             .pixelColor(imageSize / 2, imageSize / 2)
-                             .lightnessF() *
-                         100,
-                     lightness * 1.1),
+        QVERIFY2(PerceptualColor::inRange(lightness * 0.9, test.getImage().pixelColor(imageSize / 2, imageSize / 2).lightnessF() * 100, lightness * 1.1),
                  "Verify that the correct lightness is applied. "
                  "(10% tolerance is allowed.)");
     }
@@ -414,18 +392,13 @@ private Q_SLOTS:
         constexpr int oddSize = 101;
         test.setImageSize(oddSize); // an odd numer
         constexpr int positionAtCenter = (oddSize - 1) / 2;
-        const qreal chromaAtCenter =
-            colorSpace
-                ->colorLch(test.getImage().pixelColor(positionAtCenter,
-                                                      positionAtCenter))
-                .c;
+        const qreal chromaAtCenter = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter, positionAtCenter)).c;
         for (int x = positionAtCenter - 2; x <= positionAtCenter + 2; ++x) {
             for (int y = positionAtCenter - 2; y <= positionAtCenter + 2; ++y) {
                 if ((x == positionAtCenter) && (y == positionAtCenter)) {
                     continue;
                 }
-                const qreal chromaAround =
-                    colorSpace->colorLch(test.getImage().pixelColor(x, y)).c;
+                const qreal chromaAround = colorSpace->colorLch(test.getImage().pixelColor(x, y)).c;
                 QVERIFY2(chromaAtCenter < chromaAround,
                          "The chroma of the pixel at the center of the image "
                          "is lower than the chroma of any of the pixels "
@@ -444,38 +417,17 @@ private Q_SLOTS:
         test.setImageSize(evenSize); // an odd numer
         constexpr int positionAtCenter2 = evenSize / 2;
         constexpr int positionAtCenter1 = positionAtCenter2 - 1;
-        const qreal chromaAtCenterA =
-            colorSpace
-                ->colorLch(test.getImage().pixelColor(positionAtCenter1,
-                                                      positionAtCenter1))
-                .c;
-        const qreal chromaAtCenterB =
-            colorSpace
-                ->colorLch(test.getImage().pixelColor(positionAtCenter1,
-                                                      positionAtCenter2))
-                .c;
-        const qreal chromaAtCenterC =
-            colorSpace
-                ->colorLch(test.getImage().pixelColor(positionAtCenter2,
-                                                      positionAtCenter1))
-                .c;
-        const qreal chromaAtCenterD =
-            colorSpace
-                ->colorLch(test.getImage().pixelColor(positionAtCenter2,
-                                                      positionAtCenter2))
-                .c;
-        const qreal maximumChromaAtCenter =
-            qMax(qMax(chromaAtCenterA, chromaAtCenterB),
-                 qMax(chromaAtCenterC, chromaAtCenterD));
+        const qreal chromaAtCenterA = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter1, positionAtCenter1)).c;
+        const qreal chromaAtCenterB = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter1, positionAtCenter2)).c;
+        const qreal chromaAtCenterC = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter2, positionAtCenter1)).c;
+        const qreal chromaAtCenterD = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter2, positionAtCenter2)).c;
+        const qreal maximumChromaAtCenter = qMax(qMax(chromaAtCenterA, chromaAtCenterB), qMax(chromaAtCenterC, chromaAtCenterD));
         for (int x = positionAtCenter1 - 2; x <= positionAtCenter2 + 2; ++x) {
-            for (int y = positionAtCenter1 - 2; y <= positionAtCenter2 + 2;
-                 ++y) {
-                if (inRange(positionAtCenter1, x, positionAtCenter2) &&
-                    inRange(positionAtCenter1, y, positionAtCenter2)) {
+            for (int y = positionAtCenter1 - 2; y <= positionAtCenter2 + 2; ++y) {
+                if (inRange(positionAtCenter1, x, positionAtCenter2) && inRange(positionAtCenter1, y, positionAtCenter2)) {
                     continue;
                 }
-                const qreal chromaAround =
-                    colorSpace->colorLch(test.getImage().pixelColor(x, y)).c;
+                const qreal chromaAround = colorSpace->colorLch(test.getImage().pixelColor(x, y)).c;
                 QVERIFY2(maximumChromaAtCenter < chromaAround,
                          "The chroma of the pixels at the center of the image "
                          "is lower than the chroma of any of the pixels "

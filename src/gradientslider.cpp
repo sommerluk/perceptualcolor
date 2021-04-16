@@ -44,9 +44,7 @@ namespace PerceptualColor
 /** @brief Constructs a vertical slider.
  * @param colorSpace the color space
  * @param parent parent widget (if any) */
-GradientSlider::GradientSlider(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    QWidget *parent)
+GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new GradientSliderPrivate(this, colorSpace))
 {
@@ -59,10 +57,7 @@ GradientSlider::GradientSlider(
  * the slider is horizontal or vertical; the valid values
  * are <tt>Qt::Vertical</tt> and <tt>Qt::Horizontal</tt>.
  * @param parent parent widget (if any) */
-GradientSlider::GradientSlider(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    Qt::Orientation orientation,
-    QWidget *parent)
+GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, Qt::Orientation orientation, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new GradientSliderPrivate(this, colorSpace))
 {
@@ -79,9 +74,7 @@ GradientSlider::~GradientSlider() noexcept
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
  * @param colorSpace The color spaces within this widget should operate. */
-GradientSlider::GradientSliderPrivate::GradientSliderPrivate(
-    GradientSlider *backLink,
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+GradientSlider::GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_gradientImageCache(colorSpace)
     , q_pointer(backLink)
 {
@@ -102,9 +95,7 @@ GradientSlider::GradientSliderPrivate::GradientSliderPrivate(
  * @param colorSpace the color space
  * @param orientation determines whether the slider is horizontal or
  * vertical */
-void GradientSlider::GradientSliderPrivate::initialize(
-    const QSharedPointer<RgbColorSpace> &colorSpace,
-    Qt::Orientation orientation)
+void GradientSlider::GradientSliderPrivate::initialize(const QSharedPointer<RgbColorSpace> &colorSpace, Qt::Orientation orientation)
 {
     q_pointer->setFocusPolicy(Qt::StrongFocus);
     m_rgbColorSpace = colorSpace;
@@ -132,8 +123,7 @@ LchaDouble GradientSlider::firstColor() const
 /** @brief Setter for @ref firstColor property.
  *
  * @param newFirstColor the new @ref firstColor */
-void GradientSlider::setFirstColor(
-    const PerceptualColor::LchaDouble &newFirstColor)
+void GradientSlider::setFirstColor(const PerceptualColor::LchaDouble &newFirstColor)
 {
     if (!d_pointer->m_firstColor.hasSameCoordinates(newFirstColor)) {
         d_pointer->m_firstColor = newFirstColor;
@@ -153,8 +143,7 @@ LchaDouble GradientSlider::secondColor() const
 /** @brief Setter for @ref secondColor property.
  *
  * @param newSecondColor the new @ref secondColor */
-void GradientSlider::setSecondColor(
-    const PerceptualColor::LchaDouble &newSecondColor)
+void GradientSlider::setSecondColor(const PerceptualColor::LchaDouble &newSecondColor)
 {
     if (!d_pointer->m_secondColor.hasSameCoordinates(newSecondColor)) {
         d_pointer->m_secondColor = newSecondColor;
@@ -169,9 +158,7 @@ void GradientSlider::setSecondColor(
  *
  * @param newFirstColor the new @ref firstColor
  * @param newSecondColor the new @ref secondColor */
-void GradientSlider::setColors(
-    const PerceptualColor::LchaDouble &newFirstColor,
-    const PerceptualColor::LchaDouble &newSecondColor)
+void GradientSlider::setColors(const PerceptualColor::LchaDouble &newFirstColor, const PerceptualColor::LchaDouble &newSecondColor)
 {
     setFirstColor(newFirstColor);
     setSecondColor(newSecondColor);
@@ -185,8 +172,7 @@ void GradientSlider::setColors(
 void GradientSlider::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    d_pointer->m_gradientImageCache.setGradientLength(
-        d_pointer->physicalPixelLength());
+    d_pointer->m_gradientImageCache.setGradientLength(d_pointer->physicalPixelLength());
     d_pointer->m_gradientImageCache.setGradientThickness(
         // Normally, this should not change, but maybe on Hight-DPI
         // devices there might be some differences.
@@ -204,13 +190,11 @@ QSize GradientSlider::sizeHint() const
 {
     QSize result;
     if (d_pointer->m_orientation == Qt::Orientation::Horizontal) {
-        result.setWidth(qRound(gradientMinimumLength() *
-                               scaleFromMinumumSizeHintToSizeHint));
+        result.setWidth(qRound(gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint));
         result.setHeight(gradientThickness());
     } else {
         result.setWidth(gradientThickness());
-        result.setHeight(qRound(gradientMinimumLength() *
-                                scaleFromMinumumSizeHintToSizeHint));
+        result.setHeight(qRound(gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint));
     }
     return result;
 }
@@ -339,9 +323,7 @@ void GradientSlider::wheelEvent(QWheelEvent *event)
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
         qreal stepSize;
-        if (QGuiApplication::keyboardModifiers().testFlag(
-                Qt::ControlModifier) ||
-            QGuiApplication::keyboardModifiers().testFlag(Qt::ShiftModifier)) {
+        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier) || QGuiApplication::keyboardModifiers().testFlag(Qt::ShiftModifier)) {
             stepSize = pageStep();
         } else {
             stepSize = singleStep();
@@ -435,9 +417,7 @@ Qt::Orientation GradientSlider::orientation() const
  * is <em>not</em> emitted. The <tt>sizePolicy</tt> property is updated
  * corresponding to the <em>new</em> orientation; this happens even if the new
  * orientation is identical to the old @ref m_orientation! */
-void GradientSlider ::GradientSliderPrivate ::
-    setOrientationWithoutSignalAndForceNewSizePolicy(
-        Qt::Orientation newOrientation)
+void GradientSlider ::GradientSliderPrivate ::setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation newOrientation)
 {
     if (newOrientation == Qt::Orientation::Vertical) {
         q_pointer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -460,8 +440,7 @@ void GradientSlider ::GradientSliderPrivate ::
 void GradientSlider::setOrientation(Qt::Orientation newOrientation)
 {
     if (newOrientation != d_pointer->m_orientation) {
-        d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(
-            newOrientation);
+        d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(newOrientation);
         Q_EMIT orientationChanged(d_pointer->m_orientation);
     }
 }
@@ -506,22 +485,18 @@ int GradientSlider::GradientSliderPrivate::physicalPixelThickness() const
  * @returns The corresponding @ref value for the (center of the) given
  * pixel position.
  * @sa @ref MeasurementDetails "Notes about measurement" */
-qreal GradientSlider::GradientSliderPrivate::fromWidgetPixelPositionToValue(
-    QPoint pixelPosition)
+qreal GradientSlider::GradientSliderPrivate::fromWidgetPixelPositionToValue(QPoint pixelPosition)
 {
     // We are interested in the point in the middle of the given pixel.
     const QPointF coordinatePoint = pixelPosition + QPointF(0.5, 0.5);
     qreal temp;
     if (m_orientation == Qt::Orientation::Vertical) {
-        temp = (q_pointer->size().height() - coordinatePoint.y()) /
-            static_cast<qreal>(q_pointer->size().height());
+        temp = (q_pointer->size().height() - coordinatePoint.y()) / static_cast<qreal>(q_pointer->size().height());
     } else {
         if (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-            temp = coordinatePoint.x() /
-                static_cast<qreal>(q_pointer->size().width());
+            temp = coordinatePoint.x() / static_cast<qreal>(q_pointer->size().width());
         } else {
-            temp = (q_pointer->size().width() - coordinatePoint.x()) /
-                static_cast<qreal>(q_pointer->size().width());
+            temp = (q_pointer->size().width() - coordinatePoint.x()) / static_cast<qreal>(q_pointer->size().width());
         }
     }
     return qBound<qreal>(0, temp, 1);
@@ -564,8 +539,7 @@ void GradientSlider::paintEvent(QPaintEvent *event)
     // about these values and are sure the any changes have yet been
     // applied.
     d_pointer->m_gradientImageCache.setDevicePixelRatioF(devicePixelRatioF());
-    d_pointer->m_gradientImageCache.setGradientLength(
-        d_pointer->physicalPixelLength());
+    d_pointer->m_gradientImageCache.setGradientLength(d_pointer->physicalPixelLength());
     d_pointer->m_gradientImageCache.setGradientThickness(
         // Normally, this should not change, but maybe on Hight-DPI
         // devices there are some differences.
@@ -586,22 +560,17 @@ void GradientSlider::paintEvent(QPaintEvent *event)
     // additionally the position is more exact!
     bufferPainter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
-    const qreal handleCoordinatePoint = d_pointer->physicalPixelLength() /
-        devicePixelRatioF() * d_pointer->m_value;
+    const qreal handleCoordinatePoint = d_pointer->physicalPixelLength() / devicePixelRatioF() * d_pointer->m_value;
     if (hasFocus()) {
         pen.setWidthF(handleOutlineThickness() * 3);
         pen.setColor(focusIndicatorColor());
         bufferPainter.setPen(pen);
-        bufferPainter.drawLine(
-            QPointF(handleCoordinatePoint, 0),
-            QPointF(handleCoordinatePoint, gradientThickness()));
+        bufferPainter.drawLine(QPointF(handleCoordinatePoint, 0), QPointF(handleCoordinatePoint, gradientThickness()));
     }
     pen.setWidthF(handleOutlineThickness());
-    pen.setColor(handleColorFromBackgroundLightness(
-        d_pointer->m_gradientImageCache.colorFromValue(d_pointer->m_value).l));
+    pen.setColor(handleColorFromBackgroundLightness(d_pointer->m_gradientImageCache.colorFromValue(d_pointer->m_value).l));
     bufferPainter.setPen(pen);
-    bufferPainter.drawLine(QPointF(handleCoordinatePoint, 0),
-                           QPointF(handleCoordinatePoint, gradientThickness()));
+    bufferPainter.drawLine(QPointF(handleCoordinatePoint, 0), QPointF(handleCoordinatePoint, gradientThickness()));
 
     // Paint the buffer to the actual widget
     QTransform transform;

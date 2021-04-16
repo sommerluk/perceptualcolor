@@ -69,13 +69,10 @@ class ChromaLightnessDiagram : public AbstractDiagram
      * @sa currentColor() const
      * @sa setCurrentColor()
      * @sa currentColorChanged() */
-    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE
-                   setCurrentColor NOTIFY currentColorChanged USER true)
+    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged USER true)
 
 public:
-    Q_INVOKABLE explicit ChromaLightnessDiagram(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~ChromaLightnessDiagram() noexcept override;
     PerceptualColor::LchDouble currentColor() const;
     Q_INVOKABLE qreal hue() const;

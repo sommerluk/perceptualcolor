@@ -208,8 +208,7 @@ public:
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual QSize minimumSizeHint() const override;
     Q_INVOKABLE QList<MultiSpinBox::SectionData> sections() const;
-    Q_INVOKABLE void
-    setSections(const QList<MultiSpinBox::SectionData> &newSections);
+    Q_INVOKABLE void setSections(const QList<MultiSpinBox::SectionData> &newSections);
     virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
 
@@ -236,8 +235,7 @@ private:
     friend class TestMultiSpinBox;
 };
 
-QDebug operator<<(QDebug dbg,
-                  const PerceptualColor::MultiSpinBox::SectionData &value);
+QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value);
 
 }
 
