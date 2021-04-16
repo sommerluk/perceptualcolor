@@ -66,6 +66,23 @@ CODE_WITHOUT_UNIT_TESTS="include src"
 CODE_AND_UNIT_TESTS="include src test"
 UNIT_TESTS="test"
 
+# Test if the file is a symlink
+# symlink seem to not work correctly in clang-format, for example after
+# changes have been made in the .clang-format file.
+# Hardlinks are not an alternative because of problems in git.
+if [ -L "src/.clang-format" ]; then
+  echo "src/.clang-format is a symlink."
+fi
+if [ -L "test/.clang-format" ]; then
+  echo "test/.clang-format is a symlink."
+fi
+if [ -L "include/.clang-format" ]; then
+  echo "include/.clang-format is a symlink."
+fi
+# Test if all .clang-format files have the same content as src/.clang-format
+diff src/.clang-format test/.clang-format
+diff src/.clang-format include/.clang-format
+
 # Search for files that do not start with a byte-order-mark (BOM).
 # We do this because Microsoft’s compiler does require a BOM at the start
 # of the file in order to interpretate it as UTF-8.
