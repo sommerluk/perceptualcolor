@@ -30,8 +30,8 @@
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/abstractdiagram.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class AbstractDiagram::AbstractDiagramPrivate final
@@ -44,6 +44,7 @@ public:
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~AbstractDiagramPrivate() noexcept = default;
+
 private:
     Q_DISABLE_COPY(AbstractDiagramPrivate)
 };

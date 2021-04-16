@@ -28,16 +28,15 @@
 #define EXTENDEDDOUBLEVALIDATOR_P_H
 
 // Include the header of the public class of this private implementation.
-#include "extendeddoublevalidator.h"
 #include "constpropagatingrawpointer.h"
+#include "extendeddoublevalidator.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class ExtendedDoubleValidator::ExtendedDoubleValidatorPrivate final
 {
-
 public:
     /** @brief Constructor */
     ExtendedDoubleValidatorPrivate() = default;
@@ -54,7 +53,6 @@ public:
 
 private:
     Q_DISABLE_COPY(ExtendedDoubleValidatorPrivate)
-
 };
 
 }

@@ -34,8 +34,8 @@
 #include <PerceptualColor/lchadouble.h>
 #include <PerceptualColor/rgbcolorspace.h>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A slider who’s groove displays an LCh color gradient.
  *
  * The groove of this slider that displays a gradient between two LCh
@@ -98,7 +98,8 @@ class GradientSlider : public AbstractDiagram
      * @sa NOTIFY @ref firstColorChanged()
      * @sa @ref GradientSliderPrivate::m_firstColor
      * @sa @ref secondColor */
-    Q_PROPERTY(PerceptualColor::LchaDouble firstColor READ firstColor WRITE setFirstColor NOTIFY firstColorChanged)
+    Q_PROPERTY(PerceptualColor::LchaDouble firstColor READ firstColor WRITE
+                   setFirstColor NOTIFY firstColorChanged)
 
     /** @brief Orientation of the widget.
      *
@@ -118,7 +119,8 @@ class GradientSlider : public AbstractDiagram
      * @sa WRITE @ref setOrientation()
      * @sa NOTIFY @ref orientationChanged()
      * @sa @ref GradientSliderPrivate::m_orientation */
-    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
+    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation
+                   NOTIFY orientationChanged)
 
     /** @brief This property holds the page step.
      *
@@ -132,7 +134,8 @@ class GradientSlider : public AbstractDiagram
      * @sa NOTIFY @ref pageStepChanged()
      * @sa @ref GradientSliderPrivate::m_pageStep()
      * @sa @ref singleStep */
-    Q_PROPERTY(qreal pageStep READ pageStep WRITE setPageStep NOTIFY pageStepChanged)
+    Q_PROPERTY(
+        qreal pageStep READ pageStep WRITE setPageStep NOTIFY pageStepChanged)
 
     /** @brief Second color (the one corresponding to a low @ref value)
      *
@@ -141,7 +144,8 @@ class GradientSlider : public AbstractDiagram
      * @sa NOTIFY @ref secondColorChanged()
      * @sa @ref GradientSliderPrivate::m_secondColor
      * @sa @ref firstColor */
-    Q_PROPERTY(PerceptualColor::LchaDouble secondColor READ secondColor WRITE setSecondColor NOTIFY secondColorChanged)
+    Q_PROPERTY(PerceptualColor::LchaDouble secondColor READ secondColor WRITE
+                   setSecondColor NOTIFY secondColorChanged)
 
     /** @brief This property holds the single step.
      *
@@ -155,7 +159,8 @@ class GradientSlider : public AbstractDiagram
      * @sa NOTIFY @ref singleStepChanged()
      * @sa @ref GradientSliderPrivate::m_singleStep()
      * @sa @ref pageStep */
-    Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep NOTIFY singleStepChanged)
+    Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep NOTIFY
+                   singleStepChanged)
 
     /** @brief The slider’s current value.
      *
@@ -170,18 +175,17 @@ class GradientSlider : public AbstractDiagram
      * @sa WRITE @ref setValue()
      * @sa NOTIFY @ref valueChanged()
      * @sa @ref GradientSliderPrivate::m_value() */
-    Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
+    Q_PROPERTY(
+        qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
     Q_INVOKABLE explicit GradientSlider(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr
-    );
+        QWidget *parent = nullptr);
     Q_INVOKABLE explicit GradientSlider(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
         Qt::Orientation orientation,
-        QWidget *parent = nullptr
-    );
+        QWidget *parent = nullptr);
     virtual ~GradientSlider() noexcept override;
     /** @brief Getter for property @ref firstColor
      *  @returns the property */
@@ -225,10 +229,8 @@ Q_SIGNALS:
     void valueChanged(const qreal newValue);
 
 public Q_SLOTS:
-    void setColors(
-        const PerceptualColor::LchaDouble &newFirstColor,
-        const PerceptualColor::LchaDouble &newSecondColor
-    );
+    void setColors(const PerceptualColor::LchaDouble &newFirstColor,
+                   const PerceptualColor::LchaDouble &newSecondColor);
     void setFirstColor(const PerceptualColor::LchaDouble &newFirstColor);
     void setOrientation(const Qt::Orientation newOrientation);
     void setPageStep(const qreal newPageStep);
@@ -259,7 +261,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestGradientSlider;
-
 };
 
 } // namespace PerceptualColor

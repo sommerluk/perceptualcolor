@@ -387,7 +387,8 @@
  * compatibility. See also the document <em>
  * <a href="https://accu.org/journals/overload/18/100/love_1718/">Interface
  * Versioning in C++</a></em> and KDE’s information document <em>
- * <a href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
+ * <a
+ * href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
  * Binary Compatibility Issues With C++</a></em> and for details.
  *
  * @todo All <tt>d_pointer</tt> and <tt>q_pointer</tt> could be changed
@@ -403,5 +404,6 @@
  *
  * All symbols that are provided in this library are encapsulated within this
  * namespace. */
-namespace PerceptualColor {
+namespace PerceptualColor
+{
 }

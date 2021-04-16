@@ -27,8 +27,8 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#include <QtGlobal>
 #include <QVersionNumber>
+#include <QtGlobal>
 
 /** @file
  *
@@ -107,17 +107,13 @@
  * To use this macro, include <tt>version.h</tt>
  *
  * @sa @ref versioninfo */
-#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION \
-    ( \
-        QT_VERSION_CHECK( \
-            PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR, \
-            PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR, \
-            PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH \
-        ) \
-    )
+#define PERCEPTUALCOLOR_COMPILE_TIME_VERSION                                   \
+    (QT_VERSION_CHECK(PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR,              \
+                      PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR,              \
+                      PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH))
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 QVersionNumber perceptualColorRunTimeVersion();
 
 }

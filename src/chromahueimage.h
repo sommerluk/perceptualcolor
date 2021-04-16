@@ -32,8 +32,8 @@
 
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief An image of a chroma hue plane.
  *
  * This is a cut through the gamut body. The cut is orthogonal to
@@ -83,8 +83,7 @@ class ChromaHueImage final
 {
 public:
     explicit ChromaHueImage(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-    );
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     QImage getImage();
     void setBorder(const qreal newBorder);
     void setChromaRange(const qreal newChromaRange);
@@ -139,7 +138,6 @@ private:
     qreal m_chromaRange = 0;
     /** @brief Pointer to @ref RgbColorSpace object */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
-
 };
 
 }

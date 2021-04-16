@@ -32,8 +32,8 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A perceptually uniform color picker dialog
  *
  * The color dialog’s function is to allow users to choose colors intuitively.
@@ -247,7 +247,8 @@ namespace PerceptualColor {
  * name “Default”? Add
  * <a href="https://www.w3.org/TR/css-color-4/#named-colors">CSS colors</a> as
  * defined as sRGB values?
- * <a href="https://en.wikipedia.org/wiki/Web_colors#Web-safe_colors">Web-save colors</a>
+ * <a
+ * href="https://en.wikipedia.org/wiki/Web_colors#Web-safe_colors">Web-save colors</a>
  * (but with another name, maybe “216 colors”) as bigger palette, without a
  * specific color space – does not make sense, since we provide a perceptual
  * color dialog, which allows things much beyond 216 colors, and 216 colors
@@ -282,7 +283,8 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged()
      * @sa @ref ColorDialogPrivate::m_currentOpaqueColor */
-    Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
+    Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor
+                   NOTIFY currentColorChanged)
 
     /** @brief Various options that affect the look and feel of the dialog
      *
@@ -291,9 +293,11 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      *
      * | Option              | Default value | Description
      * | :------------------ | :------------ | :----------
-     * | ShowAlphaChannel    | false         | Allow the user to select the alpha component of a color.
-     * | NoButtons           | false         | Don't display OK and Cancel buttons. (Useful for “live dialogs”.)
-     * | DontUseNativeDialog | true          | Use Qt’s standard color dialog instead of the operating system native color dialog.
+     * | ShowAlphaChannel    | false         | Allow the user to select the
+     * alpha component of a color. | NoButtons           | false         | Don't
+     * display OK and Cancel buttons. (Useful for “live dialogs”.) |
+     * DontUseNativeDialog | true          | Use Qt’s standard color dialog
+     * instead of the operating system native color dialog.
      *
      *   @invariant The option
      *   <tt>ColorDialogOption::DontUseNativeDialog</tt> will
@@ -307,7 +311,8 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * Example:
      * @snippet test/testcolordialog.cpp ColorDialog Set options with local enum
      * Or:
-     * @snippet test/testcolordialog.cpp ColorDialog Set options with QColorDialog enum
+     * @snippet test/testcolordialog.cpp ColorDialog Set options with
+     * QColorDialog enum
      * @note At difference to QColorDialog, you need a fully qualified
      * identifier for the enum values. The following code would therefore
      * fail:<br/>
@@ -319,7 +324,8 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * @sa @ref setOption()
      * @sa NOTIFY @ref optionsChanged()
      * @sa @ref ColorDialogPrivate::m_options */
-    Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
+    Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY
+                   optionsChanged)
 
     /** @brief Layout dimensions
      *
@@ -339,7 +345,8 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * @sa READ @ref layoutDimensions() const
      * @sa WRITE @ref setLayoutDimensions()
      * @sa NOTIFY @ref layoutDimensionsChanged */
-    Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
+    Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions
+                   WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
 
 public:
     /** @brief Local alias for QColorDialog::ColorDialogOption */
@@ -361,24 +368,20 @@ public:
             <em>not</em> evaluated again when a yet existing dialog is just
             moved to another screen. */
         collapsed, /**< Use the small, “collapsed“ layout of this dialog. */
-        expanded /**< Use the large, “expanded” layout of this dialog.  */
+        expanded   /**< Use the large, “expanded” layout of this dialog.  */
     };
     Q_ENUM(DialogLayoutDimensions)
     Q_INVOKABLE explicit ColorDialog(QWidget *parent = nullptr);
-    Q_INVOKABLE explicit ColorDialog(
-        const QColor &initial,
-        QWidget *parent = nullptr
-    );
+    Q_INVOKABLE explicit ColorDialog(const QColor &initial,
+                                     QWidget *parent = nullptr);
     virtual ~ColorDialog() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     QColor currentColor() const;
-    static QColor getColor(
-        const QColor &initial = Qt::white,
-        QWidget *parent = nullptr,
-        const QString &title = QString(),
-        ColorDialogOptions options = ColorDialogOptions()
-    );
+    static QColor getColor(const QColor &initial = Qt::white,
+                           QWidget *parent = nullptr,
+                           const QString &title = QString(),
+                           ColorDialogOptions options = ColorDialogOptions());
     ColorDialog::DialogLayoutDimensions layoutDimensions() const;
     // Make sure not to override the base class’s “open“ function
     using QDialog::open;
@@ -388,23 +391,19 @@ public:
     ColorDialogOptions options() const;
     Q_INVOKABLE QColor selectedColor() const;
     virtual void setVisible(bool visible) override;
-    Q_INVOKABLE bool testOption(
-        PerceptualColor::ColorDialog::ColorDialogOption option
-    ) const;
+    Q_INVOKABLE bool
+    testOption(PerceptualColor::ColorDialog::ColorDialogOption option) const;
 
 public Q_SLOTS:
     void setCurrentColor(const QColor &color);
     void setLayoutDimensions(
         const PerceptualColor::ColorDialog::DialogLayoutDimensions
-            newLayoutDimensions
-    );
-    Q_INVOKABLE void setOption(
-        PerceptualColor::ColorDialog::ColorDialogOption option,
-        bool on = true
-    );
-    void setOptions(
-        PerceptualColor::ColorDialog::ColorDialogOptions newOptions
-    );
+            newLayoutDimensions);
+    Q_INVOKABLE void
+    setOption(PerceptualColor::ColorDialog::ColorDialogOption option,
+              bool on = true);
+    void
+    setOptions(PerceptualColor::ColorDialog::ColorDialogOptions newOptions);
 
 Q_SIGNALS:
     /** @brief This signal is emitted just after the user has clicked OK to
@@ -422,14 +421,12 @@ Q_SIGNALS:
      * @param newLayoutDimensions the new layout dimensions */
     void layoutDimensionsChanged(
         const PerceptualColor::ColorDialog::DialogLayoutDimensions
-            newLayoutDimensions
-    );
+            newLayoutDimensions);
     /** @brief Notify signal for property @ref options.
      *
      * @param newOptions the new options */
     void optionsChanged(
-        const PerceptualColor::ColorDialog::ColorDialogOptions newOptions
-    );
+        const PerceptualColor::ColorDialog::ColorDialogOptions newOptions);
 
 protected:
     virtual void done(int result) override;
@@ -448,7 +445,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestColorDialog;
-
 };
 
 }

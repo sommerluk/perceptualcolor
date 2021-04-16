@@ -96,18 +96,15 @@ static_assert(
     // interpreted the source code.
     (*(U"🖌")) == 0x1F58C,
     "Compiler must use UTF-8 as input character set.\n"
-        "(The source code has to be interpreted as UTF-8 by the compiler.)"
-);
+    "(The source code has to be interpreted as UTF-8 by the compiler.)");
 
-static_assert(
-    (static_cast<quint8>(*(("🖌")+0)) == 0xF0) &&
-        (static_cast<quint8>(*(("🖌")+1)) == 0x9F) &&
-        (static_cast<quint8>(*(("🖌")+2)) == 0x96) &&
-        (static_cast<quint8>(*(("🖌")+3)) == 0x8C) &&
-        (static_cast<quint8>(*(("🖌")+4)) == 0x00),
-    "Compiler must use UTF-8 as narrow execution character set.\n"
-        "(char* must contain UTF-8 encoded data.)\n"
-        "Example: gcc -fexec-charset=UTF-8"
-);
+static_assert((static_cast<quint8>(*(("🖌") + 0)) == 0xF0) &&
+                  (static_cast<quint8>(*(("🖌") + 1)) == 0x9F) &&
+                  (static_cast<quint8>(*(("🖌") + 2)) == 0x96) &&
+                  (static_cast<quint8>(*(("🖌") + 3)) == 0x8C) &&
+                  (static_cast<quint8>(*(("🖌") + 4)) == 0x00),
+              "Compiler must use UTF-8 as narrow execution character set.\n"
+              "(char* must contain UTF-8 encoded data.)\n"
+              "Example: gcc -fexec-charset=UTF-8");
 
 #endif // PERCEPTUALCOLORLIB_INERNAL_H

@@ -36,13 +36,12 @@
 
 #include <QPainter>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Constructor */
 GradientImage::GradientImage(
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-) :
-    m_rgbColorSpace (colorSpace)
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+    : m_rgbColorSpace(colorSpace)
 {
     setFirstColor(LchaDouble(0, 0, 0, 1));
     setFirstColor(LchaDouble(1000, 0, 0, 1));
@@ -54,9 +53,7 @@ GradientImage::GradientImage(
  * it gets positive (which implies turning the hue by 180°). The hue is
  * normalized to the range <tt>[0°, 360°[</tt>. Lightness is bounded to the
  * range <tt>[0, 100]</tt>. Alpha is bounded to the range <tt>[0, 1]</tt>. */
-LchaDouble GradientImage::completlyNormalizedAndBounded(
-    const LchaDouble &color
-)
+LchaDouble GradientImage::completlyNormalizedAndBounded(const LchaDouble &color)
 {
     LchaDouble result;
     if (color.c < 0) {
@@ -96,11 +93,8 @@ void GradientImage::setSecondColor(const LchaDouble &newSecondColor)
 {
     LchaDouble correctedNewSecondColor =
         completlyNormalizedAndBounded(newSecondColor);
-    if (
-        !m_secondColorCorrectedAndAltered.hasSameCoordinates(
-            correctedNewSecondColor
-        )
-    ) {
+    if (!m_secondColorCorrectedAndAltered.hasSameCoordinates(
+            correctedNewSecondColor)) {
         m_secondColorCorrectedAndAltered = correctedNewSecondColor;
         updateSecondColor();
         // Free the memory used by the old image.
@@ -114,13 +108,10 @@ void GradientImage::setSecondColor(const LchaDouble &newSecondColor)
  * @ref m_firstColorCorrected and @ref m_secondColorCorrectedAndAltered. */
 void GradientImage::updateSecondColor()
 {
-    m_secondColorCorrectedAndAltered = completlyNormalizedAndBounded(
-        m_secondColorCorrectedAndAltered
-    );
-    if (
-        qAbs(m_firstColorCorrected.h - m_secondColorCorrectedAndAltered.h)
-            > 180
-    ) {
+    m_secondColorCorrectedAndAltered =
+        completlyNormalizedAndBounded(m_secondColorCorrectedAndAltered);
+    if (qAbs(m_firstColorCorrected.h - m_secondColorCorrectedAndAltered.h) >
+        180) {
         if (m_firstColorCorrected.h > m_secondColorCorrectedAndAltered.h) {
             m_secondColorCorrectedAndAltered.h += 360;
         } else {
@@ -130,13 +121,13 @@ void GradientImage::updateSecondColor()
 }
 
 /** @brief Delivers an image of a gradient
-*
-* @returns Delivers an image of a gradient. Its size is @ref m_gradientLength
-* and its height is @ref m_gradientThickness. The first color will be
-* at the left, and the second color will be at the right. The background
-* of transparent colors (if any) will be aligned to the top-left edge.
-*
-* If a color is out-of-gamut, a nearby substitution color will be used. */
+ *
+ * @returns Delivers an image of a gradient. Its size is @ref m_gradientLength
+ * and its height is @ref m_gradientThickness. The first color will be
+ * at the left, and the second color will be at the right. The background
+ * of transparent colors (if any) will be aligned to the top-left edge.
+ *
+ * If a color is out-of-gamut, a nearby substitution color will be used. */
 QImage GradientImage::getImage()
 {
     // If image is in cache, simply return the cache.
@@ -160,37 +151,26 @@ QImage GradientImage::getImage()
     temp.fill(Qt::transparent); // Initialize the image with transparency.
     LchaDouble color;
     for (int i = 0; i < m_gradientLength; ++i) {
-        color = colorFromValue(
-            (i + 0.5) / static_cast<qreal>(m_gradientLength)
-        );
-        temp.setPixelColor(
-            i,
-            0,
-            m_rgbColorSpace->colorRgbBound(color)
-        );
+        color =
+            colorFromValue((i + 0.5) / static_cast<qreal>(m_gradientLength));
+        temp.setPixelColor(i, 0, m_rgbColorSpace->colorRgbBound(color));
     }
 
     // Now, create a full image of the gradient
-    m_image = QImage(
-        m_gradientLength,
-        m_gradientThickness,
-        QImage::Format_ARGB32_Premultiplied
-    );
+    m_image = QImage(m_gradientLength,
+                     m_gradientThickness,
+                     QImage::Format_ARGB32_Premultiplied);
     QPainter painter(&m_image);
     // Transparency background
-    if (
-        (m_firstColorCorrected.a != 1)
-            || (m_secondColorCorrectedAndAltered.a != 1)
-    ) {
+    if ((m_firstColorCorrected.a != 1) ||
+        (m_secondColorCorrectedAndAltered.a != 1)) {
         // Fill the image with tiles. (QBrush will ignore
         // the devicePixelRatioF of the image of the tile.)
-        painter.fillRect(
-            0,
-            0,
-            m_gradientLength,
-            m_gradientThickness,
-            QBrush(transparencyBackground(m_devicePixelRatioF))
-        );
+        painter.fillRect(0,
+                         0,
+                         m_gradientLength,
+                         m_gradientThickness,
+                         QBrush(transparencyBackground(m_devicePixelRatioF)));
     }
     // Paint the gradient itself.
     for (int i = 0; i < m_gradientThickness; ++i) {
@@ -212,22 +192,14 @@ QImage GradientImage::getImage()
 LchaDouble GradientImage::colorFromValue(qreal value) const
 {
     LchaDouble color;
-    color.l =
-        m_firstColorCorrected.l
-            + (m_secondColorCorrectedAndAltered.l - m_firstColorCorrected.l)
-                * value;
-    color.c =
-        m_firstColorCorrected.c
-            + (m_secondColorCorrectedAndAltered.c - m_firstColorCorrected.c)
-                * value;
-    color.h =
-        m_firstColorCorrected.h
-            + (m_secondColorCorrectedAndAltered.h - m_firstColorCorrected.h)
-                * value;
-    color.a =
-        m_firstColorCorrected.a
-            + (m_secondColorCorrectedAndAltered.a - m_firstColorCorrected.a)
-                * value;
+    color.l = m_firstColorCorrected.l +
+        (m_secondColorCorrectedAndAltered.l - m_firstColorCorrected.l) * value;
+    color.c = m_firstColorCorrected.c +
+        (m_secondColorCorrectedAndAltered.c - m_firstColorCorrected.c) * value;
+    color.h = m_firstColorCorrected.h +
+        (m_secondColorCorrectedAndAltered.h - m_firstColorCorrected.h) * value;
+    color.a = m_firstColorCorrected.a +
+        (m_secondColorCorrectedAndAltered.a - m_firstColorCorrected.a) * value;
     return color;
 }
 

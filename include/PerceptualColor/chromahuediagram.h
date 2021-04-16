@@ -33,8 +33,8 @@
 #include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A widget for selecting chroma and hue in LCh color space
  *
  * This widget displays the plan of chroma and hue
@@ -53,7 +53,8 @@ namespace PerceptualColor {
  * polar coordinate system and to capture easily the current radial
  * and angle.
  *
- * Usage example: @snippet test/testchromahuediagram.cpp ChromaHueDiagram Instanciate
+ * Usage example: @snippet test/testchromahuediagram.cpp ChromaHueDiagram
+ * Instanciate
  *
  * @note This widget <em>always</em> accepts focus by a mouse click within
  * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
@@ -98,13 +99,13 @@ class ChromaHueDiagram : public AbstractDiagram
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged() */
-    Q_PROPERTY(LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
+    Q_PROPERTY(LchDouble currentColor READ currentColor WRITE setCurrentColor
+                   NOTIFY currentColorChanged)
 
 public:
     Q_INVOKABLE explicit ChromaHueDiagram(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr
-    );
+        QWidget *parent = nullptr);
     virtual ~ChromaHueDiagram() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
@@ -118,21 +119,18 @@ public Q_SLOTS:
 Q_SIGNALS:
     /** @brief Notify signal for property @ref currentColor.
      *  @param newCurrentColor the new current color */
-    void currentColorChanged(
-        const PerceptualColor::LchDouble &newCurrentColor
-    );
+    void currentColorChanged(const PerceptualColor::LchDouble &newCurrentColor);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void paintEvent(QPaintEvent* event) override;
-    virtual void resizeEvent(QResizeEvent* event) override;
-    virtual void wheelEvent(QWheelEvent* event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
+    virtual void resizeEvent(QResizeEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
 
 private:
-
     Q_DISABLE_COPY(ChromaHueDiagram)
 
     class ChromaHueDiagramPrivate;
@@ -146,7 +144,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestChromaHueDiagram;
-
 };
 
 }

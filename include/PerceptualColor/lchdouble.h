@@ -31,8 +31,8 @@
 
 #include <QDebug>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A LCH color.
  *
  * Storage of floating point LCH values with <tt>double</tt> precision.

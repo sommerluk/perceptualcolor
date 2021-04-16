@@ -32,8 +32,8 @@
 // Other includes
 #include <QtMath>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Constructor
  *
  * Normalizes the given polar coordinates and constructs an object with
@@ -63,23 +63,20 @@ PolarPointF::PolarPointF(const qreal newRadial, const qreal newAngleDegree)
  * @param cartesianCoordiantes the Cartesian coordinates */
 PolarPointF::PolarPointF(const QPointF cartesianCoordiantes)
 {
-    m_radial = sqrt(
-        pow(cartesianCoordiantes.x(), 2) + pow(cartesianCoordiantes.y(), 2)
-    );
+    m_radial = sqrt(pow(cartesianCoordiantes.x(), 2) +
+                    pow(cartesianCoordiantes.y(), 2));
     if (m_radial == 0) {
         m_angleDegree = 0;
         return;
     }
     if (cartesianCoordiantes.y() >= 0) {
-        m_angleDegree = qRadiansToDegrees(
-            acos(cartesianCoordiantes.x() / m_radial)
-        );
+        m_angleDegree =
+            qRadiansToDegrees(acos(cartesianCoordiantes.x() / m_radial));
     } else {
         // M_PI is defined by QtMath (also on platforms that don’t
         // support it native)
         m_angleDegree = qRadiansToDegrees(
-            2 * (M_PI) - acos(cartesianCoordiantes.x() / m_radial)
-        );
+            2 * (M_PI)-acos(cartesianCoordiantes.x() / m_radial));
     }
 }
 
@@ -99,8 +96,7 @@ bool PolarPointF::isSamePoint(const PolarPointF other) const
         (m_radial == other.m_radial) &&
         // angle has to be identical (except when radial is 0, because
         // then angle is meaningless)
-        ( (m_angleDegree == other.m_angleDegree) || (m_radial == 0) )
-    );
+        ((m_angleDegree == other.m_angleDegree) || (m_radial == 0)));
 }
 
 /** @brief Normalized radial
@@ -148,30 +144,20 @@ qreal PolarPointF::normalizedAngleDegree(const qreal angleDegree)
  * @returns the corresponding Cartesian coordinates */
 QPointF PolarPointF::toCartesian() const
 {
-    return QPointF(
-        m_radial * cos(qDegreesToRadians(m_angleDegree)),
-        m_radial * sin(qDegreesToRadians(m_angleDegree))
-    );
+    return QPointF(m_radial * cos(qDegreesToRadians(m_angleDegree)),
+                   m_radial * sin(qDegreesToRadians(m_angleDegree)));
 }
 
 /** @brief Adds QDebug() support for this data type. */
 QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)
 {
-    dbg.nospace()
-        << "PolarPointF(radial: "
-        << value.radial()
-        << ", angleDegree: "
-        << value.angleDegree()
-        << "°)";
+    dbg.nospace() << "PolarPointF(radial: " << value.radial()
+                  << ", angleDegree: " << value.angleDegree() << "°)";
     return dbg.maybeSpace();
 }
 
-static_assert(
-    std::is_trivially_copyable_v<PolarPointF>
-);
+static_assert(std::is_trivially_copyable_v<PolarPointF>);
 
-static_assert(
-    std::is_standard_layout_v<PolarPointF>
-);
+static_assert(std::is_standard_layout_v<PolarPointF>);
 
 } // namespace PerceptualColor

@@ -33,8 +33,8 @@
 #include "PerceptualColor/lchadouble.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief An image of a gradient.
  *
  * As the hue is a circular property, there exists two ways to go one hue to
@@ -81,8 +81,7 @@ class GradientImage final
 {
 public:
     explicit GradientImage(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-    );
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     LchaDouble colorFromValue(qreal value) const;
     QImage getImage();
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
@@ -147,7 +146,6 @@ private:
      * @sa @ref completlyNormalizedAndBounded()
      * @sa @ref updateSecondColor() */
     LchaDouble m_secondColorCorrectedAndAltered;
-
 };
 
 }

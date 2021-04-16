@@ -32,13 +32,13 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
-#include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/lchadouble.h"
+#include "PerceptualColor/lchdouble.h"
 
 #include <lcms2.h>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Interface to LittleCMS for working with an RGB color space
  *
  * @todo (Optionally) use the fast-float plug-in for faster caluculation?
@@ -57,26 +57,22 @@ public:
     Q_INVOKABLE qreal blackpointL() const;
     Q_INVOKABLE QColor colorRgb(const cmsCIELab &Lab) const;
     Q_INVOKABLE QColor colorRgb(const PerceptualColor::LchDouble &lch) const;
-    Q_INVOKABLE QColor colorRgbBound(
-        const cmsCIELab &Lab
-    ) const;
-    Q_INVOKABLE QColor colorRgbBound(
-        const PerceptualColor::LchDouble &lch
-    ) const;
-    Q_INVOKABLE cmsCIELab colorLab(
-        const QColor &rgbColor
-    ) const;
-    Q_INVOKABLE PerceptualColor::LchDouble colorLch(const QColor &rgbColor) const;
+    Q_INVOKABLE QColor colorRgbBound(const cmsCIELab &Lab) const;
+    Q_INVOKABLE QColor
+    colorRgbBound(const PerceptualColor::LchDouble &lch) const;
+    Q_INVOKABLE cmsCIELab colorLab(const QColor &rgbColor) const;
+    Q_INVOKABLE PerceptualColor::LchDouble
+    colorLch(const QColor &rgbColor) const;
     Q_INVOKABLE bool inGamut(const cmsCIELab &lab) const;
-    Q_INVOKABLE bool inGamut(
-        const double lightness,
-        const double chroma,
-        const double hue
-    ) const;
-    Q_INVOKABLE QColor colorRgbBound(const PerceptualColor::LchaDouble &lcha) const;
+    Q_INVOKABLE bool inGamut(const double lightness,
+                             const double chroma,
+                             const double hue) const;
+    Q_INVOKABLE QColor
+    colorRgbBound(const PerceptualColor::LchaDouble &lcha) const;
     Q_INVOKABLE PerceptualColor::LchDouble toLch(const cmsCIELab &lab) const;
     Q_INVOKABLE bool inGamut(const PerceptualColor::LchDouble &lch) const;
-    Q_INVOKABLE PerceptualColor::LchDouble nearestInGamutSacrifyingChroma(const PerceptualColor::LchDouble &color) const;
+    Q_INVOKABLE PerceptualColor::LchDouble nearestInGamutSacrifyingChroma(
+        const PerceptualColor::LchDouble &color) const;
     Q_INVOKABLE QString profileInfoCopyright() const;
     Q_INVOKABLE QString profileInfoDescription() const;
     Q_INVOKABLE QString profileInfoManufacturer() const;
@@ -97,7 +93,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestRgbColorSpace;
-
 };
 
 }

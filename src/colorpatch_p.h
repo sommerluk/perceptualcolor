@@ -31,8 +31,8 @@
 #include "PerceptualColor/colorpatch.h"
 #include "constpropagatingrawpointer.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class ColorPatch::ColorPatchPrivate final
@@ -51,6 +51,7 @@ public:
      * should be for the property @ref ColorPatch::color, so no need to
      * initialize here explicitly. */
     QColor m_color;
+
 private:
     Q_DISABLE_COPY(ColorPatchPrivate)
 };

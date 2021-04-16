@@ -32,8 +32,8 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A color display widget.
  *
  * This widget simply displays a color. Useful for showing a given
@@ -97,10 +97,10 @@ Q_SIGNALS:
     /** @brief Notify signal for property @ref color.
      *
      * @param color the new color */
-    void colorChanged (const QColor &color);
+    void colorChanged(const QColor &color);
 
 protected:
-    virtual void paintEvent(QPaintEvent* event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
 
 private:
     Q_DISABLE_COPY(ColorPatch)

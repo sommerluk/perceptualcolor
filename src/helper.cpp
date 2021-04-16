@@ -33,8 +33,8 @@
 
 #include <math.h>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Number of vertical <em>standard</em> wheel steps done by a
  *  wheel event
  *
@@ -73,7 +73,6 @@ cmsCIELCh toCmsCieLch(const LchDouble &value)
     result.h = value.h;
     return result;
 }
-
 
 /** @brief Type conversion.
  * @param value An LCH value
@@ -121,28 +120,15 @@ QImage transparencyBackground(qreal devicePixelRatioF)
     constexpr int lightnessOne = 127 - lightnessDistance;
     constexpr int lightnessTwo = 128 + lightnessDistance;
     constexpr int squareSizeInLogicalPixel = 10;
-    const int squareSize = qRound(
-        squareSizeInLogicalPixel * devicePixelRatioF
-    );
+    const int squareSize = qRound(squareSizeInLogicalPixel * devicePixelRatioF);
 
     QImage temp(squareSize * 2, squareSize * 2, QImage::Format_RGB32);
     temp.fill(QColor(lightnessOne, lightnessOne, lightnessOne));
     QPainter painter(&temp);
     QColor foregroundColor(lightnessTwo, lightnessTwo, lightnessTwo);
+    painter.fillRect(0, 0, squareSize, squareSize, foregroundColor);
     painter.fillRect(
-        0,
-        0,
-        squareSize,
-        squareSize,
-        foregroundColor
-    );
-    painter.fillRect(
-        squareSize,
-        squareSize,
-        squareSize,
-        squareSize,
-        foregroundColor
-    );
+        squareSize, squareSize, squareSize, squareSize, foregroundColor);
     temp.setDevicePixelRatio(devicePixelRatioF);
     return temp;
 }

@@ -31,8 +31,8 @@
 #include "PerceptualColor/chromalightnessdiagram.h"
 #include "constpropagatingrawpointer.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class ChromaLightnessDiagram::ChromaLightnessDiagramPrivate final
@@ -58,7 +58,7 @@ public:
      */
     int m_border;
     /** @brief Internal storage of the chromaLightness() property */
-//     QPointF m_chromaLightness;
+    //     QPointF m_chromaLightness;
     /** @brief Internal storage of the @ref currentColor property */
     LchDouble m_currentColor;
     /** @brief A cache for the diagram as QImage. @sa updateDiagramCache() */
@@ -78,21 +78,16 @@ public:
     /** @brief Pointer to RgbColorSpace() object */
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
-    QImage generateDiagramImage(
-        const qreal imageHue,
-        const QSize imageSize) const;
+    QImage generateDiagramImage(const qreal imageHue,
+                                const QSize imageSize) const;
     QPoint currentImageCoordinates();
-    QPointF fromImageCoordinatesToChromaLightness(
-        const QPoint imageCoordinates
-    );
+    QPointF
+    fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates);
     QPoint fromWidgetCoordinatesToImageCoordinates(
-        const QPoint widgetCoordinates
-    ) const;
+        const QPoint widgetCoordinates) const;
     bool imageCoordinatesInGamut(const QPoint imageCoordinates);
-    static QPoint nearestNeighborSearch(
-        const QPoint originalPoint,
-        const QImage &image
-    );
+    static QPoint nearestNeighborSearch(const QPoint originalPoint,
+                                        const QImage &image);
     void updateDiagramCache();
     void setImageCoordinates(const QPoint newImageCoordinates);
     void updateBorder();
@@ -103,7 +98,6 @@ private:
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ChromaLightnessDiagram> q_pointer;
-
 };
 
 }

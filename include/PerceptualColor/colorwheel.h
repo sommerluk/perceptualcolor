@@ -36,8 +36,8 @@
 #include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Widget to choose the hue in a wheel.
  *
  * This widget allows to select the hue (as defined in the LCh color space)
@@ -71,13 +71,13 @@ class ColorWheel : public AbstractDiagram
      * @sa hueChanged()
      * @sa default_hue
      */
-    Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged USER true)
+    Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged
+                   USER true)
 
 public:
     Q_INVOKABLE explicit ColorWheel(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr
-    );
+        QWidget *parent = nullptr);
     virtual ~ColorWheel() noexcept override;
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
@@ -96,8 +96,8 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void paintEvent(QPaintEvent* event) override;
-    virtual void resizeEvent(QResizeEvent* event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
+    virtual void resizeEvent(QResizeEvent *event) override;
     virtual void wheelEvent(QWheelEvent *event) override;
 
 private:

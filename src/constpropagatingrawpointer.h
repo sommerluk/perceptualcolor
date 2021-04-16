@@ -27,8 +27,8 @@
 #ifndef CONSTPROPAGATINGRAWPOINTER_H
 #define CONSTPROPAGATINGRAWPOINTER_H
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A <tt>const</tt> propagating raw pointer
  *
  * With normal raw C++ pointers (and also with <tt>std::unique_ptr</tt>
@@ -47,7 +47,8 @@ namespace PerceptualColor {
  * <tt>std::experimental::propagate_const&lt; T* &gt;</tt>
  *
  * Example code:
- * @snippet test/testconstpropagatingrawpointer.cpp ConstPropagatingRawPointer Example
+ * @snippet test/testconstpropagatingrawpointer.cpp ConstPropagatingRawPointer
+ * Example
  *
  * @sa @ref ConstPropagatingUniquePointer
  *
@@ -55,21 +56,22 @@ namespace PerceptualColor {
  * https://github.com/jbcoe/propagate_const but we use nevertheless
  * our own lightwise implementation because this seems to be enough
  * for our limited use case. */
-template <typename T>
-class ConstPropagatingRawPointer final
+template<typename T> class ConstPropagatingRawPointer final
 {
 public:
     /** @brief Default constructor
      *
      * Creates a pointer that points to <tt>nullptr</tt>. */
-    explicit ConstPropagatingRawPointer() : m_pointer(nullptr)
+    explicit ConstPropagatingRawPointer()
+        : m_pointer(nullptr)
     {
     }
 
     /** @brief Constructor
      *
      * @param pointer Object to which to point */
-    explicit ConstPropagatingRawPointer(T *pointer) : m_pointer(pointer)
+    explicit ConstPropagatingRawPointer(T *pointer)
+        : m_pointer(pointer)
     {
     }
 
@@ -79,7 +81,7 @@ public:
     /** @brief Non-const pointer operator
      *
      * @returns Non-const pointer operator */
-    T * operator->()
+    T *operator->()
     {
         return m_pointer;
     }
@@ -87,14 +89,15 @@ public:
     /** @brief Const pointer operator
      *
      * @returns Const pointer */
-    const T * operator->() const {
+    const T *operator->() const
+    {
         return m_pointer;
     }
 
     /** @brief Non-const dereference operator
      *
      * @returns Non-const dereference operator */
-    T & operator*()
+    T &operator*()
     {
         return *m_pointer;
     }
@@ -102,7 +105,7 @@ public:
     /** @brief Const dereference operator
      *
      * @returns Const dereference operator */
-    const T & operator*() const
+    const T &operator*() const
     {
         return *m_pointer;
     }
@@ -110,15 +113,14 @@ public:
     /** @brief Cast to a normal raw pointer.
      *
      * This cast is only available within non-<tt>const</tt> contexts. */
-    operator T*()
+    operator T *()
     {
         return m_pointer;
     }
 
 private:
     /** @brief Internal storage for the pointer */
-    T * m_pointer;
-
+    T *m_pointer;
 };
 
 }

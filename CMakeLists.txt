@@ -235,11 +235,11 @@ set(CMAKE_MODULE_PATH
 # TODO This should not be an absolute path… (but using a relative path does not work!)
 include(/usr/share/ECM/kde-modules/KDEClangFormat.cmake)
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES
-    #src/*.h
-    #src/*.cpp
-    #include/PerceptualColor/*.h
-    #include/PerceptualColor/*.cpp
-    #test/*.h
+    src/*.h
+    src/*.cpp
+    include/PerceptualColor/*.h
+    include/PerceptualColor/*.cpp
+    test/*.h
     test/*.cpp
 )
 # The following line should make available the target “make clang-format”.

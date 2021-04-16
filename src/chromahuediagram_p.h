@@ -31,12 +31,12 @@
 #include "PerceptualColor/chromahuediagram.h"
 #include "constpropagatingrawpointer.h"
 
-#include "colorwheelimage.h"
 #include "chromahueimage.h"
+#include "colorwheelimage.h"
 #include "lchvalues.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom
  *
@@ -54,8 +54,7 @@ class ChromaHueDiagram::ChromaHueDiagramPrivate final
 public:
     ChromaHueDiagramPrivate(
         ChromaHueDiagram *backLink,
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-    );
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -96,8 +95,7 @@ public:
     qreal diagramOffset() const;
     cmsCIELab fromWidgetPixelPositionToLab(const QPoint position) const;
     bool isWidgetPixelPositionWithinMouseSensibleCircle(
-        const QPoint widgetCoordinates
-    ) const;
+        const QPoint widgetCoordinates) const;
     void setColorFromWidgetPixelPosition(const QPoint position);
     QPointF widgetCoordinatesFromCurrentColor() const;
 

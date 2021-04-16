@@ -40,17 +40,17 @@
 #include <QPainter>
 #include <QStyle>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief The constructor.
  * @param colorSpace The color spaces within this widget should operate.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
 ChromaHueDiagram::ChromaHueDiagram(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    QWidget *parent
-) : AbstractDiagram(parent),
-    d_pointer(new ChromaHueDiagramPrivate(this, colorSpace))
+    QWidget *parent)
+    : AbstractDiagram(parent)
+    , d_pointer(new ChromaHueDiagramPrivate(this, colorSpace))
 {
     // Setup LittleCMS. This is the first thing to do, because other
     // operations rely on a working LittleCMS.
@@ -63,8 +63,7 @@ ChromaHueDiagram::ChromaHueDiagram(
     initialColorLch.l = LchValues::neutralLightness;
     d_pointer->m_currentColor =
         d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(
-            initialColorLch
-        );
+            initialColorLch);
 
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is either
@@ -94,11 +93,10 @@ ChromaHueDiagram::~ChromaHueDiagram() noexcept
  * @param colorSpace The color spaces within this widget should operate. */
 ChromaHueDiagram::ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(
     ChromaHueDiagram *backLink,
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-) :
-    m_chromaHueImage(colorSpace),
-    m_wheelImage(colorSpace),
-    q_pointer(backLink)
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+    : m_chromaHueImage(colorSpace)
+    , m_wheelImage(colorSpace)
+    , q_pointer(backLink)
 {
 }
 
@@ -122,9 +120,8 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
 {
     // TODO Also accept out-of-gamut clicks when they are covered by the
     // current handle.
-    if (
-        d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos())
-    ) {
+    if (d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(
+            event->pos())) {
         event->accept();
         // Mouse focus is handled manually because so we can accept
         // focus only on mouse clicks within the displayed gamut, while
@@ -174,15 +171,11 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
         event->accept();
-        const cmsCIELab lab = d_pointer->fromWidgetPixelPositionToLab(
-            event->pos()
-        );
-        if (
-            d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(
-                event->pos()
-            )
-                && d_pointer->m_rgbColorSpace->inGamut(lab)
-        ) {
+        const cmsCIELab lab =
+            d_pointer->fromWidgetPixelPositionToLab(event->pos());
+        if (d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(
+                event->pos()) &&
+            d_pointer->m_rgbColorSpace->inGamut(lab)) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
@@ -244,7 +237,7 @@ void ChromaHueDiagram::mouseReleaseEvent(QMouseEvent *event)
  * Of course, at the point at 0°/360° wrapping applies.
  *
  * @param event The corresponding mouse event */
-void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
+void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
 {
     if (
         // Do nothing while a the mouse is clicked and the mouse movement is
@@ -255,8 +248,8 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
         (event->angleDelta().y() != 0) &&
         // Only react on wheel events when then happen in the appropriate
         // area.a
-        d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos())
-    ) {
+        d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(
+            event->pos())) {
         event->accept();
         // Calculate the new hue.
         // This may result in a hue smaller then 0° or bigger then 360°.
@@ -266,9 +259,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
             standardWheelSteps(event) * singleStepHue;
         setCurrentColor(
             d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(
-                d_pointer->m_currentColor
-            )
-        );
+                d_pointer->m_currentColor));
     } else {
         event->ignore();
     }
@@ -306,43 +297,43 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent* event)
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-        case Qt::Key_Up:
-            d_pointer->m_currentColor.c += singleStepChroma;
-            break;
-        case Qt::Key_Down:
-            d_pointer->m_currentColor.c -= singleStepChroma;
-            break;
-        case Qt::Key_Left:
-            d_pointer->m_currentColor.h += singleStepHue;
-            break;
-        case Qt::Key_Right:
-            d_pointer->m_currentColor.h -= singleStepHue;
-            break;
-        case Qt::Key_PageUp:
-            d_pointer->m_currentColor.c += pageStepChroma;
-            break;
-        case Qt::Key_PageDown:
-            d_pointer->m_currentColor.c -= pageStepChroma;
-            break;
-        case Qt::Key_Home:
-            d_pointer->m_currentColor.h += pageStepHue;
-            break;
-        case Qt::Key_End:
-            d_pointer->m_currentColor.h -= pageStepHue;
-            break;
-        default:
-            // Quote from Qt documentation:
-            //
-            //     “If you reimplement this handler, it is very important that
-            //      you call the base class implementation if you do not act
-            //      upon the key.
-            //
-            //      The default implementation closes popup widgets if the
-            //      user presses the key sequence for QKeySequence::Cancel
-            //      (typically the Escape key). Otherwise the event is
-            //      ignored, so that the widget's parent can interpret it.“
-            QWidget::keyPressEvent(event);
-            return;
+    case Qt::Key_Up:
+        d_pointer->m_currentColor.c += singleStepChroma;
+        break;
+    case Qt::Key_Down:
+        d_pointer->m_currentColor.c -= singleStepChroma;
+        break;
+    case Qt::Key_Left:
+        d_pointer->m_currentColor.h += singleStepHue;
+        break;
+    case Qt::Key_Right:
+        d_pointer->m_currentColor.h -= singleStepHue;
+        break;
+    case Qt::Key_PageUp:
+        d_pointer->m_currentColor.c += pageStepChroma;
+        break;
+    case Qt::Key_PageDown:
+        d_pointer->m_currentColor.c -= pageStepChroma;
+        break;
+    case Qt::Key_Home:
+        d_pointer->m_currentColor.h += pageStepHue;
+        break;
+    case Qt::Key_End:
+        d_pointer->m_currentColor.h -= pageStepHue;
+        break;
+    default:
+        // Quote from Qt documentation:
+        //
+        //     “If you reimplement this handler, it is very important that
+        //      you call the base class implementation if you do not act
+        //      upon the key.
+        //
+        //      The default implementation closes popup widgets if the
+        //      user presses the key sequence for QKeySequence::Cancel
+        //      (typically the Escape key). Otherwise the event is
+        //      ignored, so that the widget's parent can interpret it.“
+        QWidget::keyPressEvent(event);
+        return;
     }
     // Here we reach only if the key has been recognized. If not, in the
     // default branch of the switch statement, we would have passed the
@@ -352,11 +343,8 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
         // (Doing so would be counter-intuitive.)
         d_pointer->m_currentColor.c = 0;
     }
-    setCurrentColor(
-        d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(
-            d_pointer->m_currentColor
-        )
-    );
+    setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(
+        d_pointer->m_currentColor));
 }
 
 /** @brief Recommmended minimum size for the widget.
@@ -372,9 +360,8 @@ QSize ChromaHueDiagram::sizeHint() const
         // Considering the gradient length two times, as the diagram
         // shows the center of the coordinate system in the middle,
         // and each side of the center should be well visible.
-        2 * d_pointer->diagramBorder()
-            + 2 * gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint
-    );
+        2 * d_pointer->diagramBorder() +
+        2 * gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint);
     return QSize(mySize, mySize);
 }
 
@@ -391,8 +378,7 @@ QSize ChromaHueDiagram::minimumSizeHint() const
         // Considering the gradient length two times, as the diagram
         // shows the center of the coordinate system in the middle,
         // and each side of the center should be well visible.
-        2 * d_pointer->diagramBorder()
-            + 2 * gradientMinimumLength();
+        2 * d_pointer->diagramBorder() + 2 * gradientMinimumLength();
     return QSize(mySize, mySize);
 }
 
@@ -418,8 +404,7 @@ void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
 {
     LchDouble newCorrectedColor =
         d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(
-            newCurrentColor
-        );
+            newCurrentColor);
 
     if (newCorrectedColor.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
@@ -431,9 +416,7 @@ void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
 
     // Update, if necessary, the diagram.
     if (d_pointer->m_currentColor.l != oldColor.l) {
-        d_pointer->m_chromaHueImage.setLightness(
-            d_pointer->m_currentColor.l
-        );
+        d_pointer->m_chromaHueImage.setLightness(d_pointer->m_currentColor.l);
     }
 
     // Schedule a paint event:
@@ -448,11 +431,11 @@ void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
  * measured in widget coordinates.
  * @sa @ref diagramOffset provides a one-dimensional
  * representation of this same fact. */
-QPointF ChromaHueDiagram
-    ::ChromaHueDiagramPrivate
-    ::diagramCenterInWidgetCoordinates() const
+QPointF
+ChromaHueDiagram ::ChromaHueDiagramPrivate ::diagramCenterInWidgetCoordinates()
+    const
 {
-    const qreal tempOffset { diagramOffset() };
+    const qreal tempOffset {diagramOffset()};
     return QPointF(tempOffset, tempOffset);
 }
 
@@ -472,7 +455,7 @@ qreal ChromaHueDiagram::ChromaHueDiagramPrivate::diagramOffset() const
  * Reimplemented from base class.
  *
  * @param event The corresponding resize event */
-void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
+void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
 
@@ -484,10 +467,7 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
     // So we can rely on QWidget.size() to get the new size.
 
     // Find the smaller one of width and height
-    int newWidgetDiameter = qMin(
-        size().width(),
-        size().height()
-    );
+    int newWidgetDiameter = qMin(size().width(), size().height());
     if (newWidgetDiameter < 0) {
         newWidgetDiameter = 0;
     }
@@ -506,18 +486,17 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent* event)
  * This is the position of @ref currentColor in the gamut diagram, but measured
  * and expressed in widget coordinates.
  * @sa @ref ChromaHueMeasurement "Measurement details" */
-QPointF ChromaHueDiagram
-    ::ChromaHueDiagramPrivate
-    ::widgetCoordinatesFromCurrentColor() const
+QPointF
+ChromaHueDiagram ::ChromaHueDiagramPrivate ::widgetCoordinatesFromCurrentColor()
+    const
 {
     const qreal scaleFactor =
-        (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder())
-            / static_cast<qreal>(2 * m_maxChroma);
-    QPointF currentColor = PolarPointF(m_currentColor.c, m_currentColor.h).toCartesian();
-    return QPointF(
-        currentColor.x() * scaleFactor + diagramOffset(),
-        diagramOffset() - currentColor.y() * scaleFactor
-    );
+        (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder()) /
+        static_cast<qreal>(2 * m_maxChroma);
+    QPointF currentColor =
+        PolarPointF(m_currentColor.c, m_currentColor.h).toCartesian();
+    return QPointF(currentColor.x() * scaleFactor + diagramOffset(),
+                   diagramOffset() - currentColor.y() * scaleFactor);
 }
 
 /** @brief Converts widget pixel positions to Lab coordinates
@@ -528,16 +507,12 @@ QPointF ChromaHueDiagram
  * @returns The Lab coordinates of the currently displayed gamut diagram
  * for the (center of the) given pixel position.
  * @sa @ref ChromaHueMeasurement "Measurement details" */
-cmsCIELab ChromaHueDiagram
-    ::ChromaHueDiagramPrivate
-    ::fromWidgetPixelPositionToLab
-(
-    const QPoint position
-) const
+cmsCIELab
+ChromaHueDiagram ::ChromaHueDiagramPrivate ::fromWidgetPixelPositionToLab(
+    const QPoint position) const
 {
-    const qreal scaleFactor =
-        static_cast<qreal>(2 * m_maxChroma)
-            / (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder());
+    const qreal scaleFactor = static_cast<qreal>(2 * m_maxChroma) /
+        (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder());
     // The pixel at position 0 0 has its top left border at position 0 0
     // and its bottom right border at position 1 1 and its center at
     // position 0.5 0.5. Its the center of the pixel that is our reference
@@ -545,11 +520,9 @@ cmsCIELab ChromaHueDiagram
     constexpr qreal pixelValueShift = 0.5;
     cmsCIELab lab;
     lab.L = m_currentColor.l;
-    lab.a = (position.x() + pixelValueShift - diagramOffset())
-        * scaleFactor;
-    lab.b = (position.y() + pixelValueShift - diagramOffset())
-        * scaleFactor
-        * (-1);
+    lab.a = (position.x() + pixelValueShift - diagramOffset()) * scaleFactor;
+    lab.b =
+        (position.y() + pixelValueShift - diagramOffset()) * scaleFactor * (-1);
     return lab;
 }
 
@@ -579,19 +552,12 @@ cmsCIELab ChromaHueDiagram
  * For consistency, the handle of the diagram should stay within the gray
  * circle, and this should be interpretat also actually as the value at
  * the position of the handle. */
-void ChromaHueDiagram
-    ::ChromaHueDiagramPrivate
-    ::setColorFromWidgetPixelPosition
-(
-    const QPoint position
-)
+void ChromaHueDiagram ::ChromaHueDiagramPrivate ::
+    setColorFromWidgetPixelPosition(const QPoint position)
 {
     cmsCIELab lab = fromWidgetPixelPositionToLab(position);
-    q_pointer->setCurrentColor(
-        m_rgbColorSpace->nearestInGamutSacrifyingChroma(
-            m_rgbColorSpace->toLch(lab)
-        )
-    );
+    q_pointer->setCurrentColor(m_rgbColorSpace->nearestInGamutSacrifyingChroma(
+        m_rgbColorSpace->toLch(lab)));
 }
 
 /** @brief Tests if a wiget pixel positon is within the mouse sensible circle.
@@ -604,23 +570,19 @@ void ChromaHueDiagram
  * negative.
  * @returns <tt>true</tt> if the (center of the) pixel at the given position
  * is within the circle, <tt>false</tt> otherwise. */
-bool ChromaHueDiagram
-    ::ChromaHueDiagramPrivate
-    ::isWidgetPixelPositionWithinMouseSensibleCircle
-(
-    const QPoint position
-) const
+bool ChromaHueDiagram ::ChromaHueDiagramPrivate ::
+    isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint position) const
 {
-    const qreal radial = PolarPointF(
-        position
-            - diagramCenterInWidgetCoordinates()
-            // Apply the offset between a pixel position and a point in
-            // the middle of this very same pixel:
-            + QPointF(0.5, 0.5)
-    ).radial();
+    const qreal radial =
+        PolarPointF(position -
+                    diagramCenterInWidgetCoordinates()
+                    // Apply the offset between a pixel position and a point in
+                    // the middle of this very same pixel:
+                    + QPointF(0.5, 0.5))
+            .radial();
     const qreal diagramCircleRadius =
-        q_pointer->maximumWidgetSquareSize() / static_cast<qreal>(2)
-            - diagramBorder();
+        q_pointer->maximumWidgetSquareSize() / static_cast<qreal>(2) -
+        diagramBorder();
     return (radial <= diagramCircleRadius);
 }
 
@@ -645,7 +607,7 @@ bool ChromaHueDiagram
  * @todo What when @ref ChromaHueDiagramPrivate::m_currentColor has a valid
  * in-gamut color, but this color is out of the <em>displayed</em> diagram?
  * How to handle that? */
-void ChromaHueDiagram::paintEvent(QPaintEvent* event)
+void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
 
@@ -667,76 +629,64 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     //       use the platform independent QImage as paint device; i.e. using
     //       QImage will ensure that the result has an identical pixel
     //       representation on any platform.”
-    QImage buffer(
-        maximumPhysicalSquareSize(),
-        maximumPhysicalSquareSize(),
-        QImage::Format_ARGB32_Premultiplied
-    );
+    QImage buffer(maximumPhysicalSquareSize(),
+                  maximumPhysicalSquareSize(),
+                  QImage::Format_ARGB32_Premultiplied);
     buffer.fill(Qt::transparent);
     buffer.setDevicePixelRatio(devicePixelRatioF());
 
     // Other initialization
     QPainter bufferPainter(&buffer);
     QPen pen;
-    const QBrush transparentBrush { Qt::transparent };
+    const QBrush transparentBrush {Qt::transparent};
     // Set color of the handle: Black or white, depending on the lightness of
     // the currently selected color.
     const QColor handleColor {
-        handleColorFromBackgroundLightness(d_pointer->m_currentColor.l)
-    };
+        handleColorFromBackgroundLightness(d_pointer->m_currentColor.l)};
     const QPointF widgetCoordinatesFromCurrentColor {
-        d_pointer->widgetCoordinatesFromCurrentColor()
-    };
+        d_pointer->widgetCoordinatesFromCurrentColor()};
 
     // Paint the gamut itself as available in the cache.
     bufferPainter.setRenderHint(QPainter::Antialiasing, false);
-    d_pointer->m_chromaHueImage.setBorder(
-        d_pointer->diagramBorder() * devicePixelRatioF()
-    );
+    d_pointer->m_chromaHueImage.setBorder(d_pointer->diagramBorder() *
+                                          devicePixelRatioF());
     d_pointer->m_chromaHueImage.setImageSize(maximumPhysicalSquareSize());
     d_pointer->m_chromaHueImage.setChromaRange(d_pointer->m_maxChroma);
     d_pointer->m_chromaHueImage.setLightness(d_pointer->m_currentColor.l);
     d_pointer->m_chromaHueImage.setDevicePixelRatioF(devicePixelRatioF());
-    bufferPainter.drawImage(
-        QPoint(0, 0),                          // position of the image
-        d_pointer->m_chromaHueImage.getImage() // image
+    bufferPainter.drawImage(QPoint(0, 0), // position of the image
+                            d_pointer->m_chromaHueImage.getImage() // image
     );
 
     // Paint a color wheel around
     bufferPainter.setRenderHint(QPainter::Antialiasing, false);
     // As devicePixelRatioF() might have changed, we make sure everything
     // is update before painting.
-    d_pointer->m_wheelImage.setBorder(
-        spaceForFocusIndicator() * devicePixelRatioF()
-    );
+    d_pointer->m_wheelImage.setBorder(spaceForFocusIndicator() *
+                                      devicePixelRatioF());
     d_pointer->m_wheelImage.setDevicePixelRatioF(devicePixelRatioF());
     d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
-    d_pointer->m_wheelImage.setWheelThickness(
-        gradientThickness() * devicePixelRatioF()
-    );
+    d_pointer->m_wheelImage.setWheelThickness(gradientThickness() *
+                                              devicePixelRatioF());
     bufferPainter.drawImage(
-        QPoint(0, 0),                       // position of the image
-        d_pointer->m_wheelImage.getImage()  // the image itself
+        QPoint(0, 0),                      // position of the image
+        d_pointer->m_wheelImage.getImage() // the image itself
     );
 
     // Paint a handle on the color wheel (only if a mouse event is
     // currently active).
     if (d_pointer->m_isMouseEventActive) {
         // The radius of the outer border of the color wheel
-        const qreal radius =
-            maximumWidgetSquareSize() / static_cast<qreal>(2)
-                - spaceForFocusIndicator();
+        const qreal radius = maximumWidgetSquareSize() / static_cast<qreal>(2) -
+            spaceForFocusIndicator();
         // Get widget coordinate point for the handle
-        QPointF myHandleInner = PolarPointF(
-            radius - gradientThickness(),
-            d_pointer->m_currentColor.h
-        ).toCartesian();
+        QPointF myHandleInner = PolarPointF(radius - gradientThickness(),
+                                            d_pointer->m_currentColor.h)
+                                    .toCartesian();
         myHandleInner.ry() *= -1; // Transform to Widget coordinates
         myHandleInner += d_pointer->diagramCenterInWidgetCoordinates();
-        QPointF myHandleOuter = PolarPointF(
-            radius,
-            d_pointer->m_currentColor.h
-        ).toCartesian();
+        QPointF myHandleOuter =
+            PolarPointF(radius, d_pointer->m_currentColor.h).toCartesian();
         myHandleOuter.ry() *= -1; // Transform to Widget coordinates
         myHandleOuter += d_pointer->diagramCenterInWidgetCoordinates();
         // Draw the line
@@ -760,28 +710,25 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
     pen.setCapStyle(Qt::RoundCap);
     bufferPainter.setPen(pen);
     bufferPainter.setBrush(transparentBrush);
-    bufferPainter.drawEllipse(
-        widgetCoordinatesFromCurrentColor, // center
-        handleRadius(),                    // x radius
-        handleRadius()                     // y radius
+    bufferPainter.drawEllipse(widgetCoordinatesFromCurrentColor, // center
+                              handleRadius(),                    // x radius
+                              handleRadius()                     // y radius
     );
     const QPointF diagramCartesianCoordinatesFromCurrentColor {
         widgetCoordinatesFromCurrentColor.x() - d_pointer->diagramOffset(),
-        (widgetCoordinatesFromCurrentColor.y() - d_pointer->diagramOffset())
-            * (-1)
-    };
+        (widgetCoordinatesFromCurrentColor.y() - d_pointer->diagramOffset()) *
+            (-1)};
     PolarPointF diagramPolarCoordinatesFromCurrentColor {
-        diagramCartesianCoordinatesFromCurrentColor
-    };
+        diagramCartesianCoordinatesFromCurrentColor};
     // lineRadial will be a point at the middle of the line thickness
     // of the circular handle.
     qreal lineRadial =
         diagramPolarCoordinatesFromCurrentColor.radial() - handleRadius();
     if (lineRadial > 0) {
-        QPointF lineEndWidgetCoordinates = PolarPointF(
-            lineRadial,
-            diagramPolarCoordinatesFromCurrentColor.angleDegree()
-        ).toCartesian();
+        QPointF lineEndWidgetCoordinates =
+            PolarPointF(lineRadial,
+                        diagramPolarCoordinatesFromCurrentColor.angleDegree())
+                .toCartesian();
         lineEndWidgetCoordinates.ry() *= (-1);
         lineEndWidgetCoordinates +=
             d_pointer->diagramCenterInWidgetCoordinates();
@@ -789,8 +736,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
             // point 1 (center of the diagram):
             d_pointer->diagramCenterInWidgetCoordinates(),
             // point 2:
-            lineEndWidgetCoordinates
-        );
+            lineEndWidgetCoordinates);
     }
 
     // Paint a focus indicator.
@@ -835,20 +781,13 @@ void ChromaHueDiagram::paintEvent(QPaintEvent* event)
             // x radius:
             (maximumWidgetSquareSize() - handleOutlineThickness()) / 2.0,
             // y radius:
-            (maximumWidgetSquareSize() - handleOutlineThickness()) / 2.0
-        );
+            (maximumWidgetSquareSize() - handleOutlineThickness()) / 2.0);
     }
 
     // Paint the buffer to the actual widget
     QPainter widgetPainter(this);
-    widgetPainter.setRenderHint(
-        QPainter::Antialiasing,
-        false
-    );
-    widgetPainter.drawImage(
-        QPoint(0, 0),
-        buffer
-    );
+    widgetPainter.setRenderHint(QPainter::Antialiasing, false);
+    widgetPainter.drawImage(QPoint(0, 0), buffer);
 }
 
 /** @brief The border around the round diagram.
@@ -862,10 +801,10 @@ int ChromaHueDiagram::ChromaHueDiagramPrivate::diagramBorder() const
     return
         // The space outside the wheel:
         q_pointer->spaceForFocusIndicator()
-            // Add space for the wheel itself:
-            + q_pointer->gradientThickness()
-            // Add extra space between wheel and diagram:
-            + 2 * q_pointer->handleOutlineThickness();
+        // Add space for the wheel itself:
+        + q_pointer->gradientThickness()
+        // Add extra space between wheel and diagram:
+        + 2 * q_pointer->handleOutlineThickness();
 }
 
 }

@@ -33,8 +33,8 @@
 
 #include "gradientimage.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class GradientSlider::GradientSliderPrivate final
@@ -42,8 +42,7 @@ class GradientSlider::GradientSliderPrivate final
 public:
     GradientSliderPrivate(
         GradientSlider *backLink,
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-    );
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -52,13 +51,10 @@ public:
 
     // Methods
     qreal fromWidgetPixelPositionToValue(QPoint pixelPosition);
-    void initialize(
-        const QSharedPointer<RgbColorSpace> &colorSpace,
-        Qt::Orientation orientation
-    );
+    void initialize(const QSharedPointer<RgbColorSpace> &colorSpace,
+                    Qt::Orientation orientation);
     void setOrientationWithoutSignalAndForceNewSizePolicy(
-        Qt::Orientation newOrientation
-    );
+        Qt::Orientation newOrientation);
     int physicalPixelLength() const;
     int physicalPixelThickness() const;
 

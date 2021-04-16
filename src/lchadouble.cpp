@@ -38,38 +38,27 @@
  * This file defines some static asserts for the data type
  * @ref PerceptualColor::LchaDouble. */
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 // We are using double. Check that we stay compatible with cmsCIELCh
 // which is based on cmsFloat64Number.
-static_assert(
-    std::is_same_v<
-        cmsFloat64Number,
-        double
-    >
-);
+static_assert(std::is_same_v<cmsFloat64Number, double>);
 
-static_assert(
-    sizeof(double) == sizeof(cmsFloat64Number)
-);
+static_assert(sizeof(double) == sizeof(cmsFloat64Number));
 
-static_assert(
-    std::is_trivially_copyable_v<LchaDouble>
-);
+static_assert(std::is_trivially_copyable_v<LchaDouble>);
 
-static_assert(
-    std::is_standard_layout_v<LchaDouble>
-);
+static_assert(std::is_standard_layout_v<LchaDouble>);
 
 LchaDouble::LchaDouble()
 {
 }
 
-LchaDouble::LchaDouble(double newL, double newC, double newH, double newA) :
-    l(newL),
-    c(newC),
-    h(newH),
-    a(newA)
+LchaDouble::LchaDouble(double newL, double newC, double newH, double newA)
+    : l(newL)
+    , c(newC)
+    , h(newH)
+    , a(newA)
 {
 }
 
@@ -81,16 +70,8 @@ LchaDouble::LchaDouble(double newL, double newC, double newH, double newA) :
  * in the global namespace. */
 QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
 {
-    dbg.nospace()
-        << "LchaDouble("
-        << value.l
-        << "% "
-        << value.c
-        << " "
-        << value.h
-        << "° "
-        << value.a
-        << ")";
+    dbg.nospace() << "LchaDouble(" << value.l << "% " << value.c << " "
+                  << value.h << "° " << value.a << ")";
     return dbg.maybeSpace();
 }
 
@@ -104,15 +85,10 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
  * considered non-equal thought both describe the same point in the
  * coordinate space. */
 bool LchaDouble::hasSameCoordinates(
-    const PerceptualColor::LchaDouble& other
-) const
+    const PerceptualColor::LchaDouble &other) const
 {
-    return (
-        (l == other.l)
-            && (c == other.c)
-            && (h == other.h)
-            && (a == other.a)
-    );
+    return ((l == other.l) && (c == other.c) && (h == other.h) &&
+            (a == other.a));
 }
 
 } // namespace PerceptualColor

@@ -33,8 +33,8 @@
 #include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A widget that displays a chroma-lightness diagram.
  *
  * This widget displays a chroma-lightness diagram in the LCh color model
@@ -69,13 +69,13 @@ class ChromaLightnessDiagram : public AbstractDiagram
      * @sa currentColor() const
      * @sa setCurrentColor()
      * @sa currentColorChanged() */
-    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged USER true)
+    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE
+                   setCurrentColor NOTIFY currentColorChanged USER true)
 
 public:
     Q_INVOKABLE explicit ChromaLightnessDiagram(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr
-    );
+        QWidget *parent = nullptr);
     virtual ~ChromaLightnessDiagram() noexcept override;
     PerceptualColor::LchDouble currentColor() const;
     Q_INVOKABLE qreal hue() const;
@@ -83,24 +83,20 @@ public:
     virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
-    void setCurrentColor(
-        const PerceptualColor::LchDouble &newCurrentColor
-    );
+    void setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor);
     void setHue(const qreal newHue);
 
 Q_SIGNALS:
     /** @brief Signal for color() property. */
-    void currentColorChanged(
-        const PerceptualColor::LchDouble &newCurrentColor
-    );
+    void currentColorChanged(const PerceptualColor::LchDouble &newCurrentColor);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void paintEvent(QPaintEvent* event) override;
-    virtual void resizeEvent(QResizeEvent* event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
+    virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagram)
@@ -116,7 +112,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestChromaLightnessDiagram;
-
 };
 
 }

@@ -33,8 +33,8 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A spin box that can hold multiple sections (each with its own
  * value) at the same time.
  *
@@ -157,7 +157,8 @@ public:
      * also the various setting parameters for the widget.
      *
      * This data type can be passed to QDebug thanks to
-     * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &section)
+     * @ref operator<<(QDebug dbg, const
+     * PerceptualColor::MultiSpinBox::SectionData &section)
      *
      * @todo How to make this future-proof? Maybe later we want to add
      * singleStep() or pageStep() values? Are d-pointers working well when
@@ -207,9 +208,8 @@ public:
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual QSize minimumSizeHint() const override;
     Q_INVOKABLE QList<MultiSpinBox::SectionData> sections() const;
-    Q_INVOKABLE void setSections (
-        const QList<MultiSpinBox::SectionData> &newSections
-    );
+    Q_INVOKABLE void
+    setSections(const QList<MultiSpinBox::SectionData> &newSections);
     virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
 
@@ -217,7 +217,7 @@ protected:
     virtual bool event(QEvent *event) override;
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual bool focusNextPrevChild(bool next) override;
-    virtual void focusOutEvent(QFocusEvent* event) override;
+    virtual void focusOutEvent(QFocusEvent *event) override;
     virtual QAbstractSpinBox::StepEnabled stepEnabled() const override;
 
 private:
@@ -234,13 +234,10 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestMultiSpinBox;
-
 };
 
-QDebug operator<<(
-    QDebug dbg,
-    const PerceptualColor::MultiSpinBox::SectionData &value
-);
+QDebug operator<<(QDebug dbg,
+                  const PerceptualColor::MultiSpinBox::SectionData &value);
 
 }
 

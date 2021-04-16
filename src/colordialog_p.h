@@ -31,8 +31,8 @@
 #include "PerceptualColor/colordialog.h"
 #include "constpropagatingrawpointer.h"
 
-#include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/chromahuediagram.h"
+#include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/wheelcolorpicker.h"
@@ -45,8 +45,8 @@
 #include <QPointer>
 #include <QTabWidget>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class ColorDialog::ColorDialogPrivate final
@@ -144,8 +144,8 @@ public:
 
     void applyLayoutDimensions();
     void initialize();
-    QWidget* initializeNumericPage();
-    void setCurrentFullColor(const LchaDouble& color);
+    QWidget *initializeNumericPage();
+    void setCurrentFullColor(const LchaDouble &color);
 
 public Q_SLOTS:
     void readHlcNumericValues();
@@ -153,9 +153,7 @@ public Q_SLOTS:
     void readLightnessValue();
     void readRgbHexValues();
     void readRgbNumericValues();
-    void setCurrentOpaqueColor(
-        const PerceptualColor::LchDouble &color
-    );
+    void setCurrentOpaqueColor(const PerceptualColor::LchDouble &color);
     void setCurrentOpaqueQColor(const QColor &color);
     void updateColorPatch();
 

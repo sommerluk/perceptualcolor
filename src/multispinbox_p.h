@@ -35,8 +35,8 @@
 
 #include "extendeddoublevalidator.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class MultiSpinBox::MultiSpinBoxPrivate final
@@ -48,7 +48,6 @@ public:
      * The destructor is non-<tt>virtual</tt> because
      * the class as a whole is <tt>final</tt>. */
     ~MultiSpinBoxPrivate() noexcept = default;
-
 
     /** @brief Only for unit tests. */
     friend class TestMultiSpinBox;
@@ -97,13 +96,10 @@ public:
      * difficult to differenciate from the actual value. */
     QPointer<ExtendedDoubleValidator> m_validator;
 
-    static MultiSpinBox::SectionData fixedSection(
-        const MultiSpinBox::SectionData &section
-    );
+    static MultiSpinBox::SectionData
+    fixedSection(const MultiSpinBox::SectionData &section);
     QString formattedValue(const SectionData &mySection) const;
-    bool isCursorPositionAtCurrentSectionValue(
-        const int cursorPosition
-    ) const;
+    bool isCursorPositionAtCurrentSectionValue(const int cursorPosition) const;
     void setCurrentIndexAndUpdateTextAndSelectValue(int newIndex = 0);
     void setCurrentIndexToZeroAndUpdateTextAndSelectValue();
     void setCurrentIndexWithoutUpdatingText(int newIndex);

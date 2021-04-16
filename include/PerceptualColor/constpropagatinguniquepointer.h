@@ -32,8 +32,8 @@
 
 #include <memory>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
  *
  * With normal <tt>std::unique_ptr</tt> pointers (and also with raw
@@ -50,7 +50,8 @@ namespace PerceptualColor {
  * <tt>std::experimental::propagate_const&lt; std::unique_ptr&lt;T&gt; &gt;</tt>
  *
  * Example code:
- * @snippet test/testconstpropagatinguniquepointer.cpp ConstPropagatingUniquePointer Example
+ * @snippet test/testconstpropagatinguniquepointer.cpp
+ * ConstPropagatingUniquePointer Example
  *
  * @sa @ref ConstPropagatingRawPointer
  * @sa This code is based on the idea in
@@ -62,14 +63,15 @@ namespace PerceptualColor {
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
  * implementation? Or remove propagate_const header from this library? */
-template<typename T> class ConstPropagatingUniquePointer final
-    : public std::unique_ptr<T>
+template<typename T>
+class ConstPropagatingUniquePointer final : public std::unique_ptr<T>
 {
 public:
     /** @brief Default constructor
      *
      * Creates a pointer that points to <tt>nullptr</tt>. */
-    explicit ConstPropagatingUniquePointer() : std::unique_ptr<T>(nullptr)
+    explicit ConstPropagatingUniquePointer()
+        : std::unique_ptr<T>(nullptr)
     {
     }
 
@@ -77,8 +79,8 @@ public:
      *
      * @param pointer Object to which to point */
     explicit ConstPropagatingUniquePointer(
-        typename std::unique_ptr<T>::element_type* pointer
-    ) : std::unique_ptr<T>(pointer)
+        typename std::unique_ptr<T>::element_type *pointer)
+        : std::unique_ptr<T>(pointer)
     {
     }
 
@@ -91,7 +93,7 @@ public:
     /** @brief Non-const pointer operator
      *
      * @returns Non-const pointer operator */
-    typename std::unique_ptr<T>::element_type* operator->()
+    typename std::unique_ptr<T>::element_type *operator->()
     {
         return std::unique_ptr<T>::operator->();
     }
@@ -99,7 +101,7 @@ public:
     /** @brief Const pointer operator
      *
      * @returns Const pointer */
-    const typename std::unique_ptr<T>::element_type* operator->() const
+    const typename std::unique_ptr<T>::element_type *operator->() const
     {
         return std::unique_ptr<T>::operator->();
     }
@@ -107,7 +109,7 @@ public:
     /** @brief Non-const dereference operator
      *
      * @returns Non-const dereference operator */
-    typename std::unique_ptr<T>::element_type& operator*()
+    typename std::unique_ptr<T>::element_type &operator*()
     {
         return std::unique_ptr<T>::operator*();
     }
@@ -115,11 +117,10 @@ public:
     /** @brief Const dereference operator
      *
      * @returns Const dereference operator */
-    const typename std::unique_ptr<T>::element_type& operator*() const
+    const typename std::unique_ptr<T>::element_type &operator*() const
     {
         return std::unique_ptr<T>::operator*();
     }
-
 };
 
 }

@@ -32,8 +32,8 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Base class for LCh diagrams.
  *
  * Provides some elements that are common for all LCh diagrams in this
@@ -133,7 +133,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestAbstractDiagram;
-
 };
 
 }

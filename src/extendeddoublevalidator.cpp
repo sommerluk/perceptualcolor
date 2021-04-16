@@ -32,12 +32,12 @@
 // Second, the private implementation.
 #include "extendeddoublevalidator_p.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Default constructor */
-ExtendedDoubleValidator::ExtendedDoubleValidator(QObject *parent) :
-    QDoubleValidator(parent),
-    d_pointer(new ExtendedDoubleValidatorPrivate)
+ExtendedDoubleValidator::ExtendedDoubleValidator(QObject *parent)
+    : QDoubleValidator(parent)
+    , d_pointer(new ExtendedDoubleValidatorPrivate)
 {
 }
 
@@ -78,10 +78,8 @@ QString ExtendedDoubleValidator::suffix() const
     return d_pointer->m_suffix;
 }
 
-QValidator::State ExtendedDoubleValidator::validate(
-    QString &input,
-    int &pos
-) const
+QValidator::State ExtendedDoubleValidator::validate(QString &input,
+                                                    int &pos) const
 {
     QString myInput = input;
     int myPos = pos;

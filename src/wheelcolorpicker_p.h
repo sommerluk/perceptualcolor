@@ -33,17 +33,17 @@
 
 #include <QPointer>
 
-#include "PerceptualColor/colorwheel.h"
 #include "PerceptualColor/chromalightnessdiagram.h"
+#include "PerceptualColor/colorwheel.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class WheelColorPicker::WheelColorPickerPrivate final : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     WheelColorPickerPrivate(WheelColorPicker *backLink);
     /** @brief Default destructor */
@@ -57,10 +57,8 @@ public:
     QPointer<ColorWheel> m_ColorWheel;
 
     void resizeChildWidgets();
-    static QSize scaleRectangleToDiagonal(
-        const QSize oldRectangle,
-        const qreal newDiagonal
-    );
+    static QSize scaleRectangleToDiagonal(const QSize oldRectangle,
+                                          const qreal newDiagonal);
 
 public Q_SLOTS:
     void handleFocusChanged(QWidget *old, QWidget *now);

@@ -29,8 +29,8 @@
 
 #include "PerceptualColor/lchdouble.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief LCh default values
  *
  * The gamut of actual human perception within the LAB color model (and
@@ -40,20 +40,23 @@ namespace PerceptualColor {
  * - LAB/LCH lightness: <tt>[0, 100]</tt>
  * - LCH hue: The full circle, <tt>[0°, 360°[</tt>.
  *
- * |                               |        a         |         b         |      C      |
- * | :---------------------------  |:---------------: | :---------------: | :---------: |
- * | Usual implementation¹         |   [−128, 127]    |    [−128, 127]    |             |
- * | Human perception (Wikipedia)² |   [−170, 100]    |    [−100, 150]    |             |
- * | Human perception (2° D50)³    |[−165.39, 129.05] | [−132.62, 146.69] | [0, 183.42] |
- * | Human perception (2° D65)³    |[−170.84, 147.84] | [−129.66, 146.78] | [0, 194.84] |
- * | Human perception (10° D65)³   |[−164.29, 115.14] | [−116.10, 145.53] | [0, 186.17] |
-    *
+ * |                               |        a         |         b         | C |
+ * | :---------------------------  |:---------------: | :---------------: |
+ * :---------: | | Usual implementation¹         |   [−128, 127]    |
+ * [−128, 127]    |             | | Human perception (Wikipedia)² | [−170, 100]
+ * |    [−100, 150]    |             | | Human perception (2° D50)³
+ * |[−165.39, 129.05] | [−132.62, 146.69] | [0, 183.42] | | Human perception (2°
+ * D65)³    |[−170.84, 147.84] | [−129.66, 146.78] | [0, 194.84] | | Human
+ * perception (10° D65)³   |[−164.29, 115.14] | [−116.10, 145.53] | [0, 186.17]
+ * |
+ *
  * 1. The range of  <tt>[−128, 127]</tt> is in C++ a signed 8‑bit integer. But
  *    this data type usually used in software implementations is (as the table
  *    clearly shows) not enough to cover the hole range of actual human
  *    color perception.
  * 2. Ranges of LAB coordinates according to the
- *    <a href="https://de.wikipedia.org/w/index.php?title=Lab-Farbraum&oldid=197156292">
+ *    <a
+ * href="https://de.wikipedia.org/w/index.php?title=Lab-Farbraum&oldid=197156292">
  *    German Wikipedia</a>.
  * 3. The German association <em>Freie Farbe e. V.</em> has
  *    published a calculation of the
@@ -91,7 +94,7 @@ public:
      *  neutral. */
     static constexpr int neutralChroma = 0;
     /** @brief Neutral hue value
-        *
+     *
      *  For the hue, a default value of 0 might be used by convention. */
     static constexpr int neutralHue = 0;
     /** @brief Neutral lightness value
@@ -112,10 +115,7 @@ public:
      * distant from black and white, and also quite distant from any
      * saturated color. */
     static constexpr LchDouble neutralGray {
-        neutralLightness,
-        neutralChroma,
-        neutralHue
-    };
+        neutralLightness, neutralChroma, neutralHue};
     /** @brief Maximum chroma value in
      * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
      * sRGB gamut
@@ -132,6 +132,7 @@ public:
      *  a usual sRGB gamut.
      *  @sa @ref neutralChroma */
     static constexpr int srgbVersatileChroma = 32;
+
 private:
     /** @brief Delete the constructor to disallow creating an instance
      * of this class. */

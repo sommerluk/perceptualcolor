@@ -58,20 +58,22 @@
  * And you have to make sure that all symbols that are <em>not</em>
  * explicitly exported have to be hidden:
  *
- * <tt>set_target_properties(perceptualcolor PROPERTIES CXX_VISIBILITY_PRESET hidden)</tt>
+ * <tt>set_target_properties(perceptualcolor PROPERTIES CXX_VISIBILITY_PRESET
+ * hidden)</tt>
  *
  * However, when just something is build that is <em>linking</em>
  * against this library, nothing special has to be done and
  * <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt> should <em>not</em>
  * be defined.
  *
- * @sa https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
+ * @sa
+ * https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
  * @sa http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
  * @sa https://labjack.com/news/simple-cpp-symbol-visibility-demo */
 #if defined(PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
-    #define PERCEPTUALCOLORLIB_EXPORT Q_DECL_EXPORT
+#define PERCEPTUALCOLORLIB_EXPORT Q_DECL_EXPORT
 #else
-    #define PERCEPTUALCOLORLIB_EXPORT Q_DECL_IMPORT
+#define PERCEPTUALCOLORLIB_EXPORT Q_DECL_IMPORT
 #endif
 
 #endif // PERCEPTUALCOLORLIB_GLOBAL_H

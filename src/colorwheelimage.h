@@ -33,8 +33,8 @@
 
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief An image of a color wheel.
  *
  * The image has properties that can be accessed by the corresponding setters
@@ -76,8 +76,7 @@ class ColorWheelImage final
 {
 public:
     explicit ColorWheelImage(
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-    );
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     QImage getImage();
     void setBorder(const qreal newBorder);
     void setDevicePixelRatioF(const qreal newDevicePixelRatioF);
@@ -117,7 +116,6 @@ private:
      *
      * @sa @ref setWheelThickness() */
     qreal m_wheelThicknessPhysical = 0;
-
 };
 
 }

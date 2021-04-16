@@ -39,17 +39,16 @@
 
 #include <helper.h>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Constructs a vertical slider.
  * @param colorSpace the color space
  * @param parent parent widget (if any) */
 GradientSlider::GradientSlider(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    QWidget *parent
-) :
-    AbstractDiagram(parent),
-    d_pointer(new GradientSliderPrivate(this, colorSpace))
+    QWidget *parent)
+    : AbstractDiagram(parent)
+    , d_pointer(new GradientSliderPrivate(this, colorSpace))
 {
     d_pointer->initialize(colorSpace, Qt::Orientation::Vertical);
 }
@@ -63,10 +62,9 @@ GradientSlider::GradientSlider(
 GradientSlider::GradientSlider(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
     Qt::Orientation orientation,
-    QWidget* parent
-) :
-    AbstractDiagram(parent),
-    d_pointer(new GradientSliderPrivate(this, colorSpace))
+    QWidget *parent)
+    : AbstractDiagram(parent)
+    , d_pointer(new GradientSliderPrivate(this, colorSpace))
 {
     d_pointer->initialize(colorSpace, orientation);
 }
@@ -83,9 +81,9 @@ GradientSlider::~GradientSlider() noexcept
  * @param colorSpace The color spaces within this widget should operate. */
 GradientSlider::GradientSliderPrivate::GradientSliderPrivate(
     GradientSlider *backLink,
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-) : m_gradientImageCache(colorSpace),
-    q_pointer(backLink)
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+    : m_gradientImageCache(colorSpace)
+    , q_pointer(backLink)
 {
 }
 
@@ -106,8 +104,7 @@ GradientSlider::GradientSliderPrivate::GradientSliderPrivate(
  * vertical */
 void GradientSlider::GradientSliderPrivate::initialize(
     const QSharedPointer<RgbColorSpace> &colorSpace,
-    Qt::Orientation orientation
-)
+    Qt::Orientation orientation)
 {
     q_pointer->setFocusPolicy(Qt::StrongFocus);
     m_rgbColorSpace = colorSpace;
@@ -136,12 +133,9 @@ LchaDouble GradientSlider::firstColor() const
  *
  * @param newFirstColor the new @ref firstColor */
 void GradientSlider::setFirstColor(
-    const PerceptualColor::LchaDouble &newFirstColor
-)
+    const PerceptualColor::LchaDouble &newFirstColor)
 {
-    if (
-        !d_pointer->m_firstColor.hasSameCoordinates(newFirstColor)
-    ) {
+    if (!d_pointer->m_firstColor.hasSameCoordinates(newFirstColor)) {
         d_pointer->m_firstColor = newFirstColor;
         d_pointer->m_gradientImageCache.setFirstColor(newFirstColor);
         Q_EMIT firstColorChanged(newFirstColor);
@@ -160,12 +154,9 @@ LchaDouble GradientSlider::secondColor() const
  *
  * @param newSecondColor the new @ref secondColor */
 void GradientSlider::setSecondColor(
-    const PerceptualColor::LchaDouble &newSecondColor
-)
+    const PerceptualColor::LchaDouble &newSecondColor)
 {
-    if (
-        !d_pointer->m_secondColor.hasSameCoordinates(newSecondColor)
-    ) {
+    if (!d_pointer->m_secondColor.hasSameCoordinates(newSecondColor)) {
         d_pointer->m_secondColor = newSecondColor;
         d_pointer->m_gradientImageCache.setSecondColor(newSecondColor);
         Q_EMIT secondColorChanged(newSecondColor);
@@ -180,8 +171,7 @@ void GradientSlider::setSecondColor(
  * @param newSecondColor the new @ref secondColor */
 void GradientSlider::setColors(
     const PerceptualColor::LchaDouble &newFirstColor,
-    const PerceptualColor::LchaDouble &newSecondColor
-)
+    const PerceptualColor::LchaDouble &newSecondColor)
 {
     setFirstColor(newFirstColor);
     setSecondColor(newSecondColor);
@@ -196,13 +186,11 @@ void GradientSlider::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     d_pointer->m_gradientImageCache.setGradientLength(
-        d_pointer->physicalPixelLength()
-    );
+        d_pointer->physicalPixelLength());
     d_pointer->m_gradientImageCache.setGradientThickness(
         // Normally, this should not change, but maybe on Hight-DPI
         // devices there might be some differences.
-        d_pointer->physicalPixelThickness()
-    );
+        d_pointer->physicalPixelThickness());
 }
 
 /** @brief Recommended size for the widget
@@ -216,19 +204,13 @@ QSize GradientSlider::sizeHint() const
 {
     QSize result;
     if (d_pointer->m_orientation == Qt::Orientation::Horizontal) {
-        result.setWidth(
-            qRound(
-                gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint
-            )
-        );
+        result.setWidth(qRound(gradientMinimumLength() *
+                               scaleFromMinumumSizeHintToSizeHint));
         result.setHeight(gradientThickness());
     } else {
         result.setWidth(gradientThickness());
-        result.setHeight(
-            qRound(
-                gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint
-            )
-        );
+        result.setHeight(qRound(gradientMinimumLength() *
+                                scaleFromMinumumSizeHintToSizeHint));
     }
     return result;
 }
@@ -321,11 +303,9 @@ void GradientSlider::setValue(qreal newValue)
  * Reimplemented from base class.
  *
  * @param event The corresponding mouse event */
-void GradientSlider::mousePressEvent(QMouseEvent* event)
+void GradientSlider::mousePressEvent(QMouseEvent *event)
 {
-    setValue(
-        d_pointer->fromWidgetPixelPositionToValue(event->pos())
-    );
+    setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
 /** @brief React on a mouse release event.
@@ -333,11 +313,9 @@ void GradientSlider::mousePressEvent(QMouseEvent* event)
  * Reimplemented from base class.
  *
  * @param event The corresponding mouse event */
-void GradientSlider::mouseReleaseEvent(QMouseEvent* event)
+void GradientSlider::mouseReleaseEvent(QMouseEvent *event)
 {
-    setValue(
-        d_pointer->fromWidgetPixelPositionToValue(event->pos())
-    );
+    setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
 /** @brief React on a mouse moove event.
@@ -345,11 +323,9 @@ void GradientSlider::mouseReleaseEvent(QMouseEvent* event)
  * Reimplemented from base class.
  *
  * @param event The corresponding mouse event */
-void GradientSlider::mouseMoveEvent(QMouseEvent* event)
+void GradientSlider::mouseMoveEvent(QMouseEvent *event)
 {
-    setValue(
-        d_pointer->fromWidgetPixelPositionToValue(event->pos())
-    );
+    setValue(d_pointer->fromWidgetPixelPositionToValue(event->pos()));
 }
 
 /** @brief React on a mouse wheel event.
@@ -357,15 +333,15 @@ void GradientSlider::mouseMoveEvent(QMouseEvent* event)
  * Reimplemented from base class.
  *
  * @param event The corresponding mouse event */
-void GradientSlider::wheelEvent(QWheelEvent* event)
+void GradientSlider::wheelEvent(QWheelEvent *event)
 {
     qreal steps = standardWheelSteps(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
         qreal stepSize;
-        if (QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier)
-            || QGuiApplication::keyboardModifiers().testFlag(Qt::ShiftModifier)
-        ) {
+        if (QGuiApplication::keyboardModifiers().testFlag(
+                Qt::ControlModifier) ||
+            QGuiApplication::keyboardModifiers().testFlag(Qt::ShiftModifier)) {
             stepSize = pageStep();
         } else {
             stepSize = singleStep();
@@ -394,55 +370,55 @@ void GradientSlider::wheelEvent(QWheelEvent* event)
  * - Qt::Key_End decrements to the minimum @ref value
  *
  * @param event the event  */
-void GradientSlider::keyPressEvent(QKeyEvent* event)
+void GradientSlider::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-        case Qt::Key_Up:
-        case Qt::Key_Plus:
-            setValue(d_pointer->m_value + d_pointer->m_singleStep);
-            break;
-        case Qt::Key_Down:
-        case Qt::Key_Minus:
+    case Qt::Key_Up:
+    case Qt::Key_Plus:
+        setValue(d_pointer->m_value + d_pointer->m_singleStep);
+        break;
+    case Qt::Key_Down:
+    case Qt::Key_Minus:
+        setValue(d_pointer->m_value - d_pointer->m_singleStep);
+        break;
+    case Qt::Key_Left:
+        if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
             setValue(d_pointer->m_value - d_pointer->m_singleStep);
-            break;
-        case Qt::Key_Left:
-            if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                setValue(d_pointer->m_value - d_pointer->m_singleStep);
-            } else {
-                setValue(d_pointer->m_value + d_pointer->m_singleStep);
-            }
-            break;
-        case Qt::Key_Right:
-            if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-                setValue(d_pointer->m_value + d_pointer->m_singleStep);
-            } else {
-                setValue(d_pointer->m_value - d_pointer->m_singleStep);
-            }
-            break;
-        case Qt::Key_PageUp:
-            setValue(d_pointer->m_value + d_pointer->m_pageStep);
-            break;
-        case Qt::Key_PageDown:
-            setValue(d_pointer->m_value - d_pointer->m_pageStep);
-            break;
-        case Qt::Key_Home:
-            setValue(0);
-            break;
-        case Qt::Key_End:
-            setValue(1);
-            break;
-        default:
-            /* Quote from Qt documentation:
-             *
-             *     “If you reimplement this handler, it is very important that
-             *      you call the base class implementation if you do not act
-             *      upon the key.
-             *
-             *      The default implementation closes popup widgets if the
-             *      user presses the key sequence for QKeySequence::Cancel
-             *      (typically the Escape key). Otherwise the event is
-             *      ignored, so that the widget's parent can interpret it.“ */
-            QWidget::keyPressEvent(event);
+        } else {
+            setValue(d_pointer->m_value + d_pointer->m_singleStep);
+        }
+        break;
+    case Qt::Key_Right:
+        if (layoutDirection() == Qt::LayoutDirection::LeftToRight) {
+            setValue(d_pointer->m_value + d_pointer->m_singleStep);
+        } else {
+            setValue(d_pointer->m_value - d_pointer->m_singleStep);
+        }
+        break;
+    case Qt::Key_PageUp:
+        setValue(d_pointer->m_value + d_pointer->m_pageStep);
+        break;
+    case Qt::Key_PageDown:
+        setValue(d_pointer->m_value - d_pointer->m_pageStep);
+        break;
+    case Qt::Key_Home:
+        setValue(0);
+        break;
+    case Qt::Key_End:
+        setValue(1);
+        break;
+    default:
+        /* Quote from Qt documentation:
+         *
+         *     “If you reimplement this handler, it is very important that
+         *      you call the base class implementation if you do not act
+         *      upon the key.
+         *
+         *      The default implementation closes popup widgets if the
+         *      user presses the key sequence for QKeySequence::Cancel
+         *      (typically the Escape key). Otherwise the event is
+         *      ignored, so that the widget's parent can interpret it.“ */
+        QWidget::keyPressEvent(event);
     }
 }
 
@@ -459,11 +435,9 @@ Qt::Orientation GradientSlider::orientation() const
  * is <em>not</em> emitted. The <tt>sizePolicy</tt> property is updated
  * corresponding to the <em>new</em> orientation; this happens even if the new
  * orientation is identical to the old @ref m_orientation! */
-void GradientSlider
-    ::GradientSliderPrivate
-    ::setOrientationWithoutSignalAndForceNewSizePolicy(
-        Qt::Orientation newOrientation
-)
+void GradientSlider ::GradientSliderPrivate ::
+    setOrientationWithoutSignalAndForceNewSizePolicy(
+        Qt::Orientation newOrientation)
 {
     if (newOrientation == Qt::Orientation::Vertical) {
         q_pointer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -471,14 +445,11 @@ void GradientSlider
         q_pointer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     }
     m_orientation = newOrientation;
-    m_gradientImageCache.setGradientLength(
-        physicalPixelLength()
-    );
+    m_gradientImageCache.setGradientLength(physicalPixelLength());
     m_gradientImageCache.setGradientThickness(
         // Normally, this should not change, but maybe on Hight-DPI
         // devices there are some differences.
-        physicalPixelThickness()
-    );
+        physicalPixelThickness());
     // Notify the layout system the the geometry has changed
     q_pointer->updateGeometry();
 }
@@ -490,8 +461,7 @@ void GradientSlider::setOrientation(Qt::Orientation newOrientation)
 {
     if (newOrientation != d_pointer->m_orientation) {
         d_pointer->setOrientationWithoutSignalAndForceNewSizePolicy(
-            newOrientation
-        );
+            newOrientation);
         Q_EMIT orientationChanged(d_pointer->m_orientation);
     }
 }
@@ -537,22 +507,21 @@ int GradientSlider::GradientSliderPrivate::physicalPixelThickness() const
  * pixel position.
  * @sa @ref MeasurementDetails "Notes about measurement" */
 qreal GradientSlider::GradientSliderPrivate::fromWidgetPixelPositionToValue(
-    QPoint pixelPosition
-)
+    QPoint pixelPosition)
 {
     // We are interested in the point in the middle of the given pixel.
     const QPointF coordinatePoint = pixelPosition + QPointF(0.5, 0.5);
     qreal temp;
     if (m_orientation == Qt::Orientation::Vertical) {
-        temp = (q_pointer->size().height() - coordinatePoint.y())
-            / static_cast<qreal>(q_pointer->size().height());
+        temp = (q_pointer->size().height() - coordinatePoint.y()) /
+            static_cast<qreal>(q_pointer->size().height());
     } else {
         if (q_pointer->layoutDirection() == Qt::LayoutDirection::LeftToRight) {
-            temp = coordinatePoint.x()
-                / static_cast<qreal>(q_pointer->size().width());
+            temp = coordinatePoint.x() /
+                static_cast<qreal>(q_pointer->size().width());
         } else {
-            temp = (q_pointer->size().width() - coordinatePoint.x())
-                / static_cast<qreal>(q_pointer->size().width());
+            temp = (q_pointer->size().width() - coordinatePoint.x()) /
+                static_cast<qreal>(q_pointer->size().width());
         }
     }
     return qBound<qreal>(0, temp, 1);
@@ -563,7 +532,7 @@ qreal GradientSlider::GradientSliderPrivate::fromWidgetPixelPositionToValue(
  * Reimplemented from base class.
  *
  * @param event the paint event */
-void GradientSlider::paintEvent(QPaintEvent* event)
+void GradientSlider::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
@@ -596,13 +565,11 @@ void GradientSlider::paintEvent(QPaintEvent* event)
     // applied.
     d_pointer->m_gradientImageCache.setDevicePixelRatioF(devicePixelRatioF());
     d_pointer->m_gradientImageCache.setGradientLength(
-        d_pointer->physicalPixelLength()
-    );
+        d_pointer->physicalPixelLength());
     d_pointer->m_gradientImageCache.setGradientThickness(
         // Normally, this should not change, but maybe on Hight-DPI
         // devices there are some differences.
-        d_pointer->physicalPixelLength()
-    );
+        d_pointer->physicalPixelLength());
     paintBuffer = d_pointer->m_gradientImageCache.getImage();
 
     // Draw slider handle
@@ -619,33 +586,22 @@ void GradientSlider::paintEvent(QPaintEvent* event)
     // additionally the position is more exact!
     bufferPainter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
-    const qreal handleCoordinatePoint =
-        d_pointer->physicalPixelLength()
-            / devicePixelRatioF()
-            * d_pointer->m_value;
+    const qreal handleCoordinatePoint = d_pointer->physicalPixelLength() /
+        devicePixelRatioF() * d_pointer->m_value;
     if (hasFocus()) {
         pen.setWidthF(handleOutlineThickness() * 3);
         pen.setColor(focusIndicatorColor());
         bufferPainter.setPen(pen);
         bufferPainter.drawLine(
             QPointF(handleCoordinatePoint, 0),
-            QPointF(handleCoordinatePoint, gradientThickness())
-        );
+            QPointF(handleCoordinatePoint, gradientThickness()));
     }
     pen.setWidthF(handleOutlineThickness());
-    pen.setColor(
-        handleColorFromBackgroundLightness(
-            d_pointer
-                ->m_gradientImageCache
-                .colorFromValue(d_pointer->m_value)
-                .l
-        )
-    );
+    pen.setColor(handleColorFromBackgroundLightness(
+        d_pointer->m_gradientImageCache.colorFromValue(d_pointer->m_value).l));
     bufferPainter.setPen(pen);
-    bufferPainter.drawLine(
-        QPointF(handleCoordinatePoint, 0),
-        QPointF(handleCoordinatePoint, gradientThickness())
-    );
+    bufferPainter.drawLine(QPointF(handleCoordinatePoint, 0),
+                           QPointF(handleCoordinatePoint, gradientThickness()));
 
     // Paint the buffer to the actual widget
     QTransform transform;
@@ -678,21 +634,20 @@ void GradientSlider::paintEvent(QPaintEvent* event)
     widgetPainter.setTransform(transform);
     widgetPainter.drawImage(0, 0, paintBuffer);
 
-//     // TODO Draw a focus rectangle like this?:
-//     widgetPainter.setTransform(QTransform());
-//     if (hasFocus()) {
-//         QStyleOptionFocusRect opt;
-//         opt.palette = palette();
-//         opt.rect = rect();
-//         opt.state = QStyle::State_None | QStyle::State_KeyboardFocusChange;
-//         style()->drawPrimitive(
-//             QStyle::PE_FrameFocusRect,
-//             &opt,
-//             &widgetPainter,
-//             this
-//         );
-//     }
-
+    //     // TODO Draw a focus rectangle like this?:
+    //     widgetPainter.setTransform(QTransform());
+    //     if (hasFocus()) {
+    //         QStyleOptionFocusRect opt;
+    //         opt.palette = palette();
+    //         opt.rect = rect();
+    //         opt.state = QStyle::State_None |
+    //         QStyle::State_KeyboardFocusChange; style()->drawPrimitive(
+    //             QStyle::PE_FrameFocusRect,
+    //             &opt,
+    //             &widgetPainter,
+    //             this
+    //         );
+    //     }
 }
 
 }

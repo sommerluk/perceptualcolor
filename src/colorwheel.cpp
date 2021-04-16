@@ -47,8 +47,8 @@
 
 #include <lcms2.h>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Constructor
  *
  * @param colorSpace The color spaces within this widget should operate.
@@ -56,10 +56,9 @@ namespace PerceptualColor {
  * to the base class’s constructor. */
 ColorWheel::ColorWheel(
     const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-    QWidget *parent
-) :
-    AbstractDiagram(parent),
-    d_pointer(new ColorWheelPrivate(this, colorSpace))
+    QWidget *parent)
+    : AbstractDiagram(parent)
+    , d_pointer(new ColorWheelPrivate(this, colorSpace))
 {
     // Setup LittleCMS (must be first thing because other operations
     // rely on working LittleCMS)
@@ -72,9 +71,7 @@ ColorWheel::ColorWheel(
     d_pointer->m_hue = LchValues::neutralHue;
     d_pointer->m_mouseEventActive = false;
     d_pointer->m_wheelImage.setBorder(d_pointer->border());
-    d_pointer->m_wheelImage.setImageSize(
-        qMin(width(), height())
-    );
+    d_pointer->m_wheelImage.setImageSize(qMin(width(), height()));
     d_pointer->m_wheelImage.setWheelThickness(gradientThickness());
 
     // Set focus policy
@@ -105,10 +102,9 @@ ColorWheel::~ColorWheel() noexcept
  * @param colorSpace The color spaces within this widget should operate. */
 ColorWheel::ColorWheelPrivate::ColorWheelPrivate(
     ColorWheel *backLink,
-    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-) :
-    m_wheelImage(colorSpace),
-    q_pointer(backLink)
+    const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
+    : m_wheelImage(colorSpace)
+    , q_pointer(backLink)
 {
 }
 
@@ -131,17 +127,13 @@ int ColorWheel::ColorWheelPrivate::contentDiameter() const
  * @returns “wheel” coordinates: Coordinates in a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel.
  */
-PolarPointF ColorWheel
-    ::ColorWheelPrivate
-    ::fromWidgetCoordinatesToWheelCoordinates
-(
-    const QPoint widgetCoordinates
-) const
+PolarPointF
+ColorWheel ::ColorWheelPrivate ::fromWidgetCoordinatesToWheelCoordinates(
+    const QPoint widgetCoordinates) const
 {
     qreal radius = contentDiameter() / static_cast<qreal>(2);
-    return PolarPointF(
-        QPointF(widgetCoordinates.x() - radius, radius - widgetCoordinates.y())
-    );
+    return PolarPointF(QPointF(widgetCoordinates.x() - radius,
+                               radius - widgetCoordinates.y()));
 }
 
 /** @brief Converts wheel coordinates to widget coordinates.
@@ -150,12 +142,9 @@ PolarPointF ColorWheel
  * center is exactly in the middle of the displayed wheel.
  * @returns coordinates in the coordinate system of this widget
  */
-QPointF ColorWheel
-    ::ColorWheelPrivate
-    ::fromWheelCoordinatesToWidgetCoordinates
-(
-    const PolarPointF wheelCoordinates
-) const
+QPointF
+ColorWheel ::ColorWheelPrivate ::fromWheelCoordinatesToWidgetCoordinates(
+    const PolarPointF wheelCoordinates) const
 {
     qreal radius = contentDiameter() / static_cast<qreal>(2);
     QPointF temp = wheelCoordinates.toCartesian();
@@ -176,9 +165,8 @@ QPointF ColorWheel
  */
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
-    qreal radius =
-        d_pointer->contentDiameter() / static_cast<qreal>(2)
-            - d_pointer->border();
+    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) -
+        d_pointer->border();
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (myPolarPoint.radial() > radius) {
@@ -214,11 +202,8 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
-        setHue(
-            d_pointer->fromWidgetCoordinatesToWheelCoordinates(
-                event->pos()
-            ).angleDegree()
-        );
+        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos())
+                   .angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
         // widget style works
@@ -237,11 +222,8 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
         d_pointer->m_mouseEventActive = false;
-        setHue(
-            d_pointer->fromWidgetCoordinatesToWheelCoordinates(
-                event->pos()
-            ).angleDegree()
-        );
+        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos())
+                   .angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
         // widget style works
@@ -264,9 +246,8 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
     // a mouse wheel event occurs.
     // TODO What is a reasonable value for this?
     static constexpr qreal wheelStep = 5;
-    qreal radius =
-        d_pointer->contentDiameter() / static_cast<qreal>(2)
-            - d_pointer->border();
+    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) -
+        d_pointer->border();
     PolarPointF myPolarPoint =
         d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
     if (
@@ -277,11 +258,8 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
         // the inner hole.
         (myPolarPoint.radial() <= radius) &&
         // Only react on good old vertical wheels, and not on horizontal wheels.
-        (event->angleDelta().y() != 0)
-    ) {
-        setHue(
-            d_pointer->m_hue + standardWheelSteps(event) * wheelStep
-        );
+        (event->angleDelta().y() != 0)) {
+        setHue(d_pointer->m_hue + standardWheelSteps(event) * wheelStep);
     } else {
         event->ignore();
     }
@@ -307,31 +285,31 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
     constexpr qreal wheelStep = 5;
     constexpr qreal bigWheelStep = 15;
     switch (event->key()) {
-        case Qt::Key_Plus:
-            setHue(d_pointer->m_hue + wheelStep);
-            break;
-        case Qt::Key_Minus:
-            setHue(d_pointer->m_hue - wheelStep);
-            break;
-        case Qt::Key_Insert:
-            setHue(d_pointer->m_hue + bigWheelStep);
-            break;
-        case Qt::Key_Delete:
-            setHue(d_pointer->m_hue - bigWheelStep);
-            break;
-        default:
-            /* Quote from Qt documentation:
-             *
-             * If you reimplement this handler, it is very important
-             * that you call the base class implementation if you do not
-             * act upon the key.
-             *
-             * The default implementation closes popup widgets if the user
-             * presses the key sequence for QKeySequence::Cancel (typically
-             * the Escape key). Otherwise the event is ignored, so that the
-             * widget's parent can interpret it. */
-            QWidget::keyPressEvent(event);
-            break;
+    case Qt::Key_Plus:
+        setHue(d_pointer->m_hue + wheelStep);
+        break;
+    case Qt::Key_Minus:
+        setHue(d_pointer->m_hue - wheelStep);
+        break;
+    case Qt::Key_Insert:
+        setHue(d_pointer->m_hue + bigWheelStep);
+        break;
+    case Qt::Key_Delete:
+        setHue(d_pointer->m_hue - bigWheelStep);
+        break;
+    default:
+        /* Quote from Qt documentation:
+         *
+         * If you reimplement this handler, it is very important
+         * that you call the base class implementation if you do not
+         * act upon the key.
+         *
+         * The default implementation closes popup widgets if the user
+         * presses the key sequence for QKeySequence::Cancel (typically
+         * the Escape key). Otherwise the event is ignored, so that the
+         * widget's parent can interpret it. */
+        QWidget::keyPressEvent(event);
+        break;
     }
 }
 
@@ -363,7 +341,7 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
  *
  * @todo Better design on small widget sizes
  */
-void ColorWheel::paintEvent(QPaintEvent* event)
+void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     // We do not paint directly on the widget, but on a QImage buffer first:
@@ -392,22 +370,13 @@ void ColorWheel::paintEvent(QPaintEvent* event)
     painter.drawImage(0, 0, d_pointer->m_wheelImage.getImage());
 
     // paint the handle
-    qreal radius =
-        d_pointer->contentDiameter() / static_cast<qreal>(2)
-            - d_pointer->border();
+    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) -
+        d_pointer->border();
     // get widget coordinates for our handle
     QPointF myHandleInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
-        PolarPointF(
-            radius - gradientThickness(),
-            d_pointer->m_hue
-        )
-    );
+        PolarPointF(radius - gradientThickness(), d_pointer->m_hue));
     QPointF myHandleOuter = d_pointer->fromWheelCoordinatesToWidgetCoordinates(
-        PolarPointF(
-            radius,
-            d_pointer->m_hue
-        )
-    );
+        PolarPointF(radius, d_pointer->m_hue));
     // draw the line
     QPen pen;
     pen.setWidth(handleOutlineThickness());
@@ -426,8 +395,7 @@ void ColorWheel::paintEvent(QPaintEvent* event)
             handleOutlineThickness() / 2, // Integer division (rounding down)
             handleOutlineThickness() / 2, // Integer division (rounding down)
             d_pointer->contentDiameter() - handleOutlineThickness(),
-            d_pointer->contentDiameter() - handleOutlineThickness()
-        );
+            d_pointer->contentDiameter() - handleOutlineThickness());
     }
 
     // Paint the buffer to the actual widget
@@ -440,7 +408,7 @@ void ColorWheel::paintEvent(QPaintEvent* event)
  *
  * @param event The corresponding resize event
  */
-void ColorWheel::resizeEvent(QResizeEvent* event)
+void ColorWheel::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     // TODO The image cache is not necessarily invalid now. Thought the widget
@@ -449,9 +417,7 @@ void ColorWheel::resizeEvent(QResizeEvent* event)
     // ChromaLightnessDiagram’s resize() call done here within the child class
     // WheelColorPicker. This situation is relevant for the real-world usage,
     // when the user scales the window only horizontally or only vertically.
-    d_pointer->m_wheelImage.setImageSize(
-        qMin(size().width(), size().height())
-    );
+    d_pointer->m_wheelImage.setImageSize(qMin(size().width(), size().height()));
     /* As by Qt documentation:
      *     “The widget will be erased and receive a paint event immediately
      *      after processing the resize event. No drawing need be (or should
@@ -509,13 +475,10 @@ QSize ColorWheel::sizeHint() const
     // We interpretate the gradientMinimumLength() as the length of the
     // circumference of the inner circle of the wheel. By dividing it by π
     // we get the requiered inner diameter:
-    const qreal innerDiameter = gradientMinimumLength() / M_PI
-        * scaleFromMinumumSizeHintToSizeHint;
-    const int size = qRound(
-        innerDiameter
-            + 2 * gradientThickness()
-            + 2 * d_pointer->border()
-    );
+    const qreal innerDiameter =
+        gradientMinimumLength() / M_PI * scaleFromMinumumSizeHintToSizeHint;
+    const int size = qRound(innerDiameter + 2 * gradientThickness() +
+                            2 * d_pointer->border());
     return QSize(size, size);
 }
 
@@ -533,11 +496,8 @@ QSize ColorWheel::minimumSizeHint() const
     // circumference of the inner circle of the wheel. By dividing it by π
     // we get the requiered inner diameter:
     const qreal innerDiameter = gradientMinimumLength() / M_PI;
-    const int size = qRound(
-        innerDiameter
-            + 2 * gradientThickness()
-            + 2 * d_pointer->border()
-    );
+    const int size = qRound(innerDiameter + 2 * gradientThickness() +
+                            2 * d_pointer->border());
     return QSize(size, size);
 }
 

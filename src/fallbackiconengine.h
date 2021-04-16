@@ -30,8 +30,8 @@
 #include <QIconEngine>
 #include <QPointer>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief An icon engine with fallback icons.
  *
  * This icon engine provides a <em>refresh</em> icon. It does a best
@@ -43,7 +43,8 @@ namespace PerceptualColor {
  *    the application that uses this library. On Linux, it is common
  *    that an icon theme is provided. Which icon formats (SVG, PNG …)
  *    are supported depends on your Qt installation. On
- *    <a href="https://kate-editor.org/post/2021/2021-03-07-cross-platform-light-dark-themes-and-icons/">
+ *    <a
+ * href="https://kate-editor.org/post/2021/2021-03-07-cross-platform-light-dark-themes-and-icons/">
  *    some platforms like KDE</a> the icons get automatically adapted to
  *    dark and light mode, on others not.
  * 2. The <tt>QStyle::StandardPixmap::SP_BrowserReload</tt> icon provided
@@ -64,34 +65,27 @@ namespace PerceptualColor {
  * be recalculated each time again. This is less efficient, but it
  * makes sure the icon is always up-to-date, also inmediatly after
  * the widget style or the icon theme or both have changed. */
-class FallbackIconEngine : public QIconEngine {
-
+class FallbackIconEngine : public QIconEngine
+{
 public:
     explicit FallbackIconEngine();
     /** @brief Default destructor. */
     virtual ~FallbackIconEngine() override = default;
-    virtual QIconEngine* clone() const override;
-    virtual void paint(
-        QPainter *painter,
-        const QRect &rect,
-        QIcon::Mode mode,
-        QIcon::State state
-    ) override;
-    virtual QPixmap pixmap(
-        const QSize &size,
-        QIcon::Mode mode,
-        QIcon::State state
-    ) override;
+    virtual QIconEngine *clone() const override;
+    virtual void paint(QPainter *painter,
+                       const QRect &rect,
+                       QIcon::Mode mode,
+                       QIcon::State state) override;
+    virtual QPixmap
+    pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
     void setReferenceWidget(QWidget *referenceWidget);
 
 private:
     // Functions
     explicit FallbackIconEngine(const FallbackIconEngine &other);
-    void paintRefreshFallbackIcon(
-        QPainter *painter,
-        const QRect rect,
-        QIcon::Mode mode
-    );
+    void paintRefreshFallbackIcon(QPainter *painter,
+                                  const QRect rect,
+                                  QIcon::Mode mode);
 
     // Data members
     /** @brief Holds a guarded pointer to the reference widget.

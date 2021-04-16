@@ -36,8 +36,8 @@
 #include "colorwheelimage.h"
 #include "polarpointf.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class ColorWheel::ColorWheelPrivate final
@@ -45,8 +45,7 @@ class ColorWheel::ColorWheelPrivate final
 public:
     ColorWheelPrivate(
         ColorWheel *backLink,
-        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace
-    );
+        const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -70,11 +69,9 @@ public:
     int border() const;
     int contentDiameter() const;
     QPointF fromWheelCoordinatesToWidgetCoordinates(
-        const PolarPointF wheelCoordinates
-    ) const;
+        const PolarPointF wheelCoordinates) const;
     PolarPointF fromWidgetCoordinatesToWheelCoordinates(
-        const QPoint widgetCoordinates
-    ) const;
+        const QPoint widgetCoordinates) const;
     qreal wheelRibbonChroma() const;
 
 private:

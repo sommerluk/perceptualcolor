@@ -38,32 +38,19 @@
  * This file defines some static asserts for the data type
  * @ref PerceptualColor::LchDouble. */
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 // We are using double. Check that we stay compatible with cmsCIELCh
 // which is based on cmsFloat64Number.
-static_assert(
-    std::is_same_v<
-        cmsFloat64Number,
-        double
-    >
-);
+static_assert(std::is_same_v<cmsFloat64Number, double>);
 
-static_assert(
-    sizeof(double) == sizeof(cmsFloat64Number)
-);
+static_assert(sizeof(double) == sizeof(cmsFloat64Number));
 
-static_assert(
-    sizeof(LchDouble) == sizeof(cmsCIELCh)
-);
+static_assert(sizeof(LchDouble) == sizeof(cmsCIELCh));
 
-static_assert(
-    std::is_trivial_v<LchDouble>
-);
+static_assert(std::is_trivial_v<LchDouble>);
 
-static_assert(
-    std::is_standard_layout_v<LchDouble>
-);
+static_assert(std::is_standard_layout_v<LchDouble>);
 
 /** @brief Adds QDebug() support for this data type.
  * @note This is declared outside the global namespace instead of the
@@ -73,14 +60,8 @@ static_assert(
  * in the global namespace. */
 QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value)
 {
-    dbg.nospace()
-        << "LchDouble("
-        << value.l
-        << "% "
-        << value.c
-        << " "
-        << value.h
-        << "°)";
+    dbg.nospace() << "LchDouble(" << value.l << "% " << value.c << " "
+                  << value.h << "°)";
     return dbg.maybeSpace();
 }
 
@@ -94,10 +75,9 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::LchDouble &value)
  * considered non-equal thought both describe the same point in the
  * coordinate space. */
 bool LchDouble::hasSameCoordinates(
-    const PerceptualColor::LchDouble& other
-) const
+    const PerceptualColor::LchDouble &other) const
 {
-    return ( (l == other.l) && (c == other.c) && (h == other.h) );
+    return ((l == other.l) && (c == other.c) && (h == other.h));
 }
 
 } // namespace PerceptualColor

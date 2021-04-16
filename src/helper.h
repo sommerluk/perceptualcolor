@@ -28,15 +28,15 @@
 #define HELPER_H
 
 #include <QImage>
-#include <QtGlobal>
 #include <QWheelEvent>
+#include <QtGlobal>
 
 #include "PerceptualColor/lchdouble.h"
 
 #include <lcms2.h>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @file
  *
  * @brief Various smaller help elements.
@@ -59,7 +59,7 @@ constexpr qreal gamutPrecision = 0.001;
  * @param x the value that will be tested
  * @param high the higher limit
  * @returns @snippet this Helper inRange */
-template<typename T> bool inRange(const T& low, const T& x, const T& high)
+template<typename T> bool inRange(const T &low, const T &x, const T &high)
 {
     return (
         //! [Helper inRange]

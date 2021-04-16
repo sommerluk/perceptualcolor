@@ -34,8 +34,8 @@
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/rgbcolorspace.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Complete wheel-based color picker widget
  *
  * It provides a @ref ColorWheel and, in its inner circle,
@@ -60,18 +60,13 @@ class WheelColorPicker : public AbstractDiagram
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged() */
-    Q_PROPERTY(PerceptualColor::LchDouble currentColor
-        READ currentColor
-        WRITE setCurrentColor
-        NOTIFY currentColorChanged
-        USER true
-    )
+    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE
+                   setCurrentColor NOTIFY currentColorChanged USER true)
 
 public:
     Q_INVOKABLE explicit WheelColorPicker(
         const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace,
-        QWidget *parent = nullptr
-    );
+        QWidget *parent = nullptr);
     virtual ~WheelColorPicker() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
@@ -83,12 +78,10 @@ public:
 Q_SIGNALS:
     /** @brief Notify signal for property @ref currentColor.
      *  @param newCurrentColor the new current color */
-    void currentColorChanged(
-        const PerceptualColor::LchDouble &newCurrentColor
-    );
+    void currentColorChanged(const PerceptualColor::LchDouble &newCurrentColor);
 
 protected:
-    virtual void resizeEvent(QResizeEvent* event) override;
+    virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
     Q_DISABLE_COPY(WheelColorPicker)
@@ -104,7 +97,6 @@ private:
 
     /** @brief Only for unit tests. */
     friend class TestWheelColorPicker;
-
 };
 
 }

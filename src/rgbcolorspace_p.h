@@ -33,8 +33,8 @@
 
 #include "rgbdouble.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class RgbColorSpace::RgbColorSpacePrivate final
@@ -59,10 +59,8 @@ public:
 
     cmsCIELab colorLab(const RgbDouble &rgb) const;
     RgbDouble colorRgbBoundSimple(const cmsCIELab &Lab) const;
-    static QString getInformationFromProfile(
-        cmsHPROFILE profileHandle,
-        cmsInfoType infoType
-    );
+    static QString getInformationFromProfile(cmsHPROFILE profileHandle,
+                                             cmsInfoType infoType);
 
 private:
     Q_DISABLE_COPY(RgbColorSpacePrivate)
@@ -70,7 +68,6 @@ private:
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<RgbColorSpace> q_pointer;
-
 };
 
 }

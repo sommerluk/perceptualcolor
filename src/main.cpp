@@ -26,33 +26,32 @@
 
 #include "perceptualcolorlib_internal.h"
 
-#include "PerceptualColor/colordialog.h"
 #include "PerceptualColor/chromahuediagram.h"
 #include "PerceptualColor/chromalightnessdiagram.h"
-#include "PerceptualColor/multispinbox.h"
-#include "polarpointf.h"
-#include "PerceptualColor/lchdouble.h"
+#include "PerceptualColor/colordialog.h"
 #include "PerceptualColor/colorwheel.h"
+#include "PerceptualColor/lchdouble.h"
+#include "PerceptualColor/multispinbox.h"
 #include "fallbackiconengine.h"
+#include "polarpointf.h"
 #include "version.h"
 
 #include <lcms2.h>
 
 #include <QApplication>
 
-#include <QColorDialog>
 #include <QAction>
+#include <QColorDialog>
+#include <QDateTimeEdit>
 #include <QDebug>
-#include <QLineEdit>
 #include <QImageReader>
+#include <QLabel>
+#include <QLineEdit>
 #include <QPainter>
 #include <QPushButton>
-#include <QDateTimeEdit>
-#include <QColorDialog>
-#include <memory>// Other includes
-#include <QtMath>
-#include <QLabel>
 #include <QVBoxLayout>
+#include <QtMath>
+#include <memory> // Other includes
 
 // TODO Test the main function etc from KColorChooser to see if
 // PerceptualColor::ColorDialog is really a drop-in replacement
@@ -65,46 +64,37 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     // Instanciate the application object
     QApplication app(argc, argv);
-    app.setApplicationName(
-        QObject::tr(u8"Perceptual color picker")
-    );
-//     app.setLayoutDirection(Qt::RightToLeft);
-//     QLocale::setDefault(QLocale::Bengali);
-//     QLocale::setDefault(QLocale::German);
+    app.setApplicationName(QObject::tr(u8"Perceptual color picker"));
+    //     app.setLayoutDirection(Qt::RightToLeft);
+    //     QLocale::setDefault(QLocale::Bengali);
+    //     QLocale::setDefault(QLocale::German);
 
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
-    m_colorDialog.setOption(
-        QColorDialog::ColorDialogOption::ShowAlphaChannel,
-        true
-    );
-QColor myColor = QColor(Qt::yellow);
-myColor.setAlphaF(0.5);
-m_colorDialog.setCurrentColor(myColor);
-//     m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
+    m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel,
+                            true);
+    QColor myColor = QColor(Qt::yellow);
+    myColor.setAlphaF(0.5);
+    m_colorDialog.setCurrentColor(myColor);
+    //     m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
     m_colorDialog.setLayoutDimensions(
-        PerceptualColor
-            ::ColorDialog
-            ::DialogLayoutDimensions
-            ::expanded
-    );
+        PerceptualColor ::ColorDialog ::DialogLayoutDimensions ::expanded);
     m_colorDialog.show();
 
-//     m_colorDialog.setStyleSheet(
-//         "background: yellow; color: red; border: 15px solid #FF0000;"
-//     );
+    //     m_colorDialog.setStyleSheet(
+    //         "background: yellow; color: red; border: 15px solid #FF0000;"
+    //     );
 
-
-// QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
-//     new PerceptualColor::RgbColorSpace
-// };
-// QWidget testWidget;
-// QVBoxLayout layout;
-// PerceptualColor::ChromaLightnessDiagram * diagram =
-//     new PerceptualColor::ChromaLightnessDiagram(myColorSpace);
-// layout.addWidget(diagram);
-// testWidget.setLayout(&layout);
-// testWidget.show();
+    // QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
+    //     new PerceptualColor::RgbColorSpace
+    // };
+    // QWidget testWidget;
+    // QVBoxLayout layout;
+    // PerceptualColor::ChromaLightnessDiagram * diagram =
+    //     new PerceptualColor::ChromaLightnessDiagram(myColorSpace);
+    // layout.addWidget(diagram);
+    // testWidget.setLayout(&layout);
+    // testWidget.show();
 
     // Run
     return app.exec();

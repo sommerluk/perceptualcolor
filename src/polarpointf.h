@@ -33,8 +33,8 @@
 #include <QMetaType>
 #include <QPointF>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief A point in the polar coordinate system
  *
  * Defines a point in the two-dimensional polar coordinate system using
@@ -73,23 +73,21 @@ namespace PerceptualColor {
  */
 class PolarPointF final
 {
-
 public:
-
     /** @brief Constructor
-    *
-    * Constructs an object with @ref radial() = 0 and @ref angleDegree() = 0 */
+     *
+     * Constructs an object with @ref radial() = 0 and @ref angleDegree() = 0 */
     explicit PolarPointF() = default;
 
     /** @brief Default copy constructor
      *
      * @param other the object to copy */
-    PolarPointF(const PolarPointF& other) = default;
+    PolarPointF(const PolarPointF &other) = default;
 
     /** @brief Default move constructor
      *
      * @param other the object to move */
-    PolarPointF(PolarPointF&& other) noexcept = default;
+    PolarPointF(PolarPointF &&other) noexcept = default;
 
     explicit PolarPointF(const qreal newRadial, const qreal newAngleDegree);
 
@@ -107,12 +105,13 @@ public:
     //      operator must be an lvalue reference type”
     // Therefore, we exclude the following line from this specific clazy check,
     // by adding a magic comment after it.
-    PolarPointF& operator=(const PolarPointF &other) = default; // clazy:exclude=function-args-by-value
+    PolarPointF &operator=(const PolarPointF &other) =
+        default; // clazy:exclude=function-args-by-value
 
     /** @brief Default move assignment operator
      *
      * @param other the object to move-assign */
-    PolarPointF& operator=(PolarPointF&& other) noexcept = default;
+    PolarPointF &operator=(PolarPointF &&other) noexcept = default;
 
     qreal angleDegree() const;
 
@@ -125,12 +124,11 @@ public:
     QPointF toCartesian() const;
 
 private:
-
     /** @brief Holds the @ref angleDegree() value. */
-    qreal m_angleDegree { 0 };
+    qreal m_angleDegree {0};
 
     /** @brief Holds the @ref radial() value. */
-    qreal m_radial { 0 };
+    qreal m_radial {0};
 };
 
 QDebug operator<<(QDebug dbg, const PerceptualColor::PolarPointF value);

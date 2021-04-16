@@ -37,8 +37,8 @@
 #include <QStyle>
 #include <QWidget>
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief Constructor.
  *
  * @pre Instanciating this class requires an existing <tt>QApplication</tt>
@@ -54,9 +54,7 @@ FallbackIconEngine::FallbackIconEngine()
     // crash directly here, with a useful error message. (Note that also
     // QWidget crashes in the constructor when no QApplication object is
     // available.)
-    if (
-        qobject_cast<QApplication*>(QCoreApplication::instance()) == nullptr
-    ) {
+    if (qobject_cast<QApplication *>(QCoreApplication::instance()) == nullptr) {
         // From Qt documentation about qFatal():
         //
         //     “If you are using the default message handler
@@ -66,8 +64,7 @@ FallbackIconEngine::FallbackIconEngine()
         // calling qFatal, because qFatal itself aborts the program.
         qFatal(
             "FallbackIconEngine: Must construct a QApplication "
-                "before a FallbackIconEngine"
-        );
+            "before a FallbackIconEngine");
     }
 }
 
@@ -114,15 +111,11 @@ void FallbackIconEngine::setReferenceWidget(QWidget *referenceWidget)
  * @param state The state of the icon.
  * @returns The icon as a pixmap with the required size,
  * mode, and state. */
-QPixmap FallbackIconEngine::pixmap(
-    const QSize &size,
-    QIcon::Mode mode,
-    QIcon::State state
-) {
-    QImage iconImage {
-        size,
-        QImage::Format_ARGB32_Premultiplied
-    };
+QPixmap FallbackIconEngine::pixmap(const QSize &size,
+                                   QIcon::Mode mode,
+                                   QIcon::State state)
+{
+    QImage iconImage {size, QImage::Format_ARGB32_Premultiplied};
     iconImage.fill(Qt::transparent);
     {
         // Putting this in an own block, as the QPainter object
@@ -130,12 +123,7 @@ QPixmap FallbackIconEngine::pixmap(
         // called. So the QPainter object should not be used
         // anymore after the paint() call.
         QPainter painter(&iconImage);
-        paint(
-            &painter,
-            QRect(QPoint(0, 0), size),
-            mode,
-            state
-        );
+        paint(&painter, QRect(QPoint(0, 0), size), mode, state);
     }
     return QPixmap::fromImage(iconImage);
 }
@@ -150,11 +138,9 @@ QPixmap FallbackIconEngine::pixmap(
  * @param painter Uses the given painter to paint the icon
  * @param rect into the rectangle rect
  * @param mode with the required mode. */
-void FallbackIconEngine::paintRefreshFallbackIcon(
-    QPainter *painter,
-    const QRect rect,
-    QIcon::Mode mode
-)
+void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter,
+                                                  const QRect rect,
+                                                  QIcon::Mode mode)
 {
     if (rect.isEmpty()) {
         // Return on empty rectangles. This avoids bad calculations with
@@ -176,32 +162,30 @@ void FallbackIconEngine::paintRefreshFallbackIcon(
     const qreal scaleFactor =
         static_cast<qreal>(destinationSpace) / designSpace;
     const qreal radius =
-        halfDestinationSpace
-            - 0.5 * unscaledPenWidth * scaleFactor;
+        halfDestinationSpace - 0.5 * unscaledPenWidth * scaleFactor;
     painter->setRenderHint(QPainter::RenderHint::Antialiasing);
     painter->setCompositionMode(
         // While CompositionMode_SourceOver is the default value
         // anyway, it’s important to set it explicitly, as the
         // painter that we received might currently be set to
         // another CopoisitionMode.
-        QPainter::CompositionMode::CompositionMode_SourceOver
-    );
+        QPainter::CompositionMode::CompositionMode_SourceOver);
     QPen pen;
     pen.setWidthF(unscaledPenWidth * scaleFactor);
     QPalette::ColorGroup paletteColorGroup;
     switch (mode) {
-        case QIcon::Mode::Normal:
-            paletteColorGroup = QPalette::ColorGroup::Normal;
-            break;
-        case QIcon::Mode::Disabled:
-            paletteColorGroup = QPalette::ColorGroup::Disabled;
-            break;
-        case QIcon::Mode::Active:
-            paletteColorGroup = QPalette::ColorGroup::Active;
-            break;
-        case QIcon::Mode::Selected:
-            paletteColorGroup = QPalette::ColorGroup::Normal;
-            break;
+    case QIcon::Mode::Normal:
+        paletteColorGroup = QPalette::ColorGroup::Normal;
+        break;
+    case QIcon::Mode::Disabled:
+        paletteColorGroup = QPalette::ColorGroup::Disabled;
+        break;
+    case QIcon::Mode::Active:
+        paletteColorGroup = QPalette::ColorGroup::Active;
+        break;
+    case QIcon::Mode::Selected:
+        paletteColorGroup = QPalette::ColorGroup::Normal;
+        break;
     }
     QPalette referencePalette;
     if (m_referenceWidget.isNull()) {
@@ -210,20 +194,12 @@ void FallbackIconEngine::paintRefreshFallbackIcon(
         referencePalette = m_referenceWidget->palette();
     }
     pen.setColor(
-        referencePalette.color(
-            paletteColorGroup,
-            QPalette::ColorRole::Text
-        )
-    );
+        referencePalette.color(paletteColorGroup, QPalette::ColorRole::Text));
     painter->setPen(pen);
-    painter->drawEllipse(
-        QPointF(
-            halfDestinationSpace + rect.left(),
-            halfDestinationSpace + rect.top()
-        ),
-        radius,
-        radius
-    );
+    painter->drawEllipse(QPointF(halfDestinationSpace + rect.left(),
+                                 halfDestinationSpace + rect.top()),
+                         radius,
+                         radius);
 }
 
 /** @brief Paints the icon.
@@ -234,12 +210,10 @@ void FallbackIconEngine::paintRefreshFallbackIcon(
  * @param rect into the rectangle rect
  * @param mode with the required mode
  * @param state and state. */
-void FallbackIconEngine::paint(
-    QPainter *painter,
-    const QRect &rect,
-    QIcon::Mode mode,
-    QIcon::State state
-)
+void FallbackIconEngine::paint(QPainter *painter,
+                               const QRect &rect,
+                               QIcon::Mode mode,
+                               QIcon::State state)
 {
     // Initialize
     QIcon myIcon;
@@ -247,13 +221,7 @@ void FallbackIconEngine::paint(
     // First, try to load an icon from the current icon theme.
     myIcon = QIcon::fromTheme(QStringLiteral("view-refresh"));
     if (!myIcon.isNull()) {
-        myIcon.paint(
-            painter,
-            rect,
-            Qt::AlignCenter,
-            mode,
-            state
-        );
+        myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
         return;
     }
 
@@ -273,17 +241,10 @@ void FallbackIconEngine::paint(
     } else {
         referenceStyle = m_referenceWidget->style();
     }
-    myIcon = referenceStyle->standardIcon(
-        QStyle::StandardPixmap::SP_BrowserReload
-    );
+    myIcon =
+        referenceStyle->standardIcon(QStyle::StandardPixmap::SP_BrowserReload);
     if (!myIcon.isNull()) {
-        myIcon.paint(
-            painter,
-            rect,
-            Qt::AlignCenter,
-            mode,
-            state
-        );
+        myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
         return;
     }
 
@@ -304,11 +265,10 @@ void FallbackIconEngine::paint(
  * returns the result.
  *
  * @returns a clone of this icon engine. */
-QIconEngine* FallbackIconEngine::clone() const
+QIconEngine *FallbackIconEngine::clone() const
 {
     return new FallbackIconEngine(*this);
 }
-
 
 /** @brief Copy constructor.
  *
@@ -326,7 +286,7 @@ QIconEngine* FallbackIconEngine::clone() const
  *
  * @param other The other object that shall be copied to this one. */
 FallbackIconEngine::FallbackIconEngine(const FallbackIconEngine &other)
-: QIconEngine(other)
+    : QIconEngine(other)
 {
     m_referenceWidget = other.m_referenceWidget;
 }

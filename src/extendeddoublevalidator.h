@@ -32,8 +32,8 @@
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
-namespace PerceptualColor {
-
+namespace PerceptualColor
+{
 /** @brief The @ref ExtendedDoubleValidator class provides range checking
  * of floating-point numbers with support for prefix and/or suffix.
  *
@@ -79,10 +79,7 @@ public:
      * - If an input contains correct prefix and suffix, the floating point
      *   portion is validated as <tt>QDoubleValidator</tt> does and
      *   the corresponding result is returned. */
-    virtual QValidator::State validate(
-        QString &input,
-        int &pos
-    ) const override;
+    virtual QValidator::State validate(QString &input, int &pos) const override;
 
 public Q_SLOTS:
     void setPrefix(const QString &prefix);
