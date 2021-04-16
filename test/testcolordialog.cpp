@@ -1116,7 +1116,7 @@ private Q_SLOTS:
         QCOMPARE(m_color, Qt::black);
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
         // Return key really emits a signal
-        QCOMPARE(m_color, Qt::red);
+        QCOMPARE(m_color, Qt::red); // xxx
         m_perceptualDialog->show();
         m_perceptualDialog->setCurrentColor(Qt::green);
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
@@ -1701,7 +1701,7 @@ private Q_SLOTS:
         QCOMPARE(m_perceptualDialog->selectedColor(), QColor());
         QTest::keyClick(m_perceptualDialog.data(), Qt::Key_Return);
         QTest::keyClick(m_qDialog.data(), Qt::Key_Return);
-        QCOMPARE(
+        QCOMPARE( // xxx
             m_perceptualDialog->selectedColor(),
             m_qDialog->selectedColor()
         );
@@ -1842,15 +1842,15 @@ private Q_SLOTS:
         myDialog->d_pointer->m_hsvSpinBox->setSections(mySections);
         myDialog->d_pointer->readHsvNumericValues();
         QCOMPARE(
-            myDialog->currentColor().hue(),
+            qRound(myDialog->currentColor().hueF() * 360),
             10
         );
         QCOMPARE(
-            myDialog->currentColor().lightness(),
+            qRound(myDialog->currentColor().saturationF() * 255),
             11
         );
         QCOMPARE(
-            myDialog->currentColor().value(),
+            qRound(myDialog->currentColor().valueF() * 255),
             12
         );
     }

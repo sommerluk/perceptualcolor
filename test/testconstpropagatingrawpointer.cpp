@@ -57,6 +57,9 @@ myRectF = *pointerToQRectF;
 pointerToQRectF->setHeight(5);
 *pointerToQRectF = myRectF;
 normalCppPointerToQRectF = pointerToQRectF;
+
+// Deleting works like for normal pointers
+delete pointerToQRectF;
 //! [ConstPropagatingRawPointer Example]
 Q_UNUSED(myRectF)
 Q_UNUSED(myHeight)
