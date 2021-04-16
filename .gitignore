@@ -27,5 +27,6 @@ build/*
 doc
 .kdev4/
 .directory
+.clang-format
 perceptualcolor.kdev4
 README.md.backup
