@@ -68,13 +68,15 @@ static void snippet01()
     // This function will not be called in the unit tests because getColor()
     // does not return without user interaction!
     //! [ColorDialog Get color with alpha channel]
-    QColor myColor =
-        PerceptualColor::ColorDialog::getColor(
-            Qt::green,                      // current color at widget startup
-                                                            nullptr,                        // parent widget (or nullptr for no parent)
-                                                            QStringLiteral("Window title"), // window title (or an empty string for
-                                                                                            // default title)
-                                                            PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel);
+    QColor myColor = PerceptualColor::ColorDialog::getColor(
+        // Current color at widget startup:
+        Qt::green,
+        // Parent widget (or nullptr for no parent):
+        nullptr,
+        // Window title (or an empty string for default title):
+        QStringLiteral("Window title"),
+        // Options:
+        PerceptualColor::ColorDialog::ColorDialogOption::ShowAlphaChannel);
     //! [ColorDialog Get color with alpha channel]
     Q_UNUSED(myColor);
 }
