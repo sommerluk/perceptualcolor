@@ -75,7 +75,6 @@ public:
 
 namespace PerceptualColor
 {
-
 class TestAbstractDiagram : public QObject
 {
     Q_OBJECT

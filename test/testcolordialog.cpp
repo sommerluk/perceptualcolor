@@ -114,7 +114,6 @@ static void snippet04()
 
 namespace PerceptualColor
 {
-
 class TestColorDialog : public QObject
 {
     Q_OBJECT

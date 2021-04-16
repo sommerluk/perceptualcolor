@@ -51,8 +51,7 @@ static cmsCIELab snippet01()
         // Rendering intent:
         INTENT_ABSOLUTE_COLORIMETRIC,
         // Flags:
-        0
-    );
+        0);
     cmsCloseProfile(labProfileHandle);
     cmsCloseProfile(rgbProfileHandle);
     PerceptualColor::RgbDouble rgb;
@@ -73,7 +72,6 @@ static cmsCIELab snippet01()
 
 namespace PerceptualColor
 {
-
 class TestRgbDouble : public QObject
 {
     Q_OBJECT
@@ -208,7 +206,7 @@ private Q_SLOTS:
     }
 };
 
-}// input profile
+} // input profile
 
 QTEST_MAIN(PerceptualColor::TestRgbDouble)
 

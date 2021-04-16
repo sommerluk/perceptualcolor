@@ -65,7 +65,6 @@ public:
 
 namespace PerceptualColor
 {
-
 class TestChromaHueImage : public QObject
 {
     Q_OBJECT

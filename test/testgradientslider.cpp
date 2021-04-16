@@ -37,7 +37,6 @@
 
 namespace PerceptualColor
 {
-
 class TestGradientSlider : public QObject
 {
     Q_OBJECT

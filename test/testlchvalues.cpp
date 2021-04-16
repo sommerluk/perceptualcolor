@@ -36,7 +36,6 @@
 
 namespace PerceptualColor
 {
-
 class TestLchValues : public QObject
 {
     Q_OBJECT

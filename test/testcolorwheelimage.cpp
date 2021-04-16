@@ -63,7 +63,6 @@ public:
 
 namespace PerceptualColor
 {
-
 class TestColorWheelImage : public QObject
 {
     Q_OBJECT

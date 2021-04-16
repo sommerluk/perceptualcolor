@@ -34,7 +34,6 @@
 
 namespace PerceptualColor
 {
-
 class TestExtendedDoubleValidator : public QObject
 {
     Q_OBJECT

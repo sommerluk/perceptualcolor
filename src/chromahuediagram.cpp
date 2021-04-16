@@ -540,16 +540,16 @@ void ChromaHueDiagram ::ChromaHueDiagramPrivate ::setColorFromWidgetPixelPositio
  * is within the circle, <tt>false</tt> otherwise. */
 bool ChromaHueDiagram ::ChromaHueDiagramPrivate ::isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint position) const
 {
-    const qreal radial =
-        PolarPointF(
-            // Position relative to polar coordinate system center:
-            position - diagramCenterInWidgetCoordinates()
-                // Apply the offset between a pixel position and a point in
-                // the middle of this very same pixel:
-                + QPointF(0.5, 0.5)).radial();
+    const qreal radial = PolarPointF(
+                             // Position relative to polar coordinate system center:
+                             position -
+                             diagramCenterInWidgetCoordinates()
+                             // Apply the offset between a pixel position and a point in
+                             // the middle of this very same pixel:
+                             + QPointF(0.5, 0.5))
+                             .radial();
 
-    const qreal diagramCircleRadius =
-        q_pointer->maximumWidgetSquareSize() / static_cast<qreal>(2) - diagramBorder();
+    const qreal diagramCircleRadius = q_pointer->maximumWidgetSquareSize() / static_cast<qreal>(2) - diagramBorder();
 
     return (radial <= diagramCircleRadius);
 }

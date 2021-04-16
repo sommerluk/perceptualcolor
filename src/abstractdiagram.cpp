@@ -71,8 +71,7 @@ QColor AbstractDiagram::focusIndicatorColor() const
     // however are drawn in orange. This function returns red in this case,
     // which is wrong. However, I do not know how to get around this
     // limitation.
-    return
-        palette().color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
+    return palette().color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
 }
 
 /** @brief The rounded size of the widget measured in <em>physical</em>
@@ -118,8 +117,7 @@ QSize AbstractDiagram::physicalPixelSize() const
     static_assert(static_cast<int>(1.0) == 1);
     // Multiply the size with the (floating point) scale factor
     // and than round down (by using static_cast<int>).
-    return
-        QSize(static_cast<int>(size().width() * devicePixelRatioF()), static_cast<int>(size().height() * devicePixelRatioF()));
+    return QSize(static_cast<int>(size().width() * devicePixelRatioF()), static_cast<int>(size().height() * devicePixelRatioF()));
 }
 
 /** @brief The maximum possible size of a square within the widget, measured
@@ -254,8 +252,7 @@ int AbstractDiagram::gradientMinimumLength() const
             // Similar to QSlider::minimumSizeHint():
             style()->pixelMetric(QStyle::PM_SliderLength, &option, this)),
         // Parameter: (Considers implicitly QApplication::globalStrut)
-        gradientThickness()
-    );
+        gradientThickness());
 }
 
 /** @brief The empty space around diagrams reserverd for the focus indicator.

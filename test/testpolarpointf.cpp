@@ -34,7 +34,6 @@
 
 namespace PerceptualColor
 {
-
 class TestPolarPointF : public QObject
 {
     Q_OBJECT

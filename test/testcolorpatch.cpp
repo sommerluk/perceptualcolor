@@ -49,7 +49,6 @@ static void snippet01()
 
 namespace PerceptualColor
 {
-
 class TestColorPatch : public QObject
 {
     Q_OBJECT

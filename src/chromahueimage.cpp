@@ -127,10 +127,7 @@ void ChromaHueImage::setImageSize(const int newImageSize)
  * @param newLightness The new lightness. Valid range is <tt>[0, 100]</tt>. */
 void ChromaHueImage::setLightness(const qreal newLightness)
 {
-    const qreal temp = qBound(
-        static_cast<qreal>(0),
-        newLightness,
-        static_cast<qreal>(100));
+    const qreal temp = qBound(static_cast<qreal>(0), newLightness, static_cast<qreal>(100));
     if (m_lightness != temp) {
         m_lightness = temp;
         // Free the memory used by the old image.
@@ -171,8 +168,7 @@ QImage ChromaHueImage::getImage()
 
     // If no image is in cache, create a new one (in the cache) with
     // correct image size.
-    m_image =
-        QImage(QSize(m_imageSizePhysical, m_imageSizePhysical), QImage::Format_ARGB32_Premultiplied);
+    m_image = QImage(QSize(m_imageSizePhysical, m_imageSizePhysical), QImage::Format_ARGB32_Premultiplied);
     // Calculate the radius of the circle we want to paint (and which will
     // finally have the background color, while everything around will be
     // transparent).

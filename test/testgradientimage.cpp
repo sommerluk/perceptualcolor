@@ -74,7 +74,6 @@ public:
 
 namespace PerceptualColor
 {
-
 class TestGradientImage : public QObject
 {
     Q_OBJECT
