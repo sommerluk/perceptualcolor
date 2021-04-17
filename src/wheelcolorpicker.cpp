@@ -32,14 +32,13 @@
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h"
 
+// TODO Can’t we avoid to include colorwheel_p.h?
 #include "colorwheel_p.h"
 
 #include <math.h>
 
 #include <QApplication>
 #include <QDebug>
-#include <QKeyEvent>
-#include <QPainter>
 
 namespace PerceptualColor
 {
@@ -59,11 +58,18 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     d_pointer->m_chromaLightnessDiagram->raise();
     d_pointer->resizeChildWidgets();
     d_pointer->m_chromaLightnessDiagram->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
-    d_pointer->m_chromaLightnessDiagram->setFocusPolicy(Qt::FocusPolicy::ClickFocus
-                                                        // TODO Why not just inherit TabFocus? But apparently it works! Why?
+    d_pointer->m_chromaLightnessDiagram->setFocusPolicy(
+        // TODO Why not just inherit TabFocus? But apparently it works! Why?
+        Qt::FocusPolicy::ClickFocus
     );
     connect(d_pointer->m_ColorWheel, &ColorWheel::hueChanged, d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue);
-    connect(d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::currentColorChanged, this, [this](const PerceptualColor::LchDouble &newCurrentColor) { Q_EMIT currentColorChanged(newCurrentColor); });
+    connect(
+        d_pointer->m_chromaLightnessDiagram,
+        &ChromaLightnessDiagram::currentColorChanged,
+        this,
+        // As value is stored anyway within ChromaLightnessDiagram member,
+        // it’s enough to just emit the corresponding signal of this class:
+        [this](const PerceptualColor::LchDouble &newCurrentColor) { Q_EMIT currentColorChanged(newCurrentColor); });
     connect(
         // QWidget’s constructor requires a QApplication object. As this is
         // a class derived from QWidget, calling qApp is save.

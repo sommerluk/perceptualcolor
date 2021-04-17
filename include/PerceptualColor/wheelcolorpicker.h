@@ -38,7 +38,7 @@ namespace PerceptualColor
 {
 /** @brief Complete wheel-based color picker widget
  *
- * It provides a @ref ColorWheel and, in its inner circle,
+ * It is composed of a @ref ColorWheel and, in the middle,
  * a @ref ChromaLightnessDiagram.
  *
  * @todo BUG: Current behaviour: This class accepts focus by Tab, but it
@@ -53,6 +53,7 @@ namespace PerceptualColor
  * movements (and also to other widgets). */
 class WheelColorPicker : public AbstractDiagram
 {
+
     Q_OBJECT
 
     /** @brief Currently selected color

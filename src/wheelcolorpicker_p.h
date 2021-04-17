@@ -29,13 +29,13 @@
 
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/wheelcolorpicker.h"
+
 #include "constpropagatingrawpointer.h"
 
 #include <QPointer>
 
 #include "PerceptualColor/chromalightnessdiagram.h"
 #include "PerceptualColor/colorwheel.h"
-#include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor
 {
@@ -43,21 +43,26 @@ namespace PerceptualColor
  *  implementation</em> idiom */
 class WheelColorPicker::WheelColorPickerPrivate final : public QObject
 {
+
     Q_OBJECT
+
 public:
+    // Constructors and destructors
     WheelColorPickerPrivate(WheelColorPicker *backLink);
     /** @brief Default destructor */
     virtual ~WheelColorPickerPrivate() noexcept = default;
 
-    /** @brief A pointer to the @ref ChromaLightnessDiagram widget. */
+    // Member methods
+    void resizeChildWidgets();
+    static QSize scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal);
+
+    // Data members
+    /** @brief A pointer to the @ref ChromaLightnessDiagram child widget. */
     QPointer<ChromaLightnessDiagram> m_chromaLightnessDiagram;
     /** @brief A pointer to the color space. */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
-    /** @brief A pointer to the @ref ColorWheel widget. */
+    /** @brief A pointer to the @ref ColorWheel child widget. */
     QPointer<ColorWheel> m_ColorWheel;
-
-    void resizeChildWidgets();
-    static QSize scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal);
 
 public Q_SLOTS:
     void handleFocusChanged(QWidget *old, QWidget *now);
@@ -68,6 +73,7 @@ private:
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<WheelColorPicker> q_pointer;
+
 };
 
 } // namespace PerceptualColor

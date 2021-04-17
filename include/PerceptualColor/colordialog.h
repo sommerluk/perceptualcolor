@@ -263,7 +263,7 @@ namespace PerceptualColor
  * which was deprecated somewhere at 5.12 following the source code from
  * Woboq, but much earlier following the online documentation.
  * Support them? Or document that we do not support them? */
-class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
+class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
 {
     Q_OBJECT
 
@@ -296,14 +296,12 @@ class PERCEPTUALCOLORLIB_EXPORT ColorDialog : public QDialog
      * | NoButtons           | false         | Don't display OK and Cancel buttons. (Useful for “live dialogs”.)
      * | DontUseNativeDialog | true          | Use Qt’s standard color dialog instead of the operating system native color dialog.
      *
-     *   @invariant The option
-     *   <tt>ColorDialogOption::DontUseNativeDialog</tt> will
-     *   always be <tt>true</tt> because it's just the point of this
-     *   library to provide an own, non-native dialog. (If you set
-     *   <tt>ColorDialogOption::DontUseNativeDialog</tt>
-     *   explicitly to <tt>false</tt>, this will silently be ignored, while
-     *   the other options that you might have set, will be correctly
-     *   applied.)
+     *   @invariant The option <tt>ColorDialogOption::DontUseNativeDialog</tt>
+     *   will always be <tt>true</tt> because it's just the point of
+     *   this library to provide an own, non-native dialog. (If you
+     *   set  <tt>ColorDialogOption::DontUseNativeDialog</tt> explicitly
+     *   to <tt>false</tt>, this will silently be ignored, while the
+     *   other options that you might have set, will be correctly applied.)
      *
      * Example:
      * @snippet test/testcolordialog.cpp setOptionsWithLocalEnum
@@ -373,7 +371,7 @@ public:
     QColor currentColor() const;
     static QColor getColor(const QColor &initial = Qt::white, QWidget *parent = nullptr, const QString &title = QString(), ColorDialogOptions options = ColorDialogOptions());
     ColorDialog::DialogLayoutDimensions layoutDimensions() const;
-    // Make sure not to override the base class’s “open“ function
+    // Make sure not to override the base class’s “open“ function:
     using QDialog::open;
     Q_INVOKABLE void open(QObject *receiver, const char *member);
     /** @brief Getter for property @ref options

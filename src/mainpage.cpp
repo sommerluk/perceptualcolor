@@ -74,16 +74,17 @@
  * @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt> anymore.
  * Does this mean that it is set by default and no further action is required?
  *
- * @anchor namespacepollution <b>Name space pollution:</b>
- * To avoid namespace pollution, this library itself lives in the
- * namespace @ref PerceptualColor. All symbols are within this namespace
- * Macros are prefixed with <tt>PERCEPTUALCOLOR</tt> to avoid collisions.
- * (See <em>Files → File members</em> for a list of all macros.) However,
- * this library also includes headers from LittleCMS which lives within the
- * <em>global namespace</em>, but has functions and types typically
- * prefixed with <tt>cms</tt>. The library relies internally on LittleCMS
- * for all the color management. Anyway, you can uses this library without
- * knowing about the internals of LittleCMS.
+ * @anchor namespacepollution <b>Namespace pollution and collisions:</b>
+ * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.
+ *   (See <em>Files → File members</em> for a list of all macros.)
+ * - To avoid namespace pollution, all symbols of this library live within
+ *   the namespace @ref PerceptualColor.
+ * - However, this library also includes (and propagetes) headers from
+ *   LittleCMS which lives within the <em>global namespace</em>. LittleCMS
+ *   has functions and types typically prefixed with <tt>cms</tt>. (This
+ *   library relies internally on LittleCMS for all the color management
+ *   therefore it’s necessary to include LittleCMS’s headers. Anyway, you
+ *   can uses this library without knowing about the internals of LittleCMS.
  *
  * @copyright Almost all the code is published under MIT License. Only
  * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause

@@ -108,6 +108,13 @@ grep \
     --fixed-strings "lcms2.h" \
     $PUBLIC_HEADERS
 
+# Do not use qDebug in public headers
+grep \
+    --recursive \
+    --ignore-case \
+    --fixed-strings "qdebug" \
+    $PUBLIC_HEADERS
+    
 # -> Do not use the “code” and “endcode” tags for Doxygen documentation. Use
 #    @snippet instead! That allows that the example code is actually compiled
 #    and that helps detecting errors.

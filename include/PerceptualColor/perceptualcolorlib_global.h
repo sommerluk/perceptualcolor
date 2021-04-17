@@ -34,46 +34,44 @@
 
 #include <QtGlobal>
 
-/** @def PERCEPTUALCOLORLIB_EXPORT
+/** @def PERCEPTUALCOLOR_IMPORTEXPORT
  *
- * @brief A macro that marks library symbols for export.
- *
- * Exported symbols will be visible symbols in the dynamic library.
+ * @brief A macro that either exports or imports library symbols.
  *
  * This approach is proposed in Qt’s documentation (chapter “Creating
  * Shared Libraries”) – see there for more details. In short:
- * - When the library <em>itself</em> is build, the macro <em>exports</em> the
- *   corresponding symbol. (It expands to Qt’s <tt>Q_DECL_EXPORT</tt> macro.)
- * - When something is build <em>against</em> the dynamic library and
- *   includes the header files of the library, the macro <em>imports</em>
- *   the corresponding symbols. (It expands to Qt’s <tt>Q_DECL_IMPORT</tt>
- *   macro.)
  *
- * It is necessary to define
- * <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt> when this library
- * itself is build. The definition can be made within CMake:
+ * <b>When your application is build <em>against</em> the dynamic
+ * library</b> and includes the header files of the library, the
+ * macro <em>imports</em> the corresponding symbols of the library
+ * for you by expanding to Qt’s <tt>Q_DECL_IMPORT</tt> macro. This
+ * is the default behaviour of this macro (happens always when
+ * <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt> is <em>not</em>
+ * defined).
+ *
+ * <b>When the dynamic library <em>itself</em> is build</b>, the macro
+ * <em>exports</em> the corresponding symbol by expanding to Qt’s
+ * <tt>Q_DECL_EXPORT</tt> macro. Exported symbols will be visible
+ * symbols in the dynamic library. To get this behaviour, it is
+ * necessary to define <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt>
+ * always when this library itself is build. The definition can be made
+ * within CMake:
  *
  * <tt>target_compile_definitions(PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)</tt>
  *
- * And you have to make sure that all symbols that are <em>not</em>
- * explicitly exported have to be hidden:
+ * And you also have to make sure that all symbols that are <em>not</em>
+ * explicitly exported will be actually hidden:
  *
  * <tt>set_target_properties(perceptualcolor PROPERTIES CXX_VISIBILITY_PRESET
  * hidden)</tt>
  *
- * However, when just something is build that is <em>linking</em>
- * against this library, nothing special has to be done and
- * <tt>PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY</tt> should <em>not</em>
- * be defined.
- *
- * @sa
- * https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
+ * @sa https://doc.qt.io/qt-5/sharedlibrary.html#using-symbols-from-shared-libraries
  * @sa http://anadoxin.org/blog/control-over-symbol-exports-in-gcc.html
  * @sa https://labjack.com/news/simple-cpp-symbol-visibility-demo */
 #if defined(PERCEPTUALCOLORLIB_BUILD_DYNAMIC_LIBRARY)
-#define PERCEPTUALCOLORLIB_EXPORT Q_DECL_EXPORT
+#define PERCEPTUALCOLOR_IMPORTEXPORT Q_DECL_EXPORT
 #else
-#define PERCEPTUALCOLORLIB_EXPORT Q_DECL_IMPORT
+#define PERCEPTUALCOLOR_IMPORTEXPORT Q_DECL_IMPORT
 #endif
 
 #endif // PERCEPTUALCOLORLIB_GLOBAL_H
