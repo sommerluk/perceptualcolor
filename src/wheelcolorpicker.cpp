@@ -175,7 +175,7 @@ LchDouble WheelColorPicker::currentColor() const
     return d_pointer->m_chromaLightnessDiagram->currentColor();
 }
 
-/** @brief Setter for currentColorRgb() property */
+/** @brief Setter for @ref currentColor property */
 void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
 {
     // The following line will also emit the signal of this class:

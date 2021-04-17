@@ -23,10 +23,8 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-build/*
-doc
-.kdev4/
+/build/*
+/.kdev4/
 .directory
 /.clang-format
 perceptualcolor.kdev4
-README.md.backup
