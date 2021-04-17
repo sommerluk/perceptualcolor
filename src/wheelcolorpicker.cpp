@@ -47,6 +47,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     : AbstractDiagram(parent)
     , d_pointer(new WheelColorPickerPrivate(this))
 {
+    // TODO xxx revision starts here
     d_pointer->m_rgbColorSpace = colorSpace;
     d_pointer->m_ColorWheel = new ColorWheel(colorSpace, this);
     d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(colorSpace, d_pointer->m_ColorWheel);
@@ -189,8 +190,5 @@ QSize WheelColorPicker::sizeHint() const
     // TODO Actually implement this!
     return AbstractDiagram::sizeHint();
 }
-
-// TODO Choose HLC x 50 1. Then push the Page-up button. Why does the chroma
-// value change from 1 to 0?
 
 } // namespace PerceptualColor

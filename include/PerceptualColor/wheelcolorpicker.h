@@ -41,6 +41,9 @@ namespace PerceptualColor
  * It is composed of a @ref ColorWheel and, in the middle,
  * a @ref ChromaLightnessDiagram.
  *
+ * @todo BUG: Choose HLC x 50 1. Then push the Page-up button. Current
+ * behaviour: The chroma value change from 1 to 0. Why?
+ *
  * @todo BUG: Current behaviour: This class accepts focus by Tab, but it
  * does not accept focus by Shift-Tab. Expected behaviour: This class
  * accepts focus by both, Tab and Shift-Tab.
