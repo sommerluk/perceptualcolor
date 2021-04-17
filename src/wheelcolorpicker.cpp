@@ -61,26 +61,24 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     d_pointer->m_colorWheel->setFocusProxy(d_pointer->m_chromaLightnessDiagram);
     d_pointer->resizeChildWidgets();
 
-    connect(d_pointer->m_colorWheel,
-            &ColorWheel::hueChanged,
-            d_pointer->m_chromaLightnessDiagram,
-            &ChromaLightnessDiagram::setHue);
+    connect(d_pointer->m_colorWheel, &ColorWheel::hueChanged, d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue);
     connect(d_pointer->m_chromaLightnessDiagram,
             &ChromaLightnessDiagram::currentColorChanged,
             this,
             // As value is stored anyway within ChromaLightnessDiagram member,
             // it’s enough to just emit the corresponding signal of this class:
             &WheelColorPicker::currentColorChanged);
-    connect(// QWidget’s constructor requires a QApplication object. As this
-            // is a class derived from QWidget, calling qApp is save.
-            qApp,
-            &QApplication::focusChanged,
-            d_pointer.get(), // Without .get() apparently connect() won’t work…
-            &WheelColorPickerPrivate::handleFocusChanged);
+    connect(
+        // QWidget’s constructor requires a QApplication object. As this
+        // is a class derived from QWidget, calling qApp is save.
+        qApp,
+        &QApplication::focusChanged,
+        d_pointer.get(), // Without .get() apparently connect() won’t work…
+        &WheelColorPickerPrivate::handleFocusChanged);
 
     // Initial color
     setCurrentColor(LchValues::srgbVersatileInitialColor);
-// TODO xxx revision starts here
+    // TODO xxx revision starts here
 }
 
 /** @brief Default destructor */
