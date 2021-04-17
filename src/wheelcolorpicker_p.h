@@ -61,7 +61,7 @@ public:
     /** @brief A pointer to the color space. */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
     /** @brief A pointer to the @ref ColorWheel child widget. */
-    QPointer<ColorWheel> m_ColorWheel;
+    QPointer<ColorWheel> m_colorWheel;
 
 public Q_SLOTS:
     void handleFocusChanged(QWidget *old, QWidget *now);

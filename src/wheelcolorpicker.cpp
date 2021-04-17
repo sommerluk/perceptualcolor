@@ -35,6 +35,8 @@
 // TODO Can’t we avoid to include colorwheel_p.h?
 #include "colorwheel_p.h"
 
+#include "lchvalues.h"
+
 #include <math.h>
 
 #include <QApplication>
@@ -47,35 +49,38 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     : AbstractDiagram(parent)
     , d_pointer(new WheelColorPickerPrivate(this))
 {
-    // TODO xxx revision starts here
     d_pointer->m_rgbColorSpace = colorSpace;
-    d_pointer->m_ColorWheel = new ColorWheel(colorSpace, this);
-    d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(colorSpace, d_pointer->m_ColorWheel);
-    d_pointer->m_ColorWheel->setFocusProxy(d_pointer->m_chromaLightnessDiagram);
-    // Thought apparently Qt is putting newly added child widgets always
-    // visually in front of previously added child widgets, this behaviour
-    // is undocumented. Therefore, we call raise() to be sure that actually
-    // this child widget is visually in front of the others:
-    d_pointer->m_chromaLightnessDiagram->raise();
+    d_pointer->m_colorWheel = new ColorWheel(colorSpace, this);
+    d_pointer->m_chromaLightnessDiagram = new ChromaLightnessDiagram(
+        // Same color space for this widget:
+        colorSpace,
+        // This widget is smaller than the color wheel. It will be a child
+        // of the color wheel, so that missed mouse or key events will be
+        // forwarded to the parent widget (color wheel).
+        d_pointer->m_colorWheel);
+    d_pointer->m_colorWheel->setFocusProxy(d_pointer->m_chromaLightnessDiagram);
     d_pointer->resizeChildWidgets();
-    d_pointer->m_chromaLightnessDiagram->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
-    d_pointer->m_chromaLightnessDiagram->setFocusPolicy(
-        // TODO Why not just inherit TabFocus? But apparently it works! Why?
-        Qt::FocusPolicy::ClickFocus);
-    connect(d_pointer->m_ColorWheel, &ColorWheel::hueChanged, d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue);
+
+    connect(d_pointer->m_colorWheel,
+            &ColorWheel::hueChanged,
+            d_pointer->m_chromaLightnessDiagram,
+            &ChromaLightnessDiagram::setHue);
     connect(d_pointer->m_chromaLightnessDiagram,
             &ChromaLightnessDiagram::currentColorChanged,
             this,
             // As value is stored anyway within ChromaLightnessDiagram member,
             // it’s enough to just emit the corresponding signal of this class:
-            [this](const PerceptualColor::LchDouble &newCurrentColor) { Q_EMIT currentColorChanged(newCurrentColor); });
-    connect(
-        // QWidget’s constructor requires a QApplication object. As this is
-        // a class derived from QWidget, calling qApp is save.
-        qApp,
-        &QApplication::focusChanged,
-        d_pointer.get(), // Without .get() apparently connect() does not work…
-        &WheelColorPickerPrivate::handleFocusChanged);
+            &WheelColorPicker::currentColorChanged);
+    connect(// QWidget’s constructor requires a QApplication object. As this
+            // is a class derived from QWidget, calling qApp is save.
+            qApp,
+            &QApplication::focusChanged,
+            d_pointer.get(), // Without .get() apparently connect() won’t work…
+            &WheelColorPickerPrivate::handleFocusChanged);
+
+    // Initial color
+    setCurrentColor(LchValues::srgbVersatileInitialColor);
+// TODO xxx revision starts here
 }
 
 /** @brief Default destructor */
@@ -113,7 +118,7 @@ void WheelColorPicker::resizeEvent(QResizeEvent *event)
 void WheelColorPicker::WheelColorPickerPrivate::handleFocusChanged(QWidget *old, QWidget *now)
 {
     if ((old == m_chromaLightnessDiagram) || (now == m_chromaLightnessDiagram)) {
-        m_ColorWheel->update();
+        m_colorWheel->update();
     }
 }
 
@@ -153,13 +158,13 @@ QSize WheelColorPicker::WheelColorPickerPrivate::scaleRectangleToDiagonal(const 
  * m_chromaLightnessDiagram. It stays in the interior of the color wheel. */
 void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidgets()
 {
-    m_ColorWheel->resize(q_pointer->size());
-    int diagonal = qMax(m_ColorWheel->d_pointer->contentDiameter() - 2 * (q_pointer->gradientThickness() + m_ColorWheel->d_pointer->border()), 0);
+    m_colorWheel->resize(q_pointer->size());
+    int diagonal = qMax(m_colorWheel->d_pointer->contentDiameter() - 2 * (q_pointer->gradientThickness() + m_colorWheel->d_pointer->border()), 0);
     // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to
     // where goes chroma there?
     QSize newChromaLightnessDiagramSize = scaleRectangleToDiagonal(QSize(140, 100), diagonal);
     m_chromaLightnessDiagram->resize(newChromaLightnessDiagramSize);
-    qreal radius = static_cast<qreal>(m_ColorWheel->d_pointer->contentDiameter()) / 2;
+    qreal radius = static_cast<qreal>(m_colorWheel->d_pointer->contentDiameter()) / 2;
     m_chromaLightnessDiagram->move(
         // TODO Does qRound make sense here? Does it the right
         // thing (pixel-wise)?
@@ -175,8 +180,9 @@ LchDouble WheelColorPicker::currentColor() const
 /** @brief Setter for currentColorRgb() property */
 void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
 {
+    // The following line will also emit the signal of this class:
     d_pointer->m_chromaLightnessDiagram->setCurrentColor(newCurrentColor);
-    d_pointer->m_ColorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
+    d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
 }
 
 QSize WheelColorPicker::minimumSizeHint() const

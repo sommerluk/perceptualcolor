@@ -54,13 +54,6 @@ ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColo
     // operations rely on a working LittleCMS.
     d_pointer->m_rgbColorSpace = colorSpace;
 
-    // Initialize the color
-    LchDouble initialColorLch;
-    initialColorLch.h = LchValues::neutralHue;
-    initialColorLch.c = LchValues::srgbVersatileChroma;
-    initialColorLch.l = LchValues::neutralLightness;
-    d_pointer->m_currentColor = d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(initialColorLch);
-
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is either
     // not accepted at all or accepted always for the hole rectangular
@@ -75,6 +68,9 @@ ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColo
     // circle. Therefore, this class simply defaults to
     // Qt::FocusPolicy::TabFocus for QWidget::focusPolicy().
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
+
+    // Initialize the color
+    setCurrentColor(LchValues::srgbVersatileInitialColor);
 }
 
 /** @brief Default destructor */
@@ -375,15 +371,7 @@ LchDouble ChromaHueDiagram::currentColor() const
 
 /** @brief Setter for the @ref currentColor() property.
  *
- * @param newCurrentColor the new color
- * @post If <em>newCurrentColor</em> is valid, the @ref currentColor
- * property is set to <em>newCurrentColor</em>. If <em>newCurrentColor</em>
- * is not valid, the @ref currentColor property is not changed.
- * @todo ColorDialog (just as QColorDialog) sets the color to black when an
- * invalid value is set. On the one hand, it might be better if this
- * function does the same and so get consistent behavior all over the
- * library; on the other hand substituting by black feels strange and
- * wrong… */
+ * @param newCurrentColor the new color */
 void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
 {
     LchDouble newCorrectedColor = d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(newCurrentColor);

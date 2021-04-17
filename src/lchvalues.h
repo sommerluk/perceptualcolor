@@ -129,6 +129,25 @@ public:
      *  a usual sRGB gamut.
      *  @sa @ref neutralChroma */
     static constexpr int srgbVersatileChroma = 32;
+    /** @brief Versatile initial color for widgets in
+     * <a href="http://www.littlecms.com/">LittleCMS</a>’ build-in
+     * sRGB gamut
+     *
+     * This provides a colorfull (non-gray) initial color.
+     *
+     * The lightness and the chroma value are somewhere in the middle of
+     * the valid range. In sRGB this is always a valid value pair, even if
+     * the hue changes. Both, lightness and chroma, are linear ranges,
+     * so it seems appropriate to have values somewhere in the middle
+     * as initial color: The widgets will display the handles somewhere
+     * in the middle, which is easier to spot for new users than having
+     * them at the very beginning or the very end.
+     *
+     * The hue range is not linear, but circular – and so are the widgets
+     * displaying him: The handle has the same visibility, whereever he is
+     * and whatever the hue value is. Therefore, we use a neutral hue
+     * as default value. */
+    static constexpr LchDouble srgbVersatileInitialColor {neutralLightness, srgbVersatileChroma, neutralHue};
 
 private:
     /** @brief Delete the constructor to disallow creating an instance
