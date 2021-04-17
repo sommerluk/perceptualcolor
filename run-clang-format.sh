@@ -39,7 +39,8 @@ while true; do
                 && make clang-format; \
             echo "Code formatting done."; \
             exit;;
-        * ) exit;;
+        * ) echo "Code formatting canceled."; \
+            exit;;
     esac
 done
 

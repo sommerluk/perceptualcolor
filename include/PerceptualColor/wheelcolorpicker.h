@@ -53,7 +53,6 @@ namespace PerceptualColor
  * movements (and also to other widgets). */
 class WheelColorPicker : public AbstractDiagram
 {
-
     Q_OBJECT
 
     /** @brief Currently selected color

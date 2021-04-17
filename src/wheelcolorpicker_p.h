@@ -43,7 +43,6 @@ namespace PerceptualColor
  *  implementation</em> idiom */
 class WheelColorPicker::WheelColorPickerPrivate final : public QObject
 {
-
     Q_OBJECT
 
 public:
@@ -73,7 +72,6 @@ private:
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<WheelColorPicker> q_pointer;
-
 };
 
 } // namespace PerceptualColor

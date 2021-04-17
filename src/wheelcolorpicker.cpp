@@ -60,16 +60,14 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     d_pointer->m_chromaLightnessDiagram->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
     d_pointer->m_chromaLightnessDiagram->setFocusPolicy(
         // TODO Why not just inherit TabFocus? But apparently it works! Why?
-        Qt::FocusPolicy::ClickFocus
-    );
+        Qt::FocusPolicy::ClickFocus);
     connect(d_pointer->m_ColorWheel, &ColorWheel::hueChanged, d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue);
-    connect(
-        d_pointer->m_chromaLightnessDiagram,
-        &ChromaLightnessDiagram::currentColorChanged,
-        this,
-        // As value is stored anyway within ChromaLightnessDiagram member,
-        // it’s enough to just emit the corresponding signal of this class:
-        [this](const PerceptualColor::LchDouble &newCurrentColor) { Q_EMIT currentColorChanged(newCurrentColor); });
+    connect(d_pointer->m_chromaLightnessDiagram,
+            &ChromaLightnessDiagram::currentColorChanged,
+            this,
+            // As value is stored anyway within ChromaLightnessDiagram member,
+            // it’s enough to just emit the corresponding signal of this class:
+            [this](const PerceptualColor::LchDouble &newCurrentColor) { Q_EMIT currentColorChanged(newCurrentColor); });
     connect(
         // QWidget’s constructor requires a QApplication object. As this is
         // a class derived from QWidget, calling qApp is save.
