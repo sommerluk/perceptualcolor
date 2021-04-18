@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_internal.h"
+#include "perceptualinternal.h"
 
 // Own header
 #include "rgbdouble.h"

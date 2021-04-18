@@ -27,7 +27,7 @@
 #ifndef POLARPOINTF_H
 #define POLARPOINTF_H
 
-#include "PerceptualColor/perceptualcolorlib_global.h"
+#include "PerceptualColor/perceptualcolorglobal.h"
 
 #include <QDebug>
 #include <QMetaType>

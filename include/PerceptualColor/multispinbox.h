@@ -27,11 +27,12 @@
 #ifndef MULTISPINBOX_H
 #define MULTISPINBOX_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include <QAbstractSpinBox>
 #include <QLineEdit>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor
 {

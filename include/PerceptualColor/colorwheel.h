@@ -27,11 +27,12 @@
 #ifndef COLORWHEEL_H
 #define COLORWHEEL_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include <QImage>
 #include <QWidget>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include "PerceptualColor/abstractdiagram.h"
 

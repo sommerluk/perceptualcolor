@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_internal.h"
+#include "perceptualinternal.h"
 
 // Own headers
 // First the interface, which forces the header to be self-contained.

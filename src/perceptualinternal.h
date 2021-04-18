@@ -33,7 +33,7 @@
 #ifndef PERCEPTUALCOLORLIB_INERNAL_H
 #define PERCEPTUALCOLORLIB_INERNAL_H
 
-#include "PerceptualColor/perceptualcolorlib_global.h"
+#include "PerceptualColor/perceptualcolorglobal.h"
 
 /** @page characterset Compiler character sets
  *

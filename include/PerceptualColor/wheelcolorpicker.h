@@ -27,8 +27,9 @@
 #ifndef WHEELCOLORPICKER_H
 #define WHEELCOLORPICKER_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/lchdouble.h"

@@ -27,10 +27,11 @@
 #ifndef COLORDIALOG_H
 #define COLORDIALOG_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include <QColorDialog>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor
 {

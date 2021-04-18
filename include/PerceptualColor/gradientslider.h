@@ -27,8 +27,9 @@
 #ifndef GRADIENTSLIDER_H
 #define GRADIENTSLIDER_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include <PerceptualColor/abstractdiagram.h>
 #include <PerceptualColor/lchadouble.h>

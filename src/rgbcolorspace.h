@@ -27,10 +27,11 @@
 #ifndef RGBCOLORSPACE_H
 #define RGBCOLORSPACE_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include <QObject>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include "PerceptualColor/lchadouble.h"
 #include "PerceptualColor/lchdouble.h"

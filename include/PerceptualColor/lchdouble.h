@@ -27,7 +27,7 @@
 #ifndef LCHDOUBLE_H
 #define LCHDOUBLE_H
 
-#include "PerceptualColor/perceptualcolorlib_global.h"
+#include "PerceptualColor/perceptualcolorglobal.h"
 
 #include <QDebug>
 

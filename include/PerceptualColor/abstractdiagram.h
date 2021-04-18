@@ -27,10 +27,11 @@
 #ifndef ABSTRACTDIAGRAM_H
 #define ABSTRACTDIAGRAM_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include <QWidget>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor
 {

@@ -27,10 +27,11 @@
 #ifndef EXTENDEDDOUBLEVALIDATOR_H
 #define EXTENDEDDOUBLEVALIDATOR_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include <QDoubleValidator>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor
 {

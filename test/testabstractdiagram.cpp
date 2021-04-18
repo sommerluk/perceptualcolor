@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "perceptualcolorlib_internal.h"
+#include "perceptualinternal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.

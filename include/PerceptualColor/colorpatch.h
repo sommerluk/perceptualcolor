@@ -27,10 +27,11 @@
 #ifndef COLORPATCH_H
 #define COLORPATCH_H
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+
 #include <QFrame>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-#include "PerceptualColor/perceptualcolorlib_global.h"
 
 namespace PerceptualColor
 {
