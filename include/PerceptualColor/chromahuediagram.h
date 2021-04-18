@@ -31,10 +31,12 @@
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/rgbcolorspace.h"
+#include "PerceptualColor/lchdouble.h"
 
 namespace PerceptualColor
 {
+class RgbColorSpace;
+
 /** @brief A widget for selecting chroma and hue in LCh color space
  *
  * This widget displays the plan of chroma and hue

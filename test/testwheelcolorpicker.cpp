@@ -34,6 +34,8 @@
 
 #include <QtTest>
 
+#include "rgbcolorspace.h"
+
 namespace PerceptualColor
 {
 class TestWheelColorPicker : public QObject
@@ -45,6 +47,9 @@ public:
         : QObject(parent)
     {
     }
+
+private:
+    QSharedPointer<RgbColorSpace> m_colorSpace {new RgbColorSpace};
 
 private Q_SLOTS:
     void initTestCase()
@@ -67,9 +72,10 @@ private Q_SLOTS:
         // Called after every test function
     }
 
-    void testDef()
+    void testConstructorDestructor()
     {
-        // TODO implement me!
+        // Test for crashs in constructor or destructor
+        WheelColorPicker test {m_colorSpace};
     }
 };
 

@@ -63,7 +63,11 @@
  *   comments.
  * - <tt>i18n()</tt> and <tt>ki18n()</tt> and <tt>tr()</tt> require both,
  *   the source file and <tt>char*</tt> to be encoded in UTF-8; no other
- *   encodings are supported.
+ *   encodings are supported. (Only ASCII would be UTF-8 compatible,
+ *   but in practice this encoding is not supported, but only 8859-Latin
+ *   encodings, which allow code points higher than 127, which risks to
+ *   introduce incompatibilities. Therefore, this would not be a good
+ *   option.)
  * - The C++ identifiers of library symbols are however (currently)
  *   ASCII-only.
  *
@@ -84,7 +88,10 @@
  *
  * <b>Wide execution character set</b>
  *
- * Currently, no static assert forces a specific character set. */
+ * We do not use actively the wide execution character set. There is
+ * a usage when communicating with LittleCMS, but there we depend anyway
+ * from LittleCMS. Therefore, currently, no static assert forces a specific
+ * wide execution character set. */
 
 static_assert(
     // Test if the compiler treats the source code actually as UTF-8.

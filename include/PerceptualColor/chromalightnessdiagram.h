@@ -31,10 +31,12 @@
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/rgbcolorspace.h"
+#include "PerceptualColor/lchdouble.h"
 
 namespace PerceptualColor
 {
+class RgbColorSpace;
+
 /** @brief A widget that displays a chroma-lightness diagram.
  *
  * This widget displays a chroma-lightness diagram in the LCh color model

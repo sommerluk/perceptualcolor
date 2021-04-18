@@ -29,10 +29,10 @@
 
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/chromahuediagram.h"
-#include "constpropagatingrawpointer.h"
 
 #include "chromahueimage.h"
 #include "colorwheelimage.h"
+#include "constpropagatingrawpointer.h"
 #include "lchvalues.h"
 
 namespace PerceptualColor

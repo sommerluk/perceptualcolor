@@ -39,6 +39,7 @@
 
 namespace PerceptualColor
 {
+// TODO Fix compiler warnings. Do not pimpl anymore?
 /** @brief Interface to LittleCMS for working with an RGB color space
  *
  * @todo (Optionally) use the fast-float plug-in for faster caluculation?

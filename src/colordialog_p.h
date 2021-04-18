@@ -29,6 +29,7 @@
 
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/colordialog.h"
+
 #include "constpropagatingrawpointer.h"
 
 #include "PerceptualColor/chromahuediagram.h"

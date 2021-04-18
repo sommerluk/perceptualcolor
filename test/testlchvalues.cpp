@@ -32,7 +32,7 @@
 
 #include <QtTest>
 
-#include "PerceptualColor/rgbcolorspace.h"
+#include "rgbcolorspace.h"
 
 namespace PerceptualColor
 {

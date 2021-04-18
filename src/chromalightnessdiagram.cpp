@@ -35,6 +35,7 @@
 #include "helper.h"
 #include "lchvalues.h"
 #include "polarpointf.h"
+#include "rgbcolorspace.h"
 
 #include <math.h>
 

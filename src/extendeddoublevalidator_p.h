@@ -28,8 +28,9 @@
 #define EXTENDEDDOUBLEVALIDATOR_P_H
 
 // Include the header of the public class of this private implementation.
-#include "constpropagatingrawpointer.h"
 #include "extendeddoublevalidator.h"
+
+#include "constpropagatingrawpointer.h"
 
 namespace PerceptualColor
 {

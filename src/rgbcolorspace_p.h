@@ -28,9 +28,9 @@
 #define RGBCOLORSPACE_P_H
 
 // Include the header of the public class of this private implementation.
-#include "PerceptualColor/rgbcolorspace.h"
-#include "constpropagatingrawpointer.h"
+#include "rgbcolorspace.h"
 
+#include "constpropagatingrawpointer.h"
 #include "rgbdouble.h"
 
 namespace PerceptualColor

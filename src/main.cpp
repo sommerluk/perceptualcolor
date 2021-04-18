@@ -29,12 +29,14 @@
 #include "PerceptualColor/chromahuediagram.h"
 #include "PerceptualColor/chromalightnessdiagram.h"
 #include "PerceptualColor/colordialog.h"
+#include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/colorwheel.h"
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/multispinbox.h"
 #include "fallbackiconengine.h"
 #include "polarpointf.h"
 #include "version.h"
+// #include "rgbcolorspace.h"
 
 #include <lcms2.h>
 

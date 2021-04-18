@@ -28,7 +28,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/rgbcolorspace.h"
+#include "rgbcolorspace.h"
 // Second, the private implementation.
 #include "rgbcolorspace_p.h"
 

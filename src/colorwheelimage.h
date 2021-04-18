@@ -31,7 +31,7 @@
 #include <QObject>
 #include <QSharedPointer>
 
-#include "PerceptualColor/rgbcolorspace.h"
+#include "rgbcolorspace.h"
 
 namespace PerceptualColor
 {

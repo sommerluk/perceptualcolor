@@ -211,7 +211,6 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/lchdouble.h
   include/PerceptualColor/multispinbox.h
   include/PerceptualColor/perceptualcolorlib_global.h
-  include/PerceptualColor/rgbcolorspace.h
   include/PerceptualColor/wheelcolorpicker.h
 )
 # Include directories

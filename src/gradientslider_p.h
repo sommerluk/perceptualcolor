@@ -29,8 +29,8 @@
 
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/gradientslider.h"
-#include "constpropagatingrawpointer.h"
 
+#include "constpropagatingrawpointer.h"
 #include "gradientimage.h"
 
 namespace PerceptualColor

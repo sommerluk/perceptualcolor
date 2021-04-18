@@ -34,10 +34,11 @@
 #include "PerceptualColor/perceptualcolorlib_global.h"
 
 #include "PerceptualColor/abstractdiagram.h"
-#include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor
 {
+class RgbColorSpace;
+
 /** @brief Widget to choose the hue in a wheel.
  *
  * This widget allows to select the hue (as defined in the LCh color space)

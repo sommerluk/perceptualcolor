@@ -29,11 +29,11 @@
 
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/colorwheel.h"
-#include "constpropagatingrawpointer.h"
 
 #include <QPointer>
 
 #include "colorwheelimage.h"
+#include "constpropagatingrawpointer.h"
 #include "polarpointf.h"
 
 namespace PerceptualColor

@@ -32,10 +32,11 @@
 
 #include <PerceptualColor/abstractdiagram.h>
 #include <PerceptualColor/lchadouble.h>
-#include <PerceptualColor/rgbcolorspace.h>
 
 namespace PerceptualColor
 {
+class RgbColorSpace;
+
 /** @brief A slider who’s groove displays an LCh color gradient.
  *
  * The groove of this slider that displays a gradient between two LCh

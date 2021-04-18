@@ -38,6 +38,8 @@
 
 #include <PerceptualColor/multispinbox.h>
 
+#include "rgbcolorspace.h"
+
 class TestColorDialogSnippetClass : public QWidget
 {
     Q_OBJECT

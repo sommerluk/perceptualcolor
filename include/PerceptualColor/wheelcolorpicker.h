@@ -32,10 +32,11 @@
 
 #include "PerceptualColor/abstractdiagram.h"
 #include "PerceptualColor/lchdouble.h"
-#include "PerceptualColor/rgbcolorspace.h"
 
 namespace PerceptualColor
 {
+class RgbColorSpace;
+
 /** @brief Complete wheel-based color picker widget
  *
  * It is composed of a @ref ColorWheel and, in the middle,

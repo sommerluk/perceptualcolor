@@ -29,10 +29,10 @@
 
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/multispinbox.h"
-#include "constpropagatingrawpointer.h"
 
 #include <QPointer>
 
+#include "constpropagatingrawpointer.h"
 #include "extendeddoublevalidator.h"
 
 namespace PerceptualColor

@@ -44,6 +44,7 @@
 #include "fallbackiconengine.h"
 #include "helper.h"
 #include "lchvalues.h"
+#include "rgbcolorspace.h"
 
 namespace PerceptualColor
 {
