@@ -54,7 +54,10 @@ fi
 
 ################# Doxygen #################
 # Run doxygen, but only show errors, no normal messages.
-doxygen > /dev/null
+mkdir --parents doc \
+    && cp doxyfile.internal Doxyfile && doxygen > /dev/null \
+    && cp doxyfile.external Doxyfile && doxygen > /dev/null
+
 
 
 
@@ -208,7 +211,8 @@ done
 
 
 ################# Unit tests #################
-cd build \
+mkdir --parents build \
+    && cd build \
     && cmake ../ > /dev/null \
     && make --jobs > /dev/null
 ctest --verbose \

@@ -68,7 +68,8 @@ unneeded-cast"
 
 # We run “make” with the argument “--jobs” without specifying the number
 # of parallel jobs. This means the number is jobs is maximum.
-rm -rf build/* \
+mkdir --parents build \
+    && rm -rf build/* \
     && cd build \
     && cmake ../ -DCMAKE_CXX_COMPILER=clazy > /dev/null \
     && make clean \

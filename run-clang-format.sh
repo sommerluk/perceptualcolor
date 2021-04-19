@@ -33,7 +33,8 @@
 while true; do
     read -p "Format all the code with clang-format? (yes/no) " yn
     case $yn in
-        [Yy][Ee][Ss] ) cd build \
+        [Yy][Ee][Ss] ) mkdir --parents build \
+                && cd build \
                 && cmake ../ > /dev/null \
                 && make --jobs > /dev/null \
                 && make clang-format; \

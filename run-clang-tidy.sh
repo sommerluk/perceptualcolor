@@ -27,7 +27,8 @@
 
 # We run “make” with the argument “--jobs” without specifying the number
 # of parallel jobs. This means the number is jobs is maximum.
-cd build \
+mkdir --parents build \
+    && cd build \
     && cmake ../ > /dev/null \
     && make --jobs > /dev/null \
     && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. \

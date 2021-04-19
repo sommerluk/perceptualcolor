@@ -29,6 +29,7 @@
 /.kdev4/
 /build/*
 /Doxyfile
+/doc/*
 
 # Otherwise the pattern may also match at any level below
 # the .gitignore level:
