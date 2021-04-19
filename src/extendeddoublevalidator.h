@@ -35,7 +35,9 @@
 
 namespace PerceptualColor
 {
-/** @brief The @ref ExtendedDoubleValidator class provides range checking
+/** @internal
+ *
+ *  @brief The @ref ExtendedDoubleValidator class provides range checking
  * of floating-point numbers with support for prefix and/or suffix.
  *
  * This class behaves exactly like its base class <tt>QDoubleValidator</tt>

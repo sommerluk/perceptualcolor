@@ -33,7 +33,9 @@
 
 namespace PerceptualColor
 {
-/** @brief A RGB color.
+/** @internal
+ *
+ *  @brief A RGB color.
  *
  * Storage of floating point RGB values with <tt>double</tt> precision.
  *

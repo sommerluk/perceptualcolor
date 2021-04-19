@@ -29,7 +29,9 @@
 
 namespace PerceptualColor
 {
-/** @brief A <tt>const</tt> propagating raw pointer
+/** @internal
+ *
+ *  @brief A <tt>const</tt> propagating raw pointer
  *
  * With normal raw C++ pointers (and also with <tt>std::unique_ptr</tt>
  * pointers), within <tt>const</tt> functions you can do non-const

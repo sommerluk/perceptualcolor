@@ -35,7 +35,9 @@
 
 namespace PerceptualColor
 {
-/** @brief A point in the polar coordinate system
+/** @internal
+ *
+ * @brief A point in the polar coordinate system
  *
  * Defines a point in the two-dimensional polar coordinate system using
  * floating point precision.

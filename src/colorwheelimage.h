@@ -35,7 +35,9 @@
 
 namespace PerceptualColor
 {
-/** @brief An image of a color wheel.
+/** @internal
+ *
+ *  @brief An image of a color wheel.
  *
  * The image has properties that can be accessed by the corresponding setters
  * and getters.

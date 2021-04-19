@@ -35,7 +35,9 @@
 
 namespace PerceptualColor
 {
-/** @brief An image of a gradient.
+/** @internal
+ *
+ *  @brief An image of a gradient.
  *
  * As the hue is a circular property, there exists two ways to go one hue to
  * another (clockwise or counter-clockwise). This gradient takes always the

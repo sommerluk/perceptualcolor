@@ -32,7 +32,9 @@
 
 namespace PerceptualColor
 {
-/** @brief An icon engine with fallback icons.
+/** @internal
+ *
+ *  @brief An icon engine with fallback icons.
  *
  * This icon engine provides a <em>refresh</em> icon. It does a best
  * effort to find an icon that integrates well with the current icon

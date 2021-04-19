@@ -79,6 +79,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     // Initial color
     setCurrentColor(LchValues::srgbVersatileInitialColor);
     // TODO xxx revision starts here
+    // TODO whitebox test for constructor
 }
 
 /** @brief Default destructor */

@@ -35,7 +35,9 @@
 
 namespace PerceptualColor
 {
-/** @brief Private implementation within the <em>Pointer to
+/** @internal
+ *
+ *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
 class GradientSlider::GradientSliderPrivate final
 {

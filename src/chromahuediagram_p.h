@@ -37,7 +37,9 @@
 
 namespace PerceptualColor
 {
-/** @brief Private implementation within the <em>Pointer to
+/** @internal
+ *
+ *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom
  *
  * @anchor ChromaHueMeasurement <b>Measurement details:</b> The general

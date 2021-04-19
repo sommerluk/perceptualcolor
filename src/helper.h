@@ -37,7 +37,9 @@
 
 namespace PerceptualColor
 {
-/** @file
+/** @internal
+ *
+ *  @file
  *
  * @brief Various smaller help elements.
  *

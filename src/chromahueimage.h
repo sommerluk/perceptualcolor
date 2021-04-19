@@ -34,7 +34,9 @@
 
 namespace PerceptualColor
 {
-/** @brief An image of a chroma hue plane.
+/** @internal
+ *
+ *  @brief An image of a chroma hue plane.
  *
  * This is a cut through the gamut body. The cut is orthogonal to
  * the L axis, so it shows the a-b diagram (speaking in terms of LAB

@@ -305,7 +305,9 @@
  *
  * @todo Spell checking for the documentation */
 
-/** @page datatypes Data types
+/** @internal
+ *
+ * @page datatypes Data types
  *
  * The library uses in general <tt>int</tt> for integer values, because
  * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
@@ -357,7 +359,9 @@
  * character set have to be UTF8. (See @ref characterset for the reasons
  * behind this choise.) */
 
-/** @page pimpl Pointer to implementation idiom
+/** @internal
+ *
+ * @page pimpl Pointer to implementation idiom
  *
  * This library uses the <em>pointer to implementation</em> idiom
  * (also known as pimpl idiom, d-pointer idiom or opaque-pointer idiom)

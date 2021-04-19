@@ -32,7 +32,6 @@
 #include <QObject>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
-
 #include "PerceptualColor/lchadouble.h"
 #include "PerceptualColor/lchdouble.h"
 
@@ -40,15 +39,20 @@
 
 namespace PerceptualColor
 {
-// TODO Fix compiler warnings. Do not pimpl anymore?
-/** @brief Interface to LittleCMS for working with an RGB color space
+/** @internal
+ *
+ *  @brief Interface to LittleCMS for working with an RGB color space
+ *
+ * @todo WARNING We have to provide a factory function in the public API!
+ *
+ * @todo Do not pimpl anymore?
  *
  * @todo (Optionally) use the fast-float plug-in for faster caluculation?
- * Is this possible as a run-time choise?
+ *       Is this possible as a run-time choise?
  *
  * @todo Declare Q_PROPERTY for @ref profileInfoCopyright(),
- * @ref profileInfoDescription(), @ref profileInfoManufacturer(),
- * @ref profileInfoModel(), @ref whitepointL() */
+ *       @ref profileInfoDescription(), @ref profileInfoManufacturer(),
+ *       @ref profileInfoModel(), @ref whitepointL() */
 class RgbColorSpace : public QObject
 {
     Q_OBJECT

@@ -31,7 +31,9 @@
 
 namespace PerceptualColor
 {
-/** @brief LCh default values
+/** @internal
+ *
+ *  @brief LCh default values
  *
  * The gamut of actual human perception within the LAB color model (and
  * its alternative representation LCH) has an irregular shape. Its maximum

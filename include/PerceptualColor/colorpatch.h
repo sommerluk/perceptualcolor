@@ -56,6 +56,9 @@ namespace PerceptualColor
  * @ref ColorPatch there is a lightweight alternative (that, by the way,
  * implements the full  API of KColorPatch). -->
  *
+ * @todo Base this class on @ref AbstractDiagram to be future-proof? We
+ * could draw the frame with QStyle…
+ *
  * @todo The design does not work well on some styles (wrong metrics!) */
 class ColorPatch : public QFrame
 {

@@ -61,6 +61,7 @@
 // for QColorDialog.
 // TODO Drop this executable in favor of KColorChooser?
 
+/** @internal */
 int main(int argc, char *argv[])
 {
     // Prepare configuratin before instanciating the application object
