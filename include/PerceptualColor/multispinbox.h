@@ -224,7 +224,9 @@ private:
     Q_DISABLE_COPY(MultiSpinBox)
 
     class MultiSpinBoxPrivate;
-    /** @brief Declare the private implementation as friend class.
+    /** @internal
+     *
+     * @brief Declare the private implementation as friend class.
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
@@ -232,7 +234,7 @@ private:
     /** @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<MultiSpinBoxPrivate> d_pointer;
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestMultiSpinBox;
 };
 

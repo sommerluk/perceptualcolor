@@ -35,9 +35,10 @@
  * This file provides version information for this library at compile
  * time and at run time.
  *
- * @note This is a header template. This file is processed by CMake, and the
- * actual version numbers (<tt>\@…\@</tt>) are pulled in. If you want
- * to use it, do not include it, but include <tt>version.h</tt> instead. */
+ * @note This file is configuration input: It is processed by CMake, and the
+ * actual version numbers (<tt>\@…\@</tt>) are pushed in. If you want
+ * to use it, do not include this file itself, but include instead
+ * the CMake-generated file <tt>version.h</tt>. */
 
 /** @page versioninfo Version information at compiletime and runtime
  *

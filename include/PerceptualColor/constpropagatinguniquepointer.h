@@ -52,7 +52,7 @@ namespace PerceptualColor
  * Example code:
  * @snippet test/testconstpropagatinguniquepointer.cpp example
  *
- * @sa @ref ConstPropagatingRawPointer
+ * @internal @sa @ref ConstPropagatingRawPointer @endinternal
  * @sa This code is based on the idea in
  * <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
  * which is a more general implementation of this concept, that does not

@@ -174,8 +174,9 @@ QImage AbstractDiagram::transparencyBackground() const
     return PerceptualColor::transparencyBackground(devicePixelRatioF());
 }
 
-/** @brief The outline thickness of a (either circular or linear) handle.
+/** @brief The outline thickness of a handle.
  *
+ * @returns The outline thickness of a (either circular or linear) handle.
  * Measured in widget pixels. */
 int AbstractDiagram::handleOutlineThickness() const
 {

@@ -203,7 +203,10 @@ void ColorDialog::ColorDialogPrivate::setCurrentFullColor(const LchaDouble &colo
  * The signal will be disconnected from the slot when the dialog is closed.
  *
  * Example:
- * @snippet test/testcolordialog.cpp ColorDialog Open */
+ * @snippet test/testcolordialog.cpp ColorDialog Open
+ *
+ * @param receiver the object that will receive the @ref colorSelected() signal
+ * @param member the slot that will receive the @ref colorSelected() signal */
 void ColorDialog::open(QObject *receiver, const char *member)
 {
     connect(this, SIGNAL(colorSelected(QColor)), receiver, member);
@@ -661,8 +664,7 @@ QColorDialog::ColorDialogOptions ColorDialog::options() const
  *
  * Sets a value for just one single option within @ref options.
  * @param option the option to set
- * @param on the new value of the option
- */
+ * @param on the new value of the option */
 void ColorDialog::setOption(PerceptualColor::ColorDialog::ColorDialogOption option, bool on)
 {
     QColorDialog::ColorDialogOptions temp = d_pointer->m_options;
@@ -670,7 +672,10 @@ void ColorDialog::setOption(PerceptualColor::ColorDialog::ColorDialogOption opti
     setOptions(temp);
 }
 
-/** @brief Setter for @ref options */
+/** @brief Setter for @ref options
+ * @param newOptions the new options
+ * @post <em>All</em> options of the widget have the same state
+ * (enabled/disabled) as in the given parameter. */
 void ColorDialog::setOptions(PerceptualColor::ColorDialog::ColorDialogOptions newOptions)
 {
     if (newOptions == d_pointer->m_options) {
@@ -683,7 +688,7 @@ void ColorDialog::setOptions(PerceptualColor::ColorDialog::ColorDialogOptions ne
     // which must be always on
     d_pointer->m_options.setFlag(QColorDialog::ColorDialogOption::DontUseNativeDialog, true);
 
-    // Apply the new options (alpha)
+    // Apply the new options (alpha value)
     const bool alphaVisibility = d_pointer->m_options.testFlag(QColorDialog::ColorDialogOption::ShowAlphaChannel);
     d_pointer->m_alphaLabel->setVisible(alphaVisibility);
     d_pointer->m_alphaGradientSlider->setVisible(alphaVisibility);
@@ -760,7 +765,7 @@ QColor ColorDialog::selectedColor() const
  * Reimplemented from base class.
  *
  * When a dialog, that wasn't formerly visible, gets visible,
- * it's @ref ColorDialogPrivate::m_selectedColor is cleared.
+ * it's @ref selectedColor value is cleared.
  *
  * @param visible holds whether or not the dialog should be visible */
 void ColorDialog::setVisible(bool visible)
@@ -806,7 +811,8 @@ ColorDialog::DialogLayoutDimensions ColorDialog::layoutDimensions() const
     return d_pointer->m_layoutDimensions;
 }
 
-/** @brief Setter for property @ref layoutDimensions */
+/** @brief Setter for property @ref layoutDimensions
+ * @param newLayoutDimensions the new layout dimensions */
 void ColorDialog::setLayoutDimensions(const ColorDialog::DialogLayoutDimensions newLayoutDimensions)
 {
     d_pointer->m_layoutDimensions = newLayoutDimensions;

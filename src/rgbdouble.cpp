@@ -33,14 +33,19 @@
 
 #include <lcms2.h>
 
-/** @file
+/** @internal
+ *
+ * @file
  *
  * This file defines some static asserts for the data type
  * @ref PerceptualColor::RgbDouble. */
 
 namespace PerceptualColor
 {
-/** @brief Adds QDebug() support for this data type. */
+/** @brief Adds QDebug() support for this data type.
+ * @param dbg Existing debug object
+ * @param value Value to stream into the debug object
+ * @returns Debug object with value streamed in */
 QDebug operator<<(QDebug dbg, const PerceptualColor::RgbDouble &value)
 {
     dbg.nospace() << "RgbDouble(" << value.red << " " << value.green << " " << value.blue << ")";

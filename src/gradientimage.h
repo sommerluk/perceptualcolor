@@ -94,7 +94,7 @@ public:
 private:
     Q_DISABLE_COPY(GradientImage)
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestGradientImage;
 
     // Methods

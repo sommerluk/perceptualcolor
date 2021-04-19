@@ -405,6 +405,8 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
      *      be) done inside this handler.” */
 }
 
+// No documentation here (documentation of properties
+// and its getters are in the header)
 qreal ColorWheel::hue() const
 {
     return d_pointer->m_hue;

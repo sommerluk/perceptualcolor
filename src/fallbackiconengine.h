@@ -88,7 +88,7 @@ private:
      * @sa @ref setReferenceWidget() */
     QPointer<QWidget> m_referenceWidget = nullptr;
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestFallbackIconEngine;
 };
 

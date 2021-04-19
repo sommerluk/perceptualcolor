@@ -98,7 +98,6 @@ class GradientSlider : public AbstractDiagram
      * @sa READ @ref firstColor() const
      * @sa WRITE @ref setFirstColor()
      * @sa NOTIFY @ref firstColorChanged()
-     * @sa @ref GradientSliderPrivate::m_firstColor
      * @sa @ref secondColor */
     Q_PROPERTY(PerceptualColor::LchaDouble firstColor READ firstColor WRITE setFirstColor NOTIFY firstColorChanged)
 
@@ -118,8 +117,7 @@ class GradientSlider : public AbstractDiagram
      *
      * @sa READ @ref orientation() const
      * @sa WRITE @ref setOrientation()
-     * @sa NOTIFY @ref orientationChanged()
-     * @sa @ref GradientSliderPrivate::m_orientation */
+     * @sa NOTIFY @ref orientationChanged() */
     Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
 
     /** @brief This property holds the page step.
@@ -132,7 +130,6 @@ class GradientSlider : public AbstractDiagram
      * @sa READ @ref pageStep() const
      * @sa WRITE @ref setPageStep()
      * @sa NOTIFY @ref pageStepChanged()
-     * @sa @ref GradientSliderPrivate::m_pageStep()
      * @sa @ref singleStep */
     Q_PROPERTY(qreal pageStep READ pageStep WRITE setPageStep NOTIFY pageStepChanged)
 
@@ -141,7 +138,6 @@ class GradientSlider : public AbstractDiagram
      * @sa READ @ref secondColor() const
      * @sa WRITE @ref setSecondColor()
      * @sa NOTIFY @ref secondColorChanged()
-     * @sa @ref GradientSliderPrivate::m_secondColor
      * @sa @ref firstColor */
     Q_PROPERTY(PerceptualColor::LchaDouble secondColor READ secondColor WRITE setSecondColor NOTIFY secondColorChanged)
 
@@ -155,7 +151,6 @@ class GradientSlider : public AbstractDiagram
      * @sa READ @ref singleStep() const
      * @sa WRITE @ref setSingleStep()
      * @sa NOTIFY @ref singleStepChanged()
-     * @sa @ref GradientSliderPrivate::m_singleStep()
      * @sa @ref pageStep */
     Q_PROPERTY(qreal singleStep READ singleStep WRITE setSingleStep NOTIFY singleStepChanged)
 
@@ -170,8 +165,7 @@ class GradientSlider : public AbstractDiagram
      *
      * @sa READ @ref value() const
      * @sa WRITE @ref setValue()
-     * @sa NOTIFY @ref valueChanged()
-     * @sa @ref GradientSliderPrivate::m_value() */
+     * @sa NOTIFY @ref valueChanged() */
     Q_PROPERTY(qreal value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
@@ -241,7 +235,9 @@ private:
     Q_DISABLE_COPY(GradientSlider)
 
     class GradientSliderPrivate;
-    /** @brief Declare the private implementation as friend class.
+    /** @internal
+     *
+     * @brief Declare the private implementation as friend class.
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
@@ -249,7 +245,7 @@ private:
     /** @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<GradientSliderPrivate> d_pointer;
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestGradientSlider;
 };
 

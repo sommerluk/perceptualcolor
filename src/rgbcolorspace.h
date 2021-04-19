@@ -83,7 +83,9 @@ private:
     Q_DISABLE_COPY(RgbColorSpace)
 
     class RgbColorSpacePrivate;
-    /** @brief Declare the private implementation as friend class.
+    /** @internal
+     *
+     * @brief Declare the private implementation as friend class.
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
@@ -91,7 +93,7 @@ private:
     /** @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<RgbColorSpacePrivate> d_pointer;
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestRgbColorSpace;
 };
 

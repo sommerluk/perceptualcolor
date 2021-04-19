@@ -282,8 +282,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      *
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
-     * @sa NOTIFY @ref currentColorChanged()
-     * @sa @ref ColorDialogPrivate::m_currentOpaqueColor */
+     * @sa NOTIFY @ref currentColorChanged() */
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
     /** @brief Various options that affect the look and feel of the dialog
@@ -317,8 +316,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * @sa @ref testOption()
      * @sa WRITE @ref setOptions()
      * @sa @ref setOption()
-     * @sa NOTIFY @ref optionsChanged()
-     * @sa @ref ColorDialogPrivate::m_options */
+     * @sa NOTIFY @ref optionsChanged()*/
     Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
 
     /** @brief Layout dimensions
@@ -371,6 +369,8 @@ public:
      *  @returns the property @ref currentColor */
     QColor currentColor() const;
     static QColor getColor(const QColor &initial = Qt::white, QWidget *parent = nullptr, const QString &title = QString(), ColorDialogOptions options = ColorDialogOptions());
+    /** @brief Getter for property @ref layoutDimensions
+     *  @returns the property @ref layoutDimensions */
     ColorDialog::DialogLayoutDimensions layoutDimensions() const;
     // Make sure not to override the base class’s “open“ function:
     using QDialog::open;
@@ -400,11 +400,9 @@ Q_SIGNALS:
      * @param color the new “current color” */
     void currentColorChanged(const QColor &color);
     /** @brief Notify signal for property @ref layoutDimensions.
-     *
      * @param newLayoutDimensions the new layout dimensions */
     void layoutDimensionsChanged(const PerceptualColor::ColorDialog::DialogLayoutDimensions newLayoutDimensions);
     /** @brief Notify signal for property @ref options.
-     *
      * @param newOptions the new options */
     void optionsChanged(const PerceptualColor::ColorDialog::ColorDialogOptions newOptions);
 
@@ -415,7 +413,9 @@ private:
     Q_DISABLE_COPY(ColorDialog)
 
     class ColorDialogPrivate;
-    /** @brief Declare the private implementation as friend class.
+    /** @internal
+     *
+     * @brief Declare the private implementation as friend class.
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
@@ -423,7 +423,7 @@ private:
     /** @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<ColorDialogPrivate> d_pointer;
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestColorDialog;
 };
 

@@ -95,7 +95,7 @@ public:
 private:
     Q_DISABLE_COPY(ChromaHueImage)
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestChromaHueImage;
 
     /** @brief Internal store for the border size, measured in physical pixels.

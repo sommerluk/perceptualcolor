@@ -94,6 +94,7 @@ ChromaHueDiagram::ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiag
  *
  * Reimplemented from base class.
  *
+ * @internal
  * @post
  * - If the mouse is clicked with the circular diagram (inside or
  *   outside of the visible gamut), than this widget gets the focus
@@ -104,6 +105,7 @@ ChromaHueDiagram::ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiag
  *   the mouse was outside the gamut, the diagram’s handle always stays
  *   within the gamut: The hue value is correctly retained, while the chroma
  *   value is the highest possible chroma within the gamut at this hue.
+ * @internal
  *
  * @param event The corresponding mouse event */
 void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
@@ -144,6 +146,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
  *
  * Reimplemented from base class.
  *
+ * @internal
  * @post Reacts only on mouse move events if
  * @ref ChromaHueDiagramPrivate::m_isMouseEventActive is <tt>true</tt>:
  * - If the mouse moves within the gamut, the diagram’s handle is displaced
@@ -154,6 +157,7 @@ void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)
  *   value is the highest possible chroma within the gamut at this hue.
  *   Both, the diagram’s handle <em>and</em> the mouse cursor are
  *   visible.
+ * @endinternal
  *
  * @param event The corresponding mouse event */
 void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
@@ -178,6 +182,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
  *
  * Reimplemented from base class. Reacts on all clicks (left, middle, right).
  *
+ * @internal
  * @post If @ref ChromaHueDiagramPrivate::m_isMouseEventActive is
  * <tt>true</tt> then:
  * - If the mouse is within the gamut, the diagram’s handle is displaced
@@ -188,6 +193,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
  * - The mouse cursor is made visible (if he wasn’t yet visible anyway).
  * - @ref ChromaHueDiagramPrivate::m_isMouseEventActive is set
  *   to <tt>false</tt>.
+ * @endinternal
  *
  * @todo What if the widget displays a gamut that has no L*=0.1 because its
  * blackpoint is lighter.? Sacrifying chroma alone does not help? How to
@@ -546,6 +552,7 @@ bool ChromaHueDiagram ::ChromaHueDiagramPrivate ::isWidgetPixelPositionWithinMou
  *
  * Reimplemented from base class.
  *
+ * @internal
  * - Paints the widget. Takes the existing
  *   @ref ChromaHueDiagramPrivate::m_chromaHueImage and
  *   @ref ChromaHueDiagramPrivate::m_wheelImage and paints them on the widget.
@@ -557,6 +564,7 @@ bool ChromaHueDiagram ::ChromaHueDiagramPrivate ::isWidgetPixelPositionWithinMou
  *   painting this, neither does <tt>QStyle</tt> provide build-in support
  *   for round widgets. Therefore, we draw the focus indicator ourself,
  *   which means its form is not controlled by <tt>QStyle</tt>.
+ * @endinternal
  *
  * @param event the paint event
  *

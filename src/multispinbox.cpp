@@ -406,7 +406,10 @@ MultiSpinBox::SectionData MultiSpinBox::MultiSpinBoxPrivate::fixedSection(const 
     return result;
 }
 
-/** @brief Adds QDebug() support for this data type. */
+/** @brief Adds QDebug() support for this data type.
+ * @param dbg Existing debug object
+ * @param value Value to stream into the debug object
+ * @returns Debug object with value streamed in */
 QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value)
 {
     dbg.nospace() << "\nMultiSpinBox::SectionData(\n    prefix: " << value.prefix << "\n    minimum: " << value.minimum << "\n    value: " << value.value << "\n    decimals: " << value.decimals << "\n    isWrapping: " << value.isWrapping
@@ -427,8 +430,7 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &
  * @ref SectionData.maximum </tt> If the values are not valid, automatically
  * fixed section data will be used.
  *
- * @sa @ref sections()
- * @sa @ref MultiSpinBoxPrivate::m_sections */
+ * @sa @ref sections() */
 void MultiSpinBox::setSections(const QList<MultiSpinBox::SectionData> &newSections)
 {
     if (newSections.count() < 1) {
@@ -459,8 +461,7 @@ void MultiSpinBox::setSections(const QList<MultiSpinBox::SectionData> &newSectio
  *
  * @returns the data of all sections.
  *
- * @sa @ref setSections()
- * @sa @ref MultiSpinBoxPrivate::m_sections */
+ * @sa @ref setSections() */
 QList<MultiSpinBox::SectionData> MultiSpinBox::sections() const
 {
     return d_pointer->m_sections;
@@ -672,7 +673,9 @@ void MultiSpinBox::MultiSpinBoxPrivate::updateCurrentValueFromText(const QString
  *
  * On <tt>QEvent::Type::LocaleChange</tt> it updates the spinbox content
  * accordingly. Apart from that, it calls the implementation in the parent
- * class. */
+ * class.
+ *
+ * @param event the event to be handled. */
 bool MultiSpinBox::event(QEvent *event)
 {
     if (event->type() == QEvent::Type::LocaleChange) {

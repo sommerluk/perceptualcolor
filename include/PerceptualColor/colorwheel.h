@@ -78,13 +78,17 @@ class ColorWheel : public AbstractDiagram
 public:
     Q_INVOKABLE explicit ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~ColorWheel() noexcept override;
+    /** @brief Getter for property @ref hue
+     *  @returns the property @ref hue */
     qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
 
 Q_SIGNALS:
-    /** @brief Signal for hue() property. */
-    void hueChanged(const qreal hue);
+    /** @brief Signal for @ref hue() property. */
+    /** @brief Notify signal for property @ref hue.
+     * @param newHue the new hue */
+    void hueChanged(const qreal newHue);
 
 public Q_SLOTS:
     void resetHue();
@@ -103,7 +107,9 @@ private:
     Q_DISABLE_COPY(ColorWheel)
 
     class ColorWheelPrivate;
-    /** @brief Declare the private implementation as friend class.
+    /** @internal
+     *
+     * @brief Declare the private implementation as friend class.
      *
      * This allows the private class to access the protected members and
      * functions of instances of <em>this</em> class. */
@@ -111,10 +117,11 @@ private:
     /** @brief Pointer to implementation (pimpl) */
     ConstPropagatingUniquePointer<ColorWheelPrivate> d_pointer;
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestColorDialog;
 
-    /** @brief Internal friend declaration.
+    /** @internal
+     * @brief Internal friend declaration.
      * @todo  Remove this friend declaration */
     friend class WheelColorPicker;
 };

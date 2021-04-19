@@ -63,11 +63,15 @@ LchaDouble::LchaDouble(double newL, double newC, double newH, double newA)
 }
 
 /** @brief Adds QDebug() support for this data type.
- * @note This is declared outside the global namespace instead of the
- * @ref PerceptualColor namespace, because the supported value is a
+ * @param dbg Existing debug object
+ * @param value Value to stream into the debug object
+ * @returns Debug object with value streamed in
+ * @todo This is originally declared in the global namespace instead of the
+ * @ref PerceptualColor namespace, because the supported value was a
  * <tt>typedef</tt> for a LittleCMS type in the global; when declaring
- * this function in @ref PerceptualColor namespace, it would not work
- * in the global namespace. */
+ * this function in @ref PerceptualColor namespace, it did not work
+ * in the global namespace. Now, things have changed. But we should write
+ * a unit test for if it works in global namespace! */
 QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
 {
     dbg.nospace() << "LchaDouble(" << value.l << "% " << value.c << " " << value.h << "° " << value.a << ")";

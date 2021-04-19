@@ -97,7 +97,8 @@ QColor ColorPatch::color() const
     return d_pointer->m_color;
 }
 
-/** @brief Set the @ref color property. */
+/** @brief Setter for the @ref color property.
+ * @param newColor the new color */
 void ColorPatch::setColor(const QColor &newColor)
 {
     if (newColor != d_pointer->m_color) {
@@ -110,7 +111,9 @@ void ColorPatch::setColor(const QColor &newColor)
 /** @brief Handle paint events.
  *
  * Just draws the frame inherited from QFrame, than paints a rectangle with
- * the current color above. */
+ * the current color above.
+ *
+ * @param event the event to be handled */
 void ColorPatch::paintEvent(QPaintEvent *event)
 {
     // First of all, draw the frame

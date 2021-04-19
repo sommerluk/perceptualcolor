@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** @file
+/** @internal @file
  *
  * This file defines various definitions for compiling this
  * library. This header should be included in all CPP files of this library

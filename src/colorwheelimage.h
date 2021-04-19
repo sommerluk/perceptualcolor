@@ -87,7 +87,7 @@ public:
 private:
     Q_DISABLE_COPY(ColorWheelImage)
 
-    /** @brief Only for unit tests. */
+    /** @internal @brief Only for unit tests. */
     friend class TestColorWheelImage;
 
     /** @brief Internal store for the border size, measured in physical pixels.
