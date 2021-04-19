@@ -23,8 +23,14 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-/build/*
-/.kdev4/
-.directory
+# If the pattern starts with “/”, then the pattern is relative to
+# the directory level of this particular .gitignore file itself:
 /.clang-format
+/.kdev4/
+/build/*
+/Doxyfile
+
+# Otherwise the pattern may also match at any level below
+# the .gitignore level:
+.directory
 perceptualcolor.kdev4
