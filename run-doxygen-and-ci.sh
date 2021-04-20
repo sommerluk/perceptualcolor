@@ -54,10 +54,18 @@ fi
 
 ################# Doxygen #################
 # Run doxygen, but only show errors, no normal messages.
-mkdir --parents doc \
-    && cp doxyfile.internal Doxyfile && doxygen > /dev/null \
-    && cp doxyfile.external Doxyfile && doxygen > /dev/null
-
+mkdir --parents doc
+cp doxyfile.internal Doxyfile
+# We are not interested in the normal Doxygen output, but only in the errors.
+# We have to filter the errors, because Doxygen produces errors where it
+# should not (https://github.com/doxygen/doxygen/issues/7411 errors on
+# missing documentation of return value for functions that return “void”).
+# Therefore, first we redirect Doxygen’s stderr to stdout (the pipe) to
+# be able to filter it with grep. And we redirect stdout to /dev/null
+# (without changing where stderr is going):
+doxygen 2>&1 >/dev/null | grep --invert-match --perl-regexp "warning: return type of member .* is not documented"
+cp doxyfile.external Doxyfile
+doxygen 2>&1 >/dev/null | grep --invert-match --perl-regexp "warning: return type of member .* is not documented"
 
 
 

@@ -50,10 +50,16 @@ static_assert(std::is_trivially_copyable_v<LchaDouble>);
 
 static_assert(std::is_standard_layout_v<LchaDouble>);
 
+/** @brief Default constructor. */
 LchaDouble::LchaDouble()
 {
 }
 
+/** @brief Constructor from value
+ * @param newL lightness for the new object
+ * @param newC chroma for the new object
+ * @param newH hue for the new object
+ * @param newA alpha for the new object */
 LchaDouble::LchaDouble(double newL, double newC, double newH, double newA)
     : l(newL)
     , c(newC)

@@ -105,7 +105,7 @@ ChromaHueDiagram::ChromaHueDiagramPrivate::ChromaHueDiagramPrivate(ChromaHueDiag
  *   the mouse was outside the gamut, the diagram’s handle always stays
  *   within the gamut: The hue value is correctly retained, while the chroma
  *   value is the highest possible chroma within the gamut at this hue.
- * @internal
+ * @endinternal
  *
  * @param event The corresponding mouse event */
 void ChromaHueDiagram::mousePressEvent(QMouseEvent *event)

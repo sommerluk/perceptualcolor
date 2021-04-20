@@ -31,16 +31,23 @@
 
 namespace PerceptualColor
 {
-/** @internal
- *
- *  @brief LCh default values
+/** @page lchrange Range of LCH and LAB values
  *
  * The gamut of actual human perception within the LAB color model (and
  * its alternative representation LCH) has an irregular shape. Its maximum
  * extensions:
  *
- * - LAB/LCH lightness: <tt>[0, 100]</tt>
- * - LCH hue: The full circle, <tt>[0°, 360°[</tt>.
+ * <b>Lightness (L)</b>
+ * The maximum range for LAB/LCH lightness is limited by
+ * definition: <tt>[0, 100]</tt>.
+ *
+ * <b>Hue (H)</b>
+ * The maximum range for LCH hue is limited by definition to
+ * the full circle: <tt>[0°, 360°[</tt>.
+ *
+ * <b>a, b, Chroma (C)</b>
+ * The maximum range for a, b, Chroma (C) is complex. It is <em>not</em>
+ * limited by definition. A useful limit is the actual human perception.
  *
  * |                               |        a          |         b         | C           |
  * | :---------------------------- |:----------------: | :---------------: | :---------: |
@@ -55,8 +62,7 @@ namespace PerceptualColor
  *    clearly shows) not enough to cover the hole range of actual human
  *    color perception.
  * 2. Ranges of LAB coordinates according to the
- *    <a
- * href="https://de.wikipedia.org/w/index.php?title=Lab-Farbraum&oldid=197156292">
+ *    <a href="https://de.wikipedia.org/w/index.php?title=Lab-Farbraum&oldid=197156292">
  *    German Wikipedia</a>.
  * 3. The German association <em>Freie Farbe e. V.</em> has
  *    published a calculation of the
@@ -64,8 +70,13 @@ namespace PerceptualColor
  *    shape of actual human perception</a> for various observation angles
  *    and illuminants. This data contains only the LAB coordinates. From
  *    this data, the C component can be calculated easily as Pythagoras of
- *    the a axis and b axis value pairs: √(a² + b²) = C.
+ *    the a axis and b axis value pairs: √(a² + b²) = C. */
+
+ /** @internal
  *
+ * @brief LCh default values
+ *
+ * The @ref lchrange "range of LCH/LAB values" it known.
  * But what could be useful default values? This struct provides some
  * proposals. All values are <tt>constexpr</tt>.
  *
