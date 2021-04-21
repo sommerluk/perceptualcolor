@@ -44,7 +44,10 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructor */
+/** @brief Constructor
+ * @param colorSpace The color spaces within this widget should operate.
+ * @param parent The widget’s parent widget. This parameter will be passed
+ * to the base class’s constructor. */
 WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new WheelColorPickerPrivate(this))
@@ -80,6 +83,10 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     setCurrentColor(LchValues::srgbVersatileInitialColor);
     // TODO xxx revision starts here
     // TODO whitebox test for constructor
+    // TODO The doxygen documentation should not
+    //      recommand filename.h but PerceptualColor/filename.h !?
+    // TODO ~/Dokumente/Colorpicker/perceptualcolor/doc/external/html/namespace_perceptual_color.html
+    //      The variables and some functions should not be pubicly documented.
 }
 
 /** @brief Default destructor */
@@ -176,7 +183,9 @@ LchDouble WheelColorPicker::currentColor() const
     return d_pointer->m_chromaLightnessDiagram->currentColor();
 }
 
-/** @brief Setter for @ref currentColor property */
+/** @brief Setter for the @ref currentColor() property.
+ *
+ * @param newCurrentColor the new color */
 void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
 {
     // The following line will also emit the signal of this class:
@@ -184,12 +193,26 @@ void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
     d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
 }
 
+/** @brief Recommended size for the widget
+ *
+ * Reimplemented from base class.
+ *
+ * @returns Recommended size for the widget.
+ *
+ * @sa @ref sizeHint() */
 QSize WheelColorPicker::minimumSizeHint() const
 {
     // TODO Actually implement this!
     return AbstractDiagram::minimumSizeHint();
 }
 
+/** @brief Recommmended minimum size for the widget.
+ *
+ * Reimplemented from base class.
+ *
+ * @returns Recommended minimum size for the widget.
+ *
+ * @sa @ref minimumSizeHint() */
 QSize WheelColorPicker::sizeHint() const
 {
     // TODO Actually implement this!

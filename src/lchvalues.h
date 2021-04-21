@@ -72,7 +72,7 @@ namespace PerceptualColor
  *    this data, the C component can be calculated easily as Pythagoras of
  *    the a axis and b axis value pairs: √(a² + b²) = C. */
 
- /** @internal
+/** @internal
  *
  * @brief LCh default values
  *

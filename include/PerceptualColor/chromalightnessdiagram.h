@@ -77,7 +77,10 @@ class ChromaLightnessDiagram : public AbstractDiagram
 public:
     Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     virtual ~ChromaLightnessDiagram() noexcept override;
+    /** @brief Getter for property @ref currentColor
+     *  @returns the property @ref currentColor */
     PerceptualColor::LchDouble currentColor() const;
+    /** @todo Document me! */
     Q_INVOKABLE qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
@@ -87,7 +90,8 @@ public Q_SLOTS:
     void setHue(const qreal newHue);
 
 Q_SIGNALS:
-    /** @brief Signal for color() property. */
+    /** @brief Signal for @ref currentColor property.
+     * @param newCurrentColor the new @ref currentColor */
     void currentColorChanged(const PerceptualColor::LchDouble &newCurrentColor);
 
 protected:

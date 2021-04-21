@@ -529,7 +529,9 @@ void ChromaLightnessDiagram::setHue(const qreal newHue)
     setCurrentColor(lch);
 }
 
-/** @brief Setter for the color() property */
+/** @brief Setter for the @ref currentColor() property.
+ *
+ * @param newCurrentColor the new @ref currentColor */
 void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor)
 {
     if (newCurrentColor.hasSameCoordinates(d_pointer->m_currentColor)) {
