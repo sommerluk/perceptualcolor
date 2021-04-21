@@ -67,7 +67,7 @@ namespace PerceptualColor
  * @todo We could normalize @ref LchaDouble values, just like @ref PolarPointF
  * also does. Performance should not matter for this use case! But: Does
  * it make sense? */
-struct LchaDouble {
+struct PERCEPTUALCOLOR_IMPORTEXPORT LchaDouble {
 public:
     LchaDouble();
     LchaDouble(double newL, double newC, double newH, double newA);

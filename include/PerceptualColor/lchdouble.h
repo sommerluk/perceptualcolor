@@ -69,7 +69,7 @@ namespace PerceptualColor
  * @ref l component to the range <tt>[0, 100]</tt> and/or
  * to bound the radial to the range <tt>[0, 255]</tt> or
  * <tt>[0, @ref LchValues::humanMaximumChroma]</tt>? */
-struct LchDouble {
+struct PERCEPTUALCOLOR_IMPORTEXPORT LchDouble {
 public:
     /** @brief Lightness, mesured in percent.
      *

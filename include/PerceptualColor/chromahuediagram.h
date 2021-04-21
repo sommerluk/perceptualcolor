@@ -88,7 +88,7 @@ class RgbColorSpace;
  * are the handles placed? Visible or invisible? How to react? Should
  * there be always a pixel in the middle that is visible (black or white)
  * even when out of gamut? */
-class ChromaHueDiagram : public AbstractDiagram
+class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT
 

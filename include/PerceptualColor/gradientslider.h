@@ -89,7 +89,7 @@ class RgbColorSpace;
 // less complete, and of course also a little bit different, as
 // both, QAbstractSlider and KGradientSelector are not directly
 // comparable to this class.
-class GradientSlider : public AbstractDiagram
+class PERCEPTUALCOLOR_IMPORTEXPORT GradientSlider : public AbstractDiagram
 {
     Q_OBJECT
 

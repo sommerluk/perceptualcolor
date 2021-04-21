@@ -56,7 +56,7 @@ class RgbColorSpace;
  *
  * @todo Add <tt>whatsThis</tt> value explaining the accepted keys and mouse
  * movements (and also to other widgets). */
-class WheelColorPicker : public AbstractDiagram
+class PERCEPTUALCOLOR_IMPORTEXPORT WheelColorPicker : public AbstractDiagram
 {
     Q_OBJECT
 

@@ -146,7 +146,7 @@ namespace PerceptualColor
  * and not the <tt>SectionConfiguration</tt>. But this change is probably
  * not worth all the work for little benefit…
  */
-class MultiSpinBox : public QAbstractSpinBox
+class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
 

@@ -60,7 +60,7 @@ namespace PerceptualColor
  * could draw the frame with QStyle…
  *
  * @todo The design does not work well on some styles (wrong metrics!) */
-class ColorPatch : public QFrame
+class PERCEPTUALCOLOR_IMPORTEXPORT ColorPatch : public QFrame
 {
     Q_OBJECT
 

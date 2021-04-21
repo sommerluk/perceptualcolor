@@ -63,7 +63,7 @@ class RgbColorSpace;
  * within the surrounding rectangle.
  *
  * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */
-class ChromaLightnessDiagram : public AbstractDiagram
+class PERCEPTUALCOLOR_IMPORTEXPORT ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT
 

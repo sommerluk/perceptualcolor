@@ -63,9 +63,15 @@ cp doxyfile.internal Doxyfile
 # Therefore, first we redirect Doxygen’s stderr to stdout (the pipe) to
 # be able to filter it with grep. And we redirect stdout to /dev/null
 # (without changing where stderr is going):
-doxygen 2>&1 >/dev/null | grep --invert-match --perl-regexp "warning: return type of member .* is not documented"
+doxygen 2>&1 >/dev/null \
+    | grep \
+        --invert-match \
+        --perl-regexp "warning: return type of member .* is not documented"
 cp doxyfile.external Doxyfile
-doxygen 2>&1 >/dev/null | grep --invert-match --perl-regexp "warning: return type of member .* is not documented"
+doxygen 2>&1 >/dev/null \
+    | grep \
+        --invert-match \
+        --perl-regexp "warning: return type of member .* is not documented"
 
 
 
@@ -84,6 +90,28 @@ grep \
     --recursive \
     --files-without-match $'\xEF\xBB\xBF' \
     $CODE_AND_UNIT_TESTS
+
+# All header files in src/ should have an “@internal” in
+# the Doxygen documentation, because when it would be public,
+# the header file would not be in src/
+grep \
+    --recursive \
+    --files-without-match $'@internal' \
+    src/*.h
+
+# All public header files in include/ should use
+# the PERCEPTUALCOLOR_IMPORTEXPORT macro.
+grep \
+    --recursive \
+    --files-without-match $'PERCEPTUALCOLOR_IMPORTEXPORT' \
+    $PUBLIC_HEADERS
+
+# All non-public source files in src/ should use not use
+# the PERCEPTUALCOLOR_IMPORTEXPORT macro.
+grep \
+    --recursive \
+    --files-with-matches $'PERCEPTUALCOLOR_IMPORTEXPORT' \
+    "src" "test"
 
 # Do not use constexpr in public headers as when we change the value
 # later, compile time value and run time value might be different, and

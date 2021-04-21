@@ -56,7 +56,7 @@ class RgbColorSpace;
  * is left to allow that the focus indicator can be painted completely
  * even when the widget has the focus. The border is determined
  * automatically, its value depends on @ref handleOutlineThickness(). */
-class ColorWheel : public AbstractDiagram
+class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {
     Q_OBJECT
 

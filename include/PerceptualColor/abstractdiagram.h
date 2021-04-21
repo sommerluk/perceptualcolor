@@ -98,7 +98,7 @@ namespace PerceptualColor
  *
  * @todo Touchscreen support: Magnify the handle circle, when diagram is
  * used on a touch device?  */
-class AbstractDiagram : public QWidget
+class PERCEPTUALCOLOR_IMPORTEXPORT AbstractDiagram : public QWidget
 {
     Q_OBJECT
 
