@@ -72,13 +72,12 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
             // As value is stored anyway within ChromaLightnessDiagram member,
             // it’s enough to just emit the corresponding signal of this class:
             &WheelColorPicker::currentColorChanged);
-    connect(
-        // QWidget’s constructor requires a QApplication object. As this
-        // is a class derived from QWidget, calling qApp is save.
-        qApp,
-        &QApplication::focusChanged,
-        d_pointer.get(), // Without .get() apparently connect() won’t work…
-        &WheelColorPickerPrivate::handleFocusChanged);
+    connect(// QWidget’s constructor requires a QApplication object. As this
+            // is a class derived from QWidget, calling qApp is save.
+            qApp,
+            &QApplication::focusChanged,
+            d_pointer.get(), // Without .get() apparently connect() won’t work…
+            &WheelColorPickerPrivate::handleFocusChanged);
 
     // Initial color
     setCurrentColor(LchValues::srgbVersatileInitialColor);
@@ -108,8 +107,7 @@ WheelColorPicker::WheelColorPickerPrivate::WheelColorPickerPrivate(WheelColorPic
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding resize event
- */
+ * @param event The corresponding resize event */
 void WheelColorPicker::resizeEvent(QResizeEvent *event)
 {
     AbstractDiagram::resizeEvent(event);
@@ -145,8 +143,7 @@ void WheelColorPicker::WheelColorPickerPrivate::handleFocusChanged(QWidget *old,
  * @returns the size of a scaled rectangle, that has the given diagonal line
  * length and preserves the original ratio between width and height - or an
  * invalid size if oldRectangle had a surface of 0. The result is rounded
- * the next smaller integer!
- */
+ * the next smaller integer! */
 QSize WheelColorPicker::WheelColorPickerPrivate::scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal)
 {
     if (oldRectangle.isEmpty()) {
