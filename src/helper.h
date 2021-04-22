@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
@@ -26,6 +26,9 @@
 
 #ifndef HELPER_H
 #define HELPER_H
+
+#include "PerceptualColor/perceptualcolorglobal.h"
+#include "perceptualcolorinternal.h"
 
 #include <QImage>
 #include <QWheelEvent>

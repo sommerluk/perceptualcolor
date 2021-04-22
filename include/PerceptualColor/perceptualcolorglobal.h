@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/** @file
+/** @file perceptualcolorglobal.h
  *
  * This file provides macros for C++ symbol export and some static asserts.
  * It is ment to be included in header files of this library. */

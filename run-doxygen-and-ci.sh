@@ -81,6 +81,7 @@ doxygen 2>&1 >/dev/null \
 PUBLIC_HEADERS="include"
 CODE_WITHOUT_UNIT_TESTS="include src"
 CODE_AND_UNIT_TESTS="include src test"
+NON_PUBLIC_CODE="src test"
 UNIT_TESTS="test"
 
 # Search for files that do not start with a byte-order-mark (BOM).
@@ -89,7 +90,8 @@ UNIT_TESTS="test"
 grep \
     --recursive \
     --files-without-match $'\xEF\xBB\xBF' \
-    $CODE_AND_UNIT_TESTS
+    $CODE_AND_UNIT_TESTS \
+         | sed 's/^/Missing byte-order-mark: /'
 
 # All header files in src/ should have an “@internal” in
 # the Doxygen documentation, because when it would be public,
@@ -97,21 +99,37 @@ grep \
 grep \
     --recursive \
     --files-without-match $'@internal' \
-    src/*.h
+    src/*.h \
+         | sed 's/^/Missing “@internal” statement in non-public header: /'
 
 # All public header files in include/ should use
 # the PERCEPTUALCOLOR_IMPORTEXPORT macro.
 grep \
     --recursive \
     --files-without-match $'PERCEPTUALCOLOR_IMPORTEXPORT' \
-    $PUBLIC_HEADERS
+    $PUBLIC_HEADERS \
+         | sed 's/^/Missing PERCEPTUALCOLOR_IMPORTEXPORT macro in public header: /'
 
-# All non-public source files in src/ should use not use
-# the PERCEPTUALCOLOR_IMPORTEXPORT macro.
+# All files should use perceptualcolorglobal.h
+grep \
+    --recursive \
+    --files-without-match $'perceptualcolorglobal.h' \
+    $CODE_AND_UNIT_TESTS \
+         | sed 's/^/Missing include of perceptualcolorglobal.h: /'
+
+# All non-public code should not use the PERCEPTUALCOLOR_IMPORTEXPORT macro.
 grep \
     --recursive \
     --files-with-matches $'PERCEPTUALCOLOR_IMPORTEXPORT' \
-    "src" "test"
+    $NON_PUBLIC_CODE \
+         | sed 's/^/Internal files may not use PERCEPTUALCOLOR_IMPORTEXPORT macro: /'
+
+# All non-public code should use perceptualcolorinternal.h
+grep \
+    --recursive \
+    --files-without-match $'perceptualcolorinternal.h' \
+    $NON_PUBLIC_CODE \
+         | sed 's/^/Internal files must include perceptualcolorinternal.h: /'
 
 # Do not use constexpr in public headers as when we change the value
 # later, compile time value and run time value might be different, and
@@ -119,7 +137,8 @@ grep \
 grep \
     --recursive \
     --fixed-strings "constexpr" \
-    $PUBLIC_HEADERS
+    $PUBLIC_HEADERS \
+         | sed 's/^/Public headers may not use constexpr: /'
 
 # Search for some patterns that should not be used in the source code. If
 # these patterns are found, a message is displayed. Otherwise, nothing is

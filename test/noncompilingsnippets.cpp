@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
@@ -23,6 +23,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
+#include "PerceptualColor/perceptualcolorglobal.h"
+#include "perceptualcolorinternal.h"
 
 // This file contains Doxygen snippets that cannot be compiled
 // on all platforms. Therefore, this file is not compiled

@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
@@ -404,6 +404,9 @@
  * do it in the constructor function body, this will not work; than
  * we would have to delete the <tt>const</tt> qualifiers, which would
  * probably break ABI compatibility? */
+
+#include "PerceptualColor/perceptualcolorglobal.h"
+#include "perceptualcolorinternal.h"
 
 /** @brief The namespace of this library.
  *

@@ -1,4 +1,4 @@
-﻿// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 /*
  * Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
  *
@@ -24,7 +24,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "PERCEPTUALCOLOR_LIB_EXPORT.h"
+#include "PerceptualColor/perceptualcolorglobal.h"
+#include "perceptualcolorinternal.h"
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
