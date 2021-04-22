@@ -434,22 +434,10 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
 
-    // As Qt’s documentation says:
-    //
-    //     “When resizeEvent() is called, the widget already has its new
-    //      geometry.”
-    //
-    // So we can rely on QWidget.size() to get the new size.
-
-    // Find the smaller one of width and height
-    int newWidgetDiameter = qMin(size().width(), size().height());
-    if (newWidgetDiameter < 0) {
-        newWidgetDiameter = 0;
-    }
-
-    // Update the widget
+    // Update the widget content
     d_pointer->m_chromaHueImage.setImageSize(maximumPhysicalSquareSize());
     d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
+
     // As Qt documentation says:
     //     “The widget will be erased and receive a paint event
     //      immediately after processing the resize event. No

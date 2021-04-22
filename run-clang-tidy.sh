@@ -25,6 +25,12 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
+
+
+
+
+################# Run clang-tidy #################
+
 # We run “make” with the argument “--jobs” without specifying the number
 # of parallel jobs. This means the number is jobs is maximum.
 mkdir --parents build \
@@ -32,4 +38,7 @@ mkdir --parents build \
     && cmake ../ > /dev/null \
     && make --jobs > /dev/null \
     && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. \
-    && run-clang-tidy
+    && run-clang-tidy \
+        | grep \
+            --perl-regexp "^clang-tidy-10 -p=" \
+            --invert-match
