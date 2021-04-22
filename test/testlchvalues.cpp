@@ -84,29 +84,38 @@ private Q_SLOTS:
         // Test if maxSrgbChroma is big enough
         qreal precisionDegreeMaxSrgbChroma = presicion / 360 * 2 * M_PI * LchValues::srgbMaximumChroma;
         color.c = PerceptualColor::LchValues::srgbMaximumChroma;
-        for (qreal hue = 0; hue <= 360; hue += precisionDegreeMaxSrgbChroma) {
+        qreal hue = 0;
+        qreal lightness;
+        while (hue <= 360) {
             color.h = hue;
-            for (qreal lightness = 0; lightness < 100; lightness += presicion) {
+            lightness = 0;
+            while (lightness <= 100) {
                 color.l = lightness;
                 QVERIFY2(!temp.inGamut(color), "Test if maxSrgbChroma is big enough");
+                lightness += presicion;
             }
+            hue += precisionDegreeMaxSrgbChroma;
         }
 
         // Test if maxSrgbChroma is as small as possible
         color.c = PerceptualColor::LchValues::srgbMaximumChroma - 1;
         bool inGamutValueFound = false;
-        for (qreal hue = 0; hue <= 360; hue += precisionDegreeMaxSrgbChroma) {
+        hue = 0;
+        while (hue <= 360) {
             color.h = hue;
-            for (qreal lightness = 0; lightness < 100; lightness += presicion) {
+            lightness = 0;
+            while (lightness <= 100)  {
                 color.l = lightness;
                 if (temp.inGamut(color)) {
                     inGamutValueFound = true;
                     break;
                 }
+                lightness += presicion;
             }
             if (inGamutValueFound) {
                 break;
             }
+            hue += precisionDegreeMaxSrgbChroma;
         }
         QVERIFY2(inGamutValueFound, "Test if maxSrgbChroma.h is as small as possible");
 
@@ -114,21 +123,25 @@ private Q_SLOTS:
         qreal precisionVersatileSrgbChroma = presicion / 360 * 2 * M_PI * PerceptualColor::LchValues::srgbVersatileChroma;
         color.c = PerceptualColor::LchValues::srgbVersatileChroma;
         color.l = 50;
-        for (qreal hue = 0; hue <= 360; hue += precisionVersatileSrgbChroma) {
+        hue = 0;
+        while (hue <= 360) {
             color.h = hue;
             QVERIFY2(temp.inGamut(color), "Test if versatile is small enough");
+            hue += precisionVersatileSrgbChroma;
         }
 
         // Test if versatile is as big as possible
         color.c = PerceptualColor::LchValues::srgbVersatileChroma + 1;
         color.l = 50;
         inGamutValueFound = true;
-        for (qreal hue = 0; hue <= 360; hue += precisionVersatileSrgbChroma) {
+        hue = 0;
+        while (hue <= 360) {
             color.h = hue;
             if (!temp.inGamut(color)) {
                 inGamutValueFound = false;
                 break;
             }
+            hue += precisionVersatileSrgbChroma;
         }
         QVERIFY2(!inGamutValueFound, "Test if versatile is as big as possible");
     }

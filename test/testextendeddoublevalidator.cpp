@@ -71,16 +71,6 @@ private Q_SLOTS:
         PerceptualColor::ExtendedDoubleValidator myValidator;
     }
 
-    void testConstructor2()
-    {
-        QPointer<QObject> myObject(new QObject());
-        QPointer<PerceptualColor::ExtendedDoubleValidator> myGuardedPointer = new ExtendedDoubleValidator(myObject);
-        delete myObject;
-        QVERIFY2(myGuardedPointer.isNull(),
-                 "Verify that the guarded pointer “QPointer” becomes nullptr if "
-                 "the parent is deleted.");
-    }
-
     void testPrefix()
     {
         PerceptualColor::ExtendedDoubleValidator myValidator;

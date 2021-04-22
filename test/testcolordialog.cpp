@@ -240,7 +240,7 @@ private Q_SLOTS:
         // Test the constructor ColorDialog(QWidget * parent = nullptr)
         m_perceptualDialog.reset(new PerceptualColor::ColorDialog());
         QScopedPointer<QWidget> tempWidget {new QWidget()};
-        PerceptualColor::ColorDialog *tempPerceptualDialog2 = new PerceptualColor::ColorDialog(tempWidget.data());
+        QScopedPointer<PerceptualColor::ColorDialog> tempPerceptualDialog2 { new PerceptualColor::ColorDialog(tempWidget.data()) };
         QCOMPARE(tempPerceptualDialog2->parentWidget(), tempWidget.data());
         QCOMPARE(tempPerceptualDialog2->parent(), tempWidget.data());
     }
@@ -277,7 +277,7 @@ private Q_SLOTS:
         // Test the constructor ColorDialog(QWidget * parent = nullptr)
         m_perceptualDialog.reset(new PerceptualColor::ColorDialog(color));
         QScopedPointer<QWidget> tempWidget {new QWidget()};
-        PerceptualColor::ColorDialog *tempPerceptualDialog2 = new PerceptualColor::ColorDialog(color, tempWidget.data());
+        QScopedPointer<PerceptualColor::ColorDialog> tempPerceptualDialog2 { new PerceptualColor::ColorDialog(color, tempWidget.data()) };
         // Test post-condition: currentColor() is color
         QCOMPARE(m_perceptualDialog->currentColor().name(), colorOpaque.name());
         QCOMPARE(m_perceptualDialog->currentColor().alpha(), colorOpaque.alpha());
