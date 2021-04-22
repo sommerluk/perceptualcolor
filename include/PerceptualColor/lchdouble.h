@@ -64,6 +64,9 @@ namespace PerceptualColor
  * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
  * object.
  *
+ * This data type can be passed to QDebug thanks to
+ * @ref operator<<(QDebug dbg, const PerceptualColor::LchDouble &value)
+ *
  * @todo Would it make sense to normalize the hue (1° instead
  * of 361°, and only non-negatif radials) and/or to bound the
  * @ref l component to the range <tt>[0, 100]</tt> and/or

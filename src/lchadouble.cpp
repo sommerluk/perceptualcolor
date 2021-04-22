@@ -34,7 +34,9 @@
 
 #include <lcms2.h>
 
-/** @file
+/** @internal
+ *
+ * @file
  *
  * This file defines some static asserts for the data type
  * @ref PerceptualColor::LchaDouble. */

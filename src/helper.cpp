@@ -36,7 +36,9 @@
 
 namespace PerceptualColor
 {
-/** @brief Number of vertical <em>standard</em> wheel steps done by a
+/** @internal
+ *
+ * @brief Number of vertical <em>standard</em> wheel steps done by a
  *  wheel event
  *
  * As the QWheelEvent documentation explains, there is a common physical
@@ -63,7 +65,9 @@ qreal standardWheelSteps(QWheelEvent *event)
     return event->angleDelta().y() / static_cast<qreal>(8 * 15);
 }
 
-/** @brief Type conversion.
+/** @internal
+ *
+ * @brief Type conversion.
  * @param value An LCH value
  * @returns Same LCH value as <tt>cmsCIELCh</tt>. */
 cmsCIELCh toCmsCieLch(const LchDouble &value)
@@ -75,7 +79,9 @@ cmsCIELCh toCmsCieLch(const LchDouble &value)
     return result;
 }
 
-/** @brief Type conversion.
+/** @internal
+ *
+ * @brief Type conversion.
  * @param value An LCH value
  * @returns Same LCH value as @ref LchDouble. */
 LchDouble toLchDouble(const cmsCIELCh &value)
@@ -87,7 +93,9 @@ LchDouble toLchDouble(const cmsCIELCh &value)
     return result;
 }
 
-/** @brief Background for semi-transparent colors.
+/** @internal
+ *
+ * @brief Background for semi-transparent colors.
 **
 ** When showing a semi-transparent color, there has to be a background
 ** on which it is shown. This function provides a suitable background

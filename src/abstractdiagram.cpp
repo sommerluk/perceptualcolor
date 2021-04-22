@@ -169,7 +169,9 @@ qreal AbstractDiagram::maximumWidgetSquareSize() const
  * This function takes care that each square has the same pixel size,
  * without scaling errors or anti-aliasing errors.
  *
- * @sa @ref transparencyBackground(qreal devicePixelRatioF) */
+ * @internal
+ * @sa @ref transparencyBackground(qreal devicePixelRatioF)
+ * @endinternal */
 QImage AbstractDiagram::transparencyBackground() const
 {
     return PerceptualColor::transparencyBackground(devicePixelRatioF());

@@ -69,6 +69,9 @@ namespace PerceptualColor
  * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
  * object.
  *
+ * This data type can be passed to QDebug thanks to
+ * @ref operator<<(QDebug dbg, const PerceptualColor::RgbDouble &value)
+ *
  * @todo This data type is only used within @ref RgbColorSpace. It is not
  * part of the public API. Therefore, it seems more appropriate to either
  * delete it entirely (substituting its usage by an array of three elements

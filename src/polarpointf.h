@@ -74,7 +74,7 @@ namespace PerceptualColor
  * this type, once you have a QApplication object.
  *
  * This data type can be passed to QDebug thanks to
- * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF polarpointf)
+ * @ref operator<<(QDebug dbg, const PerceptualColor::PolarPointF value)
  */
 class PolarPointF final
 {

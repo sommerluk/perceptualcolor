@@ -158,8 +158,7 @@ public:
      * also the various setting parameters for the widget.
      *
      * This data type can be passed to QDebug thanks to
-     * @ref operator<<(QDebug dbg, const
-     * PerceptualColor::MultiSpinBox::SectionData &section)
+     * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value)
      *
      * @todo How to make this future-proof? Maybe later we want to add
      * singleStep() or pageStep() values? Are d-pointers working well when

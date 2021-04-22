@@ -38,11 +38,9 @@
 
 #include <lcms2.h>
 
-namespace PerceptualColor
-{
 /** @internal
  *
- *  @file
+ * @file
  *
  * @brief Various smaller help elements.
  *
@@ -52,14 +50,21 @@ namespace PerceptualColor
  * @todo Decide for each member of this namespace if it can be moved into
  * a class because it’s only used in this single class. */
 
-/** @brief Precision for gamut boundary search
+namespace PerceptualColor
+{
+
+/** @internal
+ *
+ * @brief Precision for gamut boundary search
  *
  * We have to search sometimes for the gamut boundary. This value defines
  * the precision of the search:  Smaller values mean better precision and
  * slower processing. */
 constexpr qreal gamutPrecision = 0.001;
 
-/** @brief Template function to test if a value is within a certain range
+/** @internal
+ *
+ * @brief Template function to test if a value is within a certain range
  * @param low the lower limit
  * @param x the value that will be tested
  * @param high the higher limit
@@ -67,13 +72,20 @@ constexpr qreal gamutPrecision = 0.001;
 template<typename T> bool inRange(const T &low, const T &x, const T &high)
 {
     return (
-        //! [Helper inRange]
+        // The Doxygen comments contain @private because apparently
+        // the tag @internal is not enough to hide it in the API documentation.
+        // The snippet marker [] is hidden within HTML comments to avoid
+        // that is shows up literally in the private documentation, and this
+        // independant from the HIDE_IN_BODY_DOCS parameter in Doxyfile.
+        //! @private @internal <!-- [Helper inRange] -->
         (low <= x) && (x <= high)
-        //! [Helper inRange]
+        //! @private @internal <!-- [Helper inRange] -->
     );
 }
 
-/** @brief The overlap is a recommanded tolerance value, measured in physical
+/** @internal
+ *
+ * @brief The overlap is a recommanded tolerance value, measured in physical
  * pixels.
  *
  * It can be used during the painting process to paint “a little bit more
@@ -84,7 +96,9 @@ template<typename T> bool inRange(const T &low, const T &x, const T &high)
  * to be sure. */
 constexpr int overlap = 2;
 
-/** @brief Proposed scale factor for gradients
+/** @internal
+ *
+ * @brief Proposed scale factor for gradients
  *
  * Widgets provide a <tt>minimumSizeHint</tt> and a <tt>sizeHint</tt>.
  * This value provides a scale factor that is multiplied with
@@ -93,7 +107,9 @@ constexpr int overlap = 2;
 // This value is somewhat arbitrary…
 constexpr qreal scaleFromMinumumSizeHintToSizeHint = 1.2;
 
-/** @brief Amount of single step for alpha.
+/** @internal
+ *
+ * @brief Amount of single step for alpha.
  *
  * Measured for an alpha range from 0 (transparent) to 1 (opaque).
  *
@@ -105,7 +121,9 @@ constexpr qreal scaleFromMinumumSizeHintToSizeHint = 1.2;
  * @sa @ref pageStepAlpha */
 constexpr qreal singleStepAlpha = 0.01;
 
-/** @brief Amount of single step for chroma.
+/** @internal
+ *
+ * @brief Amount of single step for chroma.
  *
  * Measured in LCh chroma units.
  *
@@ -117,7 +135,9 @@ constexpr qreal singleStepAlpha = 0.01;
  * @sa @ref pageStepChroma */
 constexpr int singleStepChroma = 1;
 
-/** @brief Amount of single step for hue.
+/** @internal
+ *
+ * @brief Amount of single step for hue.
  *
  * Measured in degree.
  *
@@ -138,7 +158,9 @@ constexpr int singleStepChroma = 1;
  * What would be a sensible default step? */
 constexpr int singleStepHue = 360 / 100;
 
-/** @brief Amount of page step for alpha.
+/** @internal
+ *
+ * @brief Amount of page step for alpha.
  *
  * Measured for an alpha range from 0 (transparent) to 1 (opaque).
  *
@@ -152,7 +174,9 @@ constexpr int singleStepHue = 360 / 100;
  * its single step. */
 constexpr qreal pageStepAlpha = 10 * singleStepAlpha;
 
-/** @brief Amount of page step for chroma.
+/** @internal
+ *
+ * @brief Amount of page step for chroma.
  *
  * Measured in LCh chroma units.
  *
@@ -166,7 +190,9 @@ constexpr qreal pageStepAlpha = 10 * singleStepAlpha;
  * its single step. */
 constexpr int pageStepChroma = 10 * singleStepChroma;
 
-/** @brief Amount of page step for hue.
+/** @internal
+ *
+ * @brief Amount of page step for hue.
  *
  * Measured in degree.
  *

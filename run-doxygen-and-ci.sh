@@ -66,12 +66,14 @@ cp doxyfile.internal Doxyfile
 doxygen 2>&1 >/dev/null \
     | grep \
         --invert-match \
-        --perl-regexp "warning: return type of member .* is not documented"
+        --perl-regexp "warning: return type of member .* is not documented" \
+           | sed 's/^/Doxygen “public API and internals” documentation: /'
 cp doxyfile.external Doxyfile
 doxygen 2>&1 >/dev/null \
     | grep \
         --invert-match \
-        --perl-regexp "warning: return type of member .* is not documented"
+        --perl-regexp "warning: return type of member .* is not documented" \
+           | sed 's/^/Doxygen “public API” documentation: /'
 
 
 
