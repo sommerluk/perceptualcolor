@@ -104,7 +104,7 @@ private Q_SLOTS:
         while (hue <= 360) {
             color.h = hue;
             lightness = 0;
-            while (lightness <= 100)  {
+            while (lightness <= 100) {
                 color.l = lightness;
                 if (temp.inGamut(color)) {
                     inGamutValueFound = true;
