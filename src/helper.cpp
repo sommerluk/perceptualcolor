@@ -96,30 +96,30 @@ LchDouble toLchDouble(const cmsCIELCh &value)
 /** @internal
  *
  * @brief Background for semi-transparent colors.
-**
-** When showing a semi-transparent color, there has to be a background
-** on which it is shown. This function provides a suitable background
-** for showcasing a color.
-**
-** @param devicePixelRatioF The desired device-pixel ratio.
-**
-** @returns An image of a mosaic of neutral gray rectangles of different
-** lightness. You can use this as tiles to paint a background. The image
-** has its device pixel ratio set to the value that was given in the
-** parameter.
-**
-** @note The image is considering the given device-pixel ratio to deliver
-** sharp (and correctly scaled) images also for HiDPI devices.
-** The painting does not use floating point drawing, but rounds
-** to full integers. Therefore, the result is always a sharp image.
-** This function takes care that each square has the same pixel size,
-** without scaling errors or anti-aliasing errors.
-**
-** @sa @ref AbstractDiagram::transparencyBackground()
-**
-** @todo Provide color management support? Currently, we use the same
-** value for red, green and blue, this might <em>not</em> be perfectly
-** neutral gray depending on the color profile of the monitor… */
+ *
+ * When showing a semi-transparent color, there has to be a background
+ * on which it is shown. This function provides a suitable background
+ * for showcasing a color.
+ *
+ * @param devicePixelRatioF The desired device-pixel ratio.
+ *
+ * @returns An image of a mosaic of neutral gray rectangles of different
+ * lightness. You can use this as tiles to paint a background. The image
+ * has its device pixel ratio set to the value that was given in the
+ * parameter.
+ *
+ * @note The image is considering the given device-pixel ratio to deliver
+ * sharp (and correctly scaled) images also for HiDPI devices.
+ * The painting does not use floating point drawing, but rounds
+ * to full integers. Therefore, the result is always a sharp image.
+ * This function takes care that each square has the same pixel size,
+ * without scaling errors or anti-aliasing errors.
+ *
+ * @sa @ref AbstractDiagram::transparencyBackground()
+ *
+ * @todo Provide color management support? Currently, we use the same
+ * value for red, green and blue, this might <em>not</em> be perfectly
+ * neutral gray depending on the color profile of the monitor… */
 QImage transparencyBackground(qreal devicePixelRatioF)
 {
     // The valid lightness range is [0, 255]. The median is 127/128.

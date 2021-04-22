@@ -52,7 +52,6 @@
 
 namespace PerceptualColor
 {
-
 /** @internal
  *
  * @brief Precision for gamut boundary search
