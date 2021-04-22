@@ -31,4 +31,4 @@
 
 ################# Add missing BOM #################
 # Add a byte-order-mark to files that does not have one
-sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/* include/PerceptualColor/*
+sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/* include/PerceptualColor/* test/*
