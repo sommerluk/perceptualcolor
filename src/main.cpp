@@ -100,9 +100,6 @@ int main(int argc, char *argv[])
     // testWidget.setLayout(&layout);
     // testWidget.show();
 
-    const PerceptualColor::ConstPropagatingRawPointer test {new QWidget};
-    test->resize(5, 5);
-
     // Run
     return app.exec();
 }
