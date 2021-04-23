@@ -41,7 +41,7 @@ namespace PerceptualColor
  * For example, you might use this in a drawing program to allow the user to
  * set the brush color.
  *
- * It is a almost source-compatible replacement for
+ * It is an almost source-compatible replacement for
  * QColorDialog (see below for details) and also adds some extra functionality
  * that is not available in QColorDialog.
  *
@@ -83,6 +83,9 @@ namespace PerceptualColor
  * @ref ColorPatch will not be hidden by the hand of the user when the user
  * is touching the above color selection widgets.
  *
+ * This dialog uses icons. See @ref hidpisupport "High DPI support"
+ * about how to enable support for high-DPI icons.
+ *
  * @note The API of this class is fully source-compatible to the API of
  * QColorDialog and the API behaves exactly as for QColorDialog (if not,
  * it's a bug; please report it), with the following exceptions:
@@ -108,9 +111,6 @@ namespace PerceptualColor
  *   preserves the floating point precision.
  * - When the default constructor is used, unlike QColorDialog, the default
  *   color is not <tt>Qt::white</tt>.
- *
- * @note This dialog uses icons. See @ref hidpisupport "High DPI support"
- * about how to enable support for high-DPI icons.
  *
  * @internal
  *

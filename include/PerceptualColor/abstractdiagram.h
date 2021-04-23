@@ -76,6 +76,8 @@ namespace PerceptualColor
  * these two different concepts. See https://doc.qt.io/qt-6/coordsys.html
  * for more details on Qt’s coordinate systems.
  *
+ * @internal
+ *
  * @note Qt provides some possibilities to declare that a certain widget
  * has a fixed ration between width and height. You can reimplement
  * <tt>QWidget::hasHeightForWidth()</tt> (indicates that the widget's preferred
@@ -93,8 +95,6 @@ namespace PerceptualColor
  * QGraphicsLayout’s subclasses”. Therefore, it’s better not to use at all
  * these features; that’s the only way to provide a consistent and good
  * user experience.
- *
- * @internal
  *
  * @todo Circular diagrams should be right-aligned on RTL layouts.
  *

@@ -45,17 +45,21 @@ class RgbColorSpace;
  * This widget allows to select the hue (as defined in the LCh color space)
  * in the form of a wheel.
  *
- * @note This widget <em>always</em> accepts focus by a mouse click within
- * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
- * property. If you set the <tt>QWidget::focusPolicy</tt> property to a
- * value that accepts focus by mouse click, the focus will not only be
- * accepted for clicks within the actual circle, but also for clicks
- * within the surrounding rectangle.
+ * @note - This widget <em>always</em> accepts focus by a mouse click
+ *         within the circle. This happens regardless of the
+ *         <tt>QWidget::focusPolicy</tt> property. If you set the
+ *         <tt>QWidget::focusPolicy</tt> property to a value that accepts
+ *         focus by mouse click, the focus will not only be accepted for
+ *         clicks within the actual circle, but also for clicks within the
+ *         surrounding rectangle.
  *
- * @note The diagram is not painted on the whole extend of the widget. A border
- * is left to allow that the focus indicator can be painted completely
- * even when the widget has the focus. The border is determined
- * automatically, its value depends on @ref handleOutlineThickness(). */
+ * @internal
+ *
+ * @note - The diagram is not painted on the whole extend of the widget. A
+ *         border is left to allow that the focus indicator can be painted
+ *         completely even when the widget has the focus. The border is
+ *         determined automatically, its value depends
+ *         on @ref handleOutlineThickness(). */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {
     Q_OBJECT
