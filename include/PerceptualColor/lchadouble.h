@@ -84,7 +84,7 @@ public:
      *
      * <tt>0</tt> means no chroma (grayscale). The maximum
      * value depends on the gamut. For sRGB for example it’s
-     * a given value, but other gamuts can be bigger, but the final
+     * a given value, but other gamuts can be bigger, but the practical
      * limit is the gamut of the @ref lchrange "human perception", beyond
      * which a Chroma value does not make sense. */
     double c;

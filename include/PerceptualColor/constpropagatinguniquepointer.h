@@ -69,7 +69,7 @@ namespace PerceptualColor
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
  * implementation? Or remove propagate_const header from this library? */
-template<typename T> class PERCEPTUALCOLOR_IMPORTEXPORT ConstPropagatingUniquePointer final : public std::unique_ptr<T>
+template<typename T> class PERCEPTUALCOLOR_IMPORTEXPORT ConstPropagatingUniquePointer : public std::unique_ptr<T>
 {
 public:
     /** @brief Default constructor

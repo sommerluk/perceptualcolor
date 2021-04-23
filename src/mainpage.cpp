@@ -43,42 +43,6 @@
  * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a
  *   given lightness)
  *
- * @anchor hidpisupport <b>High DPI support:</b>
- * This library supports High DPI out of the box. You do not
- * need much to use it. The widgets provide High DPI support
- * automatically. The only problem are icons. Icons are used for
- * @ref PerceptualColor::MultiSpinBox::addActionButton and for
- * the “refresh” icon and (on some widget styles) for the “Ok”
- * button and the “Cancel” button in @ref PerceptualColor::ColorDialog.
- * - Load icons: This library uses by default a possibly existing icon theme.
- *   Windows and Mac do not provide icon themes by default, though it’s
- *   possible to bundle icons with your application. Linux provides usually
- *   icon themes. If the icon theme is SVG (which is pretty much the standard
- *   nowadays and the only reliably way to have crip icons also on desktop
- *   scales like 1.25 or 1.5), then it can only be loaded if Qt’s SVG icon
- *   support is available. This is done via a plugin (on Linux this is
- *   <tt>plugins/iconengines/libqsvgicon.so</tt>). This plugin is loaded
- *   automatically if present, and not loaded if absent. Make sure that
- *   the plugin is present if you want that SVG icons can be loaded.
- *   It seems possible to enforce this by linking dynamically to the
- *   plugin itself, if you want to. If no external icon can be loaded,
- *   a hard-coded fallback icon is used.
- * - Render icons: Furthermore, Qt5 paints all icons by default in low
- *   resolution (even SVG icons on high-DPI displays). When you are
- *   developping an application and you want to enable high-DPI icons in
- *   your application, add the following line to your code (which
- *   should be done by convention <em>before</em> creating the
- *   <tt>QCoreApplication</tt> object):
- *   <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt>
- *
- * @internal
- *
- *     @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt>
- *     anymore. Does this mean that it is set by default and no further
- *     action is required?
- *
- * @endinternal
- *
  * @anchor namespacepollution <b>Namespace pollution and collisions:</b>
  * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.
  *   (See <em>Files → File members</em> for a list of all macros.)
@@ -97,6 +61,7 @@
  * texts.
  *
  * @sa @ref compile
+ * @sa @ref hidpisupport
  *
  * @internal
  *
@@ -314,6 +279,42 @@
  * ?
  *
  * @todo Spell checking for the documentation */
+
+/** @page hidpisupport <b>High DPI support:</b>
+ * This library supports High DPI out of the box. You do not need to do
+ * much to use it. The widgets provide High DPI support automatically.
+ *
+ * The only problem are icons. Icons are used for
+ * @ref PerceptualColor::MultiSpinBox::addActionButton and for
+ * the “refresh” icon and (on some widget styles) for the “Ok”
+ * button and the “Cancel” button in @ref PerceptualColor::ColorDialog.
+ *
+ * - Load icons: This library uses by default a possibly existing icon theme.
+ *   Windows and Mac do not provide icon themes by default, though it’s
+ *   possible to bundle icons with your application. Linux provides usually
+ *   icon themes. If the icon theme is SVG (which is pretty much the standard
+ *   nowadays and the only reliably way to have crip icons also on desktop
+ *   scales like 1.25 or 1.5), then it can only be loaded if Qt’s SVG icon
+ *   support is available. This is done via a plugin (on Linux this is
+ *   <tt>plugins/iconengines/libqsvgicon.so</tt>). This plugin is loaded
+ *   automatically if present, and not loaded if absent. Make sure that
+ *   the plugin is present if you want that SVG icons can be loaded.
+ *   It seems possible to enforce this by linking dynamically to the
+ *   plugin itself, if you want to. If no external icon can be loaded,
+ *   a hard-coded fallback icon is used.
+ * - Render icons: Furthermore, Qt5 paints all icons by default in low
+ *   resolution (even SVG icons on high-DPI displays). When you are
+ *   developping an application and you want to enable high-DPI icons in
+ *   your application, add the following line to your code (which
+ *   should be done by convention <em>before</em> creating the
+ *   <tt>QCoreApplication</tt> object):
+ *   <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt>
+ *
+ * @internal
+ *
+ * @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt>
+ * anymore. Does this mean that it is set by default and no further
+ * action is required? */
 
 /** @internal
  *

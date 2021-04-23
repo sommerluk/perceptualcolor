@@ -104,6 +104,14 @@ grep \
     src/*.h \
          | sed 's/^/Missing “@internal” statement in non-public header: /'
 
+# The public header files should not use “final” because it cannot be removed
+# without breaking binary compatibility.
+grep \
+    --recursive \
+    --files-with-matches $'final' \
+    $PUBLIC_HEADERS \
+         | sed 's/^/“final” should not show up in public headers: /'
+
 # All public header files in include/ should use
 # the PERCEPTUALCOLOR_IMPORTEXPORT macro.
 grep \
