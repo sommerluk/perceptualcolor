@@ -395,13 +395,13 @@
  * href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
  * Binary Compatibility Issues With C++</a></em> and for details.
  *
- * @note While it might be nice to have the d_pointer and q_pointer be
- * themselfs be declared <tt>const</tt>, because this would clearly
- * communicate that those pointers are not expected to change the adress
- * they point to. Unfortunely, apparently this does not work with neither
- * @ref ConstPropagatingUniquePointer nor @ref ConstPropagatingRawPointer as
- * it would change also all the access rights to the pointed object to
- * always <tt>const</tt>. */
+ * @note While it might be nice to have the d_pointer and q_pointer
+ * be themselfs be declared <tt>const</tt>, because this would
+ * clearly communicate that those pointers are not expected to change
+ * the adress they point to. Unfortunely, apparently this does not
+ * work with neither @ref PerceptualColor::ConstPropagatingUniquePointer nor
+ * @ref PerceptualColor::ConstPropagatingRawPointer as it would change also
+ * all the access rights to the pointed object to always <tt>const</tt>. */
 
 #include "PerceptualColor/perceptualcolorglobal.h"
 #include "perceptualcolorinternal.h"
