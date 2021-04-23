@@ -93,6 +93,11 @@
  *
  * @sa @ref compile
  *
+ * @internal
+ *
+ * @todo The doxygen documentation should not recommand <tt>filename.h</tt>
+ * but <tt>PerceptualColor/filename.h</tt>!?
+ *
  * @todo Review and unit tests for these classes:
  * @ref PerceptualColor::ChromaLightnessDiagram,
  * @ref PerceptualColor::RgbColorSpace,

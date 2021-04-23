@@ -65,7 +65,12 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     d_pointer->m_colorWheel->setFocusProxy(d_pointer->m_chromaLightnessDiagram);
     d_pointer->resizeChildWidgets();
 
-    connect(d_pointer->m_colorWheel, &ColorWheel::hueChanged, d_pointer->m_chromaLightnessDiagram, &ChromaLightnessDiagram::setHue);
+    connect(
+        // changes on the color wheel trigger a change in the AbstractDiagram
+        d_pointer->m_colorWheel,
+        &ColorWheel::hueChanged,
+        d_pointer->m_chromaLightnessDiagram,
+        &ChromaLightnessDiagram::setHue);
     connect(d_pointer->m_chromaLightnessDiagram,
             &ChromaLightnessDiagram::currentColorChanged,
             this,
@@ -83,9 +88,6 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     // Initial color
     setCurrentColor(LchValues::srgbVersatileInitialColor);
     // TODO xxx revision starts here
-    // TODO whitebox test for constructor
-    // TODO The doxygen documentation should not
-    //      recommand filename.h but PerceptualColor/filename.h !?
     // TODO ~/Dokumente/Colorpicker/perceptualcolor/doc/external/html/namespace_perceptual_color.html
     //      The variables and some functions should not be pubicly documented.
 }
