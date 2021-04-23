@@ -79,7 +79,7 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
             &WheelColorPicker::currentColorChanged);
     connect(
         // QWidget’s constructor requires a QApplication object. As this
-        // is a class derived from QWidget, calling qApp is save.
+        // is a class derived from QWidget, calling qApp is save here.
         qApp,
         &QApplication::focusChanged,
         d_pointer.get(), // Without .get() apparently connect() won’t work…
@@ -87,9 +87,6 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
 
     // Initial color
     setCurrentColor(LchValues::srgbVersatileInitialColor);
-    // TODO xxx revision starts here
-    // TODO ~/Dokumente/Colorpicker/perceptualcolor/doc/external/html/namespace_perceptual_color.html
-    //      The variables and some functions should not be pubicly documented.
 }
 
 /** @brief Default destructor */
@@ -106,6 +103,28 @@ WheelColorPicker::WheelColorPickerPrivate::WheelColorPickerPrivate(WheelColorPic
 {
 }
 
+/** Repaint @ref m_colorWheel when focus changes
+ * on @ref m_chromaLightnessDiagram
+ *
+ * @ref m_chromaLightnessDiagram is the focus proxy of @ref m_colorWheel.
+ * Both show a focus indicator when keyboard focus is active. But
+ * apparently @ref m_colorWheel does not always repaint when focus
+ * changes. Therefore, this slot can be connected to the <tt>qApp</tt>’s
+ * <tt>focusChanged()</tt> signal to make sure that the repaint works.
+ *
+ * @note It might be an alternative to write an event filter
+ * for @ref m_chromaLightnessDiagram to do the same work. The event
+ * filter could be either @ref WheelColorPicker or
+ * @ref WheelColorPickerPrivate (the last case means that
+ * @ref WheelColorPickerPrivate would still have to inherit from
+ * <tt>QObject</tt>). But that would probably be more compicate… */
+void WheelColorPicker::WheelColorPickerPrivate::handleFocusChanged(QWidget *old, QWidget *now)
+{
+    if ((old == m_chromaLightnessDiagram) || (now == m_chromaLightnessDiagram)) {
+        m_colorWheel->update();
+    }
+}
+
 /** @brief React on a resize event.
  *
  * Reimplemented from base class.
@@ -117,26 +136,7 @@ void WheelColorPicker::resizeEvent(QResizeEvent *event)
     d_pointer->resizeChildWidgets();
 }
 
-/** TODO Alternative: Install an event filter
- * on @ref WheelColorPickerPrivate::m_chromaLightnessDiagram. The event
- * filter could be either @ref WheelColorPicker or
- * @ref WheelColorPickerPrivate (the last case means that
- * @ref WheelColorPickerPrivate would still have to inherit from
- * <tt>QObject</tt>). What would be the best solution? */
-void WheelColorPicker::WheelColorPickerPrivate::handleFocusChanged(QWidget *old, QWidget *now)
-{
-    if ((old == m_chromaLightnessDiagram) || (now == m_chromaLightnessDiagram)) {
-        m_colorWheel->update();
-    }
-}
-
-// TODO A click in the inner of the color wheel (also at emtpy places)
-// should trigger to get a focus.
-
-// TODO This widget and its child should be a unit: Only one focus, and
-// all keyboard and mouse events apply to both widgets. But not two focus
-// indicators! The current solution still shows two focus
-// indicators. Find a better solution!
+// TODO xxx revision starts here
 
 /** @brief Scale a rectangle to a given diagonal line length
  *
@@ -159,10 +159,7 @@ QSize WheelColorPicker::WheelColorPickerPrivate::scaleRectangleToDiagonal(const 
     return QSize(newWidth, newHeight);
 }
 
-/** @brief Update the size of the child widget.
- *
- * Updates the size of the @ref ChromaLightnessDiagram child widget:
- * m_chromaLightnessDiagram. It stays in the interior of the color wheel. */
+/** @brief Update the size and the position of the child widgets. */
 void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidgets()
 {
     m_colorWheel->resize(q_pointer->size());

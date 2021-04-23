@@ -56,6 +56,12 @@ class RgbColorSpace;
  * current chroma-lightness value, then the marker is not moved into the
  * new gamut. But it should!
  *
+ * @todo Is the (double) focus indicator actually good design? Are there
+ * better solutions?
+ *
+ * @todo A click in the inner of the color wheel (also at emtpy places)
+ * should trigger to get a focus!
+ *
  * @todo Add <tt>whatsThis</tt> value explaining the accepted keys and mouse
  * movements (and also to other widgets). */
 class PERCEPTUALCOLOR_IMPORTEXPORT WheelColorPicker : public AbstractDiagram

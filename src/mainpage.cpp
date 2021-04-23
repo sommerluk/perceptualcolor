@@ -48,20 +48,18 @@
  *   (See <em>Files → File members</em> for a list of all macros.)
  * - To avoid namespace pollution, all symbols of this library live within
  *   the namespace @ref PerceptualColor.
- * - However, this library also includes (and propagetes) headers from
- *   LittleCMS which lives within the <em>global namespace</em>. LittleCMS
- *   has functions and types typically prefixed with <tt>cms</tt>. (This
- *   library relies internally on LittleCMS for all the color management
- *   therefore it’s necessary to include LittleCMS’s headers. Anyway, you
- *   can uses this library without knowing about the internals of LittleCMS.
+ *
+ * This library relies internally on LittleCMS for all the color management.
+ * Anyway, you can uses this library without knowing about the internals of
+ * LittleCMS.
+ *
+ * @sa @ref compile
+ * @sa @ref hidpisupport
  *
  * @copyright Almost all the code is published under MIT License. Only
  * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
  * license. The <tt>LICENSES</tt> subfolder contains copies of the licence
  * texts.
- *
- * @sa @ref compile
- * @sa @ref hidpisupport
  *
  * @internal
  *
@@ -280,7 +278,7 @@
  *
  * @todo Spell checking for the documentation */
 
-/** @page hidpisupport <b>High DPI support:</b>
+/** @page hidpisupport High DPI support
  * This library supports High DPI out of the box. You do not need to do
  * much to use it. The widgets provide High DPI support automatically.
  *
