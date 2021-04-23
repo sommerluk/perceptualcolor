@@ -34,6 +34,7 @@
 #include "PerceptualColor/colorwheel.h"
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/multispinbox.h"
+#include "constpropagatingrawpointer.h"
 #include "fallbackiconengine.h"
 #include "polarpointf.h"
 #include "version.h"
@@ -98,6 +99,9 @@ int main(int argc, char *argv[])
     // layout.addWidget(diagram);
     // testWidget.setLayout(&layout);
     // testWidget.show();
+
+    const PerceptualColor::ConstPropagatingRawPointer test {new QWidget};
+    test->resize(5, 5);
 
     // Run
     return app.exec();

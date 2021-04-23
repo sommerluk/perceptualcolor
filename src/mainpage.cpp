@@ -368,9 +368,8 @@
  * in almost all classes that are part of the public API, and also in
  * some classes that are part of the private API.
  *
- * This idiom is also
- * used by Qt itself, and Qt even provides some macros and extension
- * points (<tt>Q_DECLARE_PRIVATE</tt>, <tt>Q_D</tt>, a protected
+ * This idiom is also used by Qt itself, and Qt even provides some macros
+ * and extension points (<tt>Q_DECLARE_PRIVATE</tt>, <tt>Q_D</tt>, a protected
  * member called <tt>d_ptr</tt> in almost all classes…), that help dealing
  * with the pimpl idiom. Though available, these Qt features are not
  * officially documentated; and they would also interfer with private
@@ -396,14 +395,13 @@
  * href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
  * Binary Compatibility Issues With C++</a></em> and for details.
  *
- * @todo All <tt>d_pointer</tt> and <tt>q_pointer</tt> could be changed
- * to <tt>const</tt> which would work without problems with the current
- * code base. Advantage: It communicates clearly that these pointers
- * will not change during live time. But: If ever we cannot initialize
- * these pointers in the constructor initializer, but would have to
- * do it in the constructor function body, this will not work; than
- * we would have to delete the <tt>const</tt> qualifiers, which would
- * probably break ABI compatibility? */
+ * @note While it might be nice to have the d_pointer and q_pointer be
+ * themselfs be declared <tt>const</tt>, because this would clearly
+ * communicate that those pointers are not expected to change the adress
+ * they point to. Unfortunely, apparently this does not work with neither
+ * @ref ConstPropagatingUniquePointer nor @ref ConstPropagatingRawPointer as
+ * it would change also all the access rights to the pointed object to
+ * always <tt>const</tt>. */
 
 #include "PerceptualColor/perceptualcolorglobal.h"
 #include "perceptualcolorinternal.h"

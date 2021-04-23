@@ -52,7 +52,12 @@ namespace PerceptualColor
  * Example code:
  * @snippet test/testconstpropagatinguniquepointer.cpp example
  *
- * @internal @sa @ref ConstPropagatingRawPointer @endinternal
+ * @note A @ref ConstPropagatingUniquePointer pointer variable itself
+ * may not be const! @internal (Otherwise, this would make <tt>const</tt>
+ * <em>all</em> access even to non-const functions of the pointed
+ * object.) @endinternal
+ *
+ * @internal @sa @ref ConstPropagatingRawPointer
  * @sa This code is based on the idea in
  * <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
  * which is a more general implementation of this concept, that does not
@@ -61,7 +66,8 @@ namespace PerceptualColor
  *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation? Or remove propagate_const header from this library? */
+ * implementation? Or remove propagate_const header from this library?
+ * @endinternal */
 template<typename T> class PERCEPTUALCOLOR_IMPORTEXPORT ConstPropagatingUniquePointer final : public std::unique_ptr<T>
 {
 public:

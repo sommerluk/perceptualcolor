@@ -54,6 +54,11 @@ namespace PerceptualColor
  * Example code:
  * @snippet test/testconstpropagatingrawpointer.cpp example
  *
+ * @note A @ref ConstPropagatingRawPointer pointer variable itself
+ * may not be const! (Otherwise, this would make <tt>const</tt>
+ * <em>all</em> access even to non-const functions of the pointed
+ * object.)
+ *
  * @sa @ref ConstPropagatingUniquePointer
  *
  * @note There exist very sophisticated implementations like
