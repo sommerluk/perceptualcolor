@@ -287,32 +287,52 @@
  * the “refresh” icon and (on some widget styles) for the “Ok”
  * button and the “Cancel” button in @ref PerceptualColor::ColorDialog.
  *
- * - Load icons: This library uses by default a possibly existing icon theme.
- *   Windows and Mac do not provide icon themes by default, though it’s
- *   possible to bundle icons with your application. Linux provides usually
- *   icon themes. If the icon theme is SVG (which is pretty much the standard
- *   nowadays and the only reliably way to have crip icons also on desktop
- *   scales like 1.25 or 1.5), then it can only be loaded if Qt’s SVG icon
- *   support is available. This is done via a plugin (on Linux this is
- *   <tt>plugins/iconengines/libqsvgicon.so</tt>). This plugin is loaded
- *   automatically if present, and not loaded if absent. Make sure that
- *   the plugin is present if you want that SVG icons can be loaded.
- *   It seems possible to enforce this by linking dynamically to the
- *   plugin itself, if you want to. If no external icon can be loaded,
- *   a hard-coded fallback icon is used.
- * - Render icons: Furthermore, Qt5 paints all icons by default in low
- *   resolution (even SVG icons on high-DPI displays). When you are
- *   developping an application and you want to enable high-DPI icons in
- *   your application, add the following line to your code (which
- *   should be done by convention <em>before</em> creating the
- *   <tt>QCoreApplication</tt> object):
+ * <b>Load icons</b>
+ *
+ * This library uses by default a possibly existing icon theme
+ * if available in Qt.
+ *
+ * - Windows and Mac do not provide icon themes by default.
+ *
+ * - Linux provides usually icon themes.
+ *
+ * - You might bundle icons (as resource) with your application.
+ *
+ * There are different file formats for icon themes:
+ *
+ * - Loading raster image icons is supported out-of-the-box by Qt.
+ *
+ * - Loading SVG icons is supported by Qt’s SVG icon
+ *   support plugin. (On Linux this is the file
+ *   <tt>plugins/iconengines/libqsvgicon.so</tt>). This
+ *   plugin is loaded by Qt automatically if present.
+ *
+ * SVG is pretty much the standard nowadays and the only
+ * reliably way to have crisp icons also on desktop scales like 1.25 or 1.5.
+ * Make sure that the plugin is present if you want that SVG icons
+ * can be loaded. (On Linux, it seems possible to enforce this by linking
+ * dynamically to the plugin itself, if you want to. This forces Linux
+ * package managers to produce packages of your application that depend
+ * not only on Qt base, but also on the SVG plugin.)
+ *
+ * If no external icon can be loaded by Qt, this library uses hard-coded
+ * fallback icon where necessary.
+ *
+ * <b>Render icons</b>
+ *
+ * - Qt6: Icons are rendered
+ *   <a href="https://bugreports.qt.io/browse/QTBUG-89279">always</a>
+ *   with high-DPI.
+ * - Qt5: Icons are rendered by default in low resolution. This applies even
+ *   for SVG icons on high-DPI displays! Application developers can enable
+ *   high-DPI icon rendering with the following code (which should be put
+ *   by convention <em>before</em> creating the <tt>QCoreApplication</tt>
+ *   object):
  *   <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt>
  *
- * @internal
- *
- * @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt>
- * anymore. Does this mean that it is set by default and no further
- * action is required? */
+ * Exception: The hard-coded fallback icons of this library render <em>always
+ * and on all Qt versions (even if no SVG support is available at all
+ * in Qt)</em> at high-DPI! */
 
 /** @internal
  *
