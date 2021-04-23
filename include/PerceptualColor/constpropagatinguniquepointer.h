@@ -63,11 +63,11 @@ namespace PerceptualColor
  * which is a more general implementation of this concept, that does not
  * provide a <tt>std::unique_ptr</tt> but acts as a wrapper template around
  * smart pointers in general. It lacks however the dereference operator.
+ * @endinternal
  *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own
- * implementation? Or remove propagate_const header from this library?
- * @endinternal */
+ * implementation? Or remove propagate_const header from this library? */
 template<typename T> class PERCEPTUALCOLOR_IMPORTEXPORT ConstPropagatingUniquePointer final : public std::unique_ptr<T>
 {
 public:
