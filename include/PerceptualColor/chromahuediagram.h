@@ -70,6 +70,8 @@ class RgbColorSpace;
  *   accepted for clicks within the actual circle, but also for clicks
  *   anyware within the (rectangular) widget.
  *
+ * @internal
+ *
  * @todo Example code: How to create the widget at a given
  * lightness.
  *

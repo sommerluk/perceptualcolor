@@ -57,13 +57,14 @@ namespace PerceptualColor
  * <em>all</em> access even to non-const functions of the pointed
  * object.) @endinternal
  *
- * @internal @sa @ref ConstPropagatingRawPointer
+ * @internal
+ *
+ * @sa @ref ConstPropagatingRawPointer
  * @sa This code is based on the idea in
  * <a href="http://torbjoernk.github.io/deep_const_ptr/">deep_const_ptr</a>
  * which is a more general implementation of this concept, that does not
  * provide a <tt>std::unique_ptr</tt> but acts as a wrapper template around
  * smart pointers in general. It lacks however the dereference operator.
- * @endinternal
  *
  * @todo Would it be better to include (or link to)
  * https://github.com/jbcoe/propagate_const instead of having our own

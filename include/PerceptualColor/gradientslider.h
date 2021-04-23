@@ -74,6 +74,8 @@ class RgbColorSpace;
  *   on the right of the widget in LRT layout. In RTL layout it is the
  *   other way round.
  *
+ * @internal
+ *
  * @todo A better handle for the slider. Currently, the handle is just a
  * line. At a handle position at the very beginning or end of the slider,
  * furthermore only half of the line thickness is visible. It might be better

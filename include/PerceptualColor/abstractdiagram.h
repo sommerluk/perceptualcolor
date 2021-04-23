@@ -94,6 +94,8 @@ namespace PerceptualColor
  * these features; that’s the only way to provide a consistent and good
  * user experience.
  *
+ * @internal
+ *
  * @todo Circular diagrams should be right-aligned on RTL layouts.
  *
  * @todo Touchscreen support: Magnify the handle circle, when diagram is

@@ -62,6 +62,8 @@ class RgbColorSpace;
  * clicks within the actual display gamut, but also for clicks
  * within the surrounding rectangle.
  *
+ * @internal
+ *
  * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */
 class PERCEPTUALCOLOR_IMPORTEXPORT ChromaLightnessDiagram : public AbstractDiagram
 {
@@ -80,7 +82,11 @@ public:
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     PerceptualColor::LchDouble currentColor() const;
-    /** @todo Document me! */
+    /**
+     *
+     * @internal
+     *
+     * @todo Document me! */
     Q_INVOKABLE qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;

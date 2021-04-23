@@ -46,15 +46,17 @@ namespace PerceptualColor
  * set a bigger minimum size:
  * @snippet test/testcolorpatch.cpp ColorPatch Bigger minimum size
  *
- * This class is API-compatible with KColorPatch.
+ * This class’s API is similar to KColorPatch’s API.
  *
- * <!-- NOTE A similar functionality is available as KColorPatch, but this is
+ * @internal
+ *
+ * @note A similar functionality is available as KColorPatch, but this is
  * part of KDELibs4Support which is available in KF5 but should not be used
  * for new code, but only for legacy code. Also, depending on KDELibs4Support
  * would pull-in another dependency. Furthermore, KColorPatch has support for
  * drag-and-drop, which is not desirable for our use case. Therefore, with
  * @ref ColorPatch there is a lightweight alternative (that, by the way,
- * implements the full  API of KColorPatch). -->
+ * implements the full  API of KColorPatch).
  *
  * @todo Base this class on @ref AbstractDiagram to be future-proof? We
  * could draw the frame with QStyle…

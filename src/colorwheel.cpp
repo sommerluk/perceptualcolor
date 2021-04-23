@@ -323,6 +323,8 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
  *
  * @param event the paint event
  *
+ * @internal
+ *
  * @todo Make the wheel to be drawn horizontally and vertically aligned.
  *
  * @todo Better design on small widget sizes

@@ -43,6 +43,8 @@ class RgbColorSpace;
  * It is composed of a @ref ColorWheel and, in the middle,
  * a @ref ChromaLightnessDiagram.
  *
+ * @internal
+ *
  * @todo BUG: Choose HLC x 50 1. Then push the Page-up button. Current
  * behaviour: The chroma value change from 1 to 0. Why?
  *

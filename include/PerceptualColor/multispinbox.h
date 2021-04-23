@@ -53,6 +53,8 @@ namespace PerceptualColor
  * You can also have additional buttons within the spin box via the
  * @ref addActionButton() function.
  *
+ * @internal
+ *
  * @note It would be possible to add more functions to work with
  * @ref MultiSpinBox::SectionData. The interface could theoretically
  * be similar to other Qt classes that offer similar concepts of various
@@ -159,6 +161,8 @@ public:
      *
      * This data type can be passed to QDebug thanks to
      * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value)
+     *
+     * @internal
      *
      * @todo How to make this future-proof? Maybe later we want to add
      * singleStep() or pageStep() values? Are d-pointers working well when

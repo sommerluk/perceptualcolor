@@ -71,8 +71,13 @@
  *   <tt>QCoreApplication</tt> object):
  *   <br/><tt>QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);</tt>
  *
- * @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt> anymore.
- * Does this mean that it is set by default and no further action is required?
+ * @internal
+ *
+ *     @todo Qt6 does not documentate <tt>Qt::AA_UseHighDpiPixmaps</tt>
+ *     anymore. Does this mean that it is set by default and no further
+ *     action is required?
+ *
+ * @endinternal
  *
  * @anchor namespacepollution <b>Namespace pollution and collisions:</b>
  * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.

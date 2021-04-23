@@ -386,14 +386,15 @@ QPoint ChromaLightnessDiagram ::ChromaLightnessDiagramPrivate ::fromWidgetCoordi
  *
  * @param event the paint event
  *
- * @warning This function might have an infinite loop if called when the
+ * @internal
+ *
+ * @todo WARNING This function might have an infinite loop if called when the
  * currently selected color has no non-transparent pixel on its row or line.
- * @todo This is a problem because it is well possible this will arrive
+ * This is a problem because it is well possible this will arrive
  * because of possible rounding errors!
  *
  * @todo Still the darkest color is far from RGB zero on usual widget size.
- * This has to get better to allow choosing RGB 0, 0, 0!!!
- */
+ * This has to get better to allow choosing RGB(0, 0, 0)! */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
     // TODO singleStep & pageStep for ALL graphical widgets expressed in LCh

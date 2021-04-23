@@ -67,6 +67,8 @@ namespace PerceptualColor
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
  *
+ * @internal
+ *
  * @todo We could normalize @ref LchaDouble values, just like @ref PolarPointF
  * also does. Performance should not matter for this use case! But: Does
  * it make sense? */
