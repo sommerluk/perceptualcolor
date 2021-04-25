@@ -37,17 +37,19 @@
  * This file provides version information for this library at compile
  * time and at run time.
  *
+ * @note Do not include this file itself! Instead, include <tt>version.h</tt>.
+ *
  * @internal
- * @note - This file is configuration input: It is processed by CMake, and the
- * actual version numbers (<tt>\@…\@</tt>) are pushed in. If you want
- * to use it, do not include this file itself, but include instead
- * the CMake-generated file <tt>version.h</tt>.
- * @note - This file has the extension .hpp because we want a different
+ *
+ * @note This file is configuration input: CMake processes it,
+ * puts the actual version numbers (<tt>\@…\@</tt>) and saves the result
+ * as <tt>version.h</tt>.
+ *
+ * @note This file has the extension .hpp because we want a different
  * extension for configuration input than for headers. This allows to
  * <em>not</em> process this file by clang-format. (clang-format does not
  * understand the CMake configuration syntax with <tt>\@…\@</tt> and would
- * break it.)
- * @endinternal */
+ * break it.) */
 
 /** @page versioninfo Version information at compiletime and runtime
  *
