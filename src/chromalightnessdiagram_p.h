@@ -31,7 +31,7 @@
 #include "perceptualcolorinternal.h"
 
 // Include the header of the public class of this private implementation.
-#include "PerceptualColor/chromalightnessdiagram.h"
+#include "chromalightnessdiagram.h"
 
 #include "constpropagatingrawpointer.h"
 

@@ -29,7 +29,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "PerceptualColor/chromalightnessdiagram.h"
+#include "chromalightnessdiagram.h"
 // Second, the private implementation.
 #include "chromalightnessdiagram_p.h"
 

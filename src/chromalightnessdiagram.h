@@ -28,6 +28,7 @@
 #define CHROMALIGHTNESSDIAGRAM_H
 
 #include "PerceptualColor/perceptualcolorglobal.h"
+#include "perceptualcolorinternal.h"
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
 
@@ -38,7 +39,9 @@ namespace PerceptualColor
 {
 class RgbColorSpace;
 
-/** @brief A widget that displays a chroma-lightness diagram.
+/** @internal
+ *
+ * @brief A widget that displays a chroma-lightness diagram.
  *
  * This widget displays a chroma-lightness diagram in the LCh color model
  * for a given hue, in a Cartesian coordinate system.
@@ -62,10 +65,13 @@ class RgbColorSpace;
  * clicks within the actual display gamut, but also for clicks
  * within the surrounding rectangle.
  *
- * @internal
+ * @note This class is not part of the public API because the class
+ * is not mature enought. Notably it does not automatically scale the
+ * diagram to fit a given gamut (means: to fit up to a given maximum
+ * chroma).
  *
  * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */
-class PERCEPTUALCOLOR_IMPORTEXPORT ChromaLightnessDiagram : public AbstractDiagram
+class ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT
 

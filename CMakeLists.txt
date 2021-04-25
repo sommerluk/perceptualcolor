@@ -201,7 +201,6 @@ set(perceptualcolor_SRC
 set(perceptualcolor_HEADERS
   include/PerceptualColor/abstractdiagram.h
   include/PerceptualColor/chromahuediagram.h
-  include/PerceptualColor/chromalightnessdiagram.h
   include/PerceptualColor/colordialog.h
   include/PerceptualColor/colorpatch.h
   include/PerceptualColor/colorwheel.h

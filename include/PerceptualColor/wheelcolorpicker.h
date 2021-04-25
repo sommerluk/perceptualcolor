@@ -40,8 +40,8 @@ class RgbColorSpace;
 
 /** @brief Complete wheel-based color picker widget
  *
- * It is composed of a @ref ColorWheel and, in the middle,
- * a @ref ChromaLightnessDiagram.
+ * It is composed of a @ref ColorWheel and, in the middle of the wheel,
+ * a chroma-lightness diagram.
  *
  * @internal
  *

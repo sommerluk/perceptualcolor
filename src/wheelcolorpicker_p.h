@@ -37,8 +37,8 @@
 
 #include <QPointer>
 
-#include "PerceptualColor/chromalightnessdiagram.h"
 #include "PerceptualColor/colorwheel.h"
+#include "chromalightnessdiagram.h"
 #include "lchvalues.h"
 
 namespace PerceptualColor
