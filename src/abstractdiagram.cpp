@@ -183,29 +183,19 @@ QImage AbstractDiagram::transparencyBackground() const
  * Measured in widget pixels. */
 int AbstractDiagram::handleOutlineThickness() const
 {
+    /** @note The return value is constant. For a given object instance, this
+     * function returns the same value every time it is called. This constant
+     * value may be different for different instances of the object. */
     return 2;
-
-    // The following code is an alternative. However, this leeds to extremly
-    // low values for the Fusion style and extremly high values for the
-    // Kvantum style (with KvGnomish). This is not acceptable. Therefore,
-    // we do not use this code…
-    //
-    // QStyleOption styleOption;
-    // styleOption.initFrom(this); // Sets also QStyle::State_MouseOver
-    // return qMax(
-    //     style()->pixelMetric(
-    //         QStyle::PM_DefaultFrameWidth,
-    //         &styleOption,
-    //         this
-    //     ),
-    //     1
-    // );
 }
 
 /** @brief The radius of a circular handle.
  * @returns The radius of a circular handle, measured in widget pixels. */
 qreal AbstractDiagram::handleRadius() const
 {
+    /** @note The return value is constant. For a given object instance, this
+     * function returns the same value every time it is called. This constant
+     * value may be different for different instances of the object. */
     return handleOutlineThickness() * 2.5;
 }
 
