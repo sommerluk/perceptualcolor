@@ -78,6 +78,38 @@ private Q_SLOTS:
         // Test for crashs in constructor or destructor
         WheelColorPicker test {m_colorSpace};
     }
+
+    void testCurrentColorProperty()
+    {
+        WheelColorPicker test {m_colorSpace};
+        LchDouble color;
+        color.l = 50;
+        color.c = 20;
+        color.h = 10;
+        test.setCurrentColor(color);
+        QSignalSpy spy(&test, &WheelColorPicker::currentColorChanged);
+        QCOMPARE(spy.count(), 0);
+
+        // Change hue only:
+        color.h += 1;
+        test.setCurrentColor(color);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColor().h, color.h);
+        QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.h);
+
+        // Change chroma only:
+        color.c += 1;
+        test.setCurrentColor(color);
+        QCOMPARE(spy.count(), 2);
+        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColor().c, color.c);
+        QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.h);
+
+        // Not changing the color should not trigger the signal
+        test.setCurrentColor(color);
+        QCOMPARE(spy.count(), 2);
+        QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColor().c, color.c);
+        QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.h);
+    }
 };
 
 } // namespace PerceptualColor

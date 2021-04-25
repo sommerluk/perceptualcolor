@@ -316,8 +316,8 @@ void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidgets()
     m_chromaLightnessDiagram->setGeometry(diagramGeometry.toRect());
 }
 
-// TODO xxx revision starts here
-
+// No documentation here (documentation of properties
+// and its getters are in the header)
 LchDouble WheelColorPicker::currentColor() const
 {
     return d_pointer->m_chromaLightnessDiagram->currentColor();
@@ -333,6 +333,8 @@ void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
     d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
 }
 
+// TODO xxx revision starts here
+
 /** @brief Recommended size for the widget
  *
  * Reimplemented from base class.
@@ -343,6 +345,7 @@ void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
 QSize WheelColorPicker::minimumSizeHint() const
 {
     // TODO Actually implement this!
+    // TODO Should this depend on maxchroma? (Mean: guarantee minGradientLength * maxchroma / 100)?
     return AbstractDiagram::minimumSizeHint();
 }
 
