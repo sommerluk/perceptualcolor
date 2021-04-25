@@ -56,6 +56,9 @@ class RgbColorSpace;
  * current chroma-lightness value, then the marker is not moved into the
  * new gamut. But it should!
  *
+ * @todo @ref WheelColorPickerPrivate::m_maximumChroma should get an
+ * actually useful value (maybe coming from @ref RgbColorSpace ?).
+ *
  * @todo Is the (double) focus indicator actually good design? Are there
  * better solutions?
  *

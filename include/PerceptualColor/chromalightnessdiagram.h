@@ -124,6 +124,13 @@ private:
 
     /** @internal @brief Only for unit tests. */
     friend class TestChromaLightnessDiagram;
+
+    /** @internal
+     * @brief Internal friend declaration.
+     *
+     * This class is used as child class in @ref WheelColorPicker.
+     * There is a tight collaboration. */
+    friend class WheelColorPicker;
 };
 
 } // namespace PerceptualColor

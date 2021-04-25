@@ -126,7 +126,9 @@ private:
 
     /** @internal
      * @brief Internal friend declaration.
-     * @todo  Remove this friend declaration */
+     *
+     * This class is used as child class in @ref WheelColorPicker.
+     * There is a tight collaboration. */
     friend class WheelColorPicker;
 };
 

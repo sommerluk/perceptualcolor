@@ -497,4 +497,13 @@ int ColorWheel::ColorWheelPrivate::border() const
     return 2 * q_pointer->handleOutlineThickness();
 }
 
+/** @brief The inner diameter of the color wheel.
+ * @returns The inner diameter of the color wheel, measured in
+ * widget pixel. This is the diameter of the empty circle
+ * within the color wheel. */
+int ColorWheel::ColorWheelPrivate::innerDiameter() const
+{
+    return contentDiameter() - 2 * q_pointer->gradientThickness() - 2 * border();
+}
+
 } // namespace PerceptualColor

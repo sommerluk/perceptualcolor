@@ -72,6 +72,14 @@ class RgbColorSpace;
  *
  * @internal
  *
+ * @todo BUG Left-click in the gray area inside the wheel but outside
+ * the displayed gammut; maintain the click button and do not move the
+ * mouse. Actual behavior: Mouse curser is invisible. Expected behaviour:
+ * Mouse cursor stays visible (as it would be anyway after moving the mouse).
+ *
+ * @todo BUG Click on the wheel. Actual behaviour: Nothing. Expected behavior:
+ * The selected color follows the cursor.
+ *
  * @todo Example code: How to create the widget at a given
  * lightness.
  *

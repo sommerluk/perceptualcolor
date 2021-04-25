@@ -33,15 +33,15 @@
 // Second, the private implementation.
 #include "wheelcolorpicker_p.h"
 
-// TODO Can’t we avoid to include colorwheel_p.h?
+#include "chromalightnessdiagram_p.h"
 #include "colorwheel_p.h"
-
 #include "lchvalues.h"
 
 #include <math.h>
 
 #include <QApplication>
 #include <QDebug>
+#include <QtMath>
 
 namespace PerceptualColor
 {
@@ -136,45 +136,187 @@ void WheelColorPicker::resizeEvent(QResizeEvent *event)
     d_pointer->resizeChildWidgets();
 }
 
-// TODO xxx revision starts here
-
-/** @brief Scale a rectangle to a given diagonal line length
+/** @brief Calculate the optimal size for the inner diagram.
  *
- * @param oldRectangle the size of a rectangle
- * @param newDiagonal the desired new diagonal line length (distance from the
- * bottom left to the top right corner.
- * @returns the size of a scaled rectangle, that has the given diagonal line
- * length and preserves the original ratio between width and height - or an
- * invalid size if oldRectangle had a surface of 0. The result is rounded
- * the next smaller integer! */
-QSize WheelColorPicker::WheelColorPickerPrivate::scaleRectangleToDiagonal(const QSize oldRectangle, const qreal newDiagonal)
+ * @returns The maximum possible size of the diagram within the
+ * inner part of the color wheel. With floating point precision.
+ * Measured in widget pixel. */
+QSizeF WheelColorPicker::WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
 {
-    if (oldRectangle.isEmpty()) {
-        return QSize();
-    }
-    qreal ratioWidthPerHeight = static_cast<qreal>(oldRectangle.width()) / oldRectangle.height();
-    // static_cast<int> will round down. This is intentional.
-    int newHeight = static_cast<int>(sqrt(pow(newDiagonal, 2) / (1 + pow(ratioWidthPerHeight, 2))));
-    int newWidth = static_cast<int>(newHeight * ratioWidthPerHeight);
-    return QSize(newWidth, newHeight);
+    /** The outer dimensions of the widget are a rectangle within a
+     * circumscribed circled, which is the inner border of the color wheel.
+     *
+     * The widget size is composed by the size of the diagram itself and
+     * the size of the borders. The border size is fixed; only the diagram
+     * size can vary.
+     *
+     * Known variables:
+     * | variable     | comment                          | value                              |
+     * | :----------- | :------------------------------- | :--------------------------------- |
+     * | r            | relation b ÷ a                   | maximum lightness ÷ maximim chroma |
+     * | h            | horizontial shift                | left + right diagram border        |
+     * | v            | vertial shift                    | top + bottom diagram border        |
+     * | d            | diameter of circumscribed circle | inner diameter of the color wheel  |
+     * | b            | diagram height                   | a · r                              |
+     * | widgetWidth  | widget width                     | a + h                              |
+     * | widgetHeight | widget height                    | b + v                              |
+     * | a            | diagram width                    | ?                                  |
+     */
+    const qreal r = 100.0 / m_maximumChroma;
+    const qreal h = 2 * m_chromaLightnessDiagram->d_pointer->m_border;
+    const qreal v = h;
+    const qreal d = m_colorWheel->d_pointer->innerDiameter();
+
+    /** We can calculate <em>a</em> because right-angled triangle
+     * with <em>a</em> and with <em>b</em> as legs/catheti will have
+     * has hypothenuse the diameter of the circumscribed circle:
+     *
+     * <em>[The following formula requires a working Internet connection
+     * to be displayed.]</em>
+     *
+     * @f[
+        \begin{align}
+            widgetWidth²
+            + widgetHeight²
+            = & d²
+        \\
+            (a+h)²
+            + (b+v)²
+            = & d²
+        \\
+            (a+h)²
+            + (ra+v)²
+            = & d²
+        \\
+            a²
+            + 2ah
+            + h²
+            + r²a²
+            + 2rav
+            + v²
+            = & d²
+        \\
+            a²
+            + r²a²
+            + 2ah
+            + 2rav
+            + h²
+            + v²
+            = & d²
+        \\
+            (1+r²)a²
+            + 2a(h+rv)
+            + (h²+v²)
+            = & d²
+        \\
+            a²
+            + 2a\frac{h+rv}{1+r²}
+            + \frac{h²+v²}{1+r²}
+            = & \frac{d²}{1+r²}
+        \\
+            a²
+            + 2a\frac{h+rv}{1+r²}
+            + \left(\frac{h+rv}{1+r²}\right)^{2}
+            - \left(\frac{h+rv}{1+r²}\right)^{2}
+            + \frac{h²+v²}{1+r²}
+            = &  \frac{d²}{1+r²}
+        \\
+            \left(a+\frac{h+rv}{1+r²}\right)^{2}
+            - \left(\frac{h+rv}{1+r²}\right)^{2}
+            + \frac{h²+v²}{1+r²}
+            = & \frac{d²}{1+r²}
+        \\
+            \left(a+\frac{h+rv}{1+r²}\right)^{2}
+            = & \frac{d²}{1+r²}
+            + \left(\frac{h+rv}{1+r²}\right)^{2}
+            - \frac{h²+v²}{1+r²}
+        \\
+            a
+            + \frac{h+rv}{1+r²}
+            = & \sqrt{
+                \frac{d²}{1+r²}
+                + \left(\frac{h+rv}{1+r²}\right)^{2}
+                -\frac{h²+v²}{1+r²}
+            }
+        \\
+            a
+            = & \sqrt{
+                \frac{d²}{1+r²}
+                + \left(\frac{h+rv}{1+r²}\right)^{2}
+                - \frac{h²+v²}{1+r²}
+            }
+            - \frac{h+rv}{1+r²}
+        \end{align}
+     * @f] */
+    const qreal x = (1 + qPow(r, 2)); // x = 1 + r²
+    const qreal a =
+        // The square root:
+        qSqrt(
+            // First fraction:
+            d * d / x
+            // Second fraction:
+            + qPow((h + r * v) / x, 2)
+            // Thierd fraction:
+            - (h * h + v * v) / x)
+        // The part after the square root:
+        - (h + r * v) / x;
+    const qreal b = r * a;
+
+    return QSizeF(a + h, // width
+                  b + v  // height
+    );
 }
 
-/** @brief Update the size and the position of the child widgets. */
+/** @brief Update the geometry of the child widgets.
+ *
+ * This widget does <em>not</em> use layout management for its child widgets.
+ * Therefore, this function should be called on all resize events of this
+ * widget.
+ *
+ * @post The geometry (size and the position) of the child widgets are
+ * adapted according to the current size of <em>this</em> widget itself. */
 void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidgets()
 {
+    // Set new geometry of color wheel. Only the size changes, while the
+    // position (which is 0, 0) remains always unchanged.
     m_colorWheel->resize(q_pointer->size());
-    int diagonal = qMax(m_colorWheel->d_pointer->contentDiameter() - 2 * (q_pointer->gradientThickness() + m_colorWheel->d_pointer->border()), 0);
-    // TODO Why is QSize(140, 100) a good choice? What gamuts exist? Up to
-    // where goes chroma there?
-    QSize newChromaLightnessDiagramSize = scaleRectangleToDiagonal(QSize(140, 100), diagonal);
-    m_chromaLightnessDiagram->resize(newChromaLightnessDiagramSize);
-    qreal radius = static_cast<qreal>(m_colorWheel->d_pointer->contentDiameter()) / 2;
-    m_chromaLightnessDiagram->move(
-        // TODO Does qRound make sense here? Does it the right
-        // thing (pixel-wise)?
-        qRound(radius - newChromaLightnessDiagramSize.width() / 2.0),
-        qRound(radius - newChromaLightnessDiagramSize.height() / 2.0));
+
+    // Calculate new size for chroma-lightness-diagram
+    const QSizeF widgetSize = optimalChromaLightnessDiagramSize();
+
+    // Calculate new top-left corner position for chroma-lightness-diagram
+    // (relative to parent widget)
+    const qreal radius = m_colorWheel->d_pointer->contentDiameter() / 2.0;
+    const QPointF widgetTopLeftPos(
+        // x position
+        radius - widgetSize.width() / 2.0,
+        // y position:
+        radius - widgetSize.height() / 2.0);
+
+    // Correct the new geometry of chroma-lightness-diagram to fit into
+    // an integer raster.
+    QRectF diagramGeometry(widgetTopLeftPos, widgetSize);
+    // We have to round to full integers, so that our integar-based rectangle
+    // does not exceed the dimensions of the floating-point rectangle.
+    // Round to bigger coordinates for top-left corner:
+    diagramGeometry.setLeft(ceil(diagramGeometry.left()));
+    diagramGeometry.setTop(ceil(diagramGeometry.top()));
+    // Round to smaller coordinates for bottom-right corner:
+    diagramGeometry.setRight(floor(diagramGeometry.right()));
+    diagramGeometry.setBottom(floor(diagramGeometry.bottom()));
+    // TODO The rounding has probably changed the ratio (b ÷ a) of the
+    // diagram itself with the chroma-hue widget. Therefore, maybe a little
+    // bit of gammut is not visible at the right of the diagram. There
+    // might be two possibilities to solve this: Either ChromaLightnessDiagram
+    // gets support for scaling to user-defined maximum chroma (unlikely)
+    // or we implement it here, just by reducing a little bit the height
+    // of the widget until the full gamut gets in (easier).
+
+    // Apply new geometry
+    m_chromaLightnessDiagram->setGeometry(diagramGeometry.toRect());
 }
+
+// TODO xxx revision starts here
 
 LchDouble WheelColorPicker::currentColor() const
 {

@@ -56,6 +56,7 @@
 #include <QVBoxLayout>
 #include <QtMath>
 
+#include <math.h>
 #include <memory>
 
 // TODO Test the main function etc from KColorChooser to see if

@@ -60,9 +60,11 @@ public:
      * selected. The border is determined automatically, its value
      * depends on @ref handleRadius and @ref handleOutlineThickness.
      *
-     * @sa updateBorder()
-     */
-    int m_border;
+     * This is the very same value for all four border (left, right, top,
+     * bottom). */
+    const int m_border = qRound(q_pointer->handleRadius()
+                                // TODO Why division by 2.0?
+                                + q_pointer->handleOutlineThickness() / 2.0);
     /** @brief Internal storage of the chromaLightness() property */
     //     QPointF m_chromaLightness;
     /** @brief Internal storage of the @ref currentColor property */
@@ -92,7 +94,6 @@ public:
     static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
     void updateDiagramCache();
     void setImageCoordinates(const QPoint newImageCoordinates);
-    void updateBorder();
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)

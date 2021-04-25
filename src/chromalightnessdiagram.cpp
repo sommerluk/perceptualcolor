@@ -75,7 +75,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualCo
     temp.c = LchValues::srgbVersatileChroma;
     temp.l = LchValues::neutralLightness;
     d_pointer->m_currentColor = temp;
-    d_pointer->updateBorder();
 
     // Other initialization
     // Accept focus only by keyboard tabbing and not by mouse click
@@ -97,16 +96,6 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
 ChromaLightnessDiagram ::ChromaLightnessDiagramPrivate ::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink)
     : q_pointer(backLink)
 {
-}
-
-/** @brief Updates @ref m_border.
- *
- * This function can be called after changes to @ref handleRadius or
- * @ref handleOutlineThickness to update @ref m_border(). */
-void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateBorder()
-{
-    // Code
-    m_border = qRound(q_pointer->handleRadius() + (q_pointer->handleOutlineThickness() / static_cast<qreal>(2)));
 }
 
 // TODO high-dpi support
