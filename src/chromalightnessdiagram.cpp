@@ -573,9 +573,7 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
  */
 QSize ChromaLightnessDiagram::sizeHint() const
 {
-    const int minimum = qRound(2 * d_pointer->m_border + gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint);
-    // Expand to the global minimum size for GUI elements
-    return QSize(minimum, minimum).expandedTo(QApplication::globalStrut());
+    return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
 /** @brief Provide the minimum size hint.

@@ -459,13 +459,7 @@ void ColorWheel::setHue(const qreal newHue)
  */
 QSize ColorWheel::sizeHint() const
 {
-    // We interpretate the gradientMinimumLength() as the length of the
-    // circumference of the inner circle of the wheel. By dividing it by π
-    // we get the requiered inner diameter:
-    const qreal innerDiameter = gradientMinimumLength() / M_PI * scaleFromMinumumSizeHintToSizeHint;
-    const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * d_pointer->border());
-    // Expand to the global minimum size for GUI elements
-    return QSize(size, size).expandedTo(QApplication::globalStrut());
+    return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
 /** @brief Provide the minimum size hint.

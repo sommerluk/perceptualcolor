@@ -347,13 +347,7 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
  * @sa @ref minimumSizeHint() */
 QSize ChromaHueDiagram::sizeHint() const
 {
-    int mySize = qRound(
-        // Considering the gradient length two times, as the diagram
-        // shows the center of the coordinate system in the middle,
-        // and each side of the center should be well visible.
-        2 * d_pointer->diagramBorder() + 2 * gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint);
-    // Expand to the global minimum size for GUI elements
-    return QSize(mySize, mySize).expandedTo(QApplication::globalStrut());
+    return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
 /** @brief Recommended size for the widget

@@ -190,16 +190,12 @@ void GradientSlider::resizeEvent(QResizeEvent *event)
  * @sa @ref sizeHint() */
 QSize GradientSlider::sizeHint() const
 {
-    QSize result;
+    QSize result = minimumSizeHint();
     if (d_pointer->m_orientation == Qt::Orientation::Horizontal) {
-        result.setWidth(qRound(gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint));
-        result.setHeight(gradientThickness());
+        result.setWidth(qRound(result.width() * scaleFromMinumumSizeHintToSizeHint));
     } else {
-        result.setWidth(gradientThickness());
-        result.setHeight(qRound(gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint));
+        result.setHeight(qRound(result.height() * scaleFromMinumumSizeHintToSizeHint));
     }
-    // Expand to the global minimum size for GUI elements
-    result = result.expandedTo(QApplication::globalStrut());
     return result;
 }
 
