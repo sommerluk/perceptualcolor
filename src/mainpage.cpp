@@ -69,8 +69,7 @@
  * @todo Review and unit tests for these classes:
  * @ref PerceptualColor::ChromaLightnessDiagram,
  * @ref PerceptualColor::RgbColorSpace,
- * @ref PerceptualColor::ColorWheel,
- * @ref PerceptualColor::WheelColorPicker
+ * @ref PerceptualColor::ColorWheel
  *
  * @todo It might be interesting to use <tt>QStyle::PM_FocusFrameHMargin</tt>
  * <em>(Horizontal margin that the focus frame will outset the widget
