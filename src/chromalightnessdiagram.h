@@ -68,7 +68,9 @@ class RgbColorSpace;
  * @note This class is not part of the public API because the class
  * is not mature enought. Notably it does not automatically scale the
  * diagram to fit a given gamut (means: to fit up to a given maximum
- * chroma).
+ * chroma). Even if we would fix this: We would need a public API
+ * that is widthForHeight dependent to allow the library user to
+ * comfortably make use of this!
  *
  * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */
 class ChromaLightnessDiagram : public AbstractDiagram

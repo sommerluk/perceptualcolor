@@ -35,6 +35,7 @@
 
 #include "chromalightnessdiagram_p.h"
 #include "colorwheel_p.h"
+#include "helper.h"
 #include "lchvalues.h"
 
 #include <math.h>
@@ -333,8 +334,6 @@ void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
     d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
 }
 
-// TODO xxx revision starts here
-
 /** @brief Recommended size for the widget
  *
  * Reimplemented from base class.
@@ -344,9 +343,31 @@ void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
  * @sa @ref sizeHint() */
 QSize WheelColorPicker::minimumSizeHint() const
 {
-    // TODO Actually implement this!
-    // TODO Should this depend on maxchroma? (Mean: guarantee minGradientLength * maxchroma / 100)?
-    return AbstractDiagram::minimumSizeHint();
+    const QSizeF minimumDiagramSize =
+        // Get the mimimum size of the chroma-lightness widget.
+        d_pointer->m_chromaLightnessDiagram->minimumSizeHint()
+        // We have to fit this in a widget pixel raster. But the perfect
+        // position might be between two integer coordinates. We might
+        // have to shift up to 1 pixel at each of the four margins.
+        + QSize(2, 2);
+
+    const int minimumDiameter =
+        // The minimum inner diameter of the color wheel has
+        // to be equal (or a little bit bigger) than the
+        // diagonal through the chroma-lightness widget.
+        qCeil(
+            // c = √(a² + b²)
+            qSqrt(qPow(minimumDiagramSize.width(), 2) + qPow(minimumDiagramSize.height(), 2)))
+        // Add size for the color wheel gradient
+        + d_pointer->m_colorWheel->gradientThickness()
+        // Add size for the border around the color wheel gradient
+        + d_pointer->m_colorWheel->d_pointer->border();
+
+    return QSize(minimumDiameter, minimumDiameter)
+        // Expand to the minimumSizeHint() of the color wheel.
+        .expandedTo(d_pointer->m_colorWheel->minimumSizeHint())
+        // Expand to the global minimum size for GUI elements
+        .expandedTo(QApplication::globalStrut());
 }
 
 /** @brief Recommmended minimum size for the widget.
@@ -358,8 +379,7 @@ QSize WheelColorPicker::minimumSizeHint() const
  * @sa @ref minimumSizeHint() */
 QSize WheelColorPicker::sizeHint() const
 {
-    // TODO Actually implement this!
-    return AbstractDiagram::sizeHint();
+    return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
 } // namespace PerceptualColor

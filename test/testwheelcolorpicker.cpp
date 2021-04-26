@@ -110,6 +110,13 @@ private Q_SLOTS:
         QCOMPARE(test.d_pointer->m_chromaLightnessDiagram->currentColor().c, color.c);
         QCOMPARE(test.d_pointer->m_colorWheel->hue(), color.h);
     }
+
+    void testSizeHints()
+    {
+        WheelColorPicker test {m_colorSpace};
+        QVERIFY(test.minimumSizeHint().width() <= test.sizeHint().width());
+        QVERIFY(test.minimumSizeHint().height() <= test.sizeHint().height());
+    }
 };
 
 } // namespace PerceptualColor

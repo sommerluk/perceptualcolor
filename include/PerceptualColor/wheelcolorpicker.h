@@ -56,6 +56,11 @@ class RgbColorSpace;
  * current chroma-lightness value, then the marker is not moved into the
  * new gamut. But it should!
  *
+ * @todo This class is a friend class of @ref ChromaLightnessDiagram
+ * and of @ref ColorWheel. Would it be possible to not rely on this
+ * friendship in the code of this class (or at least, to rely less
+ * on it)?
+ *
  * @todo @ref WheelColorPickerPrivate::m_maximumChroma should get an
  * actually useful value (maybe coming from @ref RgbColorSpace ?).
  *
