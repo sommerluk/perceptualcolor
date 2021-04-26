@@ -33,6 +33,7 @@
 // Second, the private implementation.
 #include "gradientslider_p.h"
 
+#include <QApplication>
 #include <QDebug>
 #include <QGuiApplication>
 #include <QMouseEvent>
@@ -197,6 +198,8 @@ QSize GradientSlider::sizeHint() const
         result.setWidth(gradientThickness());
         result.setHeight(qRound(gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint));
     }
+    // Expand to the global minimum size for GUI elements
+    result = result.expandedTo(QApplication::globalStrut());
     return result;
 }
 
@@ -217,6 +220,8 @@ QSize GradientSlider::minimumSizeHint() const
         result.setWidth(gradientThickness());
         result.setHeight(gradientMinimumLength());
     }
+    // Expand to the global minimum size for GUI elements
+    result = result.expandedTo(QApplication::globalStrut());
     return result;
 }
 

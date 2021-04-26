@@ -40,6 +40,7 @@
 
 #include <math.h>
 
+#include <QApplication>
 #include <QDebug>
 #include <QElapsedTimer>
 #include <QMouseEvent>
@@ -463,7 +464,8 @@ QSize ColorWheel::sizeHint() const
     // we get the requiered inner diameter:
     const qreal innerDiameter = gradientMinimumLength() / M_PI * scaleFromMinumumSizeHintToSizeHint;
     const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * d_pointer->border());
-    return QSize(size, size);
+    // Expand to the global minimum size for GUI elements
+    return QSize(size, size).expandedTo(QApplication::globalStrut());
 }
 
 /** @brief Provide the minimum size hint.
@@ -481,7 +483,8 @@ QSize ColorWheel::minimumSizeHint() const
     // we get the requiered inner diameter:
     const qreal innerDiameter = gradientMinimumLength() / M_PI;
     const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * d_pointer->border());
-    return QSize(size, size);
+    // Expand to the global minimum size for GUI elements
+    return QSize(size, size).expandedTo(QApplication::globalStrut());
 }
 
 // TODO What when some of the wheel colors are out of gamut?

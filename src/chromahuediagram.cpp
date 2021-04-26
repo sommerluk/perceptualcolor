@@ -37,6 +37,7 @@
 #include "lchvalues.h"
 #include "polarpointf.h"
 
+#include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QStyle>
@@ -351,7 +352,8 @@ QSize ChromaHueDiagram::sizeHint() const
         // shows the center of the coordinate system in the middle,
         // and each side of the center should be well visible.
         2 * d_pointer->diagramBorder() + 2 * gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint);
-    return QSize(mySize, mySize);
+    // Expand to the global minimum size for GUI elements
+    return QSize(mySize, mySize).expandedTo(QApplication::globalStrut());
 }
 
 /** @brief Recommended size for the widget
@@ -368,7 +370,8 @@ QSize ChromaHueDiagram::minimumSizeHint() const
         // shows the center of the coordinate system in the middle,
         // and each side of the center should be well visible.
         2 * d_pointer->diagramBorder() + 2 * gradientMinimumLength();
-    return QSize(mySize, mySize);
+    // Expand to the global minimum size for GUI elements
+    return QSize(mySize, mySize).expandedTo(QApplication::globalStrut());
 }
 
 // No documentation here (documentation of properties

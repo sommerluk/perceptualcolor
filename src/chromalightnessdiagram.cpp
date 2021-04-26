@@ -40,6 +40,7 @@
 
 #include <math.h>
 
+#include <QApplication>
 #include <QDebug>
 #include <QImage>
 #include <QMouseEvent>
@@ -573,7 +574,8 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
 QSize ChromaLightnessDiagram::sizeHint() const
 {
     const int minimum = qRound(2 * d_pointer->m_border + gradientMinimumLength() * scaleFromMinumumSizeHintToSizeHint);
-    return QSize(minimum, minimum);
+    // Expand to the global minimum size for GUI elements
+    return QSize(minimum, minimum).expandedTo(QApplication::globalStrut());
 }
 
 /** @brief Provide the minimum size hint.
@@ -587,7 +589,8 @@ QSize ChromaLightnessDiagram::sizeHint() const
 QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
     const int minimum = 2 * d_pointer->m_border + gradientMinimumLength();
-    return QSize(minimum, minimum);
+    // Expand to the global minimum size for GUI elements
+    return QSize(minimum, minimum).expandedTo(QApplication::globalStrut());
 }
 
 // TODO rework all "throw" statements (also these in comments) and
