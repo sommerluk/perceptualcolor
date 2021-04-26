@@ -45,13 +45,6 @@ class RgbColorSpace;
  *
  * @internal
  *
- * @todo BUG: Choose HLC x 50 1. Then push the Page-up button. Current
- * behaviour: The chroma value change from 1 to 0. Why?
- *
- * @todo BUG: Current behaviour: This class accepts focus by Tab, but it
- * does not accept focus by Shift-Tab. Expected behaviour: This class
- * accepts focus by both, Tab and Shift-Tab.
- *
  * @todo BUG: When the hue changes and the gamut gets smaller than the
  * current chroma-lightness value, then the marker is not moved into the
  * new gamut. But it should!
@@ -66,9 +59,6 @@ class RgbColorSpace;
  *
  * @todo Is the (double) focus indicator actually good design? Are there
  * better solutions?
- *
- * @todo A click in the inner of the color wheel (also at emtpy places)
- * should trigger to get a focus!
  *
  * @todo Add <tt>whatsThis</tt> value explaining the accepted keys and mouse
  * movements (and also to other widgets). */
