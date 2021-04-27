@@ -214,6 +214,8 @@ QSize MultiSpinBox::sizeHint() const
  * The icon of the action will be displayed as button. If the action has
  * no icon, just an empty space will be displayed.
  *
+ * @image html MultiSpinBoxWithButton.png "MultiSpinBox with action button"
+ *
  * It is possible to add more than one action.
  *
  * @param action This action that will be executed when clicking the button.
@@ -222,8 +224,8 @@ QSize MultiSpinBox::sizeHint() const
  * or right)
  * @note See @ref hidpisupport "High DPI support" about how to enable
  * support for high-DPI icons.
- * @note The action will <em>not</em> appear in
- * <tt>QWidget::actions()</tt>. */
+ * @note The action will <em>not</em> appear in the
+ * <tt>QWidget::actions()</tt> function of this class. */
 void MultiSpinBox::addActionButton(QAction *action, QLineEdit::ActionPosition position)
 {
     lineEdit()->addAction(action, position);

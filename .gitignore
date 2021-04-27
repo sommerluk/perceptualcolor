@@ -29,7 +29,8 @@
 /.kdev4/
 /build/*
 /Doxyfile
-/doc/*
+/doc/publicapi
+/doc/publicapiandinternals
 
 # Otherwise the pattern may also match at any level below
 # the .gitignore level:

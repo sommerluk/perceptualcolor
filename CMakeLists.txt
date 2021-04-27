@@ -309,8 +309,13 @@ target_link_libraries(perceptualcolorexport ${LIBS})
 #     PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
 # Build a standalone application lauching the color dialog
-add_executable(perceptualcolorpicker src/main.cpp)
+add_executable(perceptualcolorpicker tools/main.cpp)
+# TODO This tool should link against the normal lib, not the all-exporting-lib!
 target_link_libraries(perceptualcolorpicker ${LIBS} perceptualcolorexport)
+
+# Build a standalone application that generates screenshots of the widgets
+add_executable(generatescreenshots tools/generatescreenshots.cpp)
+target_link_libraries(generatescreenshots ${LIBS} perceptualcolorexport)
 
 # Define how to add unit tests.
 # The argument “test_name” is expected to be the name of a .cpp test file

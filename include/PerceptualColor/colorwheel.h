@@ -45,6 +45,8 @@ class RgbColorSpace;
  * This widget allows to select the hue (as defined in the LCh color space)
  * in the form of a wheel.
  *
+ * @image html ColorWheel.png "ColorWheel"
+ *
  * @note - This widget <em>always</em> accepts focus by a mouse click
  *         within the circle. This happens regardless of the
  *         <tt>QWidget::focusPolicy</tt> property. If you set the

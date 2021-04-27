@@ -103,14 +103,14 @@ void GradientSlider::GradientSliderPrivate::initialize(const QSharedPointer<RgbC
     m_rgbColorSpace = colorSpace;
     setOrientationWithoutSignalAndForceNewSizePolicy(orientation);
     LchaDouble first;
-    first.l = 50;
+    first.l = 75;
     first.c = 65;
-    first.h = 100;
+    first.h = 90;
     first.a = 1;
     LchaDouble second;
-    second.l = 60;
-    second.c = 85;
-    second.h = 300;
+    second.l = 50;
+    second.c = 75;
+    second.h = 45;
     second.a = 1;
     q_pointer->setColors(first, second);
 }

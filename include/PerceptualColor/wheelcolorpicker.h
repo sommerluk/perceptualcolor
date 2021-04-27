@@ -43,6 +43,8 @@ class RgbColorSpace;
  * It is composed of a @ref ColorWheel and, in the middle of the wheel,
  * a chroma-lightness diagram.
  *
+ * @image html WheelColorPicker.png "WheelColorPicker" width=200
+ *
  * @internal
  *
  * @todo BUG: When the hue changes and the gamut gets smaller than the

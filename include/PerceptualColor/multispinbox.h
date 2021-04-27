@@ -30,6 +30,7 @@
 #include "PerceptualColor/perceptualcolorglobal.h"
 
 #include <QAbstractSpinBox>
+#include <QAction>
 #include <QLineEdit>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
@@ -43,6 +44,8 @@ namespace PerceptualColor
  * multiple sections (day, month, year…) within a single spin box.
  * However, <em>this</em> widget is flexible. You can define on your own
  * the behaviour of each section.
+ *
+ * @image html MultiSpinBox.png "MultiSpinBox displaying a HLC value"
  *
  * This widget works with floating point precision.
  *

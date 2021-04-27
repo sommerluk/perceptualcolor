@@ -89,17 +89,6 @@ int main(int argc, char *argv[])
     //         "background: yellow; color: red; border: 15px solid #FF0000;"
     //     );
 
-    // QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {
-    //     new PerceptualColor::RgbColorSpace
-    // };
-    // QWidget testWidget;
-    // QVBoxLayout layout;
-    // PerceptualColor::ChromaLightnessDiagram * diagram =
-    //     new PerceptualColor::ChromaLightnessDiagram(myColorSpace);
-    // layout.addWidget(diagram);
-    // testWidget.setLayout(&layout);
-    // testWidget.show();
-
     // Run
     return app.exec();
 }

@@ -41,17 +41,19 @@ namespace PerceptualColor
  * For example, you might use this in a drawing program to allow the user to
  * set the brush color.
  *
- * It is an almost source-compatible replacement for
- * QColorDialog (see below for details) and also adds some extra functionality
- * that is not available in QColorDialog.
- *
  * At difference to QColorDialog, this
  * dialog's graphical components are perceptually uniform and therefore more
  * intuitive. It's internally based on the LCh color model, which does reflect
  * the human perception much better than RGB or its transforms like HSV. At
  * the same time, this dialog does not require the user itself to know
- * anything about LCh at all, because the graphical representations tend to be
- * intuitive enough.
+ * anything about LCh at all, because the graphical representations is
+ * intuitive.
+ *
+ * @image html ColorDialog.png "ColorDialog" width=500
+ *
+ * It is an almost source-compatible replacement for
+ * QColorDialog (see below for details) and also adds some extra functionality
+ * that is not available in QColorDialog.
  *
  * Just as with QColorDialog, the static functions provide modal color
  * dialogs. The static getColor() function shows the dialog, and allows
@@ -64,6 +66,8 @@ namespace PerceptualColor
  * option as an additional argument:
  *
  * @snippet test/testcolordialog.cpp ColorDialog Get color with alpha channel
+ *
+ * @image html ColorDialogAlpha.png "ColorDialog with alpha channel" width=500
  *
  * For non-modal dialogs, use the normal constructors of this class.
  *
@@ -113,6 +117,9 @@ namespace PerceptualColor
  *   color is not <tt>Qt::white</tt>.
  *
  * @internal
+ *
+ * @todo This class should use the same default color as all other classes
+ * of this library!
  *
  * @todo BUG Current behaviour: @ref ColorDialogPrivate::m_wheelColorPicker
  * is getting the focus by Tab, but is not getting the focus by Shift-Tab.
