@@ -47,7 +47,9 @@ namespace PerceptualColor
  *
  * @image html MultiSpinBox.png "MultiSpinBox displaying a HLC value"
  *
- * This widget works with floating point precision.
+ * This widget works with floating point precision. You can set the
+ * precision individually by section using @ref SectionData::decimals.
+ * (This value can also be <tt>0</tt> to get integer-like behavoir.)
  *
  * Example code to create a @ref MultiSpinBox for a HSV color value
  * (Hue 0°–360°, Saturation 0–255, Value 0–255) comes here:
@@ -171,7 +173,9 @@ public:
      * singleStep() or pageStep() values? Are d-pointers working well when
      * this data structure has to be copy-able? */
     struct SectionData {
-        /** @brief The number of digits after the decimal point. */
+        /** @brief The number of digits after the decimal point.
+         *
+         * (This value can also be <tt>0</tt> to get integer-like behavoir.) */
         int decimals = 0;
         /** @brief The maximum possible value of the section. */
         double maximum = 100;
