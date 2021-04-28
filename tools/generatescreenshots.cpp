@@ -34,6 +34,7 @@
 #include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/wheelcolorpicker.h"
+#include "chromalightnessdiagram.h"
 #include "fallbackiconengine.h"
 #include "lchvalues.h"
 #include "rgbcolorspace.h" // TODO We should include the factory method instead!
@@ -109,6 +110,9 @@ int main(int argc, char *argv[])
 
     ChromaHueDiagram m_chromaHueDiagram(m_colorSpace);
     screenshot(&m_chromaHueDiagram);
+
+    ChromaLightnessDiagram m_chromaLightnessDiagram(m_colorSpace);
+    screenshot(&m_chromaLightnessDiagram);
 
     ColorDialog m_colorDialog;
     m_colorDialog.setLayoutDimensions(ColorDialog::DialogLayoutDimensions::expanded);

@@ -46,6 +46,8 @@ class RgbColorSpace;
  * This widget displays a chroma-lightness diagram in the LCh color model
  * for a given hue, in a Cartesian coordinate system.
  *
+ * @image html ChromaLightnessDiagram.png "ChromaLightnessDiagram" width=250
+ *
  * The widget shows the chroma-lightness diagram at the whole widget extend.
  * At the y axis the diagram always shows the lightness values of 0 at the
  * bottom pixel and the lightness value of 100 at the top pixel. For the
