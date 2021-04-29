@@ -81,9 +81,9 @@ doxygen 2>&1 >/dev/null \
 
 ################# Static code check #################
 PUBLIC_HEADERS="include"
-CODE_WITHOUT_UNIT_TESTS="include src"
-CODE_AND_UNIT_TESTS="include src test"
-NON_PUBLIC_CODE="src test"
+CODE_WITHOUT_UNIT_TESTS="include src tools"
+ALL_CODE="include src test tools"
+NON_PUBLIC_CODE="src test tools"
 UNIT_TESTS="test"
 
 # Search for files that do not start with a byte-order-mark (BOM).
@@ -92,7 +92,7 @@ UNIT_TESTS="test"
 grep \
     --recursive \
     --files-without-match $'\xEF\xBB\xBF' \
-    $CODE_AND_UNIT_TESTS \
+    $ALL_CODE \
          | sed 's/^/Missing byte-order-mark: /'
 
 # All header files in src/ should have an “@internal” in
@@ -124,7 +124,7 @@ grep \
 grep \
     --recursive \
     --files-without-match $'perceptualcolorglobal.h' \
-    $CODE_AND_UNIT_TESTS \
+    $ALL_CODE \
          | sed 's/^/Missing include of perceptualcolorglobal.h: /'
 
 # All non-public code should not use the PERCEPTUALCOLOR_IMPORTEXPORT macro.
@@ -182,19 +182,19 @@ grep \
 grep \
     --recursive \
     --fixed-strings "\\code" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 grep \
     --recursive \
     --fixed-strings "\\endcode" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 grep \
     --recursive \
     --fixed-strings "@code" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 grep \
     --recursive \
     --fixed-strings "@endcode" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 
 # -> Doxygen style: Do not use “@em xyz”. Prefer instead “<em>xyz</em>” which
 #    might be longer, but has a clearer start point and end point, which is
@@ -204,26 +204,26 @@ grep \
 grep \
     --recursive \
     --fixed-strings "\\em" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 grep \
     --recursive \
     --fixed-strings "@em" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 grep \
     --recursive \
     --fixed-strings "\\c" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 grep \
    --recursive  \
     --perl-regexp "@c(?=([^a-zA-Z]|$))" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 
 # -> Coding style: Do not use the “NULL” macro, but its counterpart “nullptr”
 #    which is more type save.
 grep \
     --recursive \
     --fixed-strings "NULL" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 
 # -> Coding style: Do not use inline functions. If used in a header,
 #    once exposed, they cannot be changed without breaking binary
@@ -235,7 +235,7 @@ grep \
 grep \
     --recursive \
     --fixed-strings "inline" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 
 # -> In some Qt classes, devicePixelRatio() returns in integer.
 #    Don’t do that and use floating point precision instead. Often,
@@ -253,7 +253,7 @@ grep \
 grep \
     --recursive \
     --perl-regexp "QImage::Format_(?!(ARGB32_Premultiplied|RGB32|RGB16))" \
-    $CODE_AND_UNIT_TESTS
+    $ALL_CODE
 
 # When using snippets, don’t do this within a namespace. As they are
 # meant for documentation, they should always contain fully-qualified

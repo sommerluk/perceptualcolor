@@ -29,5 +29,6 @@ cppcheck
 cpplint src/*
 cpplint include/*
 cpplint test/*
+cpplint tools/*
 kwstyle
 vera++ --help

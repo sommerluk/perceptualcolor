@@ -37,12 +37,13 @@
 #include "chromalightnessdiagram.h"
 #include "fallbackiconengine.h"
 #include "lchvalues.h"
-#include "rgbcolorspace.h" // TODO We should include the factory method instead!
+#include "rgbcolorspace.h"
 
 #include <QApplication>
 #include <QStyleFactory>
 
-// TODO Enable codechecks and clang-format and scripts for tools/*.cpp ?
+// TODO Create script for REUSE_LICENCE information for the generated images!
+// TODO Do not speak about logical pixel (this is only for fonts)! Follow Qt terminology!
 
 using namespace PerceptualColor;
 
@@ -53,19 +54,19 @@ static void screenshot(QWidget *widget, const QString &comment = QLatin1String()
     // Strip all the qualifiers
     className = className.split(QStringLiteral("::")).last();
     widget->grab().save(
-        // file name:
+        // File name:
         className + comment + QStringLiteral(".png"),
-        // file format:
-        nullptr, // Means: file format will be chosen from file name’s suffix.
-        // compression: 0 means good, slow compression and small file size
-        // 100 means: bad, fast compression and big file size
+        // Ffile format: nullprt means: The file format will be chosen
+        // from file name’s suffix.
+        nullptr,
+        // Compression:
+        // 0 means: The compression is slow and results in a small file size.
+        // 100 means: The compression is fast and results in a big file size.
         0);
 }
 
 int main(int argc, char *argv[])
 {
-    // TODO Do not speak about logical pixel (this is only for fonts)!
-    // TODO Own page for coding style in Doxygen (instead of MarkDown)
 
     // Prepare configuratin before instanciating the application object
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -85,9 +86,7 @@ int main(int argc, char *argv[])
     // "kvantum", "cleanlooks", "gtk2", "cde", "motif", "plastique", "Oxygen",
     // "QtCurve", "Windows", "Fusion"
     QStyle *style = nullptr;
-    if (style == nullptr) {
-        style = QStyleFactory::create(QStringLiteral("Breeze"));
-    }
+    style = QStyleFactory::create(QStringLiteral("Breeze"));
     if (style == nullptr) {
         style = QStyleFactory::create(QStringLiteral("Oxygen"));
     }
