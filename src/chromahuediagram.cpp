@@ -46,6 +46,7 @@ namespace PerceptualColor
 {
 /** @brief The constructor.
  * @param colorSpace The color spaces within this widget should operate.
+ * Can be created with @ref RgbColorSpaceFactory.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
 ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)

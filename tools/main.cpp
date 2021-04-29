@@ -36,6 +36,7 @@
 #include "constpropagatingrawpointer.h"
 #include "fallbackiconengine.h"
 #include "polarpointf.h"
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "version.h"
 // #include "rgbcolorspace.h"
 
@@ -54,6 +55,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QtMath>
+#include <QMetaObject>
 
 #include <math.h>
 #include <memory>

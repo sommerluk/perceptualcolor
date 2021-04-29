@@ -39,7 +39,9 @@
 
 namespace PerceptualColor
 {
-/** @brief Constructor */
+/** @brief Constructor
+ * @param colorSpace The color space within the image should operate
+ * Can be created with @ref RgbColorSpaceFactory. */
 GradientImage::GradientImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_rgbColorSpace(colorSpace)
 {

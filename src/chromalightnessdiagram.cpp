@@ -57,6 +57,7 @@ namespace PerceptualColor
 {
 /** @brief The constructor.
  * @param colorSpace The color space within the widget should operate
+ * Can be created with @ref RgbColorSpaceFactory.
  * @param parent Passed to the QWidget base class constructor
  */
 ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)

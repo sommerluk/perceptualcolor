@@ -45,6 +45,7 @@ namespace PerceptualColor
 {
 /** @brief Constructs a vertical slider.
  * @param colorSpace the color space
+ * Can be created with @ref RgbColorSpaceFactory.
  * @param parent parent widget (if any) */
 GradientSlider::GradientSlider(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : AbstractDiagram(parent)
