@@ -241,6 +241,8 @@ file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES
     include/PerceptualColor/*.cpp
     test/*.h
     test/*.cpp
+    tools/*.h
+    tools/*.cpp
 )
 # The following line should make available the target “make clang-format”.
 # It requires the clang-format binary (Ubuntu package “clang-format”).

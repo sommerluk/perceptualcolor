@@ -35,7 +35,6 @@
 
 namespace PerceptualColor
 {
-
 /** @brief Create a color space object.
  *
  * @returns A shared pointer to a newly created color space object. These
@@ -52,8 +51,7 @@ namespace PerceptualColor
  * @snippet test/testrgbcolorspacefactory.cpp Create */
 QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::create()
 {
-    QSharedPointer<PerceptualColor::RgbColorSpace> temp { new RgbColorSpace() };
-    return temp;
+    return QSharedPointer<PerceptualColor::RgbColorSpace>(new RgbColorSpace());
 }
 
 } // namespace PerceptualColor

@@ -33,10 +33,10 @@
 #include "PerceptualColor/colorwheel.h"
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/multispinbox.h"
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "constpropagatingrawpointer.h"
 #include "fallbackiconengine.h"
 #include "polarpointf.h"
-#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "version.h"
 // #include "rgbcolorspace.h"
 
@@ -51,11 +51,11 @@
 #include <QImageReader>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMetaObject>
 #include <QPainter>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QtMath>
-#include <QMetaObject>
 
 #include <math.h>
 #include <memory>

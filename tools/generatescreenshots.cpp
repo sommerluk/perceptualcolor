@@ -46,7 +46,7 @@
 
 using namespace PerceptualColor;
 
-static void screenshot(QWidget* widget, const QString &comment = QLatin1String())
+static void screenshot(QWidget *widget, const QString &comment = QLatin1String())
 {
     // Get fully qualified class name
     QString className = QString::fromUtf8(widget->metaObject()->className());
@@ -100,9 +100,7 @@ int main(int argc, char *argv[])
     QLocale::setDefault(QLocale::English);
 
     // Variables
-    QSharedPointer<RgbColorSpace> m_colorSpace {
-        new RgbColorSpace
-    };
+    QSharedPointer<RgbColorSpace> m_colorSpace {new RgbColorSpace};
     const QColor defaultInitialColor = m_colorSpace->colorRgbBound(
         // Choose the same initial color as many widgets
         LchValues::srgbVersatileInitialColor);
@@ -171,7 +169,7 @@ int main(int argc, char *argv[])
     QIcon myIcon = QIcon(myIconEngine);
     QAction *myAction = new QAction(myIcon,          // icon
                                     QLatin1String(), // text
-                                    &m_multiSpinBox // parent object
+                                    &m_multiSpinBox  // parent object
     );
     MultiSpinBox m_multiSpinBoxWithButton;
     m_multiSpinBoxWithButton.setSections(hsvSections);

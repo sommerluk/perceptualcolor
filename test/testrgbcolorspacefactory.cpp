@@ -45,11 +45,17 @@ static void snippet01()
         // This call might be slow.
         PerceptualColor::RgbColorSpaceFactory::create();
 
-    // Create various widgets with this very same color space.
     // These calls are fast:
-    PerceptualColor::ChromaHueDiagram *myDiagram = new PerceptualColor::ChromaHueDiagram(myColorSpace);
-    PerceptualColor::ColorWheel *myWheel = new PerceptualColor::ColorWheel(myColorSpace);
+
+    PerceptualColor::ChromaHueDiagram *myDiagram =
+        // Create a widget with the color space:
+        new PerceptualColor::ChromaHueDiagram(myColorSpace);
+
+    PerceptualColor::ColorWheel *myWheel =
+        // Create another widget with the very same color space:
+        new PerceptualColor::ColorWheel(myColorSpace);
     //! [Create]
+
     delete myDiagram;
     delete myWheel;
 }
@@ -99,7 +105,6 @@ private Q_SLOTS:
     {
         snippet01();
     }
-
 };
 
 } // namespace PerceptualColor
