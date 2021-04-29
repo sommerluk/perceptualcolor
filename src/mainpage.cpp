@@ -24,6 +24,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include "PerceptualColor/perceptualcolorglobal.h"
+#include "perceptualcolorinternal.h"
+
 /** @mainpage
  * This library provides various Qt GUI components for choosing colors, with
  * focus on an intuitive and perceptually uniform presentation. The GUI
@@ -431,8 +434,16 @@
  * @ref PerceptualColor::ConstPropagatingRawPointer as it would change also
  * all the access rights to the pointed object to always <tt>const</tt>. */
 
-#include "PerceptualColor/perceptualcolorglobal.h"
-#include "perceptualcolorinternal.h"
+/** @internal
+ *
+ * @page codingstyle Coding style
+ *
+ * - Document your code.
+ * - Provide unit tests for your code.
+ * - If working with children within Qt’s object hierarchy, allocate on the
+ *   heap and use raw pointers or guarded pointers (`QPointer`). If not,
+ *   allocate on the stack or use smart pointers. Prefer Qt’s smart pointers
+ *   over the <tt>std</tt> smart pointers of C++. */
 
 /** @brief The namespace of this library.
  *
