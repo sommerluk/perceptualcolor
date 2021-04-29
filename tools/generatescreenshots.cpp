@@ -42,7 +42,6 @@
 #include <QApplication>
 #include <QStyleFactory>
 
-// TODO Create script for REUSE_LICENCE information for the generated images!
 // TODO Do not speak about logical pixel (this is only for fonts)! Follow Qt terminology!
 
 using namespace PerceptualColor;
@@ -67,7 +66,6 @@ static void screenshot(QWidget *widget, const QString &comment = QLatin1String()
 
 int main(int argc, char *argv[])
 {
-
     // Prepare configuratin before instanciating the application object
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     // Instanciate the application object

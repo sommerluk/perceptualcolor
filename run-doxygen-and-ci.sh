@@ -29,6 +29,56 @@
 
 
 
+################# Build the project #################
+# Run within a sub-shell (therefore the parentesis),
+# so that after this we go back to the original working directory.
+( \
+mkdir --parents build \
+    && cd build \
+    && cmake ../ > /dev/null \
+    && make --jobs > /dev/null \
+)
+
+
+
+
+
+################# Doxygen #################
+mkdir --parents doc
+mkdir --parents doc/screenshots
+rm --recursive --force doc/screenshots/*
+# Run generatescreenshots within doc/screenshots working
+# directory, but within a sub-shell (therefore the parentesis),
+# so that after this we go back to the original working directory.
+( \
+cd doc/screenshots \
+    && ../../build/generatescreenshots \
+    && for FILE in *; do cp ../../LICENSES/MIT.txt "$FILE.license"; done
+)
+# We are not interested in the normal Doxygen output, but only in the errors.
+# We have to filter the errors, because Doxygen produces errors where it
+# should not (https://github.com/doxygen/doxygen/issues/7411 errors on
+# missing documentation of return value for functions that return “void”).
+# Therefore, first we redirect Doxygen’s stderr to stdout (the pipe) to
+# be able to filter it with grep. And we redirect stdout to /dev/null
+# (without changing where stderr is going):
+cp doxyfile.internal Doxyfile
+doxygen 2>&1 >/dev/null \
+    | grep \
+        --invert-match \
+        --perl-regexp "warning: return type of member .* is not documented" \
+           | sed 's/^/Doxygen “public API and internals” documentation: /'
+cp doxyfile.external Doxyfile
+doxygen 2>&1 >/dev/null \
+    | grep \
+        --invert-match \
+        --perl-regexp "warning: return type of member .* is not documented" \
+           | sed 's/^/Doxygen “public API” documentation: /'
+
+
+
+
+
 ################# Compliance with REUSE specification #################
 # Test if we provide all licenses as required by the “reuse” specification.
 # This check needs the “reuse” application installed in your local bin
@@ -47,33 +97,6 @@ else
     # “reuse lint” found problems. We call it again to print its messages.
     reuse lint
 fi
-
-
-
-
-
-################# Doxygen #################
-# Run doxygen, but only show errors, no normal messages.
-mkdir --parents doc
-cp doxyfile.internal Doxyfile
-# We are not interested in the normal Doxygen output, but only in the errors.
-# We have to filter the errors, because Doxygen produces errors where it
-# should not (https://github.com/doxygen/doxygen/issues/7411 errors on
-# missing documentation of return value for functions that return “void”).
-# Therefore, first we redirect Doxygen’s stderr to stdout (the pipe) to
-# be able to filter it with grep. And we redirect stdout to /dev/null
-# (without changing where stderr is going):
-doxygen 2>&1 >/dev/null \
-    | grep \
-        --invert-match \
-        --perl-regexp "warning: return type of member .* is not documented" \
-           | sed 's/^/Doxygen “public API and internals” documentation: /'
-cp doxyfile.external Doxyfile
-doxygen 2>&1 >/dev/null \
-    | grep \
-        --invert-match \
-        --perl-regexp "warning: return type of member .* is not documented" \
-           | sed 's/^/Doxygen “public API” documentation: /'
 
 
 
@@ -276,11 +299,7 @@ done
 
 
 ################# Unit tests #################
-mkdir --parents build \
-    && cd build \
-    && cmake ../ > /dev/null \
-    && make --jobs > /dev/null
-ctest --verbose \
+cd build && ctest --verbose \
     | grep --invert-match --perl-regexp "^\d+: PASS   : " \
     | grep --invert-match --perl-regexp "^\d+: Test command: " \
     | grep --invert-match --perl-regexp "^\d+: Test timeout computed to be: " \
