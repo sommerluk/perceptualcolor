@@ -76,7 +76,7 @@ GradientSlider::~GradientSlider() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
- * @param colorSpace The color spaces within this widget should operate. */
+ * @param colorSpace The color space within which this widget should operate. */
 GradientSlider::GradientSliderPrivate::GradientSliderPrivate(GradientSlider *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_gradientImageCache(colorSpace)
     , q_pointer(backLink)

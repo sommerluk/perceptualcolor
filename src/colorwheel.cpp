@@ -53,7 +53,7 @@ namespace PerceptualColor
 {
 /** @brief Constructor
  *
- * @param colorSpace The color spaces within this widget should operate.
+ * @param colorSpace The color space within which this widget should operate.
  * Can be created with @ref RgbColorSpaceFactory.
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
@@ -100,7 +100,7 @@ ColorWheel::~ColorWheel() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
- * @param colorSpace The color spaces within this widget should operate. */
+ * @param colorSpace The color space within which this widget should operate. */
 ColorWheel::ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_wheelImage(colorSpace)
     , q_pointer(backLink)
