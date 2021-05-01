@@ -529,8 +529,10 @@ bool ChromaHueDiagram ::ChromaHueDiagramPrivate ::isWidgetPixelPositionWithinMou
                              // Position relative to polar coordinate system center:
                              position -
                              diagramCenterInWidgetCoordinates()
-                             // Apply the offset between a pixel position and a point in
-                             // the middle of this very same pixel:
+                             // Apply the offset between
+                             // - a pixel position on one hand and
+                             // - a coordinat point in the middle of this very
+                             //   same pixel on the other:
                              + QPointF(0.5, 0.5))
                              .radial();
 

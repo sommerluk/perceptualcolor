@@ -98,8 +98,8 @@ class RgbColorSpace;
  *
  * @todo What if black or white are out of gamut on L=0.1 or L=99.9? Where
  * are the handles placed? Visible or invisible? How to react? Should
- * there be always a pixel in the middle that is visible (black or white)
- * even when out of gamut? */
+ * there be always a physical pixel in the middle that is visible (black
+ * or white) even when out of gamut? */
 class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT

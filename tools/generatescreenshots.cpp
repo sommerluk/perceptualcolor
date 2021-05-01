@@ -42,8 +42,6 @@
 #include <QApplication>
 #include <QStyleFactory>
 
-// TODO Do not speak about logical pixel (this is only for fonts)! Follow Qt terminology!
-
 using namespace PerceptualColor;
 
 static void screenshot(QWidget *widget, const QString &comment = QLatin1String())

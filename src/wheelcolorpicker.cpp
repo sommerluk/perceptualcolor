@@ -142,7 +142,7 @@ void WheelColorPicker::resizeEvent(QResizeEvent *event)
  *
  * @returns The maximum possible size of the diagram within the
  * inner part of the color wheel. With floating point precision.
- * Measured in widget pixel. */
+ * Measured in device-independant pixels. */
 QSizeF WheelColorPicker::WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
 {
     /** The outer dimensions of the widget are a rectangle within a

@@ -379,6 +379,10 @@ QPoint ChromaLightnessDiagram ::ChromaLightnessDiagramPrivate ::fromWidgetCoordi
  *
  * @internal
  *
+ * @todo “it moves the handle by one pixel into the desired direction”. This
+ * is bad. Behaviour should not be pixel-density-dependant. Use a fixed value
+ * for this!
+ *
  * @todo WARNING This function might have an infinite loop if called when the
  * currently selected color has no non-transparent pixel on its row or line.
  * This is a problem because it is well possible this will arrive

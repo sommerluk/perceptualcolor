@@ -436,6 +436,60 @@
 
 /** @internal
  *
+ * @page measurementdetails Measurement details
+ *
+ * When this library deals with raster graphics, it simultaniously uses
+ * concepts concerning measurement. This page describes the terminology
+ * used within the documentation of this library.
+ *
+ * @section introduction Introduction
+ * Today’s displays have a wide range of physical pixel density (pixels
+ * per length). Displays with a high physical pixel density are called
+ * <b>High-DPI displays</b> or <b>HiDPI displays</b> or <b>Retina displays</b>.
+ *
+ * @section unitsofmeasurement Units of measurement
+ * As Qt docuemntation says:
+ *      “<em>Qt uses a model where the application coordinate system is
+ *      independent of the display device resolution. The application
+ *      operates in </em>device-independent pixels<em>, which are then
+ *      mapped to the physical pixels of the display via a scale
+ *      factor, known as the </em>device pixel ratio<em>.</em>”
+ *
+ * So when rendering widgets, there are two different units of measurement
+ * to consider:
+ * - <b>Device-indepentend pixels</b> are the  unit of measurement for
+ *   widgets, windows, screens, mouse events and so on in Qt.
+ * - <b>Physical pixels</b> are the unit that measures actual physical
+ *   display pixels.
+ *
+ * The conversion factor between these two units of measurement is
+ * <tt>QPaintDevice::devicePixelRatioF()</tt>, a floating point number.
+ * It is usually <tt>1.00</tt> on classic low resolution screens. It could be
+ * for example <tt>1.25</tt> or <tt>2.00</tt> on displays with a higher
+ * pixel density.
+ *
+ * @section coordinatepointsversuspixelpositions Coordinate points versus pixel positions
+ *
+ * - <b>Coordinate points</b> are points in the mathematical sense, that
+ *   means they have zero surface. Coordinate points should be stored as
+ *   <em>floating point numbers</em>.
+ * - <b>Pixel positions</b> describe the position of a particular pixel
+ *   within the pixel grid. Pixels are surfaces, not points. A pixel is a
+ *   square of the width and length <tt>1</tt>. The pixel at position
+ *   <tt>QPoint(x, y)</tt> is the square with the top-left edge at coordinate
+ *   point <tt>QPoint(x, y)</tt> and the botton-right edge at coordinate
+ *   point <tt>QPoint(x+1, y+1)</tt>. Pixel positions should be stored
+ *   as <em>integer numbers</em>.
+ *
+ * Some functions (like mouse events) work with pixel positions, other
+ * functions (like antialiased floatting-point drawing operations) work
+ * with coordinate points. It’s important to always distinguish correctly
+ * these two different concepts. See https://doc.qt.io/qt-6/coordsys.html
+ * for more details about integer precision vs floating poin precision
+ * on drawing operations. */
+
+/** @internal
+ *
  * @page codingstyle Coding style
  *
  * - Document your code.

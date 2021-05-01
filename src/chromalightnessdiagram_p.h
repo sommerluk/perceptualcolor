@@ -61,7 +61,13 @@ public:
      * depends on @ref handleRadius and @ref handleOutlineThickness.
      *
      * This is the very same value for all four border (left, right, top,
-     * bottom). */
+     * bottom).
+     *
+     * @internal
+     *
+     * @todo This is measured in what? Device-independant pixel or physical
+     * pixel? And: What do the calling functions think this is measured
+     * in (functions within this class or within friend classes)? */
     const int m_border = qRound(q_pointer->handleRadius()
                                 // TODO Why division by 2.0?
                                 + q_pointer->handleOutlineThickness() / 2.0);

@@ -55,8 +55,8 @@ ColorWheelImage::ColorWheelImage(const QSharedPointer<PerceptualColor::RgbColorS
  * the image. The default value is <tt>0</tt>, which means that the wheel
  * touchs the limits of the image.
  *
- * @param newBorder The new border size, measured in <em>physical</em>
- * pixels. */
+ * @param newBorder The new border size, measured in <em>physical
+ * pixels</em>. */
 void ColorWheelImage::setBorder(const qreal newBorder)
 {
     qreal tempBorder;
@@ -110,8 +110,8 @@ void ColorWheelImage::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
  * This value fixes the size of the image. The image will be a square
  * of <tt>QSize(newImageSize, newImageSize)</tt>.
  *
- * @param newImageSize The new image size, measured in <em>physical</em>
- * pixels. */
+ * @param newImageSize The new image size, measured in <em>physical
+ * pixels</em>. */
 void ColorWheelImage::setImageSize(const int newImageSize)
 {
     int tempImageSize;
@@ -133,7 +133,7 @@ void ColorWheelImage::setImageSize(const int newImageSize)
  * outer outline of the wheel.
  *
  * @param newWheelThickness The new wheel thickness, measured
- * in <em>physical</em> pixels. */
+ * in <em>physical pixels</em>. */
 void ColorWheelImage::setWheelThickness(const qreal newWheelThickness)
 {
     qreal temp;

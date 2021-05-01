@@ -50,7 +50,7 @@ public:
         // The function setImageSize() expects an int
         // value. static_cast<int> will round down, which
         // is the desired behaviour here. (Rounding up
-        // would mean one more pixel, and on some Qt
+        // would mean one more physical pixel, and on some Qt
         // styles this would fail.)
         test.setGradientLength(static_cast<int>(100 * devicePixelRatioF()));
         test.setGradientThickness(static_cast<int>(100 * devicePixelRatioF()));

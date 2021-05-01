@@ -451,7 +451,7 @@ void GradientSlider::setOrientation(Qt::Orientation newOrientation)
 }
 
 /** @brief The rounded length of the widget
- * measured in <em>physical</em> pixels.
+ * measured in <em>physical pixels</em>.
  *
  * This is a conveniance function to access @ref physicalPixelSize().
  * The length is the size of the widget in the direction of the gradient.
@@ -467,7 +467,7 @@ int GradientSlider::GradientSliderPrivate::physicalPixelLength() const
 }
 
 /** @brief The rounded thickness of the widget
- * measured in <em>physical</em> pixels.
+ * measured in <em>physical pixels</em>.
  *
  * This is a conveniance function to access @ref physicalPixelSize().
  * The thickness is the size of the widget orthogonal to the direction
@@ -484,12 +484,12 @@ int GradientSlider::GradientSliderPrivate::physicalPixelThickness() const
 }
 
 /** @brief Converts widget pixel positions to @ref value
- * @param pixelPosition The position of a pixel of the widget coordinate
+ * @param pixelPosition The position of a pixel in the widget coordinate
  * system. The given value  does not necessarily need to
  * be within the actual displayed widget. It might even be negative.
  * @returns The corresponding @ref value for the (center of the) given
- * pixel position.
- * @sa @ref MeasurementDetails "Notes about measurement" */
+ * widget pixel position.
+ * @sa @ref measurementdetails */
 qreal GradientSlider::GradientSliderPrivate::fromWidgetPixelPositionToValue(QPoint pixelPosition)
 {
     // We are interested in the point in the middle of the given pixel.

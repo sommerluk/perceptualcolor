@@ -220,7 +220,7 @@ void GradientImage::setDevicePixelRatioF(const qreal newDevicePixelRatioF)
 /** @brief Setter for the gradient length property.
  *
  * @param newGradientLength The new gradient length, measured
- * in <em>physical</em> pixels. */
+ * in <em>physical pixels</em>. */
 void GradientImage::setGradientLength(const int newGradientLength)
 {
     const int temp = qMax(0, newGradientLength);
@@ -234,7 +234,7 @@ void GradientImage::setGradientLength(const int newGradientLength)
 /** @brief Setter for the gradient thickness property.
  *
  * @param newGradientThickness The new gradient thickness, measured
- * in <em>physical</em> pixels. */
+ * in <em>physical pixels</em>. */
 void GradientImage::setGradientThickness(const int newGradientThickness)
 {
     const int temp = qMax(0, newGradientThickness);

@@ -46,7 +46,7 @@ namespace PerceptualColor
  *  implementation</em> idiom
  *
  * @anchor ChromaHueMeasurement <b>Measurement details:</b> The general
- * @ref MeasurementDetails "notes about measurement" apply also to this widget.
+ * @ref measurementdetails "notes about measurement" apply also to this widget.
  * Furthermore, in this widget, when painting a pixel of the gamut, the color
  * of the pixel will be the color of the coordinate point at the center of the
  * pixel. So the pixel at position <tt>QPoint(x, y)</tt> gets the color that

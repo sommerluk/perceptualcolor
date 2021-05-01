@@ -228,8 +228,8 @@ namespace PerceptualColor
  * class, if appropriate.
  *
  * @todo Make sure that @ref ChromaHueDiagram always shows at least at the
- * central pixel an in-gamut color. Solution: Limit the range of the lightness
- * selector? Or a better algorithm in @ref ChromaHueDiagram?
+ * central physical pixel with an in-gamut color. Solution: Limit the range
+ * of the lightness selector? Or a better algorithm in @ref ChromaHueDiagram?
  *
  * @todo Support for other models like HSL, Munsell? With an option to
  * enable or disable them? (NCS not, because it is not free.)

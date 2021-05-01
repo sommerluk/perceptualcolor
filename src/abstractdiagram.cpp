@@ -75,41 +75,34 @@ QColor AbstractDiagram::focusIndicatorColor() const
     return palette().color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
 }
 
-/** @brief The rounded size of the widget measured in <em>physical</em>
- * pixels.
+/** @brief The rounded size of the widget measured in
+ * <em>physical pixels</em>.
  *
- * The function <tt>QWidget::size()</tt> returns the size of the widget
- * measured in logical pixels. On low-dpi devices, this is identical to the
- * physical pixels, but on high-dpi devices it is not. To paint high-dpi
- * widgets, you have to
+ * @returns The rounded size of this widget,
+ * measured in <em>physical pixels</em>, based on
+ * <tt>QPaintDevice::devicePixelRatioF()</tt>. This is the recommended
+ * image size for calling <tt>QPainter::drawImage()</tt> during a paint event.
  *
- * - Prepare a high-dpi version of the image you want to paint, for example
- *   as a QImage.
+ * Example: You want to prepare a <tt>QImage</tt> of the hole widget to be
+ * used in <tt>QWidget::paintEvent()</tt>. To make sure a crisp rendering,
+ * you have to
  *
+ * - Prepare an image with the size that this function returns.
  * - Set <tt>QImage::setDevicePixelRatio()</tt> of the image to the same
  *   value as <tt>QPaintDevice::devicePixelRatioF()</tt> of the widget.
- *
- * - Actually paint the image on the widget, on position <tt>(0, 0)</tt> and
+ * - Actually paint the image on the widget at position <tt>(0, 0)</tt>
  *   <em>without</em> anti-aliasing.
- *
- * If you want know the pixel size of the image you have to prepare in a
- * paint event, this function provides the size conveniently, based on
- * <tt>QPaintDevice::devicePixelRatioF()</tt>.
  *
  * @note If <tt>QPaintDevice::devicePixelRatioF()</tt> is not an integer,
  * the result of this function is rounded down. Qt’s widget geometry code
  * has no documentation about how this is handeled. However, Qt seems to
  * round up starting with 0.5, at least on Linux/X11. But there are a few
  * themes (for example the “Kvantum style engine” with the style
- * “MildGradientKvantum”) that seem to round down: This becomes visible,
- * as the corresponding last pixels are not automatically redrawn before
+ * “MildGradientKvantum”) that seem to round down: This becomes visible, as
+ * the corresponding last physical pixels are not automatically redrawn before
  * executing the <tt>paintEvent()</tt> code. To avoid relying on undocumented
  * behaviour and to avoid known problems with some styles, this function
- * is concervative and always rounds down.
- *
- * @returns The size of the widget measured in <em>physical</em>
- * pixels, as recommended image size for calling
- * <tt>QPainter::drawImage()</tt> during a paint event. */
+ * is concervative and always rounds down. */
 QSize AbstractDiagram::physicalPixelSize() const
 {
     // Assert that static_cast<int> always rounds down.
@@ -118,16 +111,18 @@ QSize AbstractDiagram::physicalPixelSize() const
     static_assert(static_cast<int>(1.0) == 1);
     // Multiply the size with the (floating point) scale factor
     // and than round down (by using static_cast<int>).
-    return QSize(static_cast<int>(size().width() * devicePixelRatioF()), static_cast<int>(size().height() * devicePixelRatioF()));
+    const int width = static_cast<int>(size().width() * devicePixelRatioF());
+    const int height = static_cast<int>(size().height() * devicePixelRatioF());
+    return QSize(width, height);
 }
 
 /** @brief The maximum possible size of a square within the widget, measured
- * in <em>physical</em> pixels.
+ * in <em>physical pixels</em>.
  *
  * This is the shorter value of width and height of the widget.
  *
  * @returns The maximum possible size of a square within the widget, measured
- * in <em>physical</em> pixels.
+ * in <em>physical pixels</em>.
  *
  * @sa @ref maximumWidgetSquareSize */
 int AbstractDiagram::maximumPhysicalSquareSize() const
@@ -136,14 +131,16 @@ int AbstractDiagram::maximumPhysicalSquareSize() const
 }
 
 /** @brief The maximum possible size of a square within the widget, measured
- * in <em>widget</em> pixels.
+ * in <em>device-independant pixels</em>.
  *
  * This is the conversion of @ref maximumPhysicalSquareSize to the unit
- * “widget pixels“. It might therefore be <em>smaller</em> than the shortest
- * value of width and height of this widget because of defensive rounding.
+ * <em>device-independent pixels</em>. It might be <em>smaller</em> than
+ * the shortest value of <tt>QWdiget::width()</tt> and
+ * <tt>QWidget::height()</tt> because @ref maximumPhysicalSquareSize
+ * might have rounded down.
  *
  * @returns The maximum possible size of a square within the widget, measured
- * in <em>widget</em> pixels. */
+ * in <em>device-independant pixels</em>. */
 qreal AbstractDiagram::maximumWidgetSquareSize() const
 {
     return (maximumPhysicalSquareSize() / devicePixelRatioF());
@@ -163,11 +160,11 @@ qreal AbstractDiagram::maximumWidgetSquareSize() const
  * lightness. You can use this as tiles to paint a background.
  *
  * @note The image is considering QWidget::devicePixelRatioF() to deliver
- * sharp (and correctly scaled) images also for HiDPI devices.
+ * crisp (correctly scaled) images also for high-DPI devices.
  * The painting does not use floating point drawing, but rounds
  * to full integers. Therefore, the result is always a sharp image.
- * This function takes care that each square has the same pixel size,
- * without scaling errors or anti-aliasing errors.
+ * This function takes care that each square has the same physical pixel
+ * size, without scaling errors or anti-aliasing errors.
  *
  * @internal
  * @sa @ref transparencyBackground(qreal devicePixelRatioF)
@@ -180,7 +177,7 @@ QImage AbstractDiagram::transparencyBackground() const
 /** @brief The outline thickness of a handle.
  *
  * @returns The outline thickness of a (either circular or linear) handle.
- * Measured in widget pixels. */
+ * Measured in <em>device-independant pixels</em>. */
 int AbstractDiagram::handleOutlineThickness() const
 {
     /** @note The return value is constant. For a given object instance, this
@@ -190,7 +187,8 @@ int AbstractDiagram::handleOutlineThickness() const
 }
 
 /** @brief The radius of a circular handle.
- * @returns The radius of a circular handle, measured in widget pixels. */
+ * @returns The radius of a circular handle, measured in
+ * <em>device-independant pixels</em>. */
 qreal AbstractDiagram::handleRadius() const
 {
     /** @note The return value is constant. For a given object instance, this

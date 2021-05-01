@@ -40,42 +40,6 @@ namespace PerceptualColor
  * Provides some elements that are common for all LCh diagrams in this
  * library.
  *
- * @anchor MeasurementDetails <b>Measurement details</b>
- *
- * This class and its child classes deal simultaniously with various
- * coordinate systems and unit of measurement.
- *
- * <b>Units of measurement</b>
- *
- * - <em>Device-indepentend pixel/coordinates</em> are the  unit of
- *   measurement for widgets, windows, screens, mouse events and so on in Qt.
- * - <em>Physical pixel/coordinates</em> are the unit that measures actual
- *   physical screen pixel.
- *
- * The conversion factor between these two units of measurement is
- * <tt>QPaintDevice::devicePixelRatioF()</tt>. It is usually <tt>1</tt> on
- * classic low resolution screens, and bigger than <tt>1</tt> on high
- * resolution screens. See https://doc.qt.io/qt-6/highdpi.html for more
- * details on Qt’s High DPI support.
- *
- * <b>Coordinate points versus pixel positions</b>
- *
- * - <em>Coordinate points</em> are points in the mathematical sense, that
- *   means they have zero surface. They should always be represented by
- *   floating point data types; this is necessary to allow conversions
- *   without having too much rounding errors.
- * - <em>Pixel positions</em> describe the position of a particular pixel.
- *   Pixel are surfaces, not points. A pixel is a square of the width and
- *   length <tt>1</tt>. The pixel at position <tt>QPoint(x, y)</tt> is the
- *   square with the top-left edge at coordinate point <tt>QPoint(x, y)</tt>
- *   and the botton-right edge at coordinate point <tt>QPoint(x+1, y+1)</tt>.
- *
- * Some functions (like mouse events work with pixel positions), other
- * functions (like antialiased floatting-point drawing operations) work
- * with coordinate points. It’s important to always distinguish correctly
- * these two different concepts. See https://doc.qt.io/qt-6/coordsys.html
- * for more details on Qt’s coordinate systems.
- *
  * @internal
  *
  * @note Qt provides some possibilities to declare that a certain widget
