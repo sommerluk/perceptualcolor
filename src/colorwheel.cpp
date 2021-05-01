@@ -33,12 +33,13 @@
 // Second, the private implementation.
 #include "colorwheel_p.h"
 
+#include <lcms2.h>
+#include <math.h>
+
 #include "PerceptualColor/lchdouble.h"
 #include "helper.h"
 #include "lchvalues.h"
 #include "polarpointf.h"
-
-#include <math.h>
 
 #include <QApplication>
 #include <QDebug>
@@ -46,8 +47,6 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
-
-#include <lcms2.h>
 
 namespace PerceptualColor
 {
@@ -66,11 +65,7 @@ ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
     d_pointer->m_rgbColorSpace = colorSpace;
 
     // Simple initialization
-    // We don't use the reset methods as they would update the image/pixmap
-    // each time, and this could crash if done before everything is
-    // initialized.
     d_pointer->m_hue = LchValues::neutralHue;
-    d_pointer->m_mouseEventActive = false;
     d_pointer->m_wheelImage.setBorder(d_pointer->border());
     d_pointer->m_wheelImage.setImageSize(qMin(width(), height()));
     d_pointer->m_wheelImage.setWheelThickness(gradientThickness());
@@ -484,12 +479,14 @@ QSize ColorWheel::minimumSizeHint() const
 
 // TODO What when some of the wheel colors are out of gamut?
 
-/** @brief Reset the hue() property. */
-void ColorWheel::resetHue()
-{
-    setHue(LchValues::neutralHue);
-}
-
+/** @brief The border around the color wheel.
+ *
+ * The diagram is not painted on the whole extend of the widget. A
+ * border is left to allow that the focus indicator can be painted
+ * when the widget gets the focus.
+ *
+ * @returns The size of the border (distance between widget outline and
+ * color wheel outline), measured in <em>device-independant pixels</em>. */
 int ColorWheel::ColorWheelPrivate::border() const
 {
     return 2 * q_pointer->handleOutlineThickness();

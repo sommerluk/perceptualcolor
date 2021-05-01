@@ -29,57 +29,52 @@
 
 #include "PerceptualColor/perceptualcolorglobal.h"
 
-#include <QImage>
 #include <QWidget>
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-
 #include "PerceptualColor/abstractdiagram.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 
 namespace PerceptualColor
 {
 class RgbColorSpace;
 
-/** @brief Widget to choose the hue in a wheel.
+/** @brief A color wheel widget.
  *
- * This widget allows to select the hue (as defined in the LCh color space)
- * in the form of a wheel.
+ * This widget allows the user to choose the hue (as defined in the LCh
+ * color space).
  *
  * @image html ColorWheel.png "ColorWheel"
  *
- * @note - This widget <em>always</em> accepts focus by a mouse click
- *         within the circle. This happens regardless of the
- *         <tt>QWidget::focusPolicy</tt> property. If you set the
- *         <tt>QWidget::focusPolicy</tt> property to a value that accepts
- *         focus by mouse click, the focus will not only be accepted for
- *         clicks within the actual circle, but also for clicks within the
- *         surrounding rectangle.
- *
- * @internal
- *
- * @note - The diagram is not painted on the whole extend of the widget. A
- *         border is left to allow that the focus indicator can be painted
- *         completely even when the widget has the focus. The border is
- *         determined automatically, its value depends
- *         on @ref handleOutlineThickness(). */
+ * @note This widget <em>always</em> accepts focus by a mouse click within
+ * the circle. This happens regardless of the <tt>QWidget::focusPolicy</tt>
+ * property:
+ * - If you set the <tt>QWidget::focusPolicy</tt> property to a
+ *   value that does not accept focus by mouse click, the focus
+ *   will nevertheless be accepted for clicks within the actual circle.
+ *   (This is the default behavior.)
+ * - If you set the <tt>QWidget::focusPolicy</tt> property to a
+ *   value that accepts focus by mouse click, the focus will not only be
+ *   accepted for clicks within the actual circle, but also for clicks
+ *   anyware within the (rectangular) widget. */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {
     Q_OBJECT
 
     /** @brief The currently selected hue.
      *
-     * The hue property is the LCh hue angle (measured in degree) The value
-     * gets normalized according to PolarPointF::normalizedAngleDegree()
+     * The hue property is the hue angle, as defined in the LCH color model.
      *
-     * After changing the hue property, the widget gets updated.
+     * Measured in degree. Valid range: [0°, 360°[
      *
-     * @sa hue() const
-     * @sa setHue()
-     * @sa resetHue()
-     * @sa hueChanged()
-     * @sa default_hue
-     */
-    Q_PROPERTY(qreal hue READ hue WRITE setHue RESET resetHue NOTIFY hueChanged USER true)
+     * @sa READ @ref hue() const
+     * @sa WRITE @ref setHue()
+     * @sa NOTIFY @ref hueChanged()
+     *
+     * @internal
+     *
+     * The value gets normalized according
+     * to @ref PolarPointF::normalizedAngleDegree() */
+    Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged USER true)
 
 public:
     Q_INVOKABLE explicit ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
@@ -91,13 +86,11 @@ public:
     virtual QSize sizeHint() const override;
 
 Q_SIGNALS:
-    /** @brief Signal for @ref hue() property. */
     /** @brief Notify signal for property @ref hue.
      * @param newHue the new hue */
     void hueChanged(const qreal newHue);
 
 public Q_SLOTS:
-    void resetHue();
     void setHue(const qreal newHue);
 
 protected:

@@ -33,8 +33,6 @@
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/colorwheel.h"
 
-#include <QPointer>
-
 #include "colorwheelimage.h"
 #include "constpropagatingrawpointer.h"
 #include "polarpointf.h"
@@ -55,19 +53,24 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~ColorWheelPrivate() noexcept = default;
 
-    /** @brief If a mouse event is active
-     *
-     * Holds if currently a mouse event is active or not.
-     * @sa mousePressEvent()
-     * @sa mouseMoveEvent()
-     * @sa mouseReleaseEvent()
-     */
-    bool m_mouseEventActive;
-    ColorWheelImage m_wheelImage;
-    /** @brief Internal storage of the hue() property */
+    /** @brief Internal storage of the @ref hue() property */
     qreal m_hue;
-    /** @brief Pointer to RgbColorSpace() object */
+    /** @brief Holds if currently a mouse event is active or not.
+     *
+     * Default value is <tt>false</tt>.
+     * - A mouse event gets typically activated on a @ref mousePressEvent()
+     *   done within the gamut diagram. The value is set to <tt>true</tt>.
+     * - While active, all @ref mouseMoveEvent() will move the diagram’s
+     *   color handle.
+     * - Once a @ref mouseReleaseEvent() occurs, the value is set to
+     *   <tt>false</tt>. Further mouse movements will not move the handle
+     *   anymore. */
+    bool m_mouseEventActive = false;
+    /** @brief Pointer to @ref RgbColorSpace object used to describe the
+     * color space. */
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
+    /** @brief The image of the wheel itself. */
+    ColorWheelImage m_wheelImage;
 
     int border() const;
     int contentDiameter() const;
