@@ -62,6 +62,8 @@ static void screenshot(QWidget *widget, const QString &comment = QLatin1String()
         0);
 }
 
+// Creates a set of screenshots of the library and saves these
+// screenshots as .png files in the working directory.
 int main(int argc, char *argv[])
 {
     // Prepare configuratin before instanciating the application object
