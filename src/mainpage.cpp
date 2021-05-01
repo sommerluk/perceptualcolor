@@ -40,6 +40,8 @@
  * perceptual replacement for QColorDialog:
  * @snippet test/testcolordialog.cpp ColorDialog Get color
  *
+ * @image html ColorDialog.png "ColorDialog" width=500
+ *
  * And there are also individual widgets available. Among others:
  * - @ref PerceptualColor::WheelColorPicker (a full-featured color wheel)
  * - @ref PerceptualColor::ColorPatch (to show a particular color)
@@ -65,6 +67,8 @@
  * texts.
  *
  * @internal
+ *
+ * @todo Provide a link to (the online version of) this page in README.md
  *
  * @todo The doxygen documentation should not recommand <tt>filename.h</tt>
  * but <tt>PerceptualColor/filename.h</tt>!?
@@ -353,7 +357,7 @@
  * is used for each channel, giving a better precision and reducing rounding
  * errors. */
 
-/** @page compile Compile this library (dependencies and requirements)
+/** @page compile Build instructions and requirements
  * The library depends on (and therefore you has to link against):
  *
  * |                         | Qt                 | LittleCMS               |
@@ -388,7 +392,11 @@
  *
  * To compile this library, both the input character set and the execution
  * character set have to be UTF8. (See @ref characterset for the reasons
- * behind this choise.) */
+ * behind this choise.)
+ *
+ * You also need CMake for the build process.
+ *
+ * @todo Provide detailed build instructions. */
 
 /** @internal
  *
