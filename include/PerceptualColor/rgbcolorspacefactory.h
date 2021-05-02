@@ -38,7 +38,17 @@ class RgbColorSpace;
 
 /** @brief Factory for color space objects.
  *
- * Use @ref create() to create new objects. */
+ * These color space objects are needed in the constructors of various classes
+ * of this library.
+ *
+ * Creating color space objects can be slow. But once created, they can be
+ * used simultaniously on various widgets. Thanks to the QSharedPointer, you
+ * can easily create a color space object, pass it to the widget constructors
+ * you like, and then forget about it – it will be deleted automatically when
+ * the last widget that used it has been deleted. And passing the shared
+ * pointer to widget constructors is fast! Usage example:
+ *
+ * @snippet test/testrgbcolorspacefactory.cpp Create */
 class PERCEPTUALCOLOR_IMPORTEXPORT RgbColorSpaceFactory
 {
 public:

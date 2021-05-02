@@ -43,8 +43,7 @@ namespace PerceptualColor
 {
 /** @brief Default constructor
  *
- * Creates an sRGB color space.
- */
+ * Creates an sRGB color space. */
 RgbColorSpace::RgbColorSpace(QObject *parent)
     : QObject(parent)
     , d_pointer(new RgbColorSpacePrivate(this))
@@ -53,9 +52,10 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     // TODO How to handle that?
 
     // Create an ICC v4 profile object for the Lab color space.
-    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(nullptr // nullptr means: Default white point (D50)
-                                                                // TODO Does this make sense? sRGB white point is D65!
-    );
+    cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(
+        // nullptr means: Default white point (D50)
+        // TODO Does this make sense? sRGB white point is D65!
+        nullptr);
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
     d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoDescription);
@@ -73,26 +73,32 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     // so anyway it is not likely to have two consecutive pixels with
     // the same color, which is the only situation where the 1-pixel-cache
     // makes processing faster.
-    d_pointer->m_transformLabToRgbHandle = cmsCreateTransform(labProfileHandle,             // input profile handle
-                                                              TYPE_Lab_DBL,                 // input buffer format
-                                                              rgbProfileHandle,             // output profile handle
-                                                              TYPE_RGB_DBL,                 // output buffer format
-                                                              INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-                                                              cmsFLAGS_NOCACHE              // flags
+    d_pointer->m_transformLabToRgbHandle = cmsCreateTransform(
+        // Create a transform function and get a handle to this function:
+        labProfileHandle,             // input profile handle
+        TYPE_Lab_DBL,                 // input buffer format
+        rgbProfileHandle,             // output profile handle
+        TYPE_RGB_DBL,                 // output buffer format
+        INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+        cmsFLAGS_NOCACHE              // flags
     );
-    d_pointer->m_transformLabToRgb16Handle = cmsCreateTransform(labProfileHandle,             // input profile handle
-                                                                TYPE_Lab_DBL,                 // input buffer format
-                                                                rgbProfileHandle,             // output profile handle
-                                                                TYPE_RGB_16,                  // output buffer format
-                                                                INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-                                                                cmsFLAGS_NOCACHE              // flags
+    d_pointer->m_transformLabToRgb16Handle = cmsCreateTransform(
+        // Create a transform function and get a handle to this function:
+        labProfileHandle,             // input profile handle
+        TYPE_Lab_DBL,                 // input buffer format
+        rgbProfileHandle,             // output profile handle
+        TYPE_RGB_16,                  // output buffer format
+        INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+        cmsFLAGS_NOCACHE              // flags
     );
-    d_pointer->m_transformRgbToLabHandle = cmsCreateTransform(rgbProfileHandle,             // input profile handle
-                                                              TYPE_RGB_DBL,                 // input buffer format
-                                                              labProfileHandle,             // output profile handle
-                                                              TYPE_Lab_DBL,                 // output buffer format
-                                                              INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
-                                                              cmsFLAGS_NOCACHE              // flags
+    d_pointer->m_transformRgbToLabHandle = cmsCreateTransform(
+        // Create a transform function and get a handle to this function:
+        rgbProfileHandle,             // input profile handle
+        TYPE_RGB_DBL,                 // input buffer format
+        labProfileHandle,             // output profile handle
+        TYPE_Lab_DBL,                 // output buffer format
+        INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
+        cmsFLAGS_NOCACHE              // flags
     );
     // Close profile (free memory)
     cmsCloseProfile(labProfileHandle);
@@ -206,10 +212,12 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
 {
     QColor temp; // By default, without initialization this is an invalid color
     RgbDouble rgb;
-    cmsDoTransform(d_pointer->m_transformLabToRgbHandle, // handle to transform function
-                   &Lab,                                 // input
-                   &rgb,                                 // output
-                   1                                     // convert exactly 1 value
+    cmsDoTransform(
+        // Parameters:
+        d_pointer->m_transformLabToRgbHandle, // handle to transform function
+        &Lab,                                 // input
+        &rgb,                                 // output
+        1                                     // convert exactly 1 value
     );
     if (inRange<cmsFloat64Number>(0, rgb.red, 1) && inRange<cmsFloat64Number>(0, rgb.green, 1) && inRange<cmsFloat64Number>(0, rgb.blue, 1)) {
         // We are within the gamut
@@ -240,10 +248,12 @@ QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
 RgbDouble RgbColorSpace::RgbColorSpacePrivate::colorRgbBoundSimple(const cmsCIELab &Lab) const
 {
     cmsUInt16Number rgb_int[3];
-    cmsDoTransform(m_transformLabToRgb16Handle, // handle to transform function
-                   &Lab,                        // input
-                   rgb_int,                     // output
-                   1                            // convert exactly 1 value
+    cmsDoTransform(
+        // Parameters:
+        m_transformLabToRgb16Handle, // handle to transform function
+        &Lab,                        // input
+        rgb_int,                     // output
+        1                            // convert exactly 1 value
     );
     RgbDouble temp;
     temp.red = rgb_int[0] / static_cast<qreal>(65535);
@@ -344,10 +354,12 @@ bool RgbColorSpace::inGamut(const cmsCIELab &lab) const
 {
     RgbDouble rgb;
 
-    cmsDoTransform(d_pointer->m_transformLabToRgbHandle, // handle to transform function
-                   &lab,                                 // input
-                   &rgb,                                 // output
-                   1                                     // convert exactly 1 value
+    cmsDoTransform(
+        // Parameters:
+        d_pointer->m_transformLabToRgbHandle, // handle to transform function
+        &lab,                                 // input
+        &rgb,                                 // output
+        1                                     // convert exactly 1 value
     );
 
     return (inRange<cmsFloat64Number>(0, rgb.red, 1) && inRange<cmsFloat64Number>(0, rgb.green, 1) && inRange<cmsFloat64Number>(0, rgb.blue, 1));
@@ -532,10 +544,10 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFI
     //     “If wchar is 4 bytes, the string is interpreted as UCS-4,
     //      if wchar is 2 bytes it is interpreted as UTF-16.”
     //
-    // However, apparently this is not exact: When wchar is 4 bytes,
-    // surrogate pairs in the code unit array are interpretated like
-    // UTF-16: The surrogate pair is recognized as such. TODO static_assert that
-    // this is true (which seems complicate: better provide a unit test!) (Which
+    // However, apparently this is not exact: When wchar is 4 bytes, surrogate
+    // pairs in the code unit array are interpretated like UTF-16: The
+    // surrogate pair is recognized as such. TODO static_assert that this is
+    // true (which seems complicate: better provide a unit test!) (Which
     // is not strictly UTF-32 conform). Single surrogates cannot be
     // interpretated correctly, but there will be no crash:
     // QString::fromWCharArray will continue to read, also the part after
@@ -543,8 +555,10 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFI
     // not really know the encoding of the buffer that LittleCMS returns.
     // Therefore, it is a good idea to be compatible for various
     // interpretations.
-    QString result = QString::fromWCharArray(buffer, // read from this buffer
-                                             -1      // read until the first null element
+    QString result = QString::fromWCharArray(
+        // Convert to string with these parameters:
+        buffer, // read from this buffer
+        -1      // read until the first null element
     );
 
     // Free allocated memory of the buffer

@@ -87,7 +87,7 @@
  *
  * @todo Use <tt>explicit</tt> on all constructors?
  *
- * @toto Screen picker with magnifier glass in two steps
+ * @todo Screen picker with magnifier glass in two steps
  * similar to https://colorsnapper.com ?
  *
  * @todo Multi-licensing? Add Boost licence and Unlicense as an additional

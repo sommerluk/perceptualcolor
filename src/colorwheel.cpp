@@ -120,7 +120,7 @@ int ColorWheel::ColorWheelPrivate::contentDiameter() const
  *
  * @returns The same point relative to a polar coordinate system who's
  * center is exactly in the middle of the displayed wheel. Measured
- * in <em>device-independant pixels<em>. */
+ * in <em>device-independant pixels</em>. */
 PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const
 {
     const qreal radius = contentDiameter() / 2.0;
