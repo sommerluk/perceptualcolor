@@ -121,6 +121,10 @@ namespace PerceptualColor
  * @todo This class should use the same default color as all other classes
  * of this library!
  *
+ * @todo BUG Input #ef6c00, than press Tab. The value changes to #000000. It
+ * should not change! Then: Press Shift-Tab: The value changes to #ef6b00.
+ * Why this value different from #ef6c00?
+ *
  * @todo BUG Current behaviour: @ref ColorDialogPrivate::m_wheelColorPicker
  * is getting the focus by Tab, but is not getting the focus by Shift-Tab.
  * Expected behaviour: It should get the focus both, on Tab as on Shift-Tab.

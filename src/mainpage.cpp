@@ -87,6 +87,9 @@
  *
  * @todo Use <tt>explicit</tt> on all constructors?
  *
+ * @toto Screen picker with magnifier glass in two steps
+ * similar to https://colorsnapper.com ?
+ *
  * @todo Multi-licensing? Add Boost licence and Unlicense as an additional
  * choise?
  *
@@ -396,7 +399,9 @@
  *
  * You also need CMake for the build process.
  *
- * @todo Provide detailed build instructions. */
+ * @todo Provide detailed build instructions.
+ *
+ * @todo Provide a CMake find module for this library and install it. */
 
 /** @internal
  *

@@ -51,6 +51,10 @@ namespace PerceptualColor
  * @todo (Optionally) use the fast-float plug-in for faster caluculation?
  *       Is this possible as a run-time choise?
  *
+ * @todo We return double precision values. But doesn’t use LittleCMS
+ *       only 16-bit-integer internally? On the other hand: Using double
+ *       precision allows to filter out out-of-range values…
+ *
  * @todo Declare Q_PROPERTY for @ref profileInfoCopyright(),
  *       @ref profileInfoDescription(), @ref profileInfoManufacturer(),
  *       @ref profileInfoModel(), @ref whitepointL() */
