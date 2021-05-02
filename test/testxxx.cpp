@@ -70,7 +70,7 @@ private Q_SLOTS:
 
     void testDef()
     {
-        // TODO implement me!
+        // XXX Implement me!
     }
 };
 

@@ -74,8 +74,8 @@ public:
 
     int border() const;
     int contentDiameter() const;
-    QPointF fromWheelCoordinatesToWidgetCoordinates(const PolarPointF wheelCoordinates) const;
-    PolarPointF fromWidgetCoordinatesToWheelCoordinates(const QPoint widgetCoordinates) const;
+    QPointF fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const;
+    PolarPointF fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const;
     int innerDiameter() const;
     qreal wheelRibbonChroma() const;
 

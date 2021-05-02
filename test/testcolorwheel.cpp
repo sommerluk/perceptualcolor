@@ -88,6 +88,7 @@ private Q_SLOTS:
         myLayout->addWidget(myColorWheel);
         myWindow.setLayout(myLayout);
         myLineEdit->setFocus();
+        QCOMPARE(myLineEdit->hasFocus(), true);
         QCOMPARE(myColorWheel->hasFocus(), false);
 
         // A click that is not in the wheel should not give focus:

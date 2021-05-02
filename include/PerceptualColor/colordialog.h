@@ -135,7 +135,7 @@ namespace PerceptualColor
  * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
  * With each focus switch, the values change. They shouldn't!
  *
- * @todo TODO WARNING BUG: We should have a double storage of the color: As
+ * @todo WARNING BUG: We should have a double storage of the color: As
  * LCH value and also as RGB value. This will prevent rounding errors. (The
  * application programmer sets an RGB value. He expects that the getter of
  * the color property returns that very same RGB value without any rounding

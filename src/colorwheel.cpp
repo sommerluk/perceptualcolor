@@ -33,17 +33,12 @@
 // Second, the private implementation.
 #include "colorwheel_p.h"
 
-#include <lcms2.h>
-#include <math.h>
-
-#include "PerceptualColor/lchdouble.h"
 #include "helper.h"
 #include "lchvalues.h"
 #include "polarpointf.h"
 
 #include <QApplication>
 #include <QDebug>
-#include <QElapsedTimer>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
@@ -54,17 +49,18 @@ namespace PerceptualColor
  *
  * @param colorSpace The color space within which this widget should operate.
  * Can be created with @ref RgbColorSpaceFactory.
+ *
  * @param parent The widget’s parent widget. This parameter will be passed
  * to the base class’s constructor. */
 ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : AbstractDiagram(parent)
     , d_pointer(new ColorWheelPrivate(this, colorSpace))
 {
-    // Setup LittleCMS (must be first thing because other operations
-    // rely on working LittleCMS)
+    // Setup the color space must be the first thing to do because
+    // other operations rely on a working color space.
     d_pointer->m_rgbColorSpace = colorSpace;
 
-    // Simple initialization
+    // Initialization
     d_pointer->m_hue = LchValues::neutralHue;
     d_pointer->m_wheelImage.setBorder(d_pointer->border());
     d_pointer->m_wheelImage.setImageSize(qMin(width(), height()));
@@ -95,6 +91,7 @@ ColorWheel::~ColorWheel() noexcept
  *
  * @param backLink Pointer to the object from which <em>this</em> object
  * is the private implementation.
+ *
  * @param colorSpace The color space within which this widget should operate. */
 ColorWheel::ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_wheelImage(colorSpace)
@@ -102,29 +99,33 @@ ColorWheel::ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSh
 {
 }
 
+// TODO xxx Revision starts here
+
 /** @brief The diameter of the widget content
  *
  * @returns the diameter of the content of this widget, coordinates in pixel.
  * The content is always in form of a circle. This value includes the space
  * for the focus indicator, independently if currently the focus indicator
  * is actually displayed or not. This value corresponds to the smaller one
- * of width() and height().
- */
+ * of width() and height(). */
 int ColorWheel::ColorWheelPrivate::contentDiameter() const
 {
     return qMin(q_pointer->width(), q_pointer->height());
 }
 
-/** @brief Converts window coordinates to wheel coordinates.
+/** @brief Convert widget coordinate points to wheel coordinate points.
  *
- * @param widgetCoordinates coordinates in the coordinate system of this widget
- * @returns “wheel” coordinates: Coordinates in a polar coordinate system who's
- * center is exactly in the middle of the displayed wheel.
- */
-PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetCoordinatesToWheelCoordinates(const QPoint widgetCoordinates) const
+ * @param widgetCoordinatePoint A coordinates point relative to the coordinate
+ * system of this widget, measured in <em>device-independant pixels</em>.
+ *
+ * @returns The same point relative to a polar coordinate system who's
+ * center is exactly in the middle of the displayed wheel. Measured
+ * in <em>device-independant pixels<em>. */
+PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const
 {
-    qreal radius = contentDiameter() / static_cast<qreal>(2);
-    return PolarPointF(QPointF(widgetCoordinates.x() - radius, radius - widgetCoordinates.y()));
+    const qreal radius = contentDiameter() / 2.0;
+    const QPointF temp {widgetCoordinatePoint.x() - radius, radius - widgetCoordinatePoint.y()};
+    return PolarPointF(temp);
 }
 
 /** @brief Converts wheel coordinates to widget coordinates.
@@ -133,7 +134,7 @@ PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetCoordinatesToWheelCoordin
  * center is exactly in the middle of the displayed wheel.
  * @returns coordinates in the coordinate system of this widget
  */
-QPointF ColorWheel ::ColorWheelPrivate ::fromWheelCoordinatesToWidgetCoordinates(const PolarPointF wheelCoordinates) const
+QPointF ColorWheel ::ColorWheelPrivate ::fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const
 {
     qreal radius = contentDiameter() / static_cast<qreal>(2);
     QPointF temp = wheelCoordinates.toCartesian();
@@ -155,7 +156,7 @@ QPointF ColorWheel ::ColorWheelPrivate ::fromWheelCoordinatesToWidgetCoordinates
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
     qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
-    PolarPointF myPolarPoint = d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
+    PolarPointF myPolarPoint = d_pointer->fromWidgetToWheelCoordinates(event->pos());
     if (myPolarPoint.radial() > radius) {
         // Make sure default coordinates like drag-window
         // in KDE's Breeze widget style works
@@ -189,7 +190,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
-        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree());
+        setHue(d_pointer->fromWidgetToWheelCoordinates(event->pos()).angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
         // widget style works
@@ -208,7 +209,7 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
         d_pointer->m_mouseEventActive = false;
-        setHue(d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos()).angleDegree());
+        setHue(d_pointer->fromWidgetToWheelCoordinates(event->pos()).angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
         // widget style works
@@ -232,7 +233,7 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
     // TODO What is a reasonable value for this?
     static constexpr qreal wheelStep = 5;
     qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
-    PolarPointF myPolarPoint = d_pointer->fromWidgetCoordinatesToWheelCoordinates(event->pos());
+    PolarPointF myPolarPoint = d_pointer->fromWidgetToWheelCoordinates(event->pos());
     if (
         // Do nothing while mouse movement is tracked anyway. This would
         // be confusing.
@@ -357,8 +358,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     // paint the handle
     qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
     // get widget coordinates for our handle
-    QPointF myHandleInner = d_pointer->fromWheelCoordinatesToWidgetCoordinates(PolarPointF(radius - gradientThickness(), d_pointer->m_hue));
-    QPointF myHandleOuter = d_pointer->fromWheelCoordinatesToWidgetCoordinates(PolarPointF(radius, d_pointer->m_hue));
+    QPointF myHandleInner = d_pointer->fromWheelToWidgetCoordinates(PolarPointF(radius - gradientThickness(), d_pointer->m_hue));
+    QPointF myHandleOuter = d_pointer->fromWheelToWidgetCoordinates(PolarPointF(radius, d_pointer->m_hue));
     // draw the line
     QPen pen;
     pen.setWidth(handleOutlineThickness());
