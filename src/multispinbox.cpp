@@ -67,14 +67,18 @@ bool MultiSpinBox::MultiSpinBoxPrivate::isCursorPositionAtCurrentSectionValue(co
  *
  * Reimplemented from base class.
  *
+ * @returns the recommended minimum size for the widget
+ *
+ * @internal
+ *
+ * @sa @ref sizeHint()
+ *
  * @note The minimum size of the widget is the same as @ref sizeHint(). This
  * behavior is different from <tt>QSpinBox</tt> and <tt>QDoubleSpinBox</tt>
  * that have a minimum size hint that allows for displaying only prefix and
  * value, but not the suffix. However, such a behavior does not seem
  * appropriate for a @ref MultiSpinBox because it could be confusing, given
- * that its content is more complex.
- *
- * @returns the recommended minimum size for the widget */
+ * that its content is more complex. */
 QSize MultiSpinBox::minimumSizeHint() const
 {
     return sizeHint();
@@ -125,6 +129,9 @@ MultiSpinBox::MultiSpinBoxPrivate::MultiSpinBoxPrivate(MultiSpinBox *backLink)
  * Reimplemented from base class.
  *
  * @returns the size hint
+ *
+ * @internal
+ *
  * @sa @ref minimumSizeHint() */
 QSize MultiSpinBox::sizeHint() const
 {
@@ -207,6 +214,32 @@ QSize MultiSpinBox::sizeHint() const
     }
 
     return result;
+}
+
+/** @brief Handle state changes
+ *
+ * Reimplemented from base class.
+ *
+ * @param event The event to process */
+void MultiSpinBox::changeEvent(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::LanguageChange:
+    case QEvent::LocaleChange:
+    // The base class’s implementation for QEvent::LayoutDirectionChange
+    // would only call update, not updateGeometry…
+    case QEvent::LayoutDirectionChange:
+        // Updates the widget content and its geometry
+        update();
+        updateGeometry();
+        break;
+    default:
+        // QEvent::StyleChange or QEvent::FontChange are not handled here
+        // because they trigger yet a content and geometry update in the
+        // base class’s implementation of this function.
+        break;
+    }
+    QAbstractSpinBox::changeEvent(event);
 }
 
 /** @brief Adds to the widget a button associated with the given action.
@@ -458,6 +491,10 @@ void MultiSpinBox::setSections(const QList<MultiSpinBox::SectionData> &newSectio
 
     // Make sure that the buttons for step up and step down are updated.
     update();
+
+    // Make sure that the geometry is updated: sizeHint() and minimumSizeHint()
+    // both depend on the section!
+    updateGeometry();
 }
 
 /** @brief Returns the data of all sections.

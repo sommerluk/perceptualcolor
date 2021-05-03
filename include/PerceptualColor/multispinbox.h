@@ -45,7 +45,7 @@ namespace PerceptualColor
  * However, <em>this</em> widget is flexible. You can define on your own
  * the behaviour of each section.
  *
- * @image html MultiSpinBox.png "MultiSpinBox displaying a HLC value"
+ * @image html MultiSpinBox.png "MultiSpinBox"
  *
  * This widget works with floating point precision. You can set the
  * precision individually by section using @ref SectionData::decimals.
@@ -224,6 +224,7 @@ public:
     virtual void stepBy(int steps) override;
 
 protected:
+    virtual void changeEvent(QEvent *event) override;
     virtual bool event(QEvent *event) override;
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual bool focusNextPrevChild(bool next) override;
