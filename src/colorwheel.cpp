@@ -101,6 +101,8 @@ ColorWheel::ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSh
 
 // TODO xxx Revision starts here
 
+// TODO Grayed out handles for all widgets when setEnabled(false) !
+
 /** @brief The diameter of the widget content
  *
  * @returns the diameter of the content of this widget, coordinates in pixel.
@@ -466,6 +468,10 @@ QSize ColorWheel::sizeHint() const
  * @returns the minimum size hint
  *
  * @sa sizeHint()
+ *
+ * @todo The circumscription should be minimum 4 times gradientMinimumLength
+ * because there are four perceptual-color poles, and 1 gradientMinimumLength
+ * between each would be nice.
  */
 QSize ColorWheel::minimumSizeHint() const
 {

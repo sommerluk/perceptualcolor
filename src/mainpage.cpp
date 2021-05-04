@@ -232,7 +232,15 @@
  * @todo Only expose in the headers and in the public API what is absolutely
  * necessary.
  *
- * @todo Qt Designer support for the widgets
+ * @todo Qt Designer support for the widgets. Quote from a blog from Viking
+ * about Qt Designer plugins:
+ * The problem is that you have to build it with exactly the same compiler
+ * tool chain as designer was built with, and you have to do it in release
+ * mode. Unless your Qt is built in debug, then your plugin needs to be
+ * built in debug mode as well. So you can’t just always use the same
+ * compiler as you build the application with, if you use the system Qt or
+ * a downloaded Qt version. It’s easier, though, if all developers work with
+ * a custom built Qt. But these days it’s rare to see that.
  *
  * @todo Use <a href="https://lvc.github.io/abi-compliance-checker/">
  * abi-compliance-checker</a> to control ABI compatibility.

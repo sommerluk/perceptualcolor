@@ -351,8 +351,7 @@ QSize WheelColorPicker::minimumSizeHint() const
         // position might be between two integer coordinates. We might
         // have to shift up to 1 pixel at each of the four margins.
         + QSize(2, 2);
-
-    const int minimumDiameter =
+    const int diameterForMinimumDiagramSize =
         // The minimum inner diameter of the color wheel has
         // to be equal (or a little bit bigger) than the
         // diagonal through the chroma-lightness widget.
@@ -363,9 +362,13 @@ QSize WheelColorPicker::minimumSizeHint() const
         + d_pointer->m_colorWheel->gradientThickness()
         // Add size for the border around the color wheel gradient
         + d_pointer->m_colorWheel->d_pointer->border();
+    // Necessary size for this widget so that the diagram fits:
+    const QSize sizeForMinimumDiagramSize(diameterForMinimumDiagramSize, // x
+                                          diameterForMinimumDiagramSize  // y
+    );
 
-    return QSize(minimumDiameter, minimumDiameter)
-        // Expand to the minimumSizeHint() of the color wheel.
+    return sizeForMinimumDiagramSize
+        // Expand to the minimumSizeHint() of the color wheel itself
         .expandedTo(d_pointer->m_colorWheel->minimumSizeHint())
         // Expand to the global minimum size for GUI elements
         .expandedTo(QApplication::globalStrut());

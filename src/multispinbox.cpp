@@ -209,7 +209,8 @@ QSize MultiSpinBox::sizeHint() const
         const int actionButtonIconSize = style()->pixelMetric(QStyle::PM_SmallIconSize, nullptr, lineEdit());
         const int actionButtonMargin = actionButtonIconSize / 4;
         const int actionButtonWidth = actionButtonIconSize + 6;
-        const int actionButtonSpace = actionButtonWidth + actionButtonMargin; // Only 1 margin per button
+        // Only 1 margin per button:
+        const int actionButtonSpace = actionButtonWidth + actionButtonMargin;
         result.setWidth(result.width() + d_pointer->m_actionButtonCount * actionButtonSpace);
     }
 
