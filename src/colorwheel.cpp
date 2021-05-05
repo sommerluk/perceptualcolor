@@ -99,50 +99,40 @@ ColorWheel::ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSh
 {
 }
 
-// TODO xxx Revision starts here
-
-// TODO Grayed out handles for all widgets when setEnabled(false) !
-
-/** @brief The diameter of the widget content
- *
- * @returns the diameter of the content of this widget, coordinates in pixel.
- * The content is always in form of a circle. This value includes the space
- * for the focus indicator, independently if currently the focus indicator
- * is actually displayed or not. This value corresponds to the smaller one
- * of width() and height(). */
-int ColorWheel::ColorWheelPrivate::contentDiameter() const
-{
-    return qMin(q_pointer->width(), q_pointer->height());
-}
-
 /** @brief Convert widget coordinate points to wheel coordinate points.
  *
  * @param widgetCoordinatePoint A coordinates point relative to the coordinate
- * system of this widget, measured in <em>device-independant pixels</em>.
+ * system of this widget. Measured in <em>device-independant pixels</em>.
  *
- * @returns The same point relative to a polar coordinate system who's
- * center is exactly in the middle of the displayed wheel. Measured
- * in <em>device-independant pixels</em>. */
+ * @returns The same coordinate point relative to a polar coordinate system
+ * who’s center is exactly in the middle of the displayed wheel. Measured
+ * in <em>device-independant pixels</em>.
+ *
+ * @sa @ref fromWheelToWidgetCoordinates */
 PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const
 {
-    const qreal radius = contentDiameter() / 2.0;
+    const qreal radius = q_pointer->maximumWidgetSquareSize() / 2.0;
     const QPointF temp {widgetCoordinatePoint.x() - radius, radius - widgetCoordinatePoint.y()};
     return PolarPointF(temp);
 }
 
-/** @brief Converts wheel coordinates to widget coordinates.
+/** @brief Convert wheel coordinate points to widget coordinate points.
  *
- * @param wheelCoordinates Coordinates in a polar coordinate system who's
- * center is exactly in the middle of the displayed wheel.
- * @returns coordinates in the coordinate system of this widget
- */
+ * @param wheelCoordinates A coordinate point relative to a polar coordinate
+ * system who’s center is exactly in the middle of the displayed wheel.
+ * Measured in <em>device-independant pixels</em>.
+ *
+ * @returns The same coordinate point relative to the coordinate system of
+ * this widget. Measured in <em>device-independant pixels</em>.
+ *
+ * @sa @ref fromWidgetToWheelCoordinates */
 QPointF ColorWheel ::ColorWheelPrivate ::fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const
 {
-    qreal radius = contentDiameter() / static_cast<qreal>(2);
-    QPointF temp = wheelCoordinates.toCartesian();
-    temp.setX(temp.x() + radius);
-    temp.setY(radius - temp.y());
-    return temp;
+    const qreal radius = q_pointer->maximumWidgetSquareSize() / 2.0;
+    QPointF result = wheelCoordinates.toCartesian();
+    result.setX(result.x() + radius);
+    result.setY(radius - result.y());
+    return result;
 }
 
 /** @brief React on a mouse press event.
@@ -150,30 +140,41 @@ QPointF ColorWheel ::ColorWheelPrivate ::fromWheelToWidgetCoordinates(const Pola
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
+ *
  * If the mouse is clicked within the wheel ribbon, than the handle is placed
  * here and further mouse movements are tracked.
  *
  * @param event The corresponding mouse event
- */
+ *
+ * @internal
+ *
+ * @sa @ref ColorWheelPrivate::m_mouseEventActive */
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
-    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
+    const qreal radius = maximumWidgetSquareSize() / 2.0 - d_pointer->border();
     PolarPointF myPolarPoint = d_pointer->fromWidgetToWheelCoordinates(event->pos());
+
+    // Ignare clicks outside the wheel
     if (myPolarPoint.radial() > radius) {
         // Make sure default coordinates like drag-window
-        // in KDE's Breeze widget style works
+        // in KDE's Breeze widget style works:
         event->ignore();
         return;
     }
+
+    // If inside the wheel (either in the wheel ribbon itself or in the hole
+    // in the middle), take focus:
     setFocus(Qt::MouseFocusReason);
+
     if (myPolarPoint.radial() > radius - gradientThickness()) {
         d_pointer->m_mouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
     } else {
         // Make sure default coordinates like drag-window
-        // in KDE's Breeze widget style works
+        // in KDE's Breeze widget style works:
         event->ignore();
     }
+
     return;
 }
 
@@ -188,7 +189,10 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
  * is ignored.
  *
  * @param event The corresponding mouse event
- */
+ *
+ * @internal
+ *
+ * @sa @ref ColorWheelPrivate::m_mouseEventActive */
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
@@ -206,7 +210,12 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
  * middle and right mouse click.
  *
  * @param event The corresponding mouse event
- */
+ *
+ * @internal
+ *
+ * @sa @ref ColorWheelPrivate::m_mouseEventActive
+ *
+ * @sa @ref ColorWheelPrivate::m_mouseEventActive */
 void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_mouseEventActive) {
@@ -226,62 +235,56 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
  * Scrolling up raises the hue value, scrolling down lowers the hue value.
  * Of course, the point at 0°/360° it not blocking.
  *
- * @param event The corresponding mouse event
- */
+ * @param event The corresponding mouse event */
 void ColorWheel::wheelEvent(QWheelEvent *event)
 {
-    // The step (coordinates in degree) that the hue angle is changed when
-    // a mouse wheel event occurs.
-    // TODO What is a reasonable value for this?
-    static constexpr qreal wheelStep = 5;
-    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
+    const qreal radius = maximumWidgetSquareSize() / 2.0 - d_pointer->border();
     PolarPointF myPolarPoint = d_pointer->fromWidgetToWheelCoordinates(event->pos());
     if (
         // Do nothing while mouse movement is tracked anyway. This would
-        // be confusing.
-        (!d_pointer->m_mouseEventActive) &&
+        // be confusing:
+        (!d_pointer->m_mouseEventActive)
         // Only react on wheel events when its in the wheel ribbon or in
-        // the inner hole.
-        (myPolarPoint.radial() <= radius) &&
-        // Only react on good old vertical wheels, and not on horizontal wheels.
-        (event->angleDelta().y() != 0)) {
-        setHue(d_pointer->m_hue + standardWheelSteps(event) * wheelStep);
+        // the inner hole:
+        && (myPolarPoint.radial() <= radius)
+        // Only react on good old vertical wheels, and not on horizontal wheels:
+        && (event->angleDelta().y() != 0)
+        // then:
+    ) {
+        setHue(d_pointer->m_hue + standardWheelStepCount(event) * singleStepHue);
     } else {
         event->ignore();
     }
 }
 
-// TODO How to catch and treat invalid ranges? For QImage creation for
-// example? Use also minimalSize()?
-
-// TODO deliver also arrow keys to the child widget! WARNING DANGER
-
 /** @brief React on key press events.
  *
  * Reimplemented from base class.
  *
- * Reacts on key press events. When the plus key or the minus key are pressed,
- * it raises or lowers the hue. When Qt::Key_Insert or Qt::Key_Delete are
- * pressed, it raises or lowers the hue faster.
+ * Reacts on key press events. When the <em>plus</em> key or the <em>minus</em>
+ * key are pressed, it raises or lowers the hue. When <tt>Qt::Key_Insert</tt>
+ * or <tt>Qt::Key_Delete</tt> are pressed, it raises or lowers the hue faster.
  *
- * @param event the paint event
- */
+ * @param event the corresponding event
+ *
+ * @internal
+ *
+ * @todo The keys are chosen to not conflict with @ref ChromaHueDiagram. But:
+ * They are a little strange. Does this really make sense? */
 void ColorWheel::keyPressEvent(QKeyEvent *event)
 {
-    constexpr qreal wheelStep = 5;
-    constexpr qreal bigWheelStep = 15;
     switch (event->key()) {
     case Qt::Key_Plus:
-        setHue(d_pointer->m_hue + wheelStep);
+        setHue(d_pointer->m_hue + singleStepHue);
         break;
     case Qt::Key_Minus:
-        setHue(d_pointer->m_hue - wheelStep);
+        setHue(d_pointer->m_hue - singleStepHue);
         break;
     case Qt::Key_Insert:
-        setHue(d_pointer->m_hue + bigWheelStep);
+        setHue(d_pointer->m_hue + pageStepHue);
         break;
     case Qt::Key_Delete:
-        setHue(d_pointer->m_hue - bigWheelStep);
+        setHue(d_pointer->m_hue - pageStepHue);
         break;
     default:
         /* Quote from Qt documentation:
@@ -299,19 +302,7 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
     }
 }
 
-/* TODO Support more mouse buttons?
- *
- * enum Qt::MouseButton
- * flags Qt::MouseButtons
- *
- * Qt::BackButton	0x00000008
- * The 'Back' button. (Typically present on the 'thumb' side of a mouse
- * with extra buttons. This is NOT the tilt wheel.)
- *
- * Qt::ForwardButton	0x00000010
- * The 'Forward' Button. (Typically present beside the 'Back' button, and
- * also pressed by the thumb.)
- */
+// TODO xxx Revision starts here
 
 /** @brief Paint the widget.
  *
@@ -325,10 +316,9 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
  *
  * @internal
  *
- * @todo Make the wheel to be drawn horizontally and vertically aligned.
+ * @todo Make the wheel to be drawn horizontally and vertically aligned??
  *
- * @todo Better design on small widget sizes
- */
+ * @todo Better design for small widget sizes */
 void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -358,7 +348,7 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     painter.drawImage(0, 0, d_pointer->m_wheelImage.getImage());
 
     // paint the handle
-    qreal radius = d_pointer->contentDiameter() / static_cast<qreal>(2) - d_pointer->border();
+    qreal radius = maximumWidgetSquareSize() / 2.0 - d_pointer->border();
     // get widget coordinates for our handle
     QPointF myHandleInner = d_pointer->fromWheelToWidgetCoordinates(PolarPointF(radius - gradientThickness(), d_pointer->m_hue));
     QPointF myHandleOuter = d_pointer->fromWheelToWidgetCoordinates(PolarPointF(radius, d_pointer->m_hue));
@@ -376,10 +366,11 @@ void ColorWheel::paintEvent(QPaintEvent *event)
         pen.setWidth(handleOutlineThickness());
         pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
+        // TODO WARNING The following drawEllipse should use floating point instead of rounding!
         painter.drawEllipse(handleOutlineThickness() / 2, // Integer division (rounding down)
                             handleOutlineThickness() / 2, // Integer division (rounding down)
-                            d_pointer->contentDiameter() - handleOutlineThickness(),
-                            d_pointer->contentDiameter() - handleOutlineThickness());
+                            qRound(maximumWidgetSquareSize() - handleOutlineThickness()),
+                            qRound(maximumWidgetSquareSize() - handleOutlineThickness()));
     }
 
     // Paint the buffer to the actual widget
@@ -390,8 +381,7 @@ void ColorWheel::paintEvent(QPaintEvent *event)
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding resize event
- */
+ * @param event The corresponding resize event */
 void ColorWheel::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -434,8 +424,7 @@ qreal ColorWheel::ColorWheelPrivate::wheelRibbonChroma() const
  * \li -1.3 gets 358.7
  *
  * After changing the hue property, the widget gets updated.
- * @param newHue The new hue value to set.
- */
+ * @param newHue The new hue value to set. */
 void ColorWheel::setHue(const qreal newHue)
 {
     qreal temp = PolarPointF::normalizedAngleDegree(newHue);
@@ -501,15 +490,15 @@ int ColorWheel::ColorWheelPrivate::border() const
 
 /** @brief The inner diameter of the color wheel.
  * @returns The inner diameter of the color wheel, measured in
- * widget pixel. This is the diameter of the empty circle
- * within the color wheel.
+ * <em>device-independant pixels</em>. This is the diameter of the empty
+ * circle within the color wheel.
  *
  * @internal
  *
  * @todo Measured in physical pixel or device-independant pixel? */
-int ColorWheel::ColorWheelPrivate::innerDiameter() const
+qreal ColorWheel::ColorWheelPrivate::innerDiameter() const
 {
-    return contentDiameter() - 2 * q_pointer->gradientThickness() - 2 * border();
+    return q_pointer->maximumWidgetSquareSize() - 2 * q_pointer->gradientThickness() - 2 * border();
 }
 
 } // namespace PerceptualColor

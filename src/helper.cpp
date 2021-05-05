@@ -57,7 +57,7 @@ namespace PerceptualColor
  * one physical step up will return the value 1. On a non-standard,
  * higher resolution mouse wheel, moving the wheel one physical step up
  * will return a smaller value, for example 0.7 */
-qreal standardWheelSteps(QWheelEvent *event)
+qreal standardWheelStepCount(QWheelEvent *event)
 {
     // QWheelEvent::angleDelta() returns 8 units for each degree.
     // The standard wheel step is 15°. So on a standard

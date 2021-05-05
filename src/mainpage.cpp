@@ -68,6 +68,11 @@
  *
  * @internal
  *
+ * @todo Paint grayed-out handles for all widgets when setEnabled(false)
+ * is used! For example 25% lightness instead of black. And 75%
+ * lightness instead of white. But: Provide this information
+ * in @ref PerceptualColor::AbstractDiagram!
+ *
  * @todo Provide a link to (the online version of) this page in README.md
  *
  * @todo The doxygen documentation should not recommand <tt>filename.h</tt>

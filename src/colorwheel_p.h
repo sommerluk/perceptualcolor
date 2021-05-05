@@ -73,10 +73,9 @@ public:
     ColorWheelImage m_wheelImage;
 
     int border() const;
-    int contentDiameter() const;
     QPointF fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const;
     PolarPointF fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const;
-    int innerDiameter() const;
+    qreal innerDiameter() const;
     qreal wheelRibbonChroma() const;
 
 private:

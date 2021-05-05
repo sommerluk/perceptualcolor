@@ -324,7 +324,7 @@ void GradientSlider::mouseMoveEvent(QMouseEvent *event)
  * @param event The corresponding mouse event */
 void GradientSlider::wheelEvent(QWheelEvent *event)
 {
-    qreal steps = standardWheelSteps(event);
+    qreal steps = standardWheelStepCount(event);
     //  Only react on good old vertical wheels, and not on horizontal wheels
     if (steps != 0) {
         qreal stepSize;

@@ -158,7 +158,7 @@ private Q_SLOTS:
     void testStandardWheelSteps()
     {
         QWheelEvent temp(QPointF(), QPointF(), QPoint(), QPoint(200, 120), 0, Qt::Orientation::Vertical, Qt::MouseButton::MiddleButton, Qt::KeyboardModifier::NoModifier);
-        QCOMPARE(PerceptualColor::standardWheelSteps(&temp), 1);
+        QCOMPARE(PerceptualColor::standardWheelStepCount(&temp), 1);
     }
 
     void testLchConvertion()

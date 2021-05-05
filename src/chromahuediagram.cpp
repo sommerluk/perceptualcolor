@@ -243,14 +243,17 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         (event->angleDelta().y() != 0) &&
         // Only react on wheel events when then happen in the appropriate
         // area.a
-        d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos())) {
+        d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos())
+        // then:
+    ) {
         event->accept();
         // Calculate the new hue.
         // This may result in a hue smaller then 0° or bigger then 360°.
         // This is no problem because the constructor of FullColorDescription
         // will normalize the hue.
-        d_pointer->m_currentColor.h += standardWheelSteps(event) * singleStepHue;
-        setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(d_pointer->m_currentColor));
+        LchDouble newColor = d_pointer->m_currentColor;
+        newColor.h += standardWheelStepCount(event) * singleStepHue;
+        setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(newColor));
     } else {
         event->ignore();
     }

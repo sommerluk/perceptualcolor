@@ -205,7 +205,7 @@ constexpr int pageStepChroma = 10 * singleStepChroma;
  * its single step. */
 constexpr int pageStepHue = 10 * singleStepHue;
 
-qreal standardWheelSteps(QWheelEvent *event);
+qreal standardWheelStepCount(QWheelEvent *event);
 
 cmsCIELCh toCmsCieLch(const LchDouble &value);
 

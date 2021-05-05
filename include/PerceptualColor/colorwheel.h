@@ -55,7 +55,17 @@ class RgbColorSpace;
  * - If you set the <tt>QWidget::focusPolicy</tt> property to a
  *   value that accepts focus by mouse click, the focus will not only be
  *   accepted for clicks within the actual circle, but also for clicks
- *   anyware within the (rectangular) widget. */
+ *   anyware within the (rectangular) widget.
+ *
+ * @internal
+ *
+ * @todo Add support for Qt::MouseButton::BackButton?
+ * The 'Back' button. (Typically present on the 'thumb' side of a mouse
+ * with extra buttons. This is NOT the tilt wheel.)
+ *
+ * @todo Add support for Qt::MouseButton::ForwardButton?
+ * The 'Forward' Button. (Typically present beside the 'Back' button, and
+ * also pressed by the thumb.) */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
 {
     Q_OBJECT

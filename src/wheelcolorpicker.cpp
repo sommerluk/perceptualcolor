@@ -288,7 +288,7 @@ void WheelColorPicker::WheelColorPickerPrivate::resizeChildWidgets()
 
     // Calculate new top-left corner position for chroma-lightness-diagram
     // (relative to parent widget)
-    const qreal radius = m_colorWheel->d_pointer->contentDiameter() / 2.0;
+    const qreal radius = m_colorWheel->maximumWidgetSquareSize() / 2.0;
     const QPointF widgetTopLeftPos(
         // x position
         radius - widgetSize.width() / 2.0,
