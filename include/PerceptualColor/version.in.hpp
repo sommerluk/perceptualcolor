@@ -124,7 +124,7 @@
 namespace PerceptualColor
 {
 
-QVersionNumber PERCEPTUALCOLOR_IMPORTEXPORT perceptualColorRunTimeVersion();
+PERCEPTUALCOLOR_IMPORTEXPORT QVersionNumber perceptualColorRunTimeVersion();
 
 } // namespace PerceptualColor
 

@@ -249,7 +249,7 @@ private:
     friend class TestMultiSpinBox;
 };
 
-QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value);
+PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value);
 
 } // namespace PerceptualColor
 

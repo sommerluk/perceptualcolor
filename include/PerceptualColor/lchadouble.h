@@ -100,7 +100,7 @@ public:
     bool hasSameCoordinates(const LchaDouble &other) const;
 };
 
-QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value);
+PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value);
 
 } // namespace PerceptualColor
 
