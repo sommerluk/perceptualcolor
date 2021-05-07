@@ -122,6 +122,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR
             -Wno-covered-switch-default\
             -Wno-float-equal\
             -Wno-c++2a-compat\
+            -Wno-switch-enum\
         ")
     endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
