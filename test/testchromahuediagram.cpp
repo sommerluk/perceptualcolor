@@ -177,11 +177,13 @@ private Q_SLOTS:
         QVERIFY2(myDiagram.currentColor().h < 180, "Test Key_End");
     }
 
-    void testMinimalSizeHint()
+    void testMinimumSizeHint()
     {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         QVERIFY2(myDiagram.minimumSizeHint().width() > 0, "minimalSizeHint width is implemented.");
         QVERIFY2(myDiagram.minimumSizeHint().height() > 0, "minimalSizeHint height is implemented.");
+        // Check that the hint is a square:
+        QCOMPARE(myDiagram.minimumSizeHint().width(), myDiagram.minimumSizeHint().height());
     }
 
     void testSizeHint()
@@ -189,12 +191,14 @@ private Q_SLOTS:
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         QVERIFY2(myDiagram.sizeHint().width() > myDiagram.minimumSizeHint().width(), "sizeHint width is bigger than minimalSizeHint width.");
         QVERIFY2(myDiagram.sizeHint().height() > myDiagram.minimumSizeHint().height(), "sizeHint height is bigger than minimalSizeHint height.");
+        // Check that the hint is a square:
+        QCOMPARE(myDiagram.minimumSizeHint().width(), myDiagram.minimumSizeHint().height());
     }
 
     void testColorProperty()
     {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
-        QSignalSpy spyPerceptualDialog(&myDiagram, &PerceptualColor::ChromaHueDiagram::currentColorChanged);
+        QSignalSpy mySpy(&myDiagram, &PerceptualColor::ChromaHueDiagram::currentColorChanged);
         LchDouble referenceColorLch;
         referenceColorLch.l = 50;
         referenceColorLch.c = 10;
@@ -202,13 +206,13 @@ private Q_SLOTS:
 
         // Test if signal for new color is emitted.
         myDiagram.setCurrentColor(referenceColorLch);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QVERIFY2(isEqual(myDiagram.currentColor(), referenceColorLch), "Verify that the diagram’s color is equal to the reference color.");
+        QCOMPARE(mySpy.count(), 1);
+        QVERIFY2(isEqual(myDiagram.currentColor(), referenceColorLch), "Verify that the color is equal to the reference color.");
 
         // Test that no signal is emitted for old color.
         myDiagram.setCurrentColor(referenceColorLch);
-        QCOMPARE(spyPerceptualDialog.count(), 1);
-        QVERIFY2(isEqual(myDiagram.currentColor(), referenceColorLch), "Verify that the diagram’s color is equal to the reference color.");
+        QCOMPARE(mySpy.count(), 1);
+        QVERIFY2(isEqual(myDiagram.currentColor(), referenceColorLch), "Verify that the color is equal to the reference color.");
     }
 
     void testDiagramOffset()
@@ -223,13 +227,13 @@ private Q_SLOTS:
                  "than at widget size 100.");
     }
 
-    void testDiagramCenterInWidgetCoordinates()
+    void testdiagramCenter()
     {
         PerceptualColor::ChromaHueDiagram myDiagram(m_rgbColorSpace);
         myDiagram.resize(100, 100);
         // Test conformance with diagramOffset()
-        QCOMPARE(myDiagram.d_pointer->diagramCenterInWidgetCoordinates().x(), myDiagram.d_pointer->diagramOffset());
-        QCOMPARE(myDiagram.d_pointer->diagramCenterInWidgetCoordinates().y(), myDiagram.d_pointer->diagramOffset());
+        QCOMPARE(myDiagram.d_pointer->diagramCenter().x(), myDiagram.d_pointer->diagramOffset());
+        QCOMPARE(myDiagram.d_pointer->diagramCenter().y(), myDiagram.d_pointer->diagramOffset());
     }
 
     void testConversions()

@@ -48,7 +48,7 @@
  * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a
  *   given lightness)
  *
- * @anchor namespacepollution <b>Namespace pollution and collisions:</b>
+ * @section namespacepollution Namespace pollution and collisions:
  * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.
  *   (See <em>Files → File members</em> for a list of all macros.)
  * - To avoid namespace pollution, all symbols of this library live within
@@ -261,7 +261,7 @@
  * gray colors coming from <tt>QStyle</tt>. The handles might not
  * even be displayed at all.
  *
- * @todo Follow KDE's <b><a href="https://hig.kde.org/index.html">HIG</a></b>
+ * @todo Follow KDE's <a href="https://hig.kde.org/index.html">HIG</a>
  *
  * @todo Add screenshots of widgets to the documentation
  *
@@ -309,7 +309,7 @@
  * the “refresh” icon and (on some widget styles) for the “Ok”
  * button and the “Cancel” button in @ref PerceptualColor::ColorDialog.
  *
- * <b>Load icons</b>
+ * @section loadicons Load icons
  *
  * This library uses by default a possibly existing icon theme
  * if available in Qt.
@@ -340,7 +340,7 @@
  * If no external icon can be loaded by Qt, this library uses hard-coded
  * fallback icon where necessary.
  *
- * <b>Render icons</b>
+ * @section rendericons Render icons
  *
  * - Qt6: Icons are rendered
  *   <a href="https://bugreports.qt.io/browse/QTBUG-89279">always</a>
@@ -411,6 +411,8 @@
  * behind this choise.)
  *
  * You also need CMake for the build process.
+ *
+ * @internal
  *
  * @todo Provide detailed build instructions.
  *

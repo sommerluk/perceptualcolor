@@ -76,7 +76,6 @@ public:
     QPointF fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const;
     PolarPointF fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const;
     qreal innerDiameter() const;
-    qreal wheelRibbonChroma() const;
 
 private:
     Q_DISABLE_COPY(ColorWheelPrivate)

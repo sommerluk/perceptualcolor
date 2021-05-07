@@ -201,8 +201,10 @@ qreal AbstractDiagram::handleRadius() const
  *
  * This is the thickness of a one-dimensional gradient, for example in
  * a slider or a color wheel.
- * @returns The thickness of a slider or a color wheel, measured in widget
- * coordinates.
+ *
+ * @returns The thickness of a slider or a color wheel, measured in
+ * <em>device-independant pixels</em>.
+ *
  * @sa @ref gradientMinimumLength() */
 int AbstractDiagram::gradientThickness() const
 {
@@ -228,8 +230,10 @@ int AbstractDiagram::gradientThickness() const
  * This is the minimum length of a one-dimensional gradient, for example in
  * a slider or a color wheel. This is also the mimimum width and minimum
  * height of two-dimensional gradients.
- * @returns The length of a gradient, measured in widget
- * coordinates.
+ *
+ * @returns The length of a gradient, measured in
+ * <em>device-independant pixels</em>.
+ *
  * @sa @ref gradientThickness() */
 int AbstractDiagram::gradientMinimumLength() const
 {
@@ -249,14 +253,16 @@ int AbstractDiagram::gradientMinimumLength() const
 
 /** @brief The empty space around diagrams reserverd for the focus indicator.
  *
- * Measured in widget coordinates.
+ * Measured in <em>device-independant pixels</em>.
  *
  * @returns The empty space around diagrams reserverd for the focus
  * indicator. */
 int AbstractDiagram::spaceForFocusIndicator() const
 {
-    return handleOutlineThickness()     // Space for the focus indicator itself
-        + 2 * handleOutlineThickness(); // Add some more spacing
+    // 1 × handleOutlineThickness() for the focus indicator itself.
+    // 2 × handleOutlineThickness() for the space between the focus indicator
+    // and the diagram.
+    return 3 * handleOutlineThickness();
 }
 
 /** @brief An appropriate color for a handle, depending on the background

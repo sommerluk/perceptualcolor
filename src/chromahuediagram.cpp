@@ -342,11 +342,11 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(d_pointer->m_currentColor));
 }
 
-/** @brief Recommmended minimum size for the widget.
+/** @brief Recommmended size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns Recommended minimum size for the widget.
+ * @returns Recommended size for the widget.
  *
  * @sa @ref minimumSizeHint() */
 QSize ChromaHueDiagram::sizeHint() const
@@ -354,11 +354,11 @@ QSize ChromaHueDiagram::sizeHint() const
     return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
-/** @brief Recommended size for the widget
+/** @brief Recommended minimum size for the widget
  *
  * Reimplemented from base class.
  *
- * @returns Recommended size for the widget.
+ * @returns Recommended minimum size for the widget.
  *
  * @sa @ref sizeHint() */
 QSize ChromaHueDiagram::minimumSizeHint() const
@@ -379,7 +379,7 @@ LchDouble ChromaHueDiagram::currentColor() const
     return d_pointer->m_currentColor;
 }
 
-/** @brief Setter for the @ref currentColor() property.
+/** @brief Setter for the @ref currentColor property.
  *
  * @param newCurrentColor the new color */
 void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
@@ -407,25 +407,31 @@ void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
 }
 
 /** @brief The point that is the center of the diagram coordinate system.
+ *
  * @returns The point that is the center of the diagram coordinate system,
- * measured in widget coordinates.
+ * measured in <em>device-independant pixels</em> relative to the widget
+ * coordinate system.
+ *
  * @sa @ref diagramOffset provides a one-dimensional
- * representation of this same fact. */
-QPointF ChromaHueDiagram ::ChromaHueDiagramPrivate ::diagramCenterInWidgetCoordinates() const
+ * representation of this very same fact. */
+QPointF ChromaHueDiagram ::ChromaHueDiagramPrivate ::diagramCenter() const
 {
     const qreal tempOffset {diagramOffset()};
     return QPointF(tempOffset, tempOffset);
 }
 
 /** @brief The point that is the center of the diagram coordinate system.
+ *
  * @returns The offset between the center of the widget coordinate system
- * and the diagram coordinate system. The value is measured in widget
- * coordinates. The value is identical for both, x axis and y axis.
- * @sa @ref diagramCenterInWidgetCoordinates provides a two-dimensional
- * representation of this same fact. */
+ * and the center of the diagram coordinate system. The value is measured in
+ * <em>device-independant pixels</em> relative to the widget’s coordinate
+ * system. The value is identical for both, x axis and y axis.
+ *
+ * @sa @ref diagramCenter provides a two-dimensional
+ * representation of this very same fact. */
 qreal ChromaHueDiagram::ChromaHueDiagramPrivate::diagramOffset() const
 {
-    return q_pointer->maximumWidgetSquareSize() / static_cast<qreal>(2);
+    return q_pointer->maximumWidgetSquareSize() / 2.0;
 }
 
 /** @brief React on a resize event.
@@ -531,7 +537,7 @@ bool ChromaHueDiagram ::ChromaHueDiagramPrivate ::isWidgetPixelPositionWithinMou
     const qreal radial = PolarPointF(
                              // Position relative to polar coordinate system center:
                              position -
-                             diagramCenterInWidgetCoordinates()
+                             diagramCenter()
                              // Apply the offset between
                              // - a pixel position on one hand and
                              // - a coordinat point in the middle of this very
@@ -590,7 +596,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     //       use the platform independent QImage as paint device; i.e. using
     //       QImage will ensure that the result has an identical pixel
     //       representation on any platform.”
-    QImage buffer(maximumPhysicalSquareSize(), maximumPhysicalSquareSize(), QImage::Format_ARGB32_Premultiplied);
+    QImage buffer(maximumPhysicalSquareSize(),        // width
+                  maximumPhysicalSquareSize(),        // height
+                  QImage::Format_ARGB32_Premultiplied // format
+    );
     buffer.fill(Qt::transparent);
     buffer.setDevicePixelRatio(devicePixelRatioF());
 
@@ -605,6 +614,8 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 
     // Paint the gamut itself as available in the cache.
     bufferPainter.setRenderHint(QPainter::Antialiasing, false);
+    // As devicePixelRatioF() might have changed, we make sure everything
+    // that might depend on devicePixelRatioF() is updated before painting.
     d_pointer->m_chromaHueImage.setBorder(d_pointer->diagramBorder() * devicePixelRatioF());
     d_pointer->m_chromaHueImage.setImageSize(maximumPhysicalSquareSize());
     d_pointer->m_chromaHueImage.setChromaRange(d_pointer->m_maxChroma);
@@ -617,7 +628,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     // Paint a color wheel around
     bufferPainter.setRenderHint(QPainter::Antialiasing, false);
     // As devicePixelRatioF() might have changed, we make sure everything
-    // is update before painting.
+    // that might depend on devicePixelRatioF() is updated before painting.
     d_pointer->m_wheelImage.setBorder(spaceForFocusIndicator() * devicePixelRatioF());
     d_pointer->m_wheelImage.setDevicePixelRatioF(devicePixelRatioF());
     d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
@@ -634,10 +645,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         // Get widget coordinate point for the handle
         QPointF myHandleInner = PolarPointF(radius - gradientThickness(), d_pointer->m_currentColor.h).toCartesian();
         myHandleInner.ry() *= -1; // Transform to Widget coordinates
-        myHandleInner += d_pointer->diagramCenterInWidgetCoordinates();
+        myHandleInner += d_pointer->diagramCenter();
         QPointF myHandleOuter = PolarPointF(radius, d_pointer->m_currentColor.h).toCartesian();
         myHandleOuter.ry() *= -1; // Transform to Widget coordinates
-        myHandleOuter += d_pointer->diagramCenterInWidgetCoordinates();
+        myHandleOuter += d_pointer->diagramCenter();
         // Draw the line
         pen = QPen();
         pen.setWidth(handleOutlineThickness());
@@ -671,10 +682,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     if (lineRadial > 0) {
         QPointF lineEndWidgetCoordinates = PolarPointF(lineRadial, diagramPolarCoordinatesFromCurrentColor.angleDegree()).toCartesian();
         lineEndWidgetCoordinates.ry() *= (-1);
-        lineEndWidgetCoordinates += d_pointer->diagramCenterInWidgetCoordinates();
+        lineEndWidgetCoordinates += d_pointer->diagramCenter();
         bufferPainter.drawLine(
             // point 1 (center of the diagram):
-            d_pointer->diagramCenterInWidgetCoordinates(),
+            d_pointer->diagramCenter(),
             // point 2:
             lineEndWidgetCoordinates);
     }
@@ -717,11 +728,11 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         bufferPainter.setBrush(transparentBrush);
         bufferPainter.drawEllipse(
             // center:
-            d_pointer->diagramCenterInWidgetCoordinates(),
+            d_pointer->diagramCenter(),
             // x radius:
-            (maximumWidgetSquareSize() - handleOutlineThickness()) / 2.0,
+            d_pointer->diagramOffset() - handleOutlineThickness() / 2.0,
             // y radius:
-            (maximumWidgetSquareSize() - handleOutlineThickness()) / 2.0);
+            d_pointer->diagramOffset() - handleOutlineThickness() / 2.0);
     }
 
     // Paint the buffer to the actual widget

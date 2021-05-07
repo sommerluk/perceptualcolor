@@ -44,7 +44,7 @@
  * - Wide execution character set
  *   (for “wchar_t” data type and string literals with L prefix)
  *
- * <b>Input character set</b>
+ * @section inputcharacterset Input character set
  *
  * This source code of this library is encoded in UTF8. Therefore, your
  * compiler must treat is also as UTF-8.
@@ -73,7 +73,7 @@
  *
  * So we use a <tt>static_assert</tt> statement to control this.
  *
- * <b>Narrow execution character set</b>
+ * @section narowexecutioncharacterset Narrow execution character set
  *
  * Why are we using UTF-8 as narrow execution character set?
  * - <tt>i18n()</tt> and <tt>ki18n()</tt> and <tt>tr()</tt> require both,
@@ -86,7 +86,7 @@
  * Therefore, a static assert controls that really UTF-8 is used
  * as narrow execution character set.
  *
- * <b>Wide execution character set</b>
+ * @section wideexecutioncharacterset Wide execution character set
  *
  * We do not use actively the wide execution character set. There is
  * a usage when communicating with LittleCMS, but there we depend anyway

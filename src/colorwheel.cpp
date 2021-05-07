@@ -62,9 +62,6 @@ ColorWheel::ColorWheel(const QSharedPointer<PerceptualColor::RgbColorSpace> &col
 
     // Initialization
     d_pointer->m_hue = LchValues::neutralHue;
-    d_pointer->m_wheelImage.setBorder(d_pointer->border());
-    d_pointer->m_wheelImage.setImageSize(qMin(width(), height()));
-    d_pointer->m_wheelImage.setWheelThickness(gradientThickness());
 
     // Set focus policy
     // In Qt, usually focus (QWidget::hasFocus()) by mouse click is
@@ -151,7 +148,7 @@ QPointF ColorWheel ::ColorWheelPrivate ::fromWheelToWidgetCoordinates(const Pola
  * @sa @ref ColorWheelPrivate::m_mouseEventActive */
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
-    const qreal radius = maximumWidgetSquareSize() / 2.0 - d_pointer->border();
+    const qreal radius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
     PolarPointF myPolarPoint = d_pointer->fromWidgetToWheelCoordinates(event->pos());
 
     // Ignare clicks outside the wheel
@@ -238,7 +235,7 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
  * @param event The corresponding mouse event */
 void ColorWheel::wheelEvent(QWheelEvent *event)
 {
-    const qreal radius = maximumWidgetSquareSize() / 2.0 - d_pointer->border();
+    const qreal radius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
     PolarPointF myPolarPoint = d_pointer->fromWidgetToWheelCoordinates(event->pos());
     if (
         // Do nothing while mouse movement is tracked anyway. This would
@@ -302,23 +299,24 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
     }
 }
 
-// TODO xxx Revision starts here
-
 /** @brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * Paints the widget. Takes the existing m_wheelPixmap and paints
- * them on the widget. Paints, if appropriate, the focus indicator.
- * Paints the handle. Relies on that m_wheelPixmap are up to date.
+ * Paints the widget.
  *
  * @param event the paint event
  *
  * @internal
  *
- * @todo Make the wheel to be drawn horizontally and vertically aligned??
+ * The wheel is painted using @ref ColorWheelPrivate::m_wheelImage.
+ * The focus indicator (if any) and the handle are painted on-the-fly.
  *
- * @todo Better design for small widget sizes */
+ * @todo Make the wheel to be drawn horizontally and vertically aligned?? Or
+ * better top-left aligned for LTR layouts and top-right aligned for RTL
+ * layouts?
+ *
+ * @todo Better design (smaller wheel ribbon?) for small widget sizes */
 void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -340,41 +338,67 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     //       use the platform independent QImage as paint device; i.e. using
     //       QImage will ensure that the result has an identical pixel
     //       representation on any platform.”
-    QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
+    QImage paintBuffer(maximumPhysicalSquareSize(),        // width
+                       maximumPhysicalSquareSize(),        // height
+                       QImage::Format_ARGB32_Premultiplied // format
+    );
     paintBuffer.fill(Qt::transparent);
-    QPainter painter(&paintBuffer);
+    paintBuffer.setDevicePixelRatio(devicePixelRatioF());
+    QPainter bufferPainter(&paintBuffer);
 
-    // paint the wheel from the cache
-    painter.drawImage(0, 0, d_pointer->m_wheelImage.getImage());
+    // Paint the color wheel
+    bufferPainter.setRenderHint(QPainter::Antialiasing, false);
+    // As devicePixelRatioF() might have changed, we make sure everything
+    // that might depend on devicePixelRatioF() is updated before painting.
+    d_pointer->m_wheelImage.setBorder(spaceForFocusIndicator() * devicePixelRatioF());
+    d_pointer->m_wheelImage.setDevicePixelRatioF(devicePixelRatioF());
+    d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
+    d_pointer->m_wheelImage.setWheelThickness(gradientThickness() * devicePixelRatioF());
+    bufferPainter.drawImage(QPoint(0, 0),                      // image position (top-left)
+                            d_pointer->m_wheelImage.getImage() // the image itself
+    );
 
-    // paint the handle
-    qreal radius = maximumWidgetSquareSize() / 2.0 - d_pointer->border();
-    // get widget coordinates for our handle
-    QPointF myHandleInner = d_pointer->fromWheelToWidgetCoordinates(PolarPointF(radius - gradientThickness(), d_pointer->m_hue));
-    QPointF myHandleOuter = d_pointer->fromWheelToWidgetCoordinates(PolarPointF(radius, d_pointer->m_hue));
-    // draw the line
+    // Paint the handle
+    const qreal wheelOuterRadius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
+    // Get widget coordinates for the handle
+    QPointF myHandleInner = d_pointer->fromWheelToWidgetCoordinates(
+        // Inner point at the wheel:
+        PolarPointF(wheelOuterRadius - gradientThickness(), // x
+                    d_pointer->m_hue                        // y
+                    ));
+    QPointF myHandleOuter = d_pointer->fromWheelToWidgetCoordinates(
+        // Outer point at the wheel:
+        PolarPointF(wheelOuterRadius, d_pointer->m_hue));
+    // Draw the line
     QPen pen;
     pen.setWidth(handleOutlineThickness());
     pen.setCapStyle(Qt::FlatCap);
     pen.setColor(Qt::black);
-    painter.setPen(pen);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.drawLine(myHandleInner, myHandleOuter);
+    bufferPainter.setPen(pen);
+    bufferPainter.setRenderHint(QPainter::Antialiasing, true);
+    bufferPainter.drawLine(myHandleInner, myHandleOuter);
 
     // Paint a focus indicator if the widget has the focus
     if (hasFocus()) {
+        bufferPainter.setRenderHint(QPainter::Antialiasing, true);
+        pen = QPen();
         pen.setWidth(handleOutlineThickness());
         pen.setColor(focusIndicatorColor());
-        painter.setPen(pen);
-        // TODO WARNING The following drawEllipse should use floating point instead of rounding!
-        painter.drawEllipse(handleOutlineThickness() / 2, // Integer division (rounding down)
-                            handleOutlineThickness() / 2, // Integer division (rounding down)
-                            qRound(maximumWidgetSquareSize() - handleOutlineThickness()),
-                            qRound(maximumWidgetSquareSize() - handleOutlineThickness()));
+        bufferPainter.setPen(pen);
+        const qreal center = maximumWidgetSquareSize() / 2.0;
+        bufferPainter.drawEllipse(
+            // center:
+            QPointF(center, center),
+            // x radius:
+            center - handleOutlineThickness() / 2.0,
+            // y radius:
+            center - handleOutlineThickness() / 2.0);
     }
 
     // Paint the buffer to the actual widget
-    QPainter(this).drawImage(0, 0, paintBuffer);
+    QPainter widgetPainter(this);
+    widgetPainter.setRenderHint(QPainter::Antialiasing, false);
+    widgetPainter.drawImage(QPoint(0, 0), paintBuffer);
 }
 
 /** @brief React on a resize event.
@@ -385,13 +409,9 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 void ColorWheel::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    // TODO The image cache is not necessarily invalid now. Thought the widget
-    // was resized, the image itself might stay in the same size. See also
-    // same problem for ChromaHueDiagram and for ChromaLightnessDiagram
-    // ChromaLightnessDiagram’s resize() call done here within the child class
-    // WheelColorPicker. This situation is relevant for the real-world usage,
-    // when the user scales the window only horizontally or only vertically.
-    d_pointer->m_wheelImage.setImageSize(qMin(size().width(), size().height()));
+
+    // Update the widget content
+    d_pointer->m_wheelImage.setImageSize(maximumPhysicalSquareSize());
     /* As by Qt documentation:
      *     “The widget will be erased and receive a paint event immediately
      *      after processing the resize event. No drawing need be (or should
@@ -405,26 +425,8 @@ qreal ColorWheel::hue() const
     return d_pointer->m_hue;
 }
 
-/** @brief the chroma with which the wheel ribbon is painted. */
-qreal ColorWheel::ColorWheelPrivate::wheelRibbonChroma() const
-{
-    return LchValues::srgbVersatileChroma;
-}
-
-/**
- * Set the hue property. The hue property is the hue angle degree in the
- * range from 0 to 360, where the circle is again at its beginning. The
- * value is gets normalized to this range. So
- * \li 0 gets 0
- * \li 359.9 gets 359.9
- * \li 360 gets 0
- * \li 361.2 gets 1.2
- * \li 720 gets 0
- * \li -1 gets 359
- * \li -1.3 gets 358.7
- *
- * After changing the hue property, the widget gets updated.
- * @param newHue The new hue value to set. */
+/** @brief Setter for the @ref hue property.
+ *  @param newHue the new hue */
 void ColorWheel::setHue(const qreal newHue)
 {
     qreal temp = PolarPointF::normalizedAngleDegree(newHue);
@@ -435,70 +437,70 @@ void ColorWheel::setHue(const qreal newHue)
     }
 }
 
-// TODO The widget content should be centered horizontally and vertically
-
-/** @brief Provide the size hint.
+/** @brief Recommmended size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns the size hint
+ * @returns Recommended size for the widget.
  *
- * @sa minimumSizeHint()
- */
+ * @sa @ref minimumSizeHint() */
 QSize ColorWheel::sizeHint() const
 {
     return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
-/** @brief Provide the minimum size hint.
+/** @brief Recommmended minimum size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns the minimum size hint
+ * @returns Recommended minimum size for the widget.
  *
- * @sa sizeHint()
- *
- * @todo The circumscription should be minimum 4 times gradientMinimumLength
- * because there are four perceptual-color poles, and 1 gradientMinimumLength
- * between each would be nice.
- */
+ * @sa @ref sizeHint() */
 QSize ColorWheel::minimumSizeHint() const
 {
-    // We interpretate the gradientMinimumLength() as the length of the
-    // circumference of the inner circle of the wheel. By dividing it by π
-    // we get the requiered inner diameter:
-    const qreal innerDiameter = gradientMinimumLength() / M_PI;
-    const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * d_pointer->border());
+    // We interpretate the gradientMinimumLength() as the length between two
+    // poles of human perception. Around the wheel, there are four of them
+    // (0° red, 90° yellow, 180° green, 270° blue). So the circumference of
+    // the inner circle of the wheel is 4 × gradientMinimumLength(). By
+    // dividing it by π, we get the requiered inner diameter:
+    const qreal innerDiameter = 4 * gradientMinimumLength() / M_PI;
+    const int size = qRound(innerDiameter + 2 * gradientThickness() + 2 * spaceForFocusIndicator());
     // Expand to the global minimum size for GUI elements
     return QSize(size, size).expandedTo(QApplication::globalStrut());
 }
 
-// TODO What when some of the wheel colors are out of gamut?
-
-/** @brief The border around the color wheel.
+/** @brief The empty space around the reserverd for the focus indicator.
  *
- * The diagram is not painted on the whole extend of the widget. A
- * border is left to allow that the focus indicator can be painted
- * when the widget gets the focus.
+ * This is a simple redirect of @ref AbstractDiagram::spaceForFocusIndicator().
+ * It is meant to allow access to friend classes of @ref ColorWheel.
  *
- * @returns The size of the border (distance between widget outline and
- * color wheel outline), measured in <em>device-independant pixels</em>. */
+ * Measured in <em>device-independant pixels</em>.
+ *
+ * @returns The empty space around diagrams (distance between widget outline
+ * and color wheel outline) reserverd for the focus indicator. */
 int ColorWheel::ColorWheelPrivate::border() const
 {
-    return 2 * q_pointer->handleOutlineThickness();
+    return q_pointer->spaceForFocusIndicator();
 }
 
 /** @brief The inner diameter of the color wheel.
+ *
+ * It is meant to allow access to friend classes of @ref ColorWheel.
+ *
  * @returns The inner diameter of the color wheel, measured in
  * <em>device-independant pixels</em>. This is the diameter of the empty
  * circle within the color wheel.
  *
- * @internal
- *
  * @todo Measured in physical pixel or device-independant pixel? */
 qreal ColorWheel::ColorWheelPrivate::innerDiameter() const
 {
-    return q_pointer->maximumWidgetSquareSize() - 2 * q_pointer->gradientThickness() - 2 * border();
+    return
+        // Size for the widget:
+        q_pointer->maximumWidgetSquareSize()
+        // Reduce space for the wheel ribbon:
+        - 2 * q_pointer->gradientThickness()
+        // Reduce space for  the focus indicator (border around wheel ribbon):
+        - 2 * q_pointer->spaceForFocusIndicator();
 }
 
 } // namespace PerceptualColor

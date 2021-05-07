@@ -154,6 +154,10 @@ namespace PerceptualColor
  * within the “Hex” spinbox. → Click within the “HSV” spinbox. Now, HLC
  * changes from 270° to 269°. → Why?
  *
+ * @todo Custom layout management that has a specific height-per-width ratio
+ * considering the @ref ChromaHueDiagram and and @ref WheelColorPicker
+ * and <em>their</em> useful height-per-width ratio.
+ *
  * @todo The graphical display in @ref WheelColorPicker jumps when you
  * choose a gray color like HSV 20 0 125 and then increment or decrement the
  * V component in the QSpinBox by 1. This is because @ref WheelColorPicker is

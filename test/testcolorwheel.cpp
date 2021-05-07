@@ -87,6 +87,12 @@ private Q_SLOTS:
         ColorWheel *myColorWheel = new ColorWheel(m_rgbColorSpace);
         myLayout->addWidget(myColorWheel);
         myWindow.setLayout(myLayout);
+
+        // It is necessary to show the widget and make it active
+        // to make focus and widget events working within unit tests:
+        myWindow.show();
+        QApplication::setActiveWindow(&myWindow);
+
         myLineEdit->setFocus();
         QCOMPARE(myLineEdit->hasFocus(), true);
         QCOMPARE(myColorWheel->hasFocus(), false);
@@ -113,6 +119,71 @@ private Q_SLOTS:
             // Not specifying a point means: click in the center of the widget.
         );
         QCOMPARE(myColorWheel->hasFocus(), true);
+    }
+
+    void testHueProperty()
+    {
+        ColorWheel myWheel(m_rgbColorSpace);
+        QSignalSpy mySpy(&myWheel, &ColorWheel::hueChanged);
+        qreal referenceHue = 12.345;
+
+        // Test if signal is emitted.
+        myWheel.setHue(referenceHue);
+        QCOMPARE(mySpy.count(), 1);
+        QCOMPARE(myWheel.hue(), referenceHue);
+
+        // Test that no signal is emitted for old hue.
+        myWheel.setHue(referenceHue);
+        QCOMPARE(mySpy.count(), 1);
+        QCOMPARE(myWheel.hue(), referenceHue);
+
+        // Test that the property is correctly normalized
+        myWheel.setHue(0);
+        QCOMPARE(myWheel.hue(), 0);
+        myWheel.setHue(359.9);
+        QCOMPARE(myWheel.hue(), 359.9);
+        myWheel.setHue(360);
+        QCOMPARE(myWheel.hue(), 0);
+        myWheel.setHue(361.2);
+        QCOMPARE(myWheel.hue(), 1.2);
+        myWheel.setHue(7200);
+        QCOMPARE(myWheel.hue(), 0);
+        myWheel.setHue(-1);
+        QCOMPARE(myWheel.hue(), 359);
+        myWheel.setHue(-1.3);
+        QCOMPARE(myWheel.hue(), 358.7);
+    }
+
+    void testMinimumSizeHint()
+    {
+        ColorWheel myColorWheel(m_rgbColorSpace);
+        QVERIFY2(myColorWheel.minimumSizeHint().width() > 0, "minimalSizeHint width is implemented.");
+        QVERIFY2(myColorWheel.minimumSizeHint().height() > 0, "minimalSizeHint height is implemented.");
+        // Check that the hint is a square:
+        QCOMPARE(myColorWheel.minimumSizeHint().width(), myColorWheel.minimumSizeHint().height());
+    }
+
+    void testSizeHint()
+    {
+        ColorWheel myColorWheel(m_rgbColorSpace);
+        QVERIFY2(myColorWheel.sizeHint().width() > myColorWheel.minimumSizeHint().width(), "sizeHint width is bigger than minimalSizeHint width.");
+        QVERIFY2(myColorWheel.sizeHint().height() > myColorWheel.minimumSizeHint().height(), "sizeHint height is bigger than minimalSizeHint height.");
+        // Check that the hint is a square:
+        QCOMPARE(myColorWheel.minimumSizeHint().width(), myColorWheel.minimumSizeHint().height());
+    }
+
+    void testBorder()
+    {
+        ColorWheel myColorWheel(m_rgbColorSpace);
+        QVERIFY2(myColorWheel.d_pointer->border() > 0, "border() is a valid value > 0.");
+    }
+
+    void testInnerDiameter()
+    {
+        ColorWheel myColorWheel(m_rgbColorSpace);
+        QVERIFY2(myColorWheel.d_pointer->innerDiameter() > 0, "innerDiameter() is a valid value > 0.");
+        QVERIFY2(myColorWheel.d_pointer->innerDiameter() < myColorWheel.size().width(), "innerDiameter() is smaller than the widget’s width.");
+        QVERIFY2(myColorWheel.d_pointer->innerDiameter() < myColorWheel.size().height(), "innerDiameter() is smaller than the widget’s height.");
     }
 };
 

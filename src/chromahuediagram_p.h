@@ -94,7 +94,7 @@ public:
 
     // Member functions
     int diagramBorder() const;
-    QPointF diagramCenterInWidgetCoordinates() const;
+    QPointF diagramCenter() const;
     qreal diagramOffset() const;
     cmsCIELab fromWidgetPixelPositionToLab(const QPoint position) const;
     bool isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint widgetCoordinates) const;

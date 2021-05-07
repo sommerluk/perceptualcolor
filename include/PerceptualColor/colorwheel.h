@@ -63,6 +63,9 @@ class RgbColorSpace;
  * The 'Back' button. (Typically present on the 'thumb' side of a mouse
  * with extra buttons. This is NOT the tilt wheel.)
  *
+ * @todo What when some of the wheel colors are out of gamut? How to handle
+ * that?
+ *
  * @todo Add support for Qt::MouseButton::ForwardButton?
  * The 'Forward' Button. (Typically present beside the 'Back' button, and
  * also pressed by the thumb.) */
@@ -72,9 +75,18 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
 
     /** @brief The currently selected hue.
      *
-     * The hue property is the hue angle, as defined in the LCH color model.
+     * This is the hue angle, as defined in the LCH color model.
+     *
      *
      * Measured in degree. Valid range: [0°, 360°[
+     * The value is gets normalized to this range. So
+     * \li 0 gets 0
+     * \li 359.9 gets 359.9
+     * \li 360 gets 0
+     * \li 361.2 gets 1.2
+     * \li 720 gets 0
+     * \li -1 gets 359
+     * \li -1.3 gets 358.7
      *
      * @sa READ @ref hue() const
      * @sa WRITE @ref setHue()
@@ -127,7 +139,7 @@ private:
     ConstPropagatingUniquePointer<ColorWheelPrivate> d_pointer;
 
     /** @internal @brief Only for unit tests. */
-    friend class TestColorDialog;
+    friend class TestColorWheel;
 
     /** @internal
      * @brief Internal friend declaration.

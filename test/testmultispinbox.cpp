@@ -583,9 +583,12 @@ private Q_SLOTS:
         label2->setBuddy(widget2);
         widget1->setFocus();
         parentWidget->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+
+        // It is necessary to show the widget and make it active
+        // to make focus and widget events working within unit tests:
         parentWidget->show();
-        // The following statement make focus and widget events working.
         QApplication::setActiveWindow(parentWidget.data());
+
         // Assert that the setup is okay.
         if (!widget1->hasFocus()) {
             // Throw an exception instead of using an assert statement.
