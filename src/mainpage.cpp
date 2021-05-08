@@ -342,7 +342,7 @@
  * @section rendericons Render icons
  *
  * - <a href="https://bugreports.qt.io/browse/QTBUG-89279">In Qt6, icons are
- *   rendered always with high-DPI.</>
+ *   rendered always with high-DPI.</a>
  * - In Qt5, icons are rendered by default in low resolution. This applies even
  *   for SVG icons on high-DPI displays! Application developers can enable
  *   high-DPI icon rendering with the following code (which should be put

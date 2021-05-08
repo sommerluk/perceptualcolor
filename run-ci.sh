@@ -29,6 +29,34 @@
 
 
 
+################# CI: Continious integration #################
+
+
+
+
+
+################# Clang format #################
+(
+while true; do
+    read -p "Format all the code with clang-format? (yes) " yn
+    case $yn in
+        yes ) mkdir --parents build \
+                && cd build \
+                && cmake ../ > /dev/null \
+                && make --jobs > /dev/null \
+                && make clang-format; \
+            echo "Code formatting done."; \
+            exit;;
+        * ) echo "Code formatting canceled."; \
+            exit;;
+    esac
+done
+)
+
+
+
+
+
 ################# Build the project #################
 # Run within a sub-shell (therefore the parentesis),
 # so that after this we go back to the original working directory.
@@ -38,12 +66,15 @@ mkdir --parents build \
     && cmake ../ > /dev/null \
     && make --jobs > /dev/null \
 )
+echo "Build done"
 
 
 
 
 
 ################# Doxygen #################
+# This section will generate up-to-date screenshots and 
+# new Doxygen documentation.
 mkdir --parents doc
 mkdir --parents doc/screenshots
 rm --recursive --force doc/screenshots/*
@@ -55,6 +86,7 @@ cd doc/screenshots \
     && ../../build/generatescreenshots \
     && for FILE in *; do cp ../../LICENSES/MIT.txt "$FILE.license"; done
 )
+echo "Screenshots for documentation have been generated."
 # We are not interested in the normal Doxygen output, but only in the errors.
 # We have to filter the errors, because Doxygen produces errors where it
 # should not (https://github.com/doxygen/doxygen/issues/7411 errors on
@@ -74,6 +106,7 @@ doxygen 2>&1 >/dev/null \
         --invert-match \
         --perl-regexp "warning: return type of member .* is not documented" \
            | sed 's/^/Doxygen “public API” documentation: /'
+echo "Doxygen documention has been generated."
 
 
 
@@ -299,6 +332,7 @@ done
 
 
 ################# Unit tests #################
+(\
 cd build && ctest --verbose \
     | grep --invert-match --perl-regexp "^\d+: PASS   : " \
     | grep --invert-match --perl-regexp "^\d+: Test command: " \
@@ -319,3 +353,4 @@ cd build && ctest --verbose \
     | grep --invert-match --perl-regexp "^\d+:\s*[\.0123456789]* msecs per iteration" \
     | grep --invert-match --perl-regexp "^\d+: RESULT : " \
     | grep --invert-match --perl-regexp "^$"
+)
