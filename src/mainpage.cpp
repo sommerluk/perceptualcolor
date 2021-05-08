@@ -80,8 +80,7 @@
  *
  * @todo Review and unit tests for these classes:
  * @ref PerceptualColor::ChromaLightnessDiagram,
- * @ref PerceptualColor::RgbColorSpace,
- * @ref PerceptualColor::ColorWheel
+ * @ref PerceptualColor::RgbColorSpace
  *
  * @todo It might be interesting to use <tt>QStyle::PM_FocusFrameHMargin</tt>
  * <em>(Horizontal margin that the focus frame will outset the widget
@@ -341,9 +340,9 @@
  *
  * @section rendericons Render icons
  *
- * - <a href="https://bugreports.qt.io/browse/QTBUG-89279">In Qt6, icons are
- *   rendered always with high-DPI.</a>
- * - In Qt5, icons are rendered by default in low resolution. This applies even
+ * - <a href="https://bugreports.qt.io/browse/QTBUG-89279">Qt6 renders icons
+ *   always with high-DPI.</a>
+ * - Qt5 renders icons by default in low resolution. This applies even
  *   for SVG icons on high-DPI displays! Application developers can enable
  *   high-DPI icon rendering with the following code (which should be put
  *   by convention <em>before</em> creating the <tt>QCoreApplication</tt>
