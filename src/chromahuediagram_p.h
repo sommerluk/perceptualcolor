@@ -78,7 +78,12 @@ public:
      *   color handle.
      * - Once a @ref mouseReleaseEvent() occurs, the value is set to
      *   <tt>false</tt>. Further mouse movements will not move the handle
-     *   anymore. */
+     *   anymore.
+     *
+     * This is done because Qt’s default mouse tracking reacts on all clicks
+     * within the whole widget. However, <em>this</em> widget is meant as a
+     * circular widget, only reacting on mouse events within the circle;
+     * this requires this custom implementation. */
     bool m_isMouseEventActive = false;
     /** @brief The maximum chroma value.
      *

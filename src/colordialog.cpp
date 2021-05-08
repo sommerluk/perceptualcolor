@@ -335,7 +335,7 @@ void ColorDialog::ColorDialogPrivate::readLightnessValue()
 void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 {
     QList<MultiSpinBox::SectionData> hsvSections = m_hsvSpinBox->sections();
-    setCurrentOpaqueQColor(QColor::fromHsvF(hsvSections[0].value / static_cast<qreal>(360), hsvSections[1].value / static_cast<qreal>(255), hsvSections[2].value / static_cast<qreal>(255)));
+    setCurrentOpaqueQColor(QColor::fromHsvF(hsvSections[0].value / 360.0, hsvSections[1].value / 255.0, hsvSections[2].value / 255.0));
 }
 
 /** @brief Reads the decimal RGB numbers in the dialog and
@@ -343,7 +343,7 @@ void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 void ColorDialog::ColorDialogPrivate::readRgbNumericValues()
 {
     QList<MultiSpinBox::SectionData> rgbSections = m_rgbSpinBox->sections();
-    setCurrentOpaqueQColor(QColor::fromRgbF(rgbSections[0].value / static_cast<qreal>(255), rgbSections[1].value / static_cast<qreal>(255), rgbSections[2].value / static_cast<qreal>(255)));
+    setCurrentOpaqueQColor(QColor::fromRgbF(rgbSections[0].value / 255.0, rgbSections[1].value / 255.0, rgbSections[2].value / 255.0));
 }
 
 /** @brief Reads the hexadecimal RGB numbers in the dialog and

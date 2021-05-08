@@ -35,6 +35,8 @@
 
 #include "constpropagatingrawpointer.h"
 
+#include <QImage>
+
 namespace PerceptualColor
 {
 /** @internal
@@ -51,55 +53,81 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~ChromaLightnessDiagramPrivate() noexcept = default;
 
-    /** @brief The border between the widget outer border and the
+    // Member variables
+    /** @brief Internal storage of the @ref currentColor property */
+    LchDouble m_currentColor;
+    /** @brief The border between the widget outer top, right and bottom
+     * border and the diagram itself.
+     *
+     * The diagram is not painted on the whole extend of the widget.
+     * A border is left to allow that the selection handle can be painted
+     * completely even when a pixel on the border of the diagram is
+     * selected.
+     *
+     * This is the value for the top, right and bottom border. For the left
+     * border, see @ref m_leftBorder instead.
+     *
+     * Measured in <em>device-independant pixels</em>. */
+    const qreal m_defaultBorder = q_pointer->handleRadius() + q_pointer->handleOutlineThickness() / 2.0;
+    /** @brief Indicates if the image in the cache is valid or not.
+     *
+     * <tt>true</tt> if the @ref m_diagramImage cache is up-to-date.
+     * <tt>false</tt> otherwise.
+     *
+     * @sa @ref m_diagramImage
+     * @sa @ref updateDiagramCache */
+    bool m_diagramCacheReady = false;
+    /** @brief A cache for the diagram image
+     *
+     * @sa @ref m_diagramCacheReady
+     * @sa @ref updateDiagramCache() */
+    QImage m_diagramImage;
+    /** @brief Holds if currently a mouse event is active or not.
+     *
+     * Default value is <tt>false</tt>.
+     * - A mouse event gets typically activated on a @ref mousePressEvent()
+     *   done within the gamut diagram. The value is set to <tt>true</tt>.
+     * - While active, all @ref mouseMoveEvent() will move the diagram’s
+     *   color handle.
+     * - Once a @ref mouseReleaseEvent() occurs, the value is set to
+     *   <tt>false</tt>. Further mouse movements will not move the handle
+     *   anymore.
+     *
+     * This is done because Qt’s default mouse tracking reacts on all clicks
+     * within the whole widget. However, <em>this</em> widget is meant as a
+     * circular widget, only reacting on mouse events within the circle;
+     * this requires this custom implementation. */
+    bool m_isMouseEventActive = false;
+    /** @brief The left border between the widget outer left border and the
      * diagram itself.
      *
      * The diagram is not painted on the whole extend of the widget.
      * A border is left to allow that the selection handle can be painted
      * completely even when a pixel on the border of the diagram is
-     * selected. The border is determined automatically, its value
-     * depends on @ref handleRadius and @ref handleOutlineThickness.
+     * selected.
      *
-     * This is the very same value for all four border (left, right, top,
-     * bottom).
+     * This is the value for the left border. For the other three borders,
+     * see @ref m_defaultBorder instead.
      *
-     * @internal
-     *
-     * @todo This is measured in what? Device-independant pixel or physical
-     * pixel? And: What do the calling functions think this is measured
-     * in (functions within this class or within friend classes)? */
-    const int m_border = qRound(q_pointer->handleRadius()
-                                // TODO Why division by 2.0?
-                                + q_pointer->handleOutlineThickness() / 2.0);
-    /** @brief Internal storage of the chromaLightness() property */
-    //     QPointF m_chromaLightness;
-    /** @brief Internal storage of the @ref currentColor property */
-    LchDouble m_currentColor;
-    /** @brief A cache for the diagram as QImage. @sa updateDiagramCache() */
-    QImage m_diagramImage;
-    /** True if the m_diagramImage cache is up-to-date. False otherwise.
-     * @sa m_diagramImage
-     * @sa updateDiagramCache */
-    bool m_diagramCacheReady = false;
-    /** @brief If a mouse event is active
-     *
-     * Holds if currently a mouse event is active or not.
-     * @sa mousePressEvent()
-     * @sa mouseMoveEvent()
-     * @sa mouseReleaseEvent()
-     */
-    bool m_mouseEventActive;
+     * Measured in <em>device-independant pixels</em>. */
+    const qreal m_leftBorder = qMax<qreal>(
+        // First candidate: normal border used in this widget, plus
+        // thickness of the focus indicator.
+        m_defaultBorder + q_pointer->handleOutlineThickness(),
+        // Second candidate: Generally recommended value for focus indicator
+        q_pointer->spaceForFocusIndicator());
     /** @brief Pointer to RgbColorSpace() object */
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
-    QImage generateDiagramImage(const qreal imageHue, const QSize imageSize) const;
+    // Member functions
     QPoint currentImageCoordinates();
     QPointF fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates);
     QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
+    QImage generateDiagramImage(const qreal imageHue, const QSize imageSize) const;
     bool imageCoordinatesInGamut(const QPoint imageCoordinates);
     static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
-    void updateDiagramCache();
     void setImageCoordinates(const QPoint newImageCoordinates);
+    void updateDiagramCache();
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)

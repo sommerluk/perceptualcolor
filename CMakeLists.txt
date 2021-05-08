@@ -333,6 +333,7 @@ function(add_unit_test test_name)
 endfunction(add_unit_test)
 
 add_unit_test(testabstractdiagram)
+add_unit_test(testchromalightnessdiagram)
 add_unit_test(testchromahuediagram)
 add_unit_test(testchromahueimage)
 add_unit_test(testcolordialog)

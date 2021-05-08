@@ -61,12 +61,33 @@
  * @sa @ref compile
  * @sa @ref hidpisupport
  *
- * @copyright Almost all the code is published under MIT License. Only
- * <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
+ * @copyright Almost all the code is published under MIT License.
+ * Only <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause
  * license. The <tt>LICENSES</tt> subfolder contains copies of the licence
  * texts.
  *
  * @internal
+ *
+ * @todo Test also on Windows. (Does it work well with VisualStudio?
+ * Isn’t there a free version of VisualStudio? Test it with this
+ * library!)
+ *
+ * @todo Test opaque RGB color space object with a non-export-all version
+ * of this library to make sure it actually works for third-party developers.
+ *
+ * @todo Would it make sense for @ref PerceptualColor::ChromaHueDiagram and
+ * @ref PerceptualColor::ChromaLightnessDiagram to split up their property
+ * <tt>currentColor</tt> into two properties: A two-dimensional property
+ * for what the user can change, and a one-dimensional property
+ * for what only the programmer can change? Or at least provide
+ * a Q_INVOKABLE getter and maybe also setter support? So
+ * @ref PerceptualColor::WheelColorPicker could use this
+ * instead of a lambda expression to set the hue of the
+ * @ref PerceptualColor::ChromaLightnessDiagram. And: Also when we don’t do
+ * that: When setting <tt>currentColor</tt> to an out-of-gamut color,
+ * what happens? Does @ref PerceptualColor::ChromaHueDiagram preserve
+ * lightness, while @ref PerceptualColor::ChromaLightnessDiagram preserves
+ * hue? Would this make sense?
  *
  * @todo Paint grayed-out handles for all widgets when setEnabled(false)
  * is used! For example 25% lightness instead of black. And 75%
@@ -134,38 +155,26 @@
  * @todo Support more color spaces? https://pypi.org/project/colorio/ for
  * example supports a lot of (also perceptually uniform) color spaces…
  *
- * @todo Which symbols should finally be exported? Remove (most of) the other
- * headers from the include directory!
+ * @todo Which symbols should finally be exported?
  *
  * @todo Check in all classes that take a @ref PerceptualColor::RgbColorSpace
  * that the shared pointer is actually not a <tt>nullptr</tt>. If is
  * <em>is</em> a <tt>nullptr</tt> than throw an exception. Throwing the
  * exception early might make error detection easier for users of the library.
  *
- * @todo Would it be better to avoid default arguments like
- * <tt>void test(int i = 0)</tt> as changing the default value in a
- * future version of the library requires recompilation, which breaks
- * to a certain degree ABI? It the problem for default functions like
- * <tt>Test() = default</tt> as default constructor similar?
- *
- * @todo Avoid default parameters as they would require recompilation of
- * applications if changed in a future version of the library?
- *
- * @todo Review all static class functions: Which should be made non-static?
- * (Maybe in the future, it might be necessary to access object data, so
- * better making them non-static so this stays possible.)
+ * * @todo Avoid default arguments like <tt>void test(int i = 0)</tt> in
+ * public headers, as changes require re-compilation of the client application
+ * to take effect, which might lead to a miss-match of behaviour between
+ * application and library, if  compile-time and run-time version of the
+ * library are not the same. Is the problem  for default constructors
+ * like <tt>ClassName() = default</tt> similar?
  *
  * @todo mark all public non-slot functions with Q_INVOKABLE (except property
  * setters and getters)
  *
- * @todo Delete all default arguments in public headers, as changes require
- * re-compilation of the client application to take effect, which might lead
- * to a miss-match of behaviour between app and lib, if compile-time and
- * run-time version of the lib are not the same.
- *
  * @todo A good widget library should
  * - run on all systems (✓ We do not use system-specific code nor do we
- *   rely on byte order / Is this correct? Image generation code?)
+ *   rely on byte order)
  * - support hight-dpi (? work in progress)
  * - stylable by QStyle (? partial)
  * - stylable by style sheets (✗)
@@ -221,20 +230,7 @@
  * be better to require the last LTS release (5.15), just to be compatible if
  * in the future we depend on this?
  *
- * @todo This library provides some constexpr in the public API. If now we
- * release version 1.0.0 of this library with constexpr x == 1. Now, in
- * version 1.1.0 of this library, we change its value to constexpr x == 5.
- * Now, two questions: 1) Does this break binary compatibility? 2) As
- * constexpr is (or at least <em>might</em>) be evaluated at compile
- * time; if a program is compiled against version 1.0.0 but executed
- * with version 1.1.0, doest’t then constexpr x have different values
- * within the library code and within the program code, which might
- * lead to undefined behaviour?
- *
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
- *
- * @todo Only expose in the headers and in the public API what is absolutely
- * necessary.
  *
  * @todo Qt Designer support for the widgets. Quote from a blog from Viking
  * about Qt Designer plugins:
@@ -292,10 +288,6 @@
  * manipulate the current color along the depth and vividness axis
  * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
  * by Roy S. Berns?
- *
- * @todo Format source code with
- * https://invent.kde.org/frameworks/extra-cmake-modules/-/blob/master/kde-modules/KDEClangFormat.cmake
- * ?
  *
  * @todo Spell checking for the documentation */
 

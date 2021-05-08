@@ -43,21 +43,17 @@ class RgbColorSpace;
  *
  * @brief A widget that displays a chroma-lightness diagram.
  *
- * This widget displays a chroma-lightness diagram in the LCh color model
- * for a given hue, in a Cartesian coordinate system.
+ * This widget displays a chroma-lightness diagram for a given hue.
  *
  * @image html ChromaLightnessDiagram.png "ChromaLightnessDiagram" width=250
  *
  * The widget shows the chroma-lightness diagram at the whole widget extend.
- * At the y axis the diagram always shows the lightness values of 0 at the
- * bottom pixel and the lightness value of 100 at the top pixel. For the
- * x (chroma) axis is automatically used the same scale as for the y axis.
- * So if the widget size is a square, both x range and y range are from
- * 0 to 100. If the widget width is larger than the widget height, the
- * x range goes beyond 100.
- *
- * The widget reacts on mouse events and on keyboard events
- * (see keyPressEvent() for details).
+ * - Vertically the lightness from 0 (bottom) to 100 (top).
+ * - Horizontally the chroma from 0 (left) to a higher value (right). The same
+ *   scale is used like for the vertical axis: So if the widget size is a
+ *   square, both chroma and lightness range from 0 to 100. If the widget
+ *   width is twice the height, the lightness ranges from 0 to 100
+ *   and the chroma ranges from 0 to 200.
  *
  * @note This widget <em>always</em> accepts focus by a mouse
  * click within the displayed gamut. This happens regardless of the
@@ -65,26 +61,28 @@ class RgbColorSpace;
  * <tt>QWidget::focusPolicy</tt> property to a value that accepts
  * focus by mouse click, the focus will not only be accepted for
  * clicks within the actual display gamut, but also for clicks
- * within the surrounding rectangle.
+ * within the surrounding rectangle. TODO Does this make sense?
  *
- * @note This class is not part of the public API because the class
- * is not mature enought. Notably it does not automatically scale the
+ * @note This class is not part of the public API because its interface
+ * is not polished enough. Notably it does not automatically scale the
  * diagram to fit a given gamut (means: to fit up to a given maximum
  * chroma). Even if we would fix this: We would need a public API
- * that is widthForHeight dependent to allow the library user to
- * comfortably make use of this!
- *
- * @todo Declare a property for @ref hue()? If not, at least Q_INVOKABLE */
+ * that is widthForHeight-dependent to allow the library user to
+ * comfortably make use of this! */
 class ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT
 
     /** @brief Currently selected color
      *
-     * @sa currentColor() const
-     * @sa setCurrentColor()
-     * @sa currentColorChanged() */
-    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged USER true)
+     * The widget allows the user to change the LCh chroma and the
+     * LCh lightness values. However, the LCh hue value cannot be
+     * changed by the user, but only by the programmer through this property.
+     *
+     * @sa READ @ref currentColor() const
+     * @sa WRITE @ref setCurrentColor()
+     * @sa NOTIFY @ref currentColorChanged() */
+    Q_PROPERTY(PerceptualColor::LchDouble currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
 public:
     Q_INVOKABLE explicit ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
@@ -92,22 +90,15 @@ public:
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     PerceptualColor::LchDouble currentColor() const;
-    /**
-     *
-     * @internal
-     *
-     * @todo Document me! */
-    Q_INVOKABLE qreal hue() const;
     virtual QSize minimumSizeHint() const override;
     virtual QSize sizeHint() const override;
 
 public Q_SLOTS:
     void setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor);
-    void setHue(const qreal newHue);
 
 Q_SIGNALS:
-    /** @brief Signal for @ref currentColor property.
-     * @param newCurrentColor the new @ref currentColor */
+    /** @brief Notify signal for property @ref currentColor.
+     *  @param newCurrentColor the new current color */
     void currentColorChanged(const PerceptualColor::LchDouble &newCurrentColor);
 
 protected:

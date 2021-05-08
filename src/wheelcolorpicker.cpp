@@ -68,11 +68,15 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
     d_pointer->resizeChildWidgets();
 
     connect(
-        // changes on the color wheel trigger a change in the AbstractDiagram
+        // changes on the color wheel trigger a change in the inner diagram
         d_pointer->m_colorWheel,
         &ColorWheel::hueChanged,
-        d_pointer->m_chromaLightnessDiagram,
-        &ChromaLightnessDiagram::setHue);
+        this,
+        [this](const qreal newHue) {
+            LchDouble lch = d_pointer->m_chromaLightnessDiagram->currentColor();
+            lch.h = newHue;
+            d_pointer->m_chromaLightnessDiagram->setCurrentColor(lch);
+        });
     connect(d_pointer->m_chromaLightnessDiagram,
             &ChromaLightnessDiagram::currentColorChanged,
             this,
@@ -142,7 +146,7 @@ void WheelColorPicker::resizeEvent(QResizeEvent *event)
  *
  * @returns The maximum possible size of the diagram within the
  * inner part of the color wheel. With floating point precision.
- * Measured in device-independant pixels. */
+ * Measured in <em>device-independant pixels</em>. */
 QSizeF WheelColorPicker::WheelColorPickerPrivate::optimalChromaLightnessDiagramSize() const
 {
     /** The outer dimensions of the widget are a rectangle within a
@@ -165,7 +169,7 @@ QSizeF WheelColorPicker::WheelColorPickerPrivate::optimalChromaLightnessDiagramS
      * | a            | diagram width                    | ?                                  |
      */
     const qreal r = 100.0 / m_maximumChroma;
-    const qreal h = 2 * m_chromaLightnessDiagram->d_pointer->m_border;
+    const qreal h = 2 * m_chromaLightnessDiagram->d_pointer->m_defaultBorder;
     const qreal v = h;
     const qreal d = m_colorWheel->d_pointer->innerDiameter();
 

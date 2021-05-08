@@ -145,7 +145,7 @@ QPointF ColorWheel ::ColorWheelPrivate ::fromWheelToWidgetCoordinates(const Pola
  *
  * @internal
  *
- * @sa @ref ColorWheelPrivate::m_mouseEventActive */
+ * @sa @ref ColorWheelPrivate::m_isMouseEventActive */
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
     const qreal radius = maximumWidgetSquareSize() / 2.0 - spaceForFocusIndicator();
@@ -164,7 +164,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     setFocus(Qt::MouseFocusReason);
 
     if (myPolarPoint.radial() > radius - gradientThickness()) {
-        d_pointer->m_mouseEventActive = true;
+        d_pointer->m_isMouseEventActive = true;
         setHue(myPolarPoint.angleDegree());
     } else {
         // Make sure default coordinates like drag-window
@@ -187,10 +187,10 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
  *
  * @internal
  *
- * @sa @ref ColorWheelPrivate::m_mouseEventActive */
+ * @sa @ref ColorWheelPrivate::m_isMouseEventActive */
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d_pointer->m_mouseEventActive) {
+    if (d_pointer->m_isMouseEventActive) {
         setHue(d_pointer->fromWidgetToWheelCoordinates(event->pos()).angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
@@ -208,13 +208,13 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
  *
  * @internal
  *
- * @sa @ref ColorWheelPrivate::m_mouseEventActive
+ * @sa @ref ColorWheelPrivate::m_isMouseEventActive
  *
- * @sa @ref ColorWheelPrivate::m_mouseEventActive */
+ * @sa @ref ColorWheelPrivate::m_isMouseEventActive */
 void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (d_pointer->m_mouseEventActive) {
-        d_pointer->m_mouseEventActive = false;
+    if (d_pointer->m_isMouseEventActive) {
+        d_pointer->m_isMouseEventActive = false;
         setHue(d_pointer->fromWidgetToWheelCoordinates(event->pos()).angleDegree());
     } else {
         // Make sure default coordinates like drag-window in KDE's Breeze
@@ -238,7 +238,7 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
     if (
         // Do nothing while mouse movement is tracked anyway. This would
         // be confusing:
-        (!d_pointer->m_mouseEventActive)
+        (!d_pointer->m_isMouseEventActive)
         // Only react on wheel events when its in the wheel ribbon or in
         // the inner hole:
         && (myPolarPoint.radial() <= radius)
