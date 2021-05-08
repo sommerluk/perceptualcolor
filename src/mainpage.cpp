@@ -314,9 +314,8 @@
  * This library uses by default a possibly existing icon theme
  * if available in Qt.
  *
- * - Windows and Mac do not provide icon themes by default.
- *
- * - Linux provides usually icon themes.
+ * - Windows and Mac do not provide icon themes by default, while Linux
+ *   usually provides them.
  *
  * - You might bundle icons (as resource) with your application.
  *
@@ -342,10 +341,9 @@
  *
  * @section rendericons Render icons
  *
- * - Qt6: Icons are rendered
- *   <a href="https://bugreports.qt.io/browse/QTBUG-89279">always</a>
- *   with high-DPI.
- * - Qt5: Icons are rendered by default in low resolution. This applies even
+ * - <a href="https://bugreports.qt.io/browse/QTBUG-89279">In Qt6, icons are
+ *   rendered always with high-DPI.</>
+ * - In Qt5, icons are rendered by default in low resolution. This applies even
  *   for SVG icons on high-DPI displays! Application developers can enable
  *   high-DPI icon rendering with the following code (which should be put
  *   by convention <em>before</em> creating the <tt>QCoreApplication</tt>

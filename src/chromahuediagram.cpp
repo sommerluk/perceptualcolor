@@ -453,10 +453,10 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
     //      drawing need be (or should be) done inside this handler.”
 }
 
-/** @brief  Widget coordinates corresponding to the @ref currentColor property
- * @returns Widget coordinates corresponding to the @ref currentColor property.
+/** @brief  Widget coordinate point corresponding to the @ref currentColor property
+ * @returns Widget coordinate point corresponding to the @ref currentColor property.
  * This is the position of @ref currentColor in the gamut diagram, but measured
- * and expressed in widget coordinates.
+ * and expressed as widget coordinate point.
  * @sa @ref ChromaHueMeasurement "Measurement details" */
 QPointF ChromaHueDiagram ::ChromaHueDiagramPrivate ::widgetCoordinatesFromCurrentColor() const
 {
@@ -644,10 +644,10 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
         const qreal radius = maximumWidgetSquareSize() / static_cast<qreal>(2) - spaceForFocusIndicator();
         // Get widget coordinate point for the handle
         QPointF myHandleInner = PolarPointF(radius - gradientThickness(), d_pointer->m_currentColor.h).toCartesian();
-        myHandleInner.ry() *= -1; // Transform to Widget coordinates
+        myHandleInner.ry() *= -1; // Transform to Widget coordinate points
         myHandleInner += d_pointer->diagramCenter();
         QPointF myHandleOuter = PolarPointF(radius, d_pointer->m_currentColor.h).toCartesian();
-        myHandleOuter.ry() *= -1; // Transform to Widget coordinates
+        myHandleOuter.ry() *= -1; // Transform to Widget coordinate points
         myHandleOuter += d_pointer->diagramCenter();
         // Draw the line
         pen = QPen();
@@ -743,7 +743,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
 
 /** @brief The border around the round diagram.
  *
- * Measured in widget coordinates.
+ * Measured in <em>device-independant pixels</em>.
  *
  * @returns The border. This is the space where the surrounding color wheel
  * and the focus indicator are painted. */

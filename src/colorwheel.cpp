@@ -180,10 +180,8 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
  * Reimplemented from base class.
  *
  * Reacts only on mouse move events if previously there had been a mouse press
- * event that had been accepted.
- *
- * If previously there had not been a mouse press event, the mouse move event
- * is ignored.
+ * event that had been accepted. If previously there had not been a mouse
+ * press event, the mouse move event is ignored.
  *
  * @param event The corresponding mouse event
  *
@@ -471,8 +469,8 @@ QSize ColorWheel::minimumSizeHint() const
 
 /** @brief The empty space around the reserverd for the focus indicator.
  *
- * This is a simple redirect of @ref AbstractDiagram::spaceForFocusIndicator().
- * It is meant to allow access to friend classes of @ref ColorWheel.
+ * This is a simple redirect to @ref AbstractDiagram::spaceForFocusIndicator().
+ * It is meant to allow access from friend classes of @ref ColorWheel.
  *
  * Measured in <em>device-independant pixels</em>.
  *
@@ -485,13 +483,11 @@ int ColorWheel::ColorWheelPrivate::border() const
 
 /** @brief The inner diameter of the color wheel.
  *
- * It is meant to allow access to friend classes of @ref ColorWheel.
+ * It is meant to allow access from friend classes of @ref ColorWheel.
  *
  * @returns The inner diameter of the color wheel, measured in
  * <em>device-independant pixels</em>. This is the diameter of the empty
- * circle within the color wheel.
- *
- * @todo Measured in physical pixel or device-independant pixel? */
+ * circle within the color wheel. */
 qreal ColorWheel::ColorWheelPrivate::innerDiameter() const
 {
     return
