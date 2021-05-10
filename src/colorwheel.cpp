@@ -106,7 +106,7 @@ ColorWheel::ColorWheelPrivate::ColorWheelPrivate(ColorWheel *backLink, const QSh
  * in <em>device-independant pixels</em>.
  *
  * @sa @ref fromWheelToWidgetCoordinates */
-PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const
+PolarPointF ColorWheel::ColorWheelPrivate::fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const
 {
     const qreal radius = q_pointer->maximumWidgetSquareSize() / 2.0;
     const QPointF temp {widgetCoordinatePoint.x() - radius, radius - widgetCoordinatePoint.y()};
@@ -123,7 +123,7 @@ PolarPointF ColorWheel ::ColorWheelPrivate ::fromWidgetToWheelCoordinates(const 
  * this widget. Measured in <em>device-independant pixels</em>.
  *
  * @sa @ref fromWidgetToWheelCoordinates */
-QPointF ColorWheel ::ColorWheelPrivate ::fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const
+QPointF ColorWheel::ColorWheelPrivate::fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const
 {
     const qreal radius = q_pointer->maximumWidgetSquareSize() / 2.0;
     QPointF result = wheelCoordinates.toCartesian();

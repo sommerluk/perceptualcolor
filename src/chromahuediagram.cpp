@@ -414,7 +414,7 @@ void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
  *
  * @sa @ref diagramOffset provides a one-dimensional
  * representation of this very same fact. */
-QPointF ChromaHueDiagram ::ChromaHueDiagramPrivate ::diagramCenter() const
+QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::diagramCenter() const
 {
     const qreal tempOffset {diagramOffset()};
     return QPointF(tempOffset, tempOffset);
@@ -458,7 +458,7 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
  * This is the position of @ref currentColor in the gamut diagram, but measured
  * and expressed as widget coordinate point.
  * @sa @ref ChromaHueMeasurement "Measurement details" */
-QPointF ChromaHueDiagram ::ChromaHueDiagramPrivate ::widgetCoordinatesFromCurrentColor() const
+QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColor() const
 {
     const qreal scaleFactor = (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder()) / static_cast<qreal>(2 * m_maxChroma);
     QPointF currentColor = PolarPointF(m_currentColor.c, m_currentColor.h).toCartesian();
@@ -473,7 +473,7 @@ QPointF ChromaHueDiagram ::ChromaHueDiagramPrivate ::widgetCoordinatesFromCurren
  * @returns The Lab coordinates of the currently displayed gamut diagram
  * for the (center of the) given pixel position.
  * @sa @ref ChromaHueMeasurement "Measurement details" */
-cmsCIELab ChromaHueDiagram ::ChromaHueDiagramPrivate ::fromWidgetPixelPositionToLab(const QPoint position) const
+cmsCIELab ChromaHueDiagram::ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint position) const
 {
     const qreal scaleFactor = static_cast<qreal>(2 * m_maxChroma) / (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder());
     // The pixel at position 0 0 has its top left border at position 0 0
@@ -516,7 +516,7 @@ cmsCIELab ChromaHueDiagram ::ChromaHueDiagramPrivate ::fromWidgetPixelPositionTo
  * For consistency, the handle of the diagram should stay within the gray
  * circle, and this should be interpretat also actually as the value at
  * the position of the handle. */
-void ChromaHueDiagram ::ChromaHueDiagramPrivate ::setColorFromWidgetPixelPosition(const QPoint position)
+void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
     cmsCIELab lab = fromWidgetPixelPositionToLab(position);
     q_pointer->setCurrentColor(m_rgbColorSpace->nearestInGamutSacrifyingChroma(m_rgbColorSpace->toLch(lab)));
@@ -532,7 +532,7 @@ void ChromaHueDiagram ::ChromaHueDiagramPrivate ::setColorFromWidgetPixelPositio
  * negative.
  * @returns <tt>true</tt> if the (center of the) pixel at the given position
  * is within the circle, <tt>false</tt> otherwise. */
-bool ChromaHueDiagram ::ChromaHueDiagramPrivate ::isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint position) const
+bool ChromaHueDiagram::ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouseSensibleCircle(const QPoint position) const
 {
     const qreal radial = PolarPointF(
                              // Position relative to polar coordinate system center:

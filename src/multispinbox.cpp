@@ -319,7 +319,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::updatePrefixValueSuffixText()
  * Convenience function that simply calls
  * @ref setCurrentIndexAndUpdateTextAndSelectValue with the
  * argument <tt>0</tt>. */
-void MultiSpinBox ::MultiSpinBoxPrivate ::setCurrentIndexToZeroAndUpdateTextAndSelectValue()
+void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexToZeroAndUpdateTextAndSelectValue()
 {
     setCurrentIndexAndUpdateTextAndSelectValue(0);
 }
@@ -336,7 +336,7 @@ void MultiSpinBox ::MultiSpinBoxPrivate ::setCurrentIndexToZeroAndUpdateTextAndS
  *
  * @sa @ref setCurrentIndexToZeroAndUpdateTextAndSelectValue
  * @sa @ref setCurrentIndexWithoutUpdatingText */
-void MultiSpinBox ::MultiSpinBoxPrivate ::setCurrentIndexAndUpdateTextAndSelectValue(int newIndex)
+void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectValue(int newIndex)
 {
     QSignalBlocker myBlocker(q_pointer->lineEdit());
     setCurrentIndexWithoutUpdatingText(newIndex);

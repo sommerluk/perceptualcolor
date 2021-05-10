@@ -422,7 +422,7 @@ Qt::Orientation GradientSlider::orientation() const
  * is <em>not</em> emitted. The <tt>sizePolicy</tt> property is updated
  * corresponding to the <em>new</em> orientation; this happens even if the new
  * orientation is identical to the old @ref m_orientation! */
-void GradientSlider ::GradientSliderPrivate ::setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation newOrientation)
+void GradientSlider::GradientSliderPrivate::setOrientationWithoutSignalAndForceNewSizePolicy(Qt::Orientation newOrientation)
 {
     if (newOrientation == Qt::Orientation::Vertical) {
         q_pointer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
