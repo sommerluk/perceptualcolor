@@ -168,7 +168,7 @@ void ChromaHueDiagram::mouseMoveEvent(QMouseEvent *event)
     if (d_pointer->m_isMouseEventActive) {
         event->accept();
         const cmsCIELab lab = d_pointer->fromWidgetPixelPositionToLab(event->pos());
-        if (d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos()) && d_pointer->m_rgbColorSpace->inGamut(lab)) {
+        if (d_pointer->isWidgetPixelPositionWithinMouseSensibleCircle(event->pos()) && d_pointer->m_rgbColorSpace->isInGamut(lab)) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();

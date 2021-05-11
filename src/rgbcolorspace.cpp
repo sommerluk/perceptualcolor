@@ -110,12 +110,12 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     candidate.l = 0;
     candidate.c = 0;
     candidate.h = 0;
-    while (!inGamut(candidate) && (candidate.l < 100)) {
+    while (!isInGamut(candidate) && (candidate.l < 100)) {
         candidate.l += gamutPrecision;
     }
     d_pointer->m_blackpointL = candidate.l;
     candidate.l = 100;
-    while (!inGamut(candidate) && (candidate.l > 0)) {
+    while (!isInGamut(candidate) && (candidate.l > 0)) {
         candidate.l -= gamutPrecision;
     }
     d_pointer->m_whitepointL = candidate.l;
@@ -314,7 +314,7 @@ QColor RgbColorSpace::colorRgbBound(const PerceptualColor::LchaDouble &lcha) con
  * @param hue The hue value (angle in degree)
  * @returns Returns true if lightness/chroma/hue is in the specified
  * RGB gamut. Returns false otherwise. */
-bool RgbColorSpace::inGamut(const double lightness, const double chroma, const double hue) const
+bool RgbColorSpace::isInGamut(const double lightness, const double chroma, const double hue) const
 {
     // variables
     LchDouble LCh;
@@ -323,14 +323,14 @@ bool RgbColorSpace::inGamut(const double lightness, const double chroma, const d
     LCh.l = lightness;
     LCh.c = chroma;
     LCh.h = hue;
-    return inGamut(LCh);
+    return isInGamut(LCh);
 }
 
 /** @brief check if an LCh value is within a specific RGB gamut
  * @param lch the LCh color
  * @returns Returns true if lightness/chroma/hue is in the specified
  * RGB gamut. Returns false otherwise. */
-bool RgbColorSpace::inGamut(const LchDouble &lch) const
+bool RgbColorSpace::isInGamut(const LchDouble &lch) const
 {
     // variables
     cmsCIELab lab; // uses cmsFloat64Number internally
@@ -343,14 +343,14 @@ bool RgbColorSpace::inGamut(const LchDouble &lch) const
     temp.L = lab.L;
     temp.a = lab.a;
     temp.b = lab.b;
-    return inGamut(temp);
+    return isInGamut(temp);
 }
 
 /** @brief check if a Lab value is within a specific RGB gamut
  * @param lab the Lab color
  * @returns Returns true if it is in the specified RGB gamut. Returns
  * false otherwise. */
-bool RgbColorSpace::inGamut(const cmsCIELab &lab) const
+bool RgbColorSpace::isInGamut(const cmsCIELab &lab) const
 {
     RgbDouble rgb;
 
@@ -407,7 +407,7 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(const P
     result.h = temp.angleDegree();
 
     // Test special case: If we are yet in-gamut…
-    if (inGamut(result)) {
+    if (isInGamut(result)) {
         return result;
     }
 
@@ -415,7 +415,7 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(const P
     LchDouble lowerChroma {result.l, 0, result.h};
     LchDouble upperChroma {result};
     LchDouble candidate;
-    if (inGamut(lowerChroma)) {
+    if (isInGamut(lowerChroma)) {
         // Now we know for sure that lowerChroma is in-gamut
         // and upperChroma is out-of-gamut…
         candidate = upperChroma;
@@ -423,7 +423,7 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(const P
             // Our test candidate is half the way between lowerChroma
             // and upperChroma:
             candidate.c = ((lowerChroma.c + upperChroma.c) / 2);
-            if (inGamut(candidate)) {
+            if (isInGamut(candidate)) {
                 lowerChroma = candidate;
             } else {
                 upperChroma = candidate;

@@ -99,7 +99,7 @@ namespace PerceptualColor
  * - The option <tt>ColorDialogOption::DontUseNativeDialog</tt>
  *   will always remain <tt>false</tt> (even if set explicitly), because it's
  *   just the point of this library to provide an own, non-native dialog.
- * - While the enum declaration @ref ColorDialogOption itself aliased
+ * - While the enum declaration @ref ColorDialogOption itself is aliased
  *   here, this isn't possible for the enum values itself. Therefor, when
  *   working with @ref options, you cannot use <tt>ShowAlphaChannel</tt> but
  *   you have to use the fully qualified identifier (either
