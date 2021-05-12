@@ -41,7 +41,7 @@
 namespace PerceptualColor
 {
 /** @brief Constructor
- * @param colorSpace The color space within which the image should operate
+ * @param colorSpace The color space within which the image should operate.
  * Can be created with @ref RgbColorSpaceFactory. */
 ColorWheelImage::ColorWheelImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : m_rgbColorSpace(colorSpace)

@@ -52,7 +52,7 @@ namespace PerceptualColor
 {
 /** @brief The constructor.
  *
- * @param colorSpace The color space within which the widget should operate
+ * @param colorSpace The color space within which the widget should operate.
  * Can be created with @ref RgbColorSpaceFactory.
  *
  * @param parent Passed to the QWidget base class constructor */
