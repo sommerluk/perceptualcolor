@@ -58,7 +58,7 @@ namespace PerceptualColor
  * @param parent Passed to the QWidget base class constructor */
 ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
     : AbstractDiagram(parent)
-    , d_pointer(new ChromaLightnessDiagramPrivate(this))
+    , d_pointer(new ChromaLightnessDiagramPrivate(this, colorSpace))
 {
     // Setup the color space must be the first thing to do because
     // other operations rely on a working color space.
@@ -81,18 +81,15 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
 /** @brief Constructor
  *
  * @param backLink Pointer to the object from which <em>this</em> object
- * is the private implementation. */
-ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink)
+ * is the private implementation.
+ * @param colorSpace The color space within which this widget should operate. */
+ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
     : q_pointer(backLink)
+    , m_chromaLightnessImage(colorSpace)
 {
 }
 
 // TODO xxx Review starts here
-
-// TODO Get rid of m_diagramCacheReady and m_diagramImage (who’s declaration
-// including the documentation is still not reviewd) and of
-// updateDiagramCache(). Use a cached image class instead, like for the
-// other widgets.
 
 // TODO Control all usage of m_defaultBorder (here, and also in friend
 // classes) and change the code (if necessary) to use (also) the new
@@ -119,8 +116,7 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
  * adjusted) that is less far from the indicates coordinate point. */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromImageCoordinates(const QPoint newImageCoordinates)
 {
-    updateDiagramCache();
-    QPoint correctedImageCoordinates = nearestNeighborSearch(newImageCoordinates, m_diagramImage);
+    QPoint correctedImageCoordinates = nearestNeighborSearch(newImageCoordinates, m_chromaLightnessImage.getImage());
     QPointF chromaLightness;
     LchDouble lch;
     if (correctedImageCoordinates != currentImageCoordinates()) {
@@ -225,16 +221,16 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 }
 
 // TODO What when @ref m_color has a valid in-gamut color, but this color
-// is out of the _displayed_ diagram? How to handle that?
+// is out of the <em>displayed</em> diagram? How to handle that?
 
 /** @brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * Paints the widget. Takes the existing m_diagramImage and m_diagramPixmap
- * and paints them on the widget. Paints, if appropriate, the focus indicator.
- * Paints the handle. Relies on that m_diagramImage and m_diagramPixmap are
- * up to date.
+ * Paints the widget. Takes the existing
+ * @ref ChromaLightnessDiagramPrivate::m_chromaLightnessImage and
+ * paints it on the widget. Paints, if appropriate, the focus indicator.
+ * Paints the handle.
  *
  * @param event the paint event
  */
@@ -266,10 +262,9 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     QPen pen;
 
     // Paint the diagram itself as available in the cache.
-    d_pointer->updateDiagramCache();
-    painter.drawImage(d_pointer->m_defaultBorder, // x position (top-left)
-                      d_pointer->m_defaultBorder, // y position (top-left)
-                      d_pointer->m_diagramImage   // image
+    painter.drawImage(d_pointer->m_defaultBorder,                  // x position (top-left)
+                      d_pointer->m_defaultBorder,                  // y position (top-left)
+                      d_pointer->m_chromaLightnessImage.getImage() // image
     );
 
     // Paint a focus indicator.
@@ -367,8 +362,8 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  *
  * @param widgetCoordinates a coordinate pair within the widget’s coordinate
  * system
- * @returns the corresponding coordinate pair within m_diagramImage’s
- * coordinate system
+ * @returns the corresponding coordinate pair within the coordinate system of
+ * @ref m_chromaLightnessImage.
  */
 QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const
 {
@@ -407,7 +402,6 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // values, not in pixel. Use values as inherited from base class!
 
     QPoint newImageCoordinates = d_pointer->currentImageCoordinates();
-    d_pointer->updateDiagramCache();
     switch (event->key()) {
     case Qt::Key_Up:
         if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
@@ -436,7 +430,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         }
         break;
     case Qt::Key_PageDown:
-        newImageCoordinates.setY(d_pointer->m_diagramImage.height() - 1);
+        newImageCoordinates.setY(d_pointer->m_chromaLightnessImage.getImage().height() - 1);
         while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
             newImageCoordinates += QPoint(0, -1);
         }
@@ -448,7 +442,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         }
         break;
     case Qt::Key_End:
-        newImageCoordinates.setX(d_pointer->m_diagramImage.width() - 1);
+        newImageCoordinates.setX(d_pointer->m_chromaLightnessImage.getImage().width() - 1);
         while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(-1, 0))) {
             newImageCoordinates += QPoint(-1, 0);
         }
@@ -484,12 +478,11 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
  */
 QPointF ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates)
 {
-    updateDiagramCache();
     return QPointF(
         // x:
-        static_cast<qreal>(imageCoordinates.x()) * 100 / (m_diagramImage.height() - 1),
+        static_cast<qreal>(imageCoordinates.x()) * 100 / (m_chromaLightnessImage.getImage().height() - 1),
         // y:
-        static_cast<qreal>(imageCoordinates.y()) * 100 / (m_diagramImage.height() - 1) * (-1) + 100);
+        static_cast<qreal>(imageCoordinates.y()) * 100 / (m_chromaLightnessImage.getImage().height() - 1) * (-1) + 100);
 }
 
 /**
@@ -499,12 +492,11 @@ QPointF ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromImageCoordina
  */
 QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordinates()
 {
-    updateDiagramCache();
     return QPoint(
         // x:
-        qRound(m_currentColor.c * (m_diagramImage.height() - 1) / 100),
+        qRound(m_currentColor.c * (m_chromaLightnessImage.getImage().height() - 1) / 100),
         // y:
-        qRound(m_currentColor.l * (m_diagramImage.height() - 1) / 100 * (-1) + (m_diagramImage.height() - 1)));
+        qRound(m_currentColor.l * (m_chromaLightnessImage.getImage().height() - 1) / 100 * (-1) + (m_chromaLightnessImage.getImage().height() - 1)));
 }
 
 /** @brief Tests if image coordinates are in gamut.
@@ -520,10 +512,9 @@ bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::imageCoordinatesInGa
     QColor diagramPixelColor;
 
     // code
-    updateDiagramCache();
     temp = false;
-    if (m_diagramImage.valid(imageCoordinates)) {
-        diagramPixelColor = m_diagramImage.pixelColor(imageCoordinates);
+    if (m_chromaLightnessImage.getImage().valid(imageCoordinates)) {
+        diagramPixelColor = m_chromaLightnessImage.getImage().pixelColor(imageCoordinates);
         temp = ((diagramPixelColor.alpha() != 0));
     }
     return temp;
@@ -543,8 +534,7 @@ void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &n
 
     // update if necessary, the diagram
     if (d_pointer->m_currentColor.h != oldColor.h) {
-        d_pointer->m_diagramCacheReady = false;
-        ;
+        d_pointer->m_chromaLightnessImage.setHue(d_pointer->m_currentColor.h);
     }
 
     // schedule a paint event
@@ -561,7 +551,11 @@ void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &n
 void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
-    d_pointer->m_diagramCacheReady = false;
+    d_pointer->m_chromaLightnessImage.setImageSize(
+        // Update the image size will free memory of the cache inmediatly.
+        QSize(size().width() - 2 * d_pointer->m_defaultBorder, // x
+              size().height() - 2 * d_pointer->m_defaultBorder // y
+              ));
     // As by Qt documentation:
     //     “The widget will be erased and receive a paint event
     //      immediately after processing the resize event. No drawing
@@ -610,165 +604,6 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 LchDouble PerceptualColor::ChromaLightnessDiagram::currentColor() const
 {
     return d_pointer->m_currentColor;
-}
-
-/** @brief Generates an image of a chroma-lightness diagram.
- *
- * (Also, out of the Qt library, it uses only QImage, and not QPixmap,
- * to make sure the result can be passed around between threads.)
- *
- * @param imageHue the (LCh) hue of the image
- * @param imageSize the size of the requested image
- * @returns A chroma-lightness diagram for the given hue. For the y axis,
- * its height covers the lightness range 0..100. [Pixel (0) corresponds
- * to value 100. Pixel (height-1) corresponds to value 0.] Its x axis
- * uses always the same scale as the y axis. So if the size
- * is a square, both x range and y range are from 0 to 100. If the
- * width is larger than the height, the x range goes beyond 100. The
- * image paints all the LCh values that are within the gamut of the
- * RGB profile. All other values are Qt::transparent. Intentionally
- * there is no anti-aliasing.
- *
- * @todo Would anti-aliasing be possible? As there is no mathematical
- * description of the shape of the color solid, the only way to get
- * anti-aliasing would be to render at a higher resolution (say two
- * times higher, which would yet mean four times more data), and then
- * downscale it to the final resolution. Would this be an absolute
- * performance killer? Even if not: Is it really worth the performance
- * loss?
- *
- * @todo Should this function be made static? Or the opposite: Stay a normal
- * function (but maybe even remove all arguments like imageHue and imageSize
- * because we can get them directly from underlying object data)?
- *
- * @todo Possible unit test for this function:
-
-void testChromaLightnessDiagramm() {
-    QImage mImage;
-
-    // Testing extremely small images
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
-        0,
-        QSize(0, 0)
-    );
-    QCOMPARE(mImage.size(), QSize(0, 0));
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
-        0,
-        QSize(1, 1)
-    );
-    QCOMPARE(mImage.size(), QSize(1, 1));
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
-        0,
-        QSize(2, 2)
-    );
-    QCOMPARE(mImage.size(), QSize(2, 2));
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
-        0,
-        QSize(-1, -1)
-    );
-    QCOMPARE(mImage.size(), QSize(0, 0));
-
-    // Start testing for a normal size image
-    mImage = PerceptualColor::ChromaLightnessDiagram::generateDiagramImage(
-        0,
-        QSize(201, 101)
-    );
-    QCOMPARE(mImage.height(), 101);
-    QCOMPARE(mImage.width(), 201);
-    // Test if position within the QImage is valid:
-    QCOMPARE(mImage.pixelColor(0, 0).isValid(), true);
-    // Test if position within the QImage is valid:
-    QCOMPARE(mImage.pixelColor(0, 100).isValid(), true);
-    QTest::ignoreMessage(
-        QtWarningMsg,
-        "QImage::pixelColor: coordinate (0,101) out of range"
-    );
-    // Test if position within the QImage is invalid:
-    QCOMPARE(mImage.pixelColor(0, 101).isValid(), false);
-}
-*/
-QImage ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::generateDiagramImage(const qreal imageHue, const QSize imageSize) const
-{
-    LchDouble LCh;
-    QColor rgbColor;
-    int x;
-    int y;
-    QImage temp_image = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
-    const int maxHeight = imageSize.height() - 1;
-    const int maxWidth = imageSize.width() - 1;
-
-    // Test if image size is too small.
-    if ((maxHeight < 1) || (maxWidth < 1)) {
-        // TODO How to react correctly here? Exception?
-        // maxHeight and maxWidth must be at least >= 1 for our
-        // algorithm. If they are 0, this would crash (division by 0).
-        return temp_image;
-    }
-
-    // Initialize the image with transparency.
-    temp_image.fill(Qt::transparent);
-
-    // Paint the gamut.
-    LCh.h = PolarPointF::normalizedAngleDegree(imageHue);
-    for (y = 0; y <= maxHeight; ++y) {
-        LCh.l = y * static_cast<cmsFloat64Number>(100) / maxHeight;
-        for (x = 0; x <= maxWidth; ++x) {
-            // Using the same scale as on the y axis. floating point
-            // division thanks to 100 which is a "cmsFloat64Number"
-            LCh.c = x * static_cast<cmsFloat64Number>(100) / maxHeight;
-            rgbColor = m_rgbColorSpace->colorRgb(LCh);
-            if (rgbColor.isValid()) {
-                // The pixel is within the gamut
-                temp_image.setPixelColor(x, maxHeight - y, rgbColor);
-                // If color is out-of-gamut: We have chroma on the x axis and
-                // lightness on the y axis. We are drawing the pixmap line per
-                // line, so we go for given lightness from low chroma to high
-                // chroma. Because of the nature of most gamuts, if once in a
-                // line we have an out-of-gamut value, all other pixels that
-                // are more at the right will be out-of-gamut also. So we
-                // could optimize our code and break here. But as we are not
-                // sure about this (we do not know the gamut at compile time)
-                // for the moment we do not optimize the code.
-            }
-        }
-    }
-
-    return temp_image;
-}
-
-/** @brief Refresh the diagram and associated data
- *
- * This class has a cache of various data related to the diagram.
- * This data is cached because it is often needed and it would be
- * expensive to calculate it again and again on the fly.
- *
- * Calling this function updates this cached data. This is always
- * necessary if the data the diagram relies on, has changed. For example,
- * if the hue() property or the widget size have changed, this function
- * has to be called.
- *
- * This function does not repaint the widget! After calling this function,
- * you have to call manually <tt>update()</tt> to schedule a re-paint of
- * the widget, if you wish so. */
-void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
-{
-    if (m_diagramCacheReady) {
-        return;
-    }
-
-    // Free the memory used by the old image.
-    m_diagramImage = QImage();
-    // Generate an update QImage
-    m_diagramImage = generateDiagramImage(
-        // hue:
-        m_currentColor.h,
-        // image size:
-        QSize(q_pointer->size().width() - 2 * m_defaultBorder, // x
-              q_pointer->size().height() - 2 * m_defaultBorder // y
-              ));
-
-    // Mark cache as ready
-    m_diagramCacheReady = true;
 }
 
 /** @brief Search the nearest non-transparent neighbor pixel

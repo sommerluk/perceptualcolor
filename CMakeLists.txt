@@ -179,6 +179,7 @@ set(perceptualcolor_SRC
   src/chromahuediagram.cpp
   src/chromahueimage.cpp
   src/chromalightnessdiagram.cpp
+  src/chromalightnessimage.cpp
   src/colordialog.cpp
   src/colorpatch.cpp
   src/colorwheel.cpp
@@ -334,6 +335,7 @@ endfunction(add_unit_test)
 
 add_unit_test(testabstractdiagram)
 add_unit_test(testchromalightnessdiagram)
+add_unit_test(testchromalightnessimage)
 add_unit_test(testchromahuediagram)
 add_unit_test(testchromahueimage)
 add_unit_test(testcolordialog)

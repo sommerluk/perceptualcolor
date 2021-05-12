@@ -145,7 +145,8 @@ namespace PerceptualColor
  *     section).
  *
  * @todo Do not text-cursor-select more than <em>one</em> value when
- * editing (or do not allow text selection at all)?
+ * editing (or do not allow text selection at all)? Also: Selecting text
+ * with the mouse cursor seems somewhat impredictable.
  *
  * @todo Splitting @ref MultiSpinBox::SectionData into
  * <tt>SectionConfiguration</tt> and <tt>value</tt>? Disadvantage: Requires

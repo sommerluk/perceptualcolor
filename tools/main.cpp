@@ -92,6 +92,8 @@ int main(int argc, char *argv[])
     //     "background: yellow; color: red; border: 15px solid #FF0000;"
     // );
 
+    qDebug() << (QSize(-1, -6).isEmpty());
+
     // Run
     return app.exec();
 }

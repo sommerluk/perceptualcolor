@@ -33,6 +33,7 @@
 // Include the header of the public class of this private implementation.
 #include "chromalightnessdiagram.h"
 
+#include "chromalightnessimage.h"
 #include "constpropagatingrawpointer.h"
 
 #include <QImage>
@@ -46,7 +47,7 @@ namespace PerceptualColor
 class ChromaLightnessDiagram::ChromaLightnessDiagramPrivate final
 {
 public:
-    ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink);
+    ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     /** @brief Default destructor
      *
      * The destructor is non-<tt>virtual</tt> because
@@ -54,6 +55,8 @@ public:
     ~ChromaLightnessDiagramPrivate() noexcept = default;
 
     // Member variables
+    /** @brief The image of the chroma-lightness diagram itself. */
+    ChromaLightnessImage m_chromaLightnessImage;
     /** @brief Internal storage of the @ref currentColor property */
     LchDouble m_currentColor;
     /** @brief The border between the widget outer top, right and bottom
@@ -69,19 +72,6 @@ public:
      *
      * Measured in <em>device-independant pixels</em>. */
     const qreal m_defaultBorder = q_pointer->handleRadius() + q_pointer->handleOutlineThickness() / 2.0;
-    /** @brief Indicates if the image in the cache is valid or not.
-     *
-     * <tt>true</tt> if the @ref m_diagramImage cache is up-to-date.
-     * <tt>false</tt> otherwise.
-     *
-     * @sa @ref m_diagramImage
-     * @sa @ref updateDiagramCache */
-    bool m_diagramCacheReady = false;
-    /** @brief A cache for the diagram image
-     *
-     * @sa @ref m_diagramCacheReady
-     * @sa @ref updateDiagramCache() */
-    QImage m_diagramImage;
     /** @brief Holds if currently a mouse event is active or not.
      *
      * Default value is <tt>false</tt>.
@@ -123,11 +113,9 @@ public:
     QPoint currentImageCoordinates();
     QPointF fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates);
     QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
-    QImage generateDiagramImage(const qreal imageHue, const QSize imageSize) const;
     bool imageCoordinatesInGamut(const QPoint imageCoordinates);
     static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
     void setCurrentColorFromImageCoordinates(const QPoint newImageCoordinates);
-    void updateDiagramCache();
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)

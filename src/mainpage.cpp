@@ -501,6 +501,24 @@
  *   allocate on the stack or use smart pointers. Prefer Qt’s smart pointers
  *   over the <tt>std</tt> smart pointers of C++. */
 
+/** @internal
+ *
+ * @page multithreading Multithreading
+ *
+ * Currently, this library does not use multithreading. However, is seems
+ * a good idea to implement multithreading in the future, particulary
+ * for generating the gamut images, which seems to be the slowest
+ * operation of this library. It could get disconnected from the GUI
+ * thread, leading to a more responsive GUI. And the image could be
+ * calculated by various threads simultaniously, so that the generation
+ * could be faster.
+ *
+ * Points to consider:
+ * - LittleCMS seems to allow using the same transform simultaniously
+ *   from variouis threads as long as the 1-pixel-cache is disabled.
+ * - QPixmap may only be used in the GUI thread. To generate the images
+ *   in another thread, QImage must be used. */
+
 /** @brief The namespace of this library.
  *
  * All symbols that are provided in this library are encapsulated within this

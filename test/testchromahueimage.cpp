@@ -121,8 +121,8 @@ private Q_SLOTS:
         QCOMPARE(test.getImage().size(), QSize(1, 1));
         test.setImageSize(2);
         QCOMPARE(test.getImage().size(), QSize(2, 2));
-        test.setImageSize(2);
-        QCOMPARE(test.getImage().size(), QSize(2, 2));
+        test.setImageSize(3);
+        QCOMPARE(test.getImage().size(), QSize(3, 3));
         test.setImageSize(4);
         QCOMPARE(test.getImage().size(), QSize(4, 4));
         test.setImageSize(5);
