@@ -42,9 +42,7 @@ namespace PerceptualColor
 {
 /** @internal
  *
- *  @brief Interface to LittleCMS for working with an RGB color space
- *
- * @todo WARNING We have to provide a factory function in the public API!
+ *  @brief Access to LittleCMS color management
  *
  * @todo Do not pimpl anymore?
  *

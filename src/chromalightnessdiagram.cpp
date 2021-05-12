@@ -105,19 +105,19 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 // test of one of the other widgets.) And do this also for ColorWheel
 // and ChromaHueDiagram.
 
-/** Sets the color values corresponding to image coordinates.
+/** Updates @ref currentColor corresponding to the given image coordinates.
  *
- * @param newImageCoordinates A coordinate pair within the image's coordinate
+ * @param newImageCoordinates A coordinate point within the image’s coordinate
  * system. This does not necessarily need to intersect with the actual
  * displayed diagram or the gamut. It might even be negative or outside the
  * image or even outside widget.
  *
- * @post If the coordinates are within the gamut diagram, then
- * the corresponding values are set. If the coordinates
- * are outside the gamut diagram, then a nearest-neighbor-search is done,
- * searching for the pixel that is less far from the cursor.
- */
-void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(const QPoint newImageCoordinates)
+ * @post If the coordinate point is within the gamut, then
+ * the corresponding @ref currentColor is set. If the coordinate point
+ * is outside the gamut, than a nearest-neighbor-search is done, searching
+ * a nearby in-gamut color (hue is preverved, chroma and lightness are
+ * adjusted) that is less far from the indicates coordinate point. */
+void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromImageCoordinates(const QPoint newImageCoordinates)
 {
     updateDiagramCache();
     QPoint correctedImageCoordinates = nearestNeighborSearch(newImageCoordinates, m_diagramImage);
@@ -131,10 +131,6 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setImageCoordinates(
         q_pointer->setCurrentColor(lch);
     }
 }
-
-// TODO Do not use nearest neighbor or other pixel based search algorithms,
-// but work directly with LittleCMS, maybe with a limited, but well-defined,
-// precision.
 
 /** @brief React on a mouse press event.
  *
@@ -164,10 +160,10 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         setFocus(Qt::MouseFocusReason);
         d_pointer->m_isMouseEventActive = true;
         setCursor(Qt::BlankCursor);
-        d_pointer->setImageCoordinates(imageCoordinates);
+        d_pointer->setCurrentColorFromImageCoordinates(imageCoordinates);
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze
-        // widget style works
+        // Make sure default behavior like drag-window in KDE’s
+        // Breeze widget style works.
         event->ignore();
     }
 }
@@ -196,10 +192,10 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
         } else {
             unsetCursor();
         }
-        d_pointer->setImageCoordinates(imageCoordinates);
+        d_pointer->setCurrentColorFromImageCoordinates(imageCoordinates);
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze
-        // widget style works
+        // Make sure default behavior like drag-window in KDE’s
+        // Breeze widget style works.
         event->ignore();
     }
 }
@@ -218,12 +214,12 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
-        d_pointer->setImageCoordinates(d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos()));
+        d_pointer->setCurrentColorFromImageCoordinates(d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos()));
         unsetCursor();
         d_pointer->m_isMouseEventActive = false;
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze
-        // widget style works
+        // Make sure default behavior like drag-window in KDE’s
+        // Breeze widget style works.
         event->ignore();
     }
 }
@@ -317,10 +313,15 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
         pen.setWidth(handleOutlineThickness());
         pen.setColor(focusIndicatorColor());
         painter.setPen(pen);
-        painter.drawLine(handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
-                         0 + d_pointer->m_defaultBorder,
-                         handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
-                         size().height() - d_pointer->m_defaultBorder);
+        painter.drawLine(
+            // x1:
+            handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
+            // y1:
+            0 + d_pointer->m_defaultBorder,
+            // x2
+            handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
+            // y2:
+            size().height() - d_pointer->m_defaultBorder);
     }
 
     // Paint the handle on-the-fly.
@@ -472,7 +473,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 
     // Set the new image coordinates (only takes effect when image
     // coordinates are indeed different)
-    d_pointer->setImageCoordinates(newImageCoordinates);
+    d_pointer->setCurrentColorFromImageCoordinates(newImageCoordinates);
 }
 
 /**
@@ -598,9 +599,6 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
     return QSize(minimum, minimum).expandedTo(QApplication::globalStrut());
 }
 
-// TODO rework all "throw" statements (also these in comments) and
-// the qDebug() statements
-
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
 
 // TODO what if a part of the gamut at the right is not displayed?
@@ -691,7 +689,7 @@ void testChromaLightnessDiagramm() {
 */
 QImage ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::generateDiagramImage(const qreal imageHue, const QSize imageSize) const
 {
-    LchDouble LCh; // uses cmsFloat64Number internally
+    LchDouble LCh;
     QColor rgbColor;
     int x;
     int y;
@@ -775,9 +773,9 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
 
 /** @brief Search the nearest non-transparent neighbor pixel
  *
- * @note This code is a terribly inefficient
- * implementation of a “nearest neighbor search”. See
- * https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast
+ * @note This code is an inefficient implementation
+ * of a <em>nearest-neighbor-searchy</em>. See
+ * <a href="https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast">here</a>
  * for a better approach.
  *
  * @param originalPoint The point for which you search the nearest neighbor,
@@ -792,7 +790,11 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::updateDiagramCache()
  *     non-transparent pixel is returned. (If there are various nearest
  *     neighbors at the same distance, it is undefined which one is returned.)
  * \li Else there are no non-transparent pixels, and simply the point
- *     <tt>0, 0</tt> is returned, but this is a very slow case. */
+ *     <tt>0, 0</tt> is returned, but this is a very slow case.
+ *
+ * TODO Do not use nearest neighbor or other pixel based search algorithms,
+ * but work directly with LittleCMS, maybe with a limited, but well-defined,
+ * precision… */
 QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint originalPoint, const QImage &image)
 {
     // Test for special case:

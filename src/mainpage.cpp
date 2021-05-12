@@ -155,7 +155,7 @@
  * @todo Support more color spaces? https://pypi.org/project/colorio/ for
  * example supports a lot of (also perceptually uniform) color spaces…
  *
- * @todo Which symbols should finally be exported?
+ * @todo Export lesss symbols?
  *
  * @todo Check in all classes that take a @ref PerceptualColor::RgbColorSpace
  * that the shared pointer is actually not a <tt>nullptr</tt>. If is
@@ -180,10 +180,9 @@
  * - stylable by style sheets (✗)
  * - accessibility (✗)
  *
- * @todo A good widget library should also be touchscreen-ready.
- * - An alternative to
- *   the spin box? How, for up to 360 values (degrees in step by 1)? Or
- *   should the steps simply be bigger?
+ * @todo A good widget library should also be touchscreen-ready. Find
+ * an alternative to @ref PerceptualColor::MultiSpinBox? How, for up
+ * to 360 values (degrees in step by 1)? Or should the steps simply be bigger?
  *
  * @todo KDE Frameworks / https://marketplace.qt.io/ ?
  * https://community.kde.org/Incubator
@@ -226,10 +225,6 @@
  * @todo Qt6 property bindings (QProperty QPropertyBinding) for all
  * properties?
  *
- * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
- * be better to require the last LTS release (5.15), just to be compatible if
- * in the future we depend on this?
- *
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
  *
  * @todo Qt Designer support for the widgets. Quote from a blog from Viking
@@ -239,26 +234,12 @@
  * mode. Unless your Qt is built in debug, then your plugin needs to be
  * built in debug mode as well. So you can’t just always use the same
  * compiler as you build the application with, if you use the system Qt or
- * a downloaded Qt version. It’s easier, though, if all developers work with
- * a custom built Qt. But these days it’s rare to see that.
+ * a downloaded Qt version.
  *
  * @todo Use <a href="https://lvc.github.io/abi-compliance-checker/">
  * abi-compliance-checker</a> to control ABI compatibility.
  *
- * @todo It might be useful to support for all widgets grayed out appearance
- * when they are disabled. Just fade out, maybe with some transparency, and
- * let colors still be visible, would be a bad idea: It would be highly
- * confusing seeing colors, but colors that are wrong. So everything
- * would have to be gray. For @ref PerceptualColor::ColorPatch and
- * @ref PerceptualColor::GradientSlider this could be simply the default
- * background, similar to grayed out spin boxes. And for the diagram
- * widgets, only the shape would stay visible, with uniform standard
- * gray colors coming from <tt>QStyle</tt>. The handles might not
- * even be displayed at all.
- *
  * @todo Follow KDE's <a href="https://hig.kde.org/index.html">HIG</a>
- *
- * @todo Add screenshots of widgets to the documentation
  *
  * @todo Test linking against lcms.h in version 2.0.0 for compatibility
  * (or require more recent version?)
@@ -403,6 +384,10 @@
  *
  * @internal
  *
+ * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
+ * be better to require the last LTS release (5.15), just to be compatible if
+ * in the future we depend on this?
+ *
  * @todo Provide detailed build instructions.
  *
  * @todo Provide a CMake find module for this library and install it. */
@@ -443,7 +428,7 @@
  * href="https://community.kde.org/Policies/Binary_Compatibility_Issues_With_C%2B%2B">
  * Binary Compatibility Issues With C++</a></em> and for details.
  *
- * @note While it might be nice to have the d_pointer and q_pointer
+ * @note It would be nice to have the d_pointer and q_pointer
  * be themselfs be declared <tt>const</tt>, because this would
  * clearly communicate that those pointers are not expected to change
  * the adress they point to. Unfortunely, apparently this does not

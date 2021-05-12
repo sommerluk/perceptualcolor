@@ -126,7 +126,7 @@ public:
     QImage generateDiagramImage(const qreal imageHue, const QSize imageSize) const;
     bool imageCoordinatesInGamut(const QPoint imageCoordinates);
     static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
-    void setImageCoordinates(const QPoint newImageCoordinates);
+    void setCurrentColorFromImageCoordinates(const QPoint newImageCoordinates);
     void updateDiagramCache();
 
 private:
