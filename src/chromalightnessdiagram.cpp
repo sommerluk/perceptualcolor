@@ -46,8 +46,6 @@
 #include <QPainter>
 #include <QWidget>
 
-#include <lcms2.h>
-
 namespace PerceptualColor
 {
 /** @brief The constructor.
@@ -84,8 +82,8 @@ ChromaLightnessDiagram::~ChromaLightnessDiagram() noexcept
  * is the private implementation.
  * @param colorSpace The color space within which this widget should operate. */
 ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPrivate(ChromaLightnessDiagram *backLink, const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
-    : q_pointer(backLink)
-    , m_chromaLightnessImage(colorSpace)
+    : m_chromaLightnessImage(colorSpace)
+    , q_pointer(backLink)
 {
 }
 
@@ -97,10 +95,9 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 
 // TODO high-dpi support
 
-// TODO Unit tests that make sure there is no crash also on sizes like
-// 0×0, 0×1, 1×0, 1×1, 2×2… (There should be code for this yet in the unit
-// test of one of the other widgets.) And do this also for ColorWheel
-// and ChromaHueDiagram.
+// TODO WARNING How behave the nearest-neigbor-search and similar
+// functions that depend on the image itself, if the image is empty
+// because the widget has no size?
 
 /** Updates @ref currentColor corresponding to the given image coordinates.
  *
@@ -608,8 +605,9 @@ LchDouble PerceptualColor::ChromaLightnessDiagram::currentColor() const
 
 /** @brief Search the nearest non-transparent neighbor pixel
  *
- * @note This code is an inefficient implementation
- * of a <em>nearest-neighbor-searchy</em>. See
+ * This implements a <a href="https://en.wikipedia.org/wiki/Nearest_neighbor_search">Nearest-neighbor-search</a>.
+ *
+ * @note This code is an inefficient implementation. See
  * <a href="https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast">here</a>
  * for a better approach.
  *

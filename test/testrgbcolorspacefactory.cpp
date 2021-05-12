@@ -99,6 +99,8 @@ private Q_SLOTS:
         QCOMPARE(temp.isNull(), false); // This is no nullptr!
         // Make a random call, just to be sure that a method call will not crash:
         temp->profileInfoDescription();
+        // Make sure the returned value is actually the sRGB gamut.
+        QCOMPARE(temp->profileInfoDescription(), QStringLiteral("sRGB built-in"));
     }
 
     void testSnipped01()

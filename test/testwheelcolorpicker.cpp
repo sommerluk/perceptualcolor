@@ -50,7 +50,7 @@ public:
     }
 
 private:
-    QSharedPointer<RgbColorSpace> m_colorSpace {new RgbColorSpace};
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace {new RgbColorSpace};
 
 private Q_SLOTS:
     void initTestCase()
@@ -76,12 +76,12 @@ private Q_SLOTS:
     void testConstructorDestructor()
     {
         // Test for crashs in constructor or destructor
-        WheelColorPicker test {m_colorSpace};
+        WheelColorPicker test {m_rgbColorSpace};
     }
 
     void testCurrentColorProperty()
     {
-        WheelColorPicker test {m_colorSpace};
+        WheelColorPicker test {m_rgbColorSpace};
         LchDouble color;
         color.l = 50;
         color.c = 20;
@@ -113,9 +113,60 @@ private Q_SLOTS:
 
     void testSizeHints()
     {
-        WheelColorPicker test {m_colorSpace};
+        WheelColorPicker test {m_rgbColorSpace};
         QVERIFY(test.minimumSizeHint().width() <= test.sizeHint().width());
         QVERIFY(test.minimumSizeHint().height() <= test.sizeHint().height());
+    }
+
+    void testVerySmallWidgetSizes()
+    {
+        // Also very small widget sizes should not crash the widget.
+        // This might happen because of divisions by 0, even when the widget
+        // is bigger than 0 because of borders or offsets. We test this
+        // here with various small sizes, always forcing in inmediate
+        // re-paint.
+        WheelColorPicker myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize());
+        myWidget.repaint();
+        myWidget.resize(QSize(-1, -1));
+        myWidget.repaint();
+        myWidget.resize(QSize(-1, 0));
+        myWidget.repaint();
+        myWidget.resize(QSize(0, -1));
+        myWidget.repaint();
+        myWidget.resize(QSize(0, 1));
+        myWidget.repaint();
+        myWidget.resize(QSize(1, 0));
+        myWidget.repaint();
+        myWidget.resize(QSize(1, 1));
+        myWidget.repaint();
+        myWidget.resize(QSize(2, 2));
+        myWidget.repaint();
+        myWidget.resize(QSize(3, 3));
+        myWidget.repaint();
+        myWidget.resize(QSize(4, 4));
+        myWidget.repaint();
+        myWidget.resize(QSize(5, 5));
+        myWidget.repaint();
+        myWidget.resize(QSize(6, 6));
+        myWidget.repaint();
+        myWidget.resize(QSize(7, 7));
+        myWidget.repaint();
+        myWidget.resize(QSize(8, 8));
+        myWidget.repaint();
+        myWidget.resize(QSize(9, 9));
+        myWidget.repaint();
+        myWidget.resize(QSize(10, 10));
+        myWidget.repaint();
+        myWidget.resize(QSize(11, 11));
+        myWidget.repaint();
+        myWidget.resize(QSize(12, 12));
+        myWidget.repaint();
+        myWidget.resize(QSize(13, 13));
+        myWidget.repaint();
+        myWidget.resize(QSize(14, 14));
+        myWidget.repaint();
     }
 };
 

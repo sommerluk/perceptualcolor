@@ -185,6 +185,57 @@ private Q_SLOTS:
         QVERIFY2(myColorWheel.d_pointer->innerDiameter() < myColorWheel.size().width(), "innerDiameter() is smaller than the widget’s width.");
         QVERIFY2(myColorWheel.d_pointer->innerDiameter() < myColorWheel.size().height(), "innerDiameter() is smaller than the widget’s height.");
     }
+
+    void testVerySmallWidgetSizes()
+    {
+        // Also very small widget sizes should not crash the widget.
+        // This might happen because of divisions by 0, even when the widget
+        // is bigger than 0 because of borders or offsets. We test this
+        // here with various small sizes, always forcing in inmediate
+        // re-paint.
+        ColorWheel myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize());
+        myWidget.repaint();
+        myWidget.resize(QSize(-1, -1));
+        myWidget.repaint();
+        myWidget.resize(QSize(-1, 0));
+        myWidget.repaint();
+        myWidget.resize(QSize(0, -1));
+        myWidget.repaint();
+        myWidget.resize(QSize(0, 1));
+        myWidget.repaint();
+        myWidget.resize(QSize(1, 0));
+        myWidget.repaint();
+        myWidget.resize(QSize(1, 1));
+        myWidget.repaint();
+        myWidget.resize(QSize(2, 2));
+        myWidget.repaint();
+        myWidget.resize(QSize(3, 3));
+        myWidget.repaint();
+        myWidget.resize(QSize(4, 4));
+        myWidget.repaint();
+        myWidget.resize(QSize(5, 5));
+        myWidget.repaint();
+        myWidget.resize(QSize(6, 6));
+        myWidget.repaint();
+        myWidget.resize(QSize(7, 7));
+        myWidget.repaint();
+        myWidget.resize(QSize(8, 8));
+        myWidget.repaint();
+        myWidget.resize(QSize(9, 9));
+        myWidget.repaint();
+        myWidget.resize(QSize(10, 10));
+        myWidget.repaint();
+        myWidget.resize(QSize(11, 11));
+        myWidget.repaint();
+        myWidget.resize(QSize(12, 12));
+        myWidget.repaint();
+        myWidget.resize(QSize(13, 13));
+        myWidget.repaint();
+        myWidget.resize(QSize(14, 14));
+        myWidget.repaint();
+    }
 };
 
 } // namespace PerceptualColor
