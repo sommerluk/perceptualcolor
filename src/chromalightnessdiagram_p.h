@@ -111,10 +111,9 @@ public:
 
     // Member functions
     QPoint currentImageCoordinates();
-    QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
-    bool imageCoordinatesInGamut(const QPoint imageCoordinates);
+    bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition);
     static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
-    void setCurrentColorFromImageCoordinates(const QPoint newImageCoordinates);
+    void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);
 
 private:
     Q_DISABLE_COPY(ChromaLightnessDiagramPrivate)
@@ -122,6 +121,8 @@ private:
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ChromaLightnessDiagram> q_pointer;
+
+    QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
 };
 
 } // namespace PerceptualColor

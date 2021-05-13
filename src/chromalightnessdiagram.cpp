@@ -88,8 +88,13 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 }
 
 // TODO xxx Review starts here
-
 // TODO Review also @ref ChromaLightnessImage::getImage()
+
+// TODO Rename ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColor() to
+// fromCurrentColorToWidgetCoordinatePoint()
+
+// TODO Remove setDevicePixelRatioF from all *Image classes. (This might
+// be confusing, and at the same time there is no real need/benefit.)
 
 // TODO Control all usage of m_defaultBorder (here, and also in friend
 // classes) and change the code (if necessary) to use (also) the new
@@ -101,21 +106,21 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 // functions that depend on the image itself, if the image is empty
 // because the widget has no size?
 
-/** Updates @ref currentColor corresponding to the given image coordinates.
+/** Updates @ref currentColor corresponding to the given widget pixel position.
  *
- * @param newImageCoordinates A coordinate point within the image’s coordinate
- * system. This does not necessarily need to intersect with the actual
- * displayed diagram or the gamut. It might even be negative or outside the
- * image or even outside widget.
+ * @param widgetPixelPosition The position of a pixel within the widget’s
+ * coordinate system. This does not necessarily need to intersect with the
+ * actually displayed diagram or the gamut. It might even be negative or
+ * outside the widget.
  *
- * @post If the coordinate point is within the gamut, then
- * the corresponding @ref currentColor is set. If the coordinate point
- * is outside the gamut, than a nearest-neighbor-search is done, searching
- * a nearby in-gamut color (hue is preverved, chroma and lightness are
- * adjusted) that is less far from the indicates coordinate point. */
-void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromImageCoordinates(const QPoint newImageCoordinates)
+ * @post If the pixel position is within the gamut, then
+ * the corresponding @ref currentColor is set. If the pixel position
+ * is outside the gamut, than a nearest-neighbor-search is done to find
+ * the nearest in-gamut color (hue is preverved, chroma and lightness are
+ * adjusted). */
+void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition)
 {
-    QPoint correctedImageCoordinates = nearestNeighborSearch(newImageCoordinates, m_chromaLightnessImage.getImage());
+    QPoint correctedImageCoordinates = nearestNeighborSearch(fromWidgetCoordinatesToImageCoordinates(widgetPixelPosition), m_chromaLightnessImage.getImage());
     QPointF chromaLightness;
     LchDouble lch;
     if (correctedImageCoordinates != currentImageCoordinates()) {
@@ -145,10 +150,9 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromI
  */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
-    QPoint imageCoordinates = d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos());
     // TODO In the following “if” condition, also accept out-of-gamut clicks
     // when they are covered by the current handle.
-    if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) {
+    if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
         // Mouse focus is handled manually because so we can accept focus only
         // on mouse clicks within the displayed gamut, while rejecting focus
         // otherwise. In the constructor, therefore Qt::FocusPolicy::TabFocus
@@ -160,7 +164,7 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
         setFocus(Qt::MouseFocusReason);
         d_pointer->m_isMouseEventActive = true;
         setCursor(Qt::BlankCursor);
-        d_pointer->setCurrentColorFromImageCoordinates(imageCoordinates);
+        d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     } else {
         // Make sure default behavior like drag-window in KDE’s
         // Breeze widget style works.
@@ -185,14 +189,13 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  */
 void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 {
-    QPoint imageCoordinates = d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos());
     if (d_pointer->m_isMouseEventActive) {
-        if (d_pointer->imageCoordinatesInGamut(imageCoordinates)) {
+        if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
             setCursor(Qt::BlankCursor);
         } else {
             unsetCursor();
         }
-        d_pointer->setCurrentColorFromImageCoordinates(imageCoordinates);
+        d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     } else {
         // Make sure default behavior like drag-window in KDE’s
         // Breeze widget style works.
@@ -214,7 +217,7 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
     if (d_pointer->m_isMouseEventActive) {
-        d_pointer->setCurrentColorFromImageCoordinates(d_pointer->fromWidgetCoordinatesToImageCoordinates(event->pos()));
+        d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
         unsetCursor();
         d_pointer->m_isMouseEventActive = false;
     } else {
@@ -405,50 +408,50 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // TODO singleStep & pageStep for ALL graphical widgets expressed in LCh
     // values, not in pixel. Use values as inherited from base class!
 
-    QPoint newImageCoordinates = d_pointer->currentImageCoordinates();
+    QPoint newWidgetCoordinates = d_pointer->currentImageCoordinates() + QPoint(d_pointer->m_defaultBorder, d_pointer->m_defaultBorder);
     switch (event->key()) {
     case Qt::Key_Up:
-        if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
-            newImageCoordinates += QPoint(0, -1);
+        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, -1))) {
+            newWidgetCoordinates += QPoint(0, -1);
         }
         break;
     case Qt::Key_Down:
-        if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, 1))) {
-            newImageCoordinates += QPoint(0, 1);
+        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, 1))) {
+            newWidgetCoordinates += QPoint(0, 1);
         }
         break;
     case Qt::Key_Left:
-        if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(-1, 0))) {
-            newImageCoordinates += QPoint(-1, 0);
+        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(-1, 0))) {
+            newWidgetCoordinates += QPoint(-1, 0);
         }
         break;
     case Qt::Key_Right:
-        if (d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(1, 0))) {
-            newImageCoordinates += QPoint(1, 0);
+        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(1, 0))) {
+            newWidgetCoordinates += QPoint(1, 0);
         }
         break;
     case Qt::Key_PageUp:
-        newImageCoordinates.setY(0);
-        while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, 1))) {
-            newImageCoordinates += QPoint(0, 1);
+        newWidgetCoordinates.setY(0);
+        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, 1))) {
+            newWidgetCoordinates += QPoint(0, 1);
         }
         break;
     case Qt::Key_PageDown:
-        newImageCoordinates.setY(d_pointer->m_chromaLightnessImage.getImage().height() - 1);
-        while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(0, -1))) {
-            newImageCoordinates += QPoint(0, -1);
+        newWidgetCoordinates.setY(d_pointer->m_chromaLightnessImage.getImage().height() - 1);
+        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, -1))) {
+            newWidgetCoordinates += QPoint(0, -1);
         }
         break;
     case Qt::Key_Home:
-        newImageCoordinates.setX(0);
-        while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(1, 0))) {
-            newImageCoordinates += QPoint(1, 0);
+        newWidgetCoordinates.setX(0);
+        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(1, 0))) {
+            newWidgetCoordinates += QPoint(1, 0);
         }
         break;
     case Qt::Key_End:
-        newImageCoordinates.setX(d_pointer->m_chromaLightnessImage.getImage().width() - 1);
-        while (!d_pointer->imageCoordinatesInGamut(newImageCoordinates + QPoint(-1, 0))) {
-            newImageCoordinates += QPoint(-1, 0);
+        newWidgetCoordinates.setX(d_pointer->m_chromaLightnessImage.getImage().width() - 1);
+        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(-1, 0))) {
+            newWidgetCoordinates += QPoint(-1, 0);
         }
         break;
     default:
@@ -471,7 +474,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 
     // Set the new image coordinates (only takes effect when image
     // coordinates are indeed different)
-    d_pointer->setCurrentColorFromImageCoordinates(newImageCoordinates);
+    d_pointer->setCurrentColorFromWidgetPixelPosition(newWidgetCoordinates);
 }
 
 /**
@@ -494,11 +497,12 @@ QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordi
  *
  * @todo It would be great if this function could be <tt>const</tt>.
  */
-bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::imageCoordinatesInGamut(const QPoint imageCoordinates)
+bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition)
 {
     // variables
     bool temp;
     QColor diagramPixelColor;
+    const QPoint imageCoordinates = fromWidgetCoordinatesToImageCoordinates(widgetPixelPosition);
 
     // code
     temp = false;
