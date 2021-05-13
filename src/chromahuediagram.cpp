@@ -460,9 +460,13 @@ void ChromaHueDiagram::resizeEvent(QResizeEvent *event)
  * @sa @ref ChromaHueMeasurement "Measurement details" */
 QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColor() const
 {
-    const qreal scaleFactor = (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder()) / static_cast<qreal>(2 * m_maxChroma);
+    const qreal scaleFactor = (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder()) / (2.0 * m_rgbColorSpace->maximumChroma());
     QPointF currentColor = PolarPointF(m_currentColor.c, m_currentColor.h).toCartesian();
-    return QPointF(currentColor.x() * scaleFactor + diagramOffset(), diagramOffset() - currentColor.y() * scaleFactor);
+    return QPointF(
+        // x:
+        currentColor.x() * scaleFactor + diagramOffset(),
+        // y:
+        diagramOffset() - currentColor.y() * scaleFactor);
 }
 
 /** @brief Converts widget pixel positions to Lab coordinates
@@ -475,7 +479,7 @@ QPointF ChromaHueDiagram::ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentC
  * @sa @ref ChromaHueMeasurement "Measurement details" */
 cmsCIELab ChromaHueDiagram::ChromaHueDiagramPrivate::fromWidgetPixelPositionToLab(const QPoint position) const
 {
-    const qreal scaleFactor = static_cast<qreal>(2 * m_maxChroma) / (q_pointer->maximumWidgetSquareSize() - 2 * diagramBorder());
+    const qreal scaleFactor = (2.0 * m_rgbColorSpace->maximumChroma()) / (q_pointer->maximumWidgetSquareSize() - 2.0 * diagramBorder());
     // The pixel at position 0 0 has its top left border at position 0 0
     // and its bottom right border at position 1 1 and its center at
     // position 0.5 0.5. Its the center of the pixel that is our reference
@@ -512,10 +516,10 @@ cmsCIELab ChromaHueDiagram::ChromaHueDiagramPrivate::fromWidgetPixelPositionToLa
  * @internal
  *
  * @todo What when the mouse goes outside the gray circle, but more
- * gamut is available outside (because @ref m_maxChroma was chosen too small)?
- * For consistency, the handle of the diagram should stay within the gray
- * circle, and this should be interpretat also actually as the value at
- * the position of the handle. */
+ * gamut is available outside (because @ref RgbColorSpace::maximumChroma()
+ * was chosen too small)? For consistency, the handle of the diagram should
+ * stay within the gray circle, and this should be interpretat also actually
+ * as the value at the position of the handle. */
 void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
     cmsCIELab lab = fromWidgetPixelPositionToLab(position);
@@ -618,7 +622,7 @@ void ChromaHueDiagram::paintEvent(QPaintEvent *event)
     // that might depend on devicePixelRatioF() is updated before painting.
     d_pointer->m_chromaHueImage.setBorder(d_pointer->diagramBorder() * devicePixelRatioF());
     d_pointer->m_chromaHueImage.setImageSize(maximumPhysicalSquareSize());
-    d_pointer->m_chromaHueImage.setChromaRange(d_pointer->m_maxChroma);
+    d_pointer->m_chromaHueImage.setChromaRange(d_pointer->m_rgbColorSpace->maximumChroma());
     d_pointer->m_chromaHueImage.setLightness(d_pointer->m_currentColor.l);
     d_pointer->m_chromaHueImage.setDevicePixelRatioF(devicePixelRatioF());
     bufferPainter.drawImage(QPoint(0, 0),                          // position of the image

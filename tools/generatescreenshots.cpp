@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
         style = QStyleFactory::create(QStringLiteral("Fusion"));
     }
     QApplication::setStyle(style); // This call is save even if style==nulltrp.
-    app.setApplicationName(QObject::tr(u8"Perceptual color picker"));
+    app.setApplicationName(QStringLiteral("Perceptual color picker"));
     app.setLayoutDirection(Qt::LeftToRight);
     QLocale::setDefault(QLocale::English);
 

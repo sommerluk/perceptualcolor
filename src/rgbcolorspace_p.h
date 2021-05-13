@@ -34,6 +34,7 @@
 #include "rgbcolorspace.h"
 
 #include "constpropagatingrawpointer.h"
+#include "lchvalues.h"
 #include "rgbdouble.h"
 
 namespace PerceptualColor
@@ -57,6 +58,7 @@ public:
     QString m_cmsInfoDescription;
     QString m_cmsInfoManufacturer;
     QString m_cmsInfoModel;
+    int m_maximumChroma = LchValues::humanMaximumChroma;
     cmsHTRANSFORM m_transformLabToRgb16Handle;
     cmsHTRANSFORM m_transformLabToRgbHandle;
     cmsHTRANSFORM m_transformRgbToLabHandle;

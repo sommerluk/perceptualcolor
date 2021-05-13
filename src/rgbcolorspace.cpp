@@ -58,7 +58,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
         nullptr);
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-    d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoDescription);
+    d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoDescription); // TODO This results in "sRGB built-in". Use instead a more descriptive name that has also to be localized with tr().
     d_pointer->m_cmsInfoCopyright = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoCopyright);
     d_pointer->m_cmsInfoManufacturer = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoManufacturer);
     d_pointer->m_cmsInfoModel = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoModel);
@@ -103,6 +103,9 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     // Close profile (free memory)
     cmsCloseProfile(labProfileHandle);
     cmsCloseProfile(rgbProfileHandle);
+
+    // Maximum chroma:
+    d_pointer->m_maximumChroma = LchValues::srgbMaximumChroma;
 
     // Now we know for sure that lowerChroma is in-gamut and upperChroma is
     // out-of-gamut…
@@ -566,6 +569,11 @@ QString RgbColorSpace::RgbColorSpacePrivate::getInformationFromProfile(cmsHPROFI
 
     // Return
     return result;
+}
+
+int RgbColorSpace::maximumChroma() const
+{
+    return d_pointer->m_maximumChroma;
 }
 
 } // namespace PerceptualColor

@@ -85,12 +85,6 @@ public:
      * circular widget, only reacting on mouse events within the circle;
      * this requires this custom implementation. */
     bool m_isMouseEventActive = false;
-    /** @brief The maximum chroma value.
-     *
-     * This is the chroma value that is on the border of the gray circle.
-     *
-     * @todo This should not be hard-coded to sRGB. */
-    qreal m_maxChroma = LchValues::srgbMaximumChroma;
     /** @brief Pointer to @ref RgbColorSpace object used to describe the
      * color space. */
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;

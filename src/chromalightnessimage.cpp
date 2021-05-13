@@ -31,6 +31,7 @@
 // First the interface, which forces the header to be self-contained.
 #include "chromalightnessimage.h"
 
+#include "lchvalues.h"
 #include "polarpointf.h"
 
 #include <QPainter>
@@ -121,8 +122,8 @@ QImage ChromaLightnessImage::getImage()
         return m_image;
     }
 
-    // Initialize the image with transparency.
-    m_image.fill(Qt::transparent);
+    // Initialize the image background
+    m_image.fill(m_rgbColorSpace->colorRgbBound(LchValues::neutralGray));
 
     // Paint the gamut.
     LCh.h = PolarPointF::normalizedAngleDegree(m_hue);

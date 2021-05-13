@@ -90,9 +90,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 // TODO xxx Review starts here
 // TODO Review also @ref ChromaLightnessImage::getImage()
 
-// TODO Rename ChromaHueDiagramPrivate::widgetCoordinatesFromCurrentColor() to
-// fromCurrentColorToWidgetCoordinatePoint()
-
 // TODO Remove setDevicePixelRatioF from all *Image classes. (This might
 // be confusing, and at the same time there is no real need/benefit.)
 
@@ -555,9 +552,6 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
     //      need be (or should be) done inside this handler.”
 }
 
-// TODO how to treat empty images because the color profile does not
-// work or the resolution is too small?
-
 /** @brief Provide the size hint.
  *
  * Reimplemented from base class.
@@ -581,9 +575,20 @@ QSize ChromaLightnessDiagram::sizeHint() const
  */
 QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
-    const int minimum = 2 * d_pointer->m_defaultBorder + gradientMinimumLength();
+    const int minimumHeight = qRound(
+        // Left border and right border:
+        2 * d_pointer->m_defaultBorder
+        // Add the height for the diagram:
+        + gradientMinimumLength());
+    const int minimumWidth = qRound(
+        // Left border and right border:
+        2 * d_pointer->m_defaultBorder
+        // Add the gradient minimum length from y axis, multiplied with
+        // the factor to allow at correct scaling showing up the whole
+        // chroma range of the gamut.
+        + gradientMinimumLength() * d_pointer->m_rgbColorSpace->maximumChroma() / 100.0);
     // Expand to the global minimum size for GUI elements
-    return QSize(minimum, minimum).expandedTo(QApplication::globalStrut());
+    return QSize(minimumWidth, minimumHeight).expandedTo(QApplication::globalStrut());
 }
 
 // TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???

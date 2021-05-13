@@ -74,6 +74,7 @@ public:
     Q_INVOKABLE bool isInGamut(const cmsCIELab &lab) const;
     Q_INVOKABLE bool isInGamut(const double lightness, const double chroma, const double hue) const;
     Q_INVOKABLE bool isInGamut(const PerceptualColor::LchDouble &lch) const;
+    Q_INVOKABLE int maximumChroma() const;
     // TODO Wording: Do not use “sacrify” but “preserve”. And maybe put this
     // into an enum, allowing to call this function with various enum
     // values that preserve different axis.
