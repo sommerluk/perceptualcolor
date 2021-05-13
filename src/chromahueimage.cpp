@@ -188,7 +188,7 @@ QImage ChromaHueImage::getImage()
     // If we continue, the circle will at least be visible.
     // Initialize the hole image background to the background color
     // of the circle.
-    m_image.fill(m_rgbColorSpace->colorRgbBound(LchValues::neutralGray));
+    m_image.fill(m_rgbColorSpace->toQColorRgbBound(LchValues::neutralGray));
 
     // Prepare for gamut painting
     cmsCIELab lab;
@@ -220,7 +220,7 @@ QImage ChromaHueImage::getImage()
         for (x = 0; x < m_imageSizePhysical; ++x) {
             lab.a = (x + pixelOffset - m_borderPhysical) * scaleFactor - m_chromaRange;
             if ((qPow(lab.a, 2) + qPow(lab.b, 2)) <= (qPow(m_chromaRange + overlap, 2))) {
-                tempColor = m_rgbColorSpace->colorRgb(lab);
+                tempColor = m_rgbColorSpace->toQColorRgbUnbound(lab);
                 if (tempColor.isValid()) {
                     // The pixel is within the gamut!
                     m_image.setPixelColor(x, y, tempColor);

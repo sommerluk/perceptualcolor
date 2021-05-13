@@ -1058,7 +1058,7 @@ private Q_SLOTS:
     {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
         QSharedPointer<RgbColorSpace> myColorSpace {new RgbColorSpace()};
-        myDialog->d_pointer->m_currentOpaqueColor = myColorSpace->colorLch(QColor(1, 2, 3));
+        myDialog->d_pointer->m_currentOpaqueColor = myColorSpace->toLch(QColor(1, 2, 3));
         myDialog->d_pointer->updateColorPatch();
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().red(), 1);
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().green(), 2);

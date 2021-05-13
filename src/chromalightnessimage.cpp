@@ -123,7 +123,7 @@ QImage ChromaLightnessImage::getImage()
     }
 
     // Initialize the image background
-    m_image.fill(m_rgbColorSpace->colorRgbBound(LchValues::neutralGray));
+    m_image.fill(m_rgbColorSpace->toQColorRgbBound(LchValues::neutralGray));
 
     // Paint the gamut.
     LCh.h = PolarPointF::normalizedAngleDegree(m_hue);
@@ -133,7 +133,7 @@ QImage ChromaLightnessImage::getImage()
             // Using the same scale as on the y axis. floating point
             // division thanks to 100 which is a "cmsFloat64Number"
             LCh.c = x * static_cast<cmsFloat64Number>(100) / maxHeight;
-            rgbColor = m_rgbColorSpace->colorRgb(LCh);
+            rgbColor = m_rgbColorSpace->toQColorRgbUnbound(LCh);
             if (rgbColor.isValid()) {
                 // The pixel is within the gamut
                 m_image.setPixelColor(x, maxHeight - y, rgbColor);

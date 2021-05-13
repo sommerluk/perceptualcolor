@@ -393,13 +393,13 @@ private Q_SLOTS:
         constexpr int oddSize = 101;
         test.setImageSize(oddSize); // an odd numer
         constexpr int positionAtCenter = (oddSize - 1) / 2;
-        const qreal chromaAtCenter = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter, positionAtCenter)).c;
+        const qreal chromaAtCenter = colorSpace->toLch(test.getImage().pixelColor(positionAtCenter, positionAtCenter)).c;
         for (int x = positionAtCenter - 2; x <= positionAtCenter + 2; ++x) {
             for (int y = positionAtCenter - 2; y <= positionAtCenter + 2; ++y) {
                 if ((x == positionAtCenter) && (y == positionAtCenter)) {
                     continue;
                 }
-                const qreal chromaAround = colorSpace->colorLch(test.getImage().pixelColor(x, y)).c;
+                const qreal chromaAround = colorSpace->toLch(test.getImage().pixelColor(x, y)).c;
                 QVERIFY2(chromaAtCenter < chromaAround,
                          "The chroma of the pixel at the center of the image "
                          "is lower than the chroma of any of the pixels "
@@ -418,17 +418,17 @@ private Q_SLOTS:
         test.setImageSize(evenSize); // an odd numer
         constexpr int positionAtCenter2 = evenSize / 2;
         constexpr int positionAtCenter1 = positionAtCenter2 - 1;
-        const qreal chromaAtCenterA = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter1, positionAtCenter1)).c;
-        const qreal chromaAtCenterB = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter1, positionAtCenter2)).c;
-        const qreal chromaAtCenterC = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter2, positionAtCenter1)).c;
-        const qreal chromaAtCenterD = colorSpace->colorLch(test.getImage().pixelColor(positionAtCenter2, positionAtCenter2)).c;
+        const qreal chromaAtCenterA = colorSpace->toLch(test.getImage().pixelColor(positionAtCenter1, positionAtCenter1)).c;
+        const qreal chromaAtCenterB = colorSpace->toLch(test.getImage().pixelColor(positionAtCenter1, positionAtCenter2)).c;
+        const qreal chromaAtCenterC = colorSpace->toLch(test.getImage().pixelColor(positionAtCenter2, positionAtCenter1)).c;
+        const qreal chromaAtCenterD = colorSpace->toLch(test.getImage().pixelColor(positionAtCenter2, positionAtCenter2)).c;
         const qreal maximumChromaAtCenter = qMax(qMax(chromaAtCenterA, chromaAtCenterB), qMax(chromaAtCenterC, chromaAtCenterD));
         for (int x = positionAtCenter1 - 2; x <= positionAtCenter2 + 2; ++x) {
             for (int y = positionAtCenter1 - 2; y <= positionAtCenter2 + 2; ++y) {
                 if (inRange(positionAtCenter1, x, positionAtCenter2) && inRange(positionAtCenter1, y, positionAtCenter2)) {
                     continue;
                 }
-                const qreal chromaAround = colorSpace->colorLch(test.getImage().pixelColor(x, y)).c;
+                const qreal chromaAround = colorSpace->toLch(test.getImage().pixelColor(x, y)).c;
                 QVERIFY2(maximumChromaAtCenter < chromaAround,
                          "The chroma of the pixels at the center of the image "
                          "is lower than the chroma of any of the pixels "

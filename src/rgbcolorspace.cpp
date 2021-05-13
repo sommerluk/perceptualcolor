@@ -168,7 +168,7 @@ qreal RgbColorSpace::whitepointL() const
  * @returns If the color is valid, the corresponding LCh value might also
  * be invalid.
  */
-cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
+cmsCIELab RgbColorSpace::toLab(const QColor &rgbColor) const
 {
     RgbDouble my_rgb;
     my_rgb.red = rgbColor.redF();
@@ -177,9 +177,9 @@ cmsCIELab RgbColorSpace::colorLab(const QColor &rgbColor) const
     return d_pointer->colorLab(my_rgb);
 }
 
-PerceptualColor::LchDouble RgbColorSpace::colorLch(const QColor &rgbColor) const
+PerceptualColor::LchDouble RgbColorSpace::toLch(const QColor &rgbColor) const
 {
-    cmsCIELab lab = colorLab(rgbColor);
+    cmsCIELab lab = toLab(rgbColor);
     cmsCIELCh lch;
     cmsLab2LCh(&lch, &lab);
     LchDouble result;
@@ -211,7 +211,7 @@ cmsCIELab RgbColorSpace::RgbColorSpacePrivate::colorLab(const RgbDouble &rgb) co
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * An invalid QColor otherwise.
  */
-QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
+QColor RgbColorSpace::toQColorRgbUnbound(const cmsCIELab &Lab) const
 {
     QColor temp; // By default, without initialization this is an invalid color
     RgbDouble rgb;
@@ -235,7 +235,7 @@ QColor RgbColorSpace::colorRgb(const cmsCIELab &Lab) const
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * An invalid QColor otherwise.
  */
-QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
+QColor RgbColorSpace::toQColorRgbUnbound(const LchDouble &lch) const
 {
     cmsCIELab lab; // uses cmsFloat64Number internally
     const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
@@ -245,7 +245,7 @@ QColor RgbColorSpace::colorRgb(const LchDouble &lch) const
     temp.L = lab.L;
     temp.a = lab.a;
     temp.b = lab.b;
-    return colorRgb(temp);
+    return toQColorRgbUnbound(temp);
 }
 
 RgbDouble RgbColorSpace::RgbColorSpacePrivate::colorRgbBoundSimple(const cmsCIELab &Lab) const
@@ -271,7 +271,7 @@ RgbDouble RgbColorSpace::RgbColorSpacePrivate::colorRgbBoundSimple(const cmsCIEL
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
  */
-QColor RgbColorSpace::colorRgbBound(const cmsCIELab &Lab) const
+QColor RgbColorSpace::toQColorRgbBound(const cmsCIELab &Lab) const
 {
     RgbDouble temp = d_pointer->colorRgbBoundSimple(Lab);
     return QColor::fromRgbF(temp.red, temp.green, temp.blue);
@@ -283,7 +283,7 @@ QColor RgbColorSpace::colorRgbBound(const cmsCIELab &Lab) const
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
  */
-QColor RgbColorSpace::colorRgbBound(const LchDouble &lch) const
+QColor RgbColorSpace::toQColorRgbBound(const LchDouble &lch) const
 {
     cmsCIELab lab; // uses cmsFloat64Number internally
     const cmsCIELCh myCmsCieLch = toCmsCieLch(lch);
@@ -293,16 +293,16 @@ QColor RgbColorSpace::colorRgbBound(const LchDouble &lch) const
     temp.L = lab.L;
     temp.a = lab.a;
     temp.b = lab.b;
-    return colorRgbBound(temp);
+    return toQColorRgbBound(temp);
 }
 
-QColor RgbColorSpace::colorRgbBound(const PerceptualColor::LchaDouble &lcha) const
+QColor RgbColorSpace::toQColorRgbBound(const PerceptualColor::LchaDouble &lcha) const
 {
     LchDouble lch;
     lch.l = lcha.l;
     lch.c = lcha.c;
     lch.h = lcha.h;
-    QColor result = colorRgbBound(lch);
+    QColor result = toQColorRgbBound(lch);
     result.setAlphaF(lcha.a);
     return result;
 }

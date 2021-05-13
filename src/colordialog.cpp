@@ -138,7 +138,7 @@ ColorDialog::ColorDialogPrivate::ColorDialogPrivate(ColorDialog *backLink)
 QColor ColorDialog::currentColor() const
 {
     QColor temp;
-    temp = d_pointer->m_rgbColorSpace->colorRgbBound(d_pointer->m_currentOpaqueColor);
+    temp = d_pointer->m_rgbColorSpace->toQColorRgbBound(d_pointer->m_currentOpaqueColor);
     temp.setAlphaF(d_pointer->m_alphaGradientSlider->value());
     return temp;
 }
@@ -167,7 +167,7 @@ void ColorDialog::setCurrentColor(const QColor &color)
         // For invalid colors same behavior as QColorDialog
         temp = QColor(Qt::black);
     }
-    LchDouble lch = d_pointer->m_rgbColorSpace->colorLch(temp);
+    LchDouble lch = d_pointer->m_rgbColorSpace->toLch(temp);
     LchaDouble lcha;
     lcha.l = lch.l;
     lcha.c = lch.c;
@@ -222,7 +222,7 @@ void ColorDialog::open(QObject *receiver, const char *member)
  *              space (RGB, HSV etc.) */
 void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(const QColor &color)
 {
-    setCurrentOpaqueColor(m_rgbColorSpace->colorLch(color));
+    setCurrentOpaqueColor(m_rgbColorSpace->toLch(color));
 }
 
 /** @brief Updates the color patch widget
@@ -232,7 +232,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(const QColor &color
  * value of @ref m_alphaGradientSlider. */
 void ColorDialog::ColorDialogPrivate::updateColorPatch()
 {
-    QColor tempRgbQColor = m_rgbColorSpace->colorRgbBound(m_currentOpaqueColor);
+    QColor tempRgbQColor = m_rgbColorSpace->toQColorRgbBound(m_currentOpaqueColor);
     tempRgbQColor.setAlphaF(m_alphaGradientSlider->value());
     m_colorPatch->setColor(tempRgbQColor);
 }
@@ -265,7 +265,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &col
     m_currentOpaqueColor = color;
 
     // Update all the widgets for opaque color…
-    QColor tempRgbQColor = m_rgbColorSpace->colorRgbBound(color);
+    QColor tempRgbQColor = m_rgbColorSpace->toQColorRgbBound(color);
     tempRgbQColor.setAlpha(255);
     QList<MultiSpinBox::SectionData> tempSections;
 
@@ -361,7 +361,7 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
     }
     // Return to the finally considered value (the new one if valid, the old
     // one otherwise.)
-    m_rgbLineEdit->setText(m_rgbColorSpace->colorRgb(m_currentOpaqueColor).name());
+    m_rgbLineEdit->setText(m_rgbColorSpace->toQColorRgbUnbound(m_currentOpaqueColor).name());
 }
 
 /** @brief Basic initialization.

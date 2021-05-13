@@ -64,13 +64,6 @@ public:
     Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
     virtual ~RgbColorSpace() noexcept override;
     Q_INVOKABLE qreal blackpointL() const;
-    Q_INVOKABLE cmsCIELab colorLab(const QColor &rgbColor) const;
-    Q_INVOKABLE PerceptualColor::LchDouble colorLch(const QColor &rgbColor) const;
-    Q_INVOKABLE QColor colorRgb(const cmsCIELab &Lab) const;
-    Q_INVOKABLE QColor colorRgb(const PerceptualColor::LchDouble &lch) const;
-    Q_INVOKABLE QColor colorRgbBound(const cmsCIELab &Lab) const;
-    Q_INVOKABLE QColor colorRgbBound(const PerceptualColor::LchDouble &lch) const;
-    Q_INVOKABLE QColor colorRgbBound(const PerceptualColor::LchaDouble &lcha) const;
     Q_INVOKABLE bool isInGamut(const cmsCIELab &lab) const;
     Q_INVOKABLE bool isInGamut(const double lightness, const double chroma, const double hue) const;
     Q_INVOKABLE bool isInGamut(const PerceptualColor::LchDouble &lch) const;
@@ -83,7 +76,14 @@ public:
     Q_INVOKABLE QString profileInfoDescription() const;
     Q_INVOKABLE QString profileInfoManufacturer() const;
     Q_INVOKABLE QString profileInfoModel() const;
+    Q_INVOKABLE cmsCIELab toLab(const QColor &rgbColor) const;
     Q_INVOKABLE PerceptualColor::LchDouble toLch(const cmsCIELab &lab) const;
+    Q_INVOKABLE PerceptualColor::LchDouble toLch(const QColor &rgbColor) const;
+    Q_INVOKABLE QColor toQColorRgbBound(const cmsCIELab &Lab) const;
+    Q_INVOKABLE QColor toQColorRgbBound(const PerceptualColor::LchDouble &lch) const;
+    Q_INVOKABLE QColor toQColorRgbBound(const PerceptualColor::LchaDouble &lcha) const;
+    Q_INVOKABLE QColor toQColorRgbUnbound(const cmsCIELab &Lab) const;                  // TODO Isn’t QColor _always_ bound???
+    Q_INVOKABLE QColor toQColorRgbUnbound(const PerceptualColor::LchDouble &lch) const; // TODO Isn’t QColor _always_ bound???
     Q_INVOKABLE qreal whitepointL() const;
 
 private:

@@ -149,7 +149,7 @@ QImage GradientImage::getImage()
     LchaDouble color;
     for (int i = 0; i < m_gradientLength; ++i) {
         color = colorFromValue((i + 0.5) / static_cast<qreal>(m_gradientLength));
-        temp.setPixelColor(i, 0, m_rgbColorSpace->colorRgbBound(color));
+        temp.setPixelColor(i, 0, m_rgbColorSpace->toQColorRgbBound(color));
     }
 
     // Now, create a full image of the gradient

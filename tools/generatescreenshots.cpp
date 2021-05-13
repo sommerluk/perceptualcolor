@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 
     // Variables
     QSharedPointer<RgbColorSpace> m_colorSpace {new RgbColorSpace};
-    const QColor defaultInitialColor = m_colorSpace->colorRgbBound(
+    const QColor defaultInitialColor = m_colorSpace->toQColorRgbBound(
         // Choose the same initial color as many widgets
         LchValues::srgbVersatileInitialColor);
     QColor myColor;
