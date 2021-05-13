@@ -89,6 +89,8 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 
 // TODO xxx Review starts here
 
+// TODO Review also @ref ChromaLightnessImage::getImage()
+
 // TODO Control all usage of m_defaultBorder (here, and also in friend
 // classes) and change the code (if necessary) to use (also) the new
 // m_leftBorder.
@@ -117,7 +119,12 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromI
     QPointF chromaLightness;
     LchDouble lch;
     if (correctedImageCoordinates != currentImageCoordinates()) {
-        chromaLightness = fromImageCoordinatesToChromaLightness(correctedImageCoordinates);
+        // Convert from correctedImagecoordinates to chroma-lightness value:
+        chromaLightness = QPointF(
+            // x:
+            correctedImageCoordinates.x() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0),
+            // y:
+            correctedImageCoordinates.y() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0) * (-1) + 100);
         lch.c = chromaLightness.x();
         lch.l = chromaLightness.y();
         lch.h = m_currentColor.h;
@@ -465,21 +472,6 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // Set the new image coordinates (only takes effect when image
     // coordinates are indeed different)
     d_pointer->setCurrentColorFromImageCoordinates(newImageCoordinates);
-}
-
-/**
- * @param imageCoordinates the image coordinates
- * @returns the chroma-lightness value for given image coordinates
- *
- * @todo It would be great if this function could be <tt>const</tt>.
- */
-QPointF ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates)
-{
-    return QPointF(
-        // x:
-        static_cast<qreal>(imageCoordinates.x()) * 100 / (m_chromaLightnessImage.getImage().height() - 1),
-        // y:
-        static_cast<qreal>(imageCoordinates.y()) * 100 / (m_chromaLightnessImage.getImage().height() - 1) * (-1) + 100);
 }
 
 /**

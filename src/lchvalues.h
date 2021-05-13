@@ -34,60 +34,13 @@
 
 namespace PerceptualColor
 {
-/** @page lchrange Range of LCH and LAB values
- *
- * The gamut of actual human perception within the LAB color model (and
- * its alternative representation LCH) has an irregular shape. Its maximum
- * extensions:
- *
- * <b>Lightness (L)</b>
- * The maximum range for LAB/LCH lightness is limited by
- * definition: <tt>[0, 100]</tt>.
- *
- * <b>Hue (H)</b>
- * The maximum range for LCH hue is limited by definition to
- * the full circle: <tt>[0°, 360°[</tt>.
- *
- * <b>a, b, Chroma (C)</b>
- * The maximum range for a, b, Chroma (C) is complex. It is <em>not</em>
- * limited by definition. A useful limit is the actual human perception.
- *
- * |                               |        a          |         b         | C           |
- * | :---------------------------- |:----------------: | :---------------: | :---------: |
- * | Usual implementation¹         |    [−128, 127]    |    [−128, 127]    |             |
- * | Human perception (Wikipedia)² |    [−170, 100]    |    [−100, 150]    |             |
- * | Human perception (2° D50)³    | [−165.39, 129.05] | [−132.62, 146.69] | [0, 183.42] |
- * | Human perception (2° D65)³    | [−170.84, 147.84] | [−129.66, 146.78] | [0, 194.84] |
- * | Human perception (10° D65)³   | [−164.29, 115.14] | [−116.10, 145.53] | [0, 186.17] |
- *
- * 1. The range of  <tt>[−128, 127]</tt> is in C++ a signed 8‑bit integer. But
- *    this data type usually used in software implementations is (as the table
- *    clearly shows) not enough to cover the hole range of actual human
- *    color perception.
- * 2. Ranges of LAB coordinates according to the
- *    <a href="https://de.wikipedia.org/w/index.php?title=Lab-Farbraum&oldid=197156292">
- *    German Wikipedia</a>.
- * 3. The German association <em>Freie Farbe e. V.</em> has
- *    published a calculation of the
- *    <a href="https://www.freiefarbe.de/artikel/grenzen-des-cielab-farbraums/">
- *    shape of actual human perception</a> for various observation angles
- *    and illuminants. This data contains only the LAB coordinates. From
- *    this data, the C component can be calculated easily as Pythagoras of
- *    the a axis and b axis value pairs: √(a² + b²) = C. */
-
 /** @internal
  *
  * @brief LCh default values
  *
- * The @ref lchrange "range of LCH/LAB values" it known.
+ * The @ref rangeoflchandlabvalues "range of LCH/LAB values" it known.
  * But what could be useful default values? This struct provides some
- * proposals. All values are <tt>constexpr</tt>.
- *
- * @note It is not always a good idea to have <tt>constexpr</tt> in header
- * files, as they are evaluated at compile time, so when linking dynamically
- * to a different library version that the compile time library version, this
- * could lead to confusioni. But this class is not part of the public API,
- * therefore <tt>constexpr</tt> are okay. */
+ * proposals. All values are <tt>constexpr</tt>. */
 struct LchValues final {
 public:
     /** @brief Maximum chroma value of human perception.

@@ -51,23 +51,6 @@
  * understand the CMake configuration syntax with <tt>\@…\@</tt> and would
  * break it.) */
 
-/** @page versioninfo Version information at compiletime and runtime
- *
- * This library uses
- * <a href="https://semver.org/">Semantic Versioning 2.0.0</a>.
- *
- * Version information is provided by the header <tt>version.h</tt>
- *
- * To know against which version of this library you are <em>running</em>, use
- * - @ref PerceptualColor::perceptualColorRunTimeVersion
- *
- * To know against which version of this library you are <em>compiling</em>,
- * use
- * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION
- * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR
- * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR
- * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH */
-
 /** @def PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR
  *
  * @returns The <em>major</em> version (as integer) of this library

@@ -43,7 +43,7 @@ namespace PerceptualColor
  * Example:
  * @snippet test/testlchdouble.cpp Use LchDouble
  *
- * More details about the valid range: @ref lchrange
+ * More details about the valid range: @ref rangeoflchandlabvalues
  *
  * This class intentionally does not provide the operators <em>equal
  * to</em> (<tt>operator==</tt>) and <em>not equal to</em>
@@ -82,11 +82,11 @@ public:
     double l;
     /** @brief Chroma.
      *
-     * <tt>0</tt> means no chroma (grayscale). The maximum
-     * value depends on the gamut. For sRGB for example it’s
-     * a given value, but other gamuts can be bigger, but the practical
-     * limit is the gamut of the @ref lchrange "human perception", beyond
-     * which a Chroma value does not make sense. */
+     * <tt>0</tt> means no chroma (grayscale). The maximum value depends on
+     * the gamut. For sRGB for example it’s a given value, but other gamuts
+     * can be bigger, but the practical limit is the gamut of the
+     * @ref rangeoflchandlabvalues "human perception", beyond which a
+     * Chroma value does not make sense. */
     double c;
     /** @brief Hue, measured in degree.
      *

@@ -27,6 +27,13 @@
 #include "PerceptualColor/perceptualcolorglobal.h"
 #include "perceptualcolorinternal.h"
 
+// This file contains the following documentation:
+// – @mainpage
+// – All the @page documentation. Putting all @page documentation in this
+//   single file allows that they show up in the documentation in
+//   alphabetical order.
+// – The namespace documentation
+
 /** @mainpage
  * This library provides various Qt GUI components for choosing colors, with
  * focus on an intuitive and perceptually uniform presentation. The GUI
@@ -58,7 +65,7 @@
  * Anyway, you can uses this library without knowing about the internals of
  * LittleCMS.
  *
- * @sa @ref compile
+ * @sa @ref build
  * @sa @ref hidpisupport
  *
  * @copyright Almost all the code is published under MIT License.
@@ -272,6 +279,148 @@
  *
  * @todo Spell checking for the documentation */
 
+/** @page build Build instructions and requirements
+ * The library depends on (and therefore you has to link against):
+ *
+ * |                         | Qt                 | LittleCMS               |
+ * | :---------------------- | :----------------- | :---------------------- |
+ * | <b>Major release</b>    | 5                  | 2                       |
+ * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
+ * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
+ *
+ * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
+ * used in this library.</em>
+ *
+ * This library requires minimum C++17.
+ * <!--
+ *      Qt 5.6 (which is the mimimum Qt version required
+ *      by this library) only requires C++03. Only starting
+ *      with Qt 5.7, Qt itself requires C++11. Source:
+ *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
+ *
+ *      Qt 6 requires minimum C++17, as
+ *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
+ *      explains.
+ *
+ *      Our library code uses C++11 features, for example “constexpr”.
+ *
+ *      In the CMakeLists.txt file, we set -std=c++17 and we set
+ *      also -Wpedantic and -pedantic-errors to enforce it. That is
+ *      a useful option for this library if we decide to make it Qt-6-only.
+ *      But it is even be useful if we support Qt 5, so we have future-proof
+ *      requirements that we do not have to raise soon, and that are a
+ *      good base for LTS.
+ * -->
+ *
+ * To compile this library, both the input character set and the execution
+ * character set have to be UTF8. (See @ref compilercharacterset for more
+ * details.)
+ *
+ * You also need CMake for the build process.
+ *
+ * @internal
+ *
+ * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
+ * be better to require the last LTS release (5.15), just to be compatible if
+ * in the future we depend on this?
+ *
+ * @todo Provide detailed build instructions.
+ *
+ * @todo Provide a CMake find module for this library and install it. */
+
+/** @internal
+ *
+ * @page codingstyle Coding style
+ *
+ * - Document your code.
+ * - Provide unit tests for your code.
+ * - If working with children within Qt’s object hierarchy, allocate on the
+ *   heap and use raw pointers or guarded pointers (`QPointer`). If not,
+ *   allocate on the stack or use smart pointers. Prefer Qt’s smart pointers
+ *   over the <tt>std</tt> smart pointers of C++. */
+
+/** @page compilercharacterset Compiler character sets
+ *
+ * @section compilercharacterset_ Compiler character sets
+ *
+ * Compilers have three different character sets:
+ * - Input character set (the character set of the source code)
+ * - Narrow execution character set
+ *   (for “char” data type and string literals without prefix)
+ * - Wide execution character set
+ *   (for “wchar_t” data type and string literals with L prefix)
+ *
+ * @subsection inputcharacterset Input character set
+ *
+ * This source code of this library is encoded in UTF8. Therefore, your
+ * compiler must treat is also as UTF-8.
+ *
+ * Why are we using UTF-8 instead of ASCII?
+ * - UTF-8 is more complete than ASCII. ASCII does not even provide basic
+ *   typographic symbols like en-dash, em-dash or non-breaking space
+ *   characters or quotes.
+ * - Unicode exists since 1991, UTF-8 since 1993. It’s time to get rid of
+ *   the insufficient ASCII character. It’s time to use Unicode.
+ * - We use non-ASCII characters for (typographically
+ *   correct) Doxygen documentation and partially also for non-Doxygen
+ *   source code comments. It would be quite annoying to use HTML
+ *   entinies for each non-ASCII character in the Doxygen documentation;
+ *   and it would be pointless to do it for non-Doxygen source code
+ *   comments.
+ * - <tt>i18n()</tt> and <tt>ki18n()</tt> and <tt>tr()</tt> require both,
+ *   the source file and <tt>char*</tt> to be encoded in UTF-8; no other
+ *   encodings are supported. (Only ASCII would be UTF-8 compatible,
+ *   but in practice this encoding is not supported, but only 8859-Latin
+ *   encodings, which allow code points higher than 127, which risks to
+ *   introduce incompatibilities. Therefore, this would not be a good
+ *   option.)
+ * - The C++ identifiers of library symbols are however (currently)
+ *   ASCII-only.
+ *
+ * So we use a <tt>static_assert</tt> statement to control this.
+ *
+ * @subsection narowexecutioncharacterset Narrow execution character set
+ *
+ * Why are we using UTF-8 as narrow execution character set?
+ * - <tt>i18n()</tt> and <tt>ki18n()</tt> and <tt>tr()</tt> require both,
+ *   the source file and <tt>char*</tt> to be encoded in UTF-8; no other
+ *   encodings are supported.
+ * - Implicit conversion from <tt>char*</tt> to <tt>QString</tt> assumes
+ *   that <tt>char*</tt> is UTF-8 encoded. Thus we disable this implicit
+ *   conversion in <tt>CMakeLists.txt</tt>, it’s wise to stay compatible.
+ *
+ * Therefore, a static assert controls that really UTF-8 is used
+ * as narrow execution character set.
+ *
+ * @subsection wideexecutioncharacterset Wide execution character set
+ *
+ * We do not use actively the wide execution character set. There is
+ * a usage when communicating with LittleCMS, but there we depend anyway
+ * from LittleCMS. Therefore, currently, no static assert forces a specific
+ * wide execution character set.
+ *
+ * @internal
+ *
+ * @note The static asserts that enforce the character sets are located
+ * in @ref perceptualcolorinternal.h. */
+
+/** @internal
+ *
+ * @page datatypes Data types
+ *
+ * The library uses in general <tt>int</tt> for integer values, because
+ * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
+ * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
+ * seems reasonable.
+ *
+ * For the same reason, it uses generally <tt>qreal</tt>
+ * for floating point values, because <tt>QPointF()</tt> also does.
+ *
+ * Output colors that are shown on the screen, are usually 8-bit-per-channel
+ * colors. For internal transformation, usually <tt>qreal</tt>
+ * is used for each channel, giving a better precision and reducing rounding
+ * errors. */
+
 /** @page hidpisupport High DPI support
  * This library supports High DPI out of the box. You do not need to do
  * much to use it. The widgets provide High DPI support automatically.
@@ -328,69 +477,75 @@
 
 /** @internal
  *
- * @page datatypes Data types
+ * @page measurementdetails Measurement details
  *
- * The library uses in general <tt>int</tt> for integer values, because
- * <tt>QSize()</tt> and <tt>QPoint()</tt> also do. As the library relies
- * heavily on the usage of <tt>QSize()</tt> and <tt>QPoint()</tt>, this
- * seems reasonable.
+ * When this library deals with raster graphics, it simultaniously uses
+ * concepts concerning measurement. This page describes the terminology
+ * used within the documentation of this library.
  *
- * For the same reason, it uses generally <tt>qreal</tt>
- * for floating point values, because <tt>QPointF()</tt> also does.
+ * @section introduction Introduction
+ * Today’s displays have a wide range of physical pixel density (pixels
+ * per length). Displays with a high physical pixel density are called
+ * <b>High-DPI displays</b> or <b>HiDPI displays</b> or <b>Retina displays</b>.
  *
- * Output colors that are shown on the screen, are usually 8-bit-per-channel
- * colors. For internal transformation, usually <tt>qreal</tt>
- * is used for each channel, giving a better precision and reducing rounding
- * errors. */
+ * @section unitsofmeasurement Units of measurement
+ * As Qt docuemntation says:
+ *      “<em>Qt uses a model where the application coordinate system is
+ *      independent of the display device resolution. The application
+ *      operates in </em>device-independent pixels<em>, which are then
+ *      mapped to the physical pixels of the display via a scale
+ *      factor, known as the </em>device pixel ratio<em>.</em>”
+ *
+ * So when rendering widgets, there are two different units of measurement
+ * to consider:
+ * - <b>Device-indepentend pixels</b> are the  unit of measurement for
+ *   widgets, windows, screens, mouse events and so on in Qt.
+ * - <b>Physical pixels</b> are the unit that measures actual physical
+ *   display pixels.
+ *
+ * The conversion factor between these two units of measurement is
+ * <tt>QPaintDevice::devicePixelRatioF()</tt>, a floating point number.
+ * It is usually <tt>1.00</tt> on classic low-resolution screens. It could be
+ * for example <tt>1.25</tt> or <tt>2.00</tt> on displays with a higher
+ * pixel density.
+ *
+ * @section coordinatepointsversuspixelpositions Coordinate points versus pixel positions
+ *
+ * - <b>Coordinate points</b> are points in the mathematical sense, that
+ *   means they have zero surface. Coordinate points should be stored as
+ *   <em>floating point numbers</em>.
+ * - <b>Pixel positions</b> describe the position of a particular pixel
+ *   within the pixel grid. Pixels are surfaces, not points. A pixel is a
+ *   square of the width and length <tt>1</tt>. The pixel at position
+ *   <tt>QPoint(x, y)</tt> is the square with the top-left edge at coordinate
+ *   point <tt>QPoint(x, y)</tt> and the botton-right edge at coordinate
+ *   point <tt>QPoint(x+1, y+1)</tt>. Pixel positions should be stored
+ *   as <em>integer numbers</em>.
+ *
+ * Some functions (like mouse events) work with pixel positions, other
+ * functions (like antialiased floatting-point drawing operations) work
+ * with coordinate points. It’s important to always distinguish correctly
+ * these two different concepts. See https://doc.qt.io/qt-6/coordsys.html
+ * for more details about integer precision vs floating poin precision
+ * on drawing operations. */
 
-/** @page compile Build instructions and requirements
- * The library depends on (and therefore you has to link against):
+/** @internal
  *
- * |                         | Qt                 | LittleCMS               |
- * | :---------------------- | :----------------- | :---------------------- |
- * | <b>Major release</b>    | 5                  | 2                       |
- * | <b>Minimum version</b>  | ≥ 5.6*             | ≥ 2.0                   |
- * | <b>Required modules</b> | Core, Gui, Widgets | <em>not applicable</em> |
+ * @page multithreading Multithreading
  *
- * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
- * used in this library.</em>
+ * Currently, this library does not use multithreading. However, is seems
+ * a good idea to implement multithreading in the future, particulary
+ * for generating the gamut images, which seems to be the slowest
+ * operation of this library. It could get disconnected from the GUI
+ * thread, leading to a more responsive GUI. And the image could be
+ * calculated by various threads simultaniously, so that the generation
+ * could be faster.
  *
- * This library requires minimum C++17.
- * <!--
- *      Qt 5.6 (which is the mimimum Qt version required
- *      by this library) only requires C++03. Only starting
- *      with Qt 5.7, Qt itself requires C++11. Source:
- *      https://doc.qt.io/qt-5.9/cmake-manual.html#using-qt-5-with-cmake-older-than-3-1-0
- *
- *      Qt 6 requires minimum C++17, as
- *      https://doc-snapshots.qt.io/qt6-dev/cmake-get-started.html
- *      explains.
- *
- *      Our library code uses C++11 features, for example “constexpr”.
- *
- *      In the CMakeLists.txt file, we set -std=c++17 and we set
- *      also -Wpedantic and -pedantic-errors to enforce it. That is
- *      a useful option for this library if we decide to make it Qt-6-only.
- *      But it is even be useful if we support Qt 5, so we have future-proof
- *      requirements that we do not have to raise soon, and that are a
- *      good base for LTS.
- * -->
- *
- * To compile this library, both the input character set and the execution
- * character set have to be UTF8. (See @ref characterset for the reasons
- * behind this choise.)
- *
- * You also need CMake for the build process.
- *
- * @internal
- *
- * @todo Is Qt 5.6 actually enough?. Even if so, wouldn’t it
- * be better to require the last LTS release (5.15), just to be compatible if
- * in the future we depend on this?
- *
- * @todo Provide detailed build instructions.
- *
- * @todo Provide a CMake find module for this library and install it. */
+ * Points to consider:
+ * - LittleCMS seems to allow using the same transform simultaniously
+ *   from variouis threads as long as the 1-pixel-cache is disabled.
+ * - QPixmap may only be used in the GUI thread. To generate the images
+ *   in another thread, QImage must be used. */
 
 /** @internal
  *
@@ -436,88 +591,63 @@
  * @ref PerceptualColor::ConstPropagatingRawPointer as it would change also
  * all the access rights to the pointed object to always <tt>const</tt>. */
 
-/** @internal
+/** @page rangeoflchandlabvalues Range of LCH and LAB values
  *
- * @page measurementdetails Measurement details
+ * The gamut of actual human perception within the LAB color model (and
+ * its alternative representation LCH) has an irregular shape. Its maximum
+ * extensions:
  *
- * When this library deals with raster graphics, it simultaniously uses
- * concepts concerning measurement. This page describes the terminology
- * used within the documentation of this library.
+ * <b>Lightness (L)</b>
+ * The maximum range for LAB/LCH lightness is limited by
+ * definition: <tt>[0, 100]</tt>.
  *
- * @section introduction Introduction
- * Today’s displays have a wide range of physical pixel density (pixels
- * per length). Displays with a high physical pixel density are called
- * <b>High-DPI displays</b> or <b>HiDPI displays</b> or <b>Retina displays</b>.
+ * <b>Hue (H)</b>
+ * The maximum range for LCH hue is limited by definition to
+ * the full circle: <tt>[0°, 360°[</tt>.
  *
- * @section unitsofmeasurement Units of measurement
- * As Qt docuemntation says:
- *      “<em>Qt uses a model where the application coordinate system is
- *      independent of the display device resolution. The application
- *      operates in </em>device-independent pixels<em>, which are then
- *      mapped to the physical pixels of the display via a scale
- *      factor, known as the </em>device pixel ratio<em>.</em>”
+ * <b>a, b, Chroma (C)</b>
+ * The maximum range for a, b and Chroma (C) is complex. It is <em>not</em>
+ * limited by definition. A useful limit is the actual human perception.
  *
- * So when rendering widgets, there are two different units of measurement
- * to consider:
- * - <b>Device-indepentend pixels</b> are the  unit of measurement for
- *   widgets, windows, screens, mouse events and so on in Qt.
- * - <b>Physical pixels</b> are the unit that measures actual physical
- *   display pixels.
+ * |                               |        a          |         b         | C           |
+ * | :---------------------------- |:----------------: | :---------------: | :---------: |
+ * | Usual implementation¹         |    [−128, 127]    |    [−128, 127]    |             |
+ * | Human perception (Wikipedia)² |    [−170, 100]    |    [−100, 150]    |             |
+ * | Human perception (2° D50)³    | [−165.39, 129.05] | [−132.62, 146.69] | [0, 183.42] |
+ * | Human perception (2° D65)³    | [−170.84, 147.84] | [−129.66, 146.78] | [0, 194.84] |
+ * | Human perception (10° D65)³   | [−164.29, 115.14] | [−116.10, 145.53] | [0, 186.17] |
  *
- * The conversion factor between these two units of measurement is
- * <tt>QPaintDevice::devicePixelRatioF()</tt>, a floating point number.
- * It is usually <tt>1.00</tt> on classic low resolution screens. It could be
- * for example <tt>1.25</tt> or <tt>2.00</tt> on displays with a higher
- * pixel density.
- *
- * @section coordinatepointsversuspixelpositions Coordinate points versus pixel positions
- *
- * - <b>Coordinate points</b> are points in the mathematical sense, that
- *   means they have zero surface. Coordinate points should be stored as
- *   <em>floating point numbers</em>.
- * - <b>Pixel positions</b> describe the position of a particular pixel
- *   within the pixel grid. Pixels are surfaces, not points. A pixel is a
- *   square of the width and length <tt>1</tt>. The pixel at position
- *   <tt>QPoint(x, y)</tt> is the square with the top-left edge at coordinate
- *   point <tt>QPoint(x, y)</tt> and the botton-right edge at coordinate
- *   point <tt>QPoint(x+1, y+1)</tt>. Pixel positions should be stored
- *   as <em>integer numbers</em>.
- *
- * Some functions (like mouse events) work with pixel positions, other
- * functions (like antialiased floatting-point drawing operations) work
- * with coordinate points. It’s important to always distinguish correctly
- * these two different concepts. See https://doc.qt.io/qt-6/coordsys.html
- * for more details about integer precision vs floating poin precision
- * on drawing operations. */
+ * 1. The range of  <tt>[−128, 127]</tt> is in C++ a signed 8‑bit integer. But
+ *    this data type usually used in software implementations is (as the table
+ *    clearly shows) not enough to cover the hole range of actual human
+ *    color perception.
+ * 2. Ranges of LAB coordinates according to the
+ *    <a href="https://de.wikipedia.org/w/index.php?title=Lab-Farbraum&oldid=197156292">
+ *    German Wikipedia</a>.
+ * 3. The German association <em>Freie Farbe e. V.</em> has
+ *    published a calculation of the
+ *    <a href="https://www.freiefarbe.de/artikel/grenzen-des-cielab-farbraums/">
+ *    shape of actual human perception</a> for various observation angles
+ *    and illuminants. This data contains only the LAB coordinates. From
+ *    this data, the C component can be calculated easily as Pythagoras of
+ *    the a axis and b axis value pairs: √(a² + b²) = C. */
 
-/** @internal
+/** @page versioninfo Version information at compiletime and runtime
  *
- * @page codingstyle Coding style
+ * This library uses
+ * <a href="https://semver.org/">Semantic Versioning 2.0.0</a>.
  *
- * - Document your code.
- * - Provide unit tests for your code.
- * - If working with children within Qt’s object hierarchy, allocate on the
- *   heap and use raw pointers or guarded pointers (`QPointer`). If not,
- *   allocate on the stack or use smart pointers. Prefer Qt’s smart pointers
- *   over the <tt>std</tt> smart pointers of C++. */
-
-/** @internal
+ * Version information is provided by the header <tt>version.h</tt>
  *
- * @page multithreading Multithreading
+ * To know against which version of this library you are <em>running</em>, use
+ * - @ref PerceptualColor::perceptualColorRunTimeVersion
  *
- * Currently, this library does not use multithreading. However, is seems
- * a good idea to implement multithreading in the future, particulary
- * for generating the gamut images, which seems to be the slowest
- * operation of this library. It could get disconnected from the GUI
- * thread, leading to a more responsive GUI. And the image could be
- * calculated by various threads simultaniously, so that the generation
- * could be faster.
- *
- * Points to consider:
- * - LittleCMS seems to allow using the same transform simultaniously
- *   from variouis threads as long as the 1-pixel-cache is disabled.
- * - QPixmap may only be used in the GUI thread. To generate the images
- *   in another thread, QImage must be used. */
+ * To know against which version of this library you are <em>compiling</em>,
+ * use
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MAJOR
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_MINOR
+ * - @ref PERCEPTUALCOLOR_COMPILE_TIME_VERSION_PATCH */
 
 /** @brief The namespace of this library.
  *

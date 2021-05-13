@@ -99,7 +99,19 @@ class RgbColorSpace;
  * @todo What if black or white are out of gamut on L=0.1 or L=99.9? Where
  * are the handles placed? Visible or invisible? How to react? Should
  * there be always a physical pixel in the middle that is visible (black
- * or white) even when out of gamut? */
+ * or white) even when out of gamut?
+ *
+ * @todo Optimization: It might be possible to <em>not</em> store both,
+ * a @ref ChromaHueImage and a @ref ColorWheelImage, but only one. This
+ * would cut the memory usage of this class to the half. @ref ColorWheelImage
+ * would not be stored anymore. Instead, @ref ChromaHueImage would be
+ * modified to contain also the color wheel. When the lightness changes,
+ * @ref ChromaHueImage does not delete the cache, but (later) adjusts only
+ * the inner circle with the chroma-hue diagram. It would be a little bit
+ * tricky to get right the extreme positions (maximum chroma) because of
+ * the anti-aliasing at these positions: We would have to cut out (without
+ * anti-aliasing) enough surface to be able to draw again an anti-aliased
+ * circle above a completly transparent place. */
 class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
 {
     Q_OBJECT

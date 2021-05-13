@@ -111,7 +111,6 @@ public:
 
     // Member functions
     QPoint currentImageCoordinates();
-    QPointF fromImageCoordinatesToChromaLightness(const QPoint imageCoordinates);
     QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
     bool imageCoordinatesInGamut(const QPoint imageCoordinates);
     static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);

@@ -35,64 +35,6 @@
 
 #include "PerceptualColor/perceptualcolorglobal.h"
 
-/** @page characterset Compiler character sets
- *
- * Compilers have three different character sets:
- * - Input character set (the character set of the source code)
- * - Narrow execution character set
- *   (for “char” data type and string literals without prefix)
- * - Wide execution character set
- *   (for “wchar_t” data type and string literals with L prefix)
- *
- * @section inputcharacterset Input character set
- *
- * This source code of this library is encoded in UTF8. Therefore, your
- * compiler must treat is also as UTF-8.
- *
- * Why are we using UTF-8 instead of ASCII?
- * - UTF-8 is more complete than ASCII. ASCII does not even provide basic
- *   typographic symbols like en-dash, em-dash or non-breaking space
- *   characters or quotes.
- * - Unicode exists since 1991, UTF-8 since 1993. It’s time to get rid of
- *   the insufficient ASCII character. It’s time to use Unicode.
- * - We use non-ASCII characters for (typographically
- *   correct) Doxygen documentation and partially also for non-Doxygen
- *   source code comments. It would be quite annoying to use HTML
- *   entinies for each non-ASCII character in the Doxygen documentation;
- *   and it would be pointless to do it for non-Doxygen source code
- *   comments.
- * - <tt>i18n()</tt> and <tt>ki18n()</tt> and <tt>tr()</tt> require both,
- *   the source file and <tt>char*</tt> to be encoded in UTF-8; no other
- *   encodings are supported. (Only ASCII would be UTF-8 compatible,
- *   but in practice this encoding is not supported, but only 8859-Latin
- *   encodings, which allow code points higher than 127, which risks to
- *   introduce incompatibilities. Therefore, this would not be a good
- *   option.)
- * - The C++ identifiers of library symbols are however (currently)
- *   ASCII-only.
- *
- * So we use a <tt>static_assert</tt> statement to control this.
- *
- * @section narowexecutioncharacterset Narrow execution character set
- *
- * Why are we using UTF-8 as narrow execution character set?
- * - <tt>i18n()</tt> and <tt>ki18n()</tt> and <tt>tr()</tt> require both,
- *   the source file and <tt>char*</tt> to be encoded in UTF-8; no other
- *   encodings are supported.
- * - Implicit conversion from <tt>char*</tt> to <tt>QString</tt> assumes
- *   that <tt>char*</tt> is UTF-8 encoded. Thus we disable this implicit
- *   conversion in <tt>CMakeLists.txt</tt>, it’s wise to stay compatible.
- *
- * Therefore, a static assert controls that really UTF-8 is used
- * as narrow execution character set.
- *
- * @section wideexecutioncharacterset Wide execution character set
- *
- * We do not use actively the wide execution character set. There is
- * a usage when communicating with LittleCMS, but there we depend anyway
- * from LittleCMS. Therefore, currently, no static assert forces a specific
- * wide execution character set. */
-
 static_assert(
     // Test if the compiler treats the source code actually as UTF-8.
     // We use the character “🖌” who’s code point is U+1F58C.
