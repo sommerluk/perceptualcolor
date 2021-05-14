@@ -253,7 +253,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         // will normalize the hue.
         LchDouble newColor = d_pointer->m_currentColor;
         newColor.h += standardWheelStepCount(event) * singleStepHue;
-        setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(newColor));
+        setCurrentColor(d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(newColor));
     } else {
         event->ignore();
     }
@@ -339,7 +339,7 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
         // (Doing so would be counter-intuitive.)
         d_pointer->m_currentColor.c = 0;
     }
-    setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(d_pointer->m_currentColor));
+    setCurrentColor(d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(d_pointer->m_currentColor));
 }
 
 /** @brief Recommmended size for the widget.
@@ -384,7 +384,7 @@ LchDouble ChromaHueDiagram::currentColor() const
  * @param newCurrentColor the new color */
 void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
 {
-    LchDouble newCorrectedColor = d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(newCurrentColor);
+    LchDouble newCorrectedColor = d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(newCurrentColor);
 
     if (newCorrectedColor.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
@@ -523,7 +523,7 @@ cmsCIELab ChromaHueDiagram::ChromaHueDiagramPrivate::fromWidgetPixelPositionToLa
 void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
     cmsCIELab lab = fromWidgetPixelPositionToLab(position);
-    q_pointer->setCurrentColor(m_rgbColorSpace->nearestInGamutSacrifyingChroma(m_rgbColorSpace->toLch(lab)));
+    q_pointer->setCurrentColor(m_rgbColorSpace->inGamutColorByAdjustingChroma(m_rgbColorSpace->toLch(lab)));
 }
 
 /** @brief Tests if a wiget pixel positon is within the mouse sensible circle.

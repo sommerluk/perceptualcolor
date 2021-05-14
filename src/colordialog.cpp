@@ -82,7 +82,7 @@ ColorDialog::ColorDialog(QWidget *parent)
     // parameter was invalid. As m_currentOpaqueColor is invalid
     // be default, and therefor different, setCurrentColor()
     // guaranties to update all widgets.
-    LchDouble lch = d_pointer->m_rgbColorSpace->nearestInGamutSacrifyingChroma(initialColor);
+    LchDouble lch = d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(initialColor);
     LchaDouble lcha;
     lcha.l = lch.l;
     lcha.c = lch.c;
@@ -327,7 +327,7 @@ void ColorDialog::ColorDialogPrivate::readLightnessValue()
 {
     LchDouble lch = m_currentOpaqueColor;
     lch.l = m_lchLightnessSelector->value() * 100;
-    setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutSacrifyingChroma(lch));
+    setCurrentOpaqueColor(m_rgbColorSpace->inGamutColorByAdjustingChroma(lch));
 }
 
 /** @brief Reads the HSV numbers in the dialog and
@@ -507,7 +507,7 @@ void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
     lch.h = hlcSections[0].value;
     lch.l = hlcSections[1].value;
     lch.c = hlcSections[2].value;
-    setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutSacrifyingChroma(lch));
+    setCurrentOpaqueColor(m_rgbColorSpace->inGamutColorByAdjustingChroma(lch));
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.

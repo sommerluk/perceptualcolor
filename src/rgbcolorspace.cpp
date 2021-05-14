@@ -402,7 +402,7 @@ QString RgbColorSpace::profileInfoModel() const
 
 /** @returns A <em>normalized</em> (this is guaranteed!) in-gamut color,
  * maybe with different chroma (and even lightness??) */
-PerceptualColor::LchDouble RgbColorSpace::nearestInGamutSacrifyingChroma(const PerceptualColor::LchDouble &color) const
+PerceptualColor::LchDouble RgbColorSpace::inGamutColorByAdjustingChroma(const PerceptualColor::LchDouble &color) const
 {
     LchDouble result = color;
     PolarPointF temp(result.c, result.h);
