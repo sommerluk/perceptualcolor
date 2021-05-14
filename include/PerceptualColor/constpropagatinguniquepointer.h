@@ -34,7 +34,9 @@
 
 namespace PerceptualColor
 {
-/** @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
+/** @internal
+ *
+ * @brief A <tt>const</tt> propagating <tt>std::unique_ptr</tt>
  *
  * With normal <tt>std::unique_ptr</tt> pointers (and also with raw
  * C++ pointers), within <tt>const</tt> functions you can do non-const
