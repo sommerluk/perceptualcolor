@@ -579,6 +579,9 @@ bool ChromaHueDiagram::ChromaHueDiagramPrivate::isWidgetPixelPositionWithinMouse
  *   for round widgets. Therefore, we draw the focus indicator ourself,
  *   which means its form is not controlled by <tt>QStyle</tt>.
  *
+ * @todo Show the indicator on the color wheel not only while a mouse button
+ * is pressed, but also while a keyboard button is pressed.
+ *
  * @todo What when @ref ChromaHueDiagramPrivate::m_currentColor has a valid
  * in-gamut color, but this color is out of the <em>displayed</em> diagram?
  * How to handle that? */
