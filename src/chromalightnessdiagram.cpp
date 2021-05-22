@@ -90,8 +90,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 // TODO xxx Review starts here
 // TODO Review also @ref ChromaLightnessImage::getImage()
 
-// TODO ChromaHueDiagram keys do not work
-
 // TODO Remove setDevicePixelRatioF from all *Image classes. (This might
 // be confusing, and at the same time there is no real need/benefit.)
 

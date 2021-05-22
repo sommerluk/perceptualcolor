@@ -292,30 +292,31 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
  * are likely that the user tries them out by trial-and-error. */
 void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
 {
+    LchDouble newColor = currentColor();
     switch (event->key()) {
     case Qt::Key_Up:
-        d_pointer->m_currentColor.c += singleStepChroma;
+        newColor.c += singleStepChroma;
         break;
     case Qt::Key_Down:
-        d_pointer->m_currentColor.c -= singleStepChroma;
+        newColor.c -= singleStepChroma;
         break;
     case Qt::Key_Left:
-        d_pointer->m_currentColor.h += singleStepHue;
+        newColor.h += singleStepHue;
         break;
     case Qt::Key_Right:
-        d_pointer->m_currentColor.h -= singleStepHue;
+        newColor.h -= singleStepHue;
         break;
     case Qt::Key_PageUp:
-        d_pointer->m_currentColor.c += pageStepChroma;
+        newColor.c += pageStepChroma;
         break;
     case Qt::Key_PageDown:
-        d_pointer->m_currentColor.c -= pageStepChroma;
+        newColor.c -= pageStepChroma;
         break;
     case Qt::Key_Home:
-        d_pointer->m_currentColor.h += pageStepHue;
+        newColor.h += pageStepHue;
         break;
     case Qt::Key_End:
-        d_pointer->m_currentColor.h -= pageStepHue;
+        newColor.h -= pageStepHue;
         break;
     default:
         // Quote from Qt documentation:
@@ -334,12 +335,15 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
     // Here we reach only if the key has been recognized. If not, in the
     // default branch of the switch statement, we would have passed the
     // keyPressEvent yet to the parent and returned.
-    if (d_pointer->m_currentColor.c < 0) {
+    if (newColor.c < 0) {
         // Do not allow negative chroma values.
         // (Doing so would be counter-intuitive.)
-        d_pointer->m_currentColor.c = 0;
+        newColor.c = 0;
     }
-    setCurrentColor(d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(d_pointer->m_currentColor));
+    // Move the value into gamut (if necessary):
+    newColor = d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(newColor);
+    // Apply the new value:
+    setCurrentColor(newColor);
 }
 
 /** @brief Recommmended size for the widget.
