@@ -82,6 +82,9 @@
  * @todo Test opaque RGB color space object with a non-export-all version
  * of this library to make sure it actually works for third-party developers.
  *
+ * @todo Sometimes, on dual-screen setup, one screen has another DPI than
+ * the other screen. Does this library behave correctly in these situations?
+ *
  * @todo Would it make sense for @ref PerceptualColor::ChromaHueDiagram and
  * @ref PerceptualColor::ChromaLightnessDiagram to split up their property
  * <tt>currentColor</tt> into two properties: A two-dimensional property
