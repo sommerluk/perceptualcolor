@@ -43,7 +43,7 @@ static void snippet01()
     QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace =
         // Create the color space object with the factory class.
         // This call might be slow.
-        PerceptualColor::RgbColorSpaceFactory::create();
+        PerceptualColor::RgbColorSpaceFactory::createSrgb();
 
     // These calls are fast:
 
@@ -95,7 +95,7 @@ private Q_SLOTS:
 
     void testCreate()
     {
-        QSharedPointer<PerceptualColor::RgbColorSpace> temp = RgbColorSpaceFactory::create();
+        QSharedPointer<PerceptualColor::RgbColorSpace> temp = RgbColorSpaceFactory::createSrgb();
         QCOMPARE(temp.isNull(), false); // This is no nullptr!
         // Make a random call, just to be sure that a method call will not crash:
         temp->profileInfoDescription();

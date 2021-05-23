@@ -159,18 +159,18 @@ QSizeF WheelColorPicker::WheelColorPickerPrivate::optimalChromaLightnessDiagramS
      * Known variables:
      * | variable     | comment                          | value                              |
      * | :----------- | :------------------------------- | :--------------------------------- |
-     * | r            | relation b ÷ a                   | maximum lightness ÷ maximim chroma |
+     * | r            | relation b ÷ a                   | maximum lightness ÷ maximum chroma |
      * | h            | horizontial shift                | left + right diagram border        |
      * | v            | vertial shift                    | top + bottom diagram border        |
      * | d            | diameter of circumscribed circle | inner diameter of the color wheel  |
-     * | b            | diagram height                   | a · r                              |
+     * | b            | diagram height                   | a × r                              |
      * | widgetWidth  | widget width                     | a + h                              |
      * | widgetHeight | widget height                    | b + v                              |
      * | a            | diagram width                    | ?                                  |
      */
-    const qreal r = 100.0 / m_maximumChroma;
-    const qreal h = 2 * m_chromaLightnessDiagram->d_pointer->m_defaultBorder;
-    const qreal v = h;
+    const qreal r = 100.0 / m_rgbColorSpace->maximumChroma();
+    const qreal h = m_chromaLightnessDiagram->d_pointer->leftBorderPhysical() + m_chromaLightnessDiagram->d_pointer->defaultBorderPhysical();
+    const qreal v = 2 * m_chromaLightnessDiagram->d_pointer->defaultBorderPhysical();
     const qreal d = m_colorWheel->d_pointer->innerDiameter();
 
     /** We can calculate <em>a</em> because right-angled triangle

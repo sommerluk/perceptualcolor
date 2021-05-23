@@ -98,20 +98,22 @@ void ChromaLightnessImage::setHue(const qreal newHue)
 /** @brief Delivers an image of a chroma-lightness diagram.
  *
  * @returns A chroma-lightness diagram. For the y axis, its height covers
- * the lightness range [0, 100]. Pixel <tt>(0)</tt> corresponds to
- * value 100. Pixel <tt>(height-1)</tt> corresponds to value 0.
+ * the lightness range [0, 100]. Coordinate point <tt>(0)</tt> corresponds to
+ * value 100. Coordinate point <tt>height</tt> corresponds to value 0.
  * Its x axis uses always the same scale as the y axis. So if the size
  * is a square, both x range and y range are from 0 to 100. If the
  * width is larger than the height, the x range goes beyond 100. The
  * image paints all the LCh values that are within the gamut and x/y range.
+ * Each pixel show the color of the coordinate point at its center. So
+ * the pixel at pixel position <tt>(2, 3)</tt> shows the color corresponding
+ * to coordinate point <tt>(2.5, 3.5)</tt>.
  *
- * Intentionally there is no anti-aliasing because this would be much slower:
- * As there is no mathematical description of the shape of the color solid,
- * the only easy way to get anti-aliasing would be to render at a higher
- * resolution (say two times higher, which would yet mean four times more
- * data), and then downscale it to the final resolution.
- *
- * @todo Review this code! */
+ * @note Intentionally there is no anti-aliasing because this would be much
+ * slower: As there is no mathematical description of the shape of the color
+ * solid, the only easy way to get anti-aliasing would be to render at a
+ * higher resolution (say two times higher, which would yet mean four times
+ * more data), and then downscale it to the final resolution. This would be
+ * too slow. */
 QImage ChromaLightnessImage::getImage()
 {
     // If there is an image in cache, simply return the cache.
@@ -122,21 +124,20 @@ QImage ChromaLightnessImage::getImage()
     // If no image is in cache, create a new one (in the cache) with
     // correct image size.
     m_image = QImage(m_imageSizePhysical, QImage::Format_ARGB32_Premultiplied);
+    // Test if image size is empty.
+    if (m_image.size().isEmpty()) {
+        // The image must be non-empty (otherwise, our algorithm would
+        // crash because of a division by 0).
+        return m_image;
+    }
 
     // Initialization
     LchDouble LCh;
     QColor rgbColor;
     int x;
     int y;
-    const int maxHeight = m_imageSizePhysical.height() - 1;
-    const int maxWidth = m_imageSizePhysical.width() - 1;
-
-    // Test if image size is too small.
-    if ((maxHeight < 1) || (maxWidth < 1)) {
-        // maxHeight and maxWidth must be at least >= 1 for our
-        // algorithm. If they are 0, this would crash (division by 0).
-        return m_image;
-    }
+    const int imageHeight = m_imageSizePhysical.height();
+    const int imageWidth = m_imageSizePhysical.width();
 
     // Initialize the image background
     if (m_backgroundColor.isValid()) {
@@ -147,16 +148,16 @@ QImage ChromaLightnessImage::getImage()
 
     // Paint the gamut.
     LCh.h = PolarPointF::normalizedAngleDegree(m_hue);
-    for (y = 0; y <= maxHeight; ++y) {
-        LCh.l = y * static_cast<cmsFloat64Number>(100) / maxHeight;
-        for (x = 0; x <= maxWidth; ++x) {
+    for (y = 0; y < imageHeight; ++y) {
+        LCh.l = 100 - (y + 0.5) * 100.0 / imageHeight;
+        for (x = 0; x < imageWidth; ++x) {
             // Using the same scale as on the y axis. floating point
             // division thanks to 100 which is a "cmsFloat64Number"
-            LCh.c = x * static_cast<cmsFloat64Number>(100) / maxHeight;
+            LCh.c = (x + 0.5) * 100.0 / imageHeight;
             rgbColor = m_rgbColorSpace->toQColorRgbUnbound(LCh);
             if (rgbColor.isValid()) {
                 // The pixel is within the gamut
-                m_image.setPixelColor(x, maxHeight - y, rgbColor);
+                m_image.setPixelColor(x, y, rgbColor);
                 // If color is out-of-gamut: We have chroma on the x axis and
                 // lightness on the y axis. We are drawing the pixmap line per
                 // line, so we go for given lightness from low chroma to high
@@ -170,6 +171,7 @@ QImage ChromaLightnessImage::getImage()
         }
     }
 
+    // Now return the cache.
     return m_image;
 }
 

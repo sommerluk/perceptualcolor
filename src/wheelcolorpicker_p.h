@@ -68,8 +68,6 @@ public:
     QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace;
     /** @brief A pointer to the @ref ColorWheel child widget. */
     QPointer<ColorWheel> m_colorWheel;
-    /** @brief The chroma up to which the diagram is drawn. */
-    qreal m_maximumChroma = LchValues::srgbMaximumChroma;
 
 public Q_SLOTS:
     void handleFocusChanged(QWidget *old, QWidget *now);

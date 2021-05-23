@@ -484,7 +484,7 @@ int GradientSlider::GradientSliderPrivate::physicalPixelThickness() const
 }
 
 /** @brief Converts widget pixel positions to @ref value
- * @param pixelPosition The position of a pixel in the widget coordinate
+ * @param pixelPosition The position of a pixel of the widget coordinate
  * system. The given value  does not necessarily need to
  * be within the actual displayed widget. It might even be negative.
  * @returns The corresponding @ref value for the (center of the) given

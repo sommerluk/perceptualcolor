@@ -64,10 +64,7 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualCo
 
     // Initialization
     d_pointer->m_currentColor = LchValues::srgbVersatileInitialColor;
-    // Accept focus only by keyboard tabbing and not by mouse click
-    // Focus by mouse click is handled manually by mousePressEvent().
-    setFocusPolicy(Qt::FocusPolicy::TabFocus);
-    // Define the size policy of this widget.
+    setFocusPolicy(Qt::FocusPolicy::StrongFocus);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
@@ -87,22 +84,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
 {
 }
 
-// TODO xxx Review starts here
-// TODO Review also @ref ChromaLightnessImage::getImage()
-
-// TODO Remove setDevicePixelRatioF from all *Image classes. (This might
-// be confusing, and at the same time there is no real need/benefit.)
-
-// TODO Control all usage of m_defaultBorder (here, and also in friend
-// classes) and change the code (if necessary) to use (also) the new
-// m_leftBorder.
-
-// TODO high-dpi support
-
-// TODO WARNING How behave the nearest-neigbor-search and similar
-// functions that depend on the image itself, if the image is empty
-// because the widget has no size?
-
 /** Updates @ref currentColor corresponding to the given widget pixel position.
  *
  * @param widgetPixelPosition The position of a pixel within the widget’s
@@ -112,20 +93,100 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
  *
  * @post If the pixel position is within the gamut, then
  * the corresponding @ref currentColor is set. If the pixel position
- * is outside the gamut, than a nearest-neighbor-search is done to find
- * the nearest in-gamut color (hue is preverved, chroma and lightness are
- * adjusted). */
+ * is outside the gamut, than a nearby in-gamut color is set (hue is
+ * preverved, chroma and lightness are adjusted). */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition)
 {
-    QPointF imagePixelPosition = widgetPixelPosition - QPointF(m_defaultBorder, m_defaultBorder);
-    LchDouble color;
-    color.h = m_currentColor.h;
-    // TODO Prevent division by 0!
-    color.l = imagePixelPosition.y() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0) * (-1.0) + 100.0;
-    color.c = imagePixelPosition.x() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0);
+    const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
     q_pointer->setCurrentColor(
         // Search for the nearest color without changing the hue:
         m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(color));
+}
+
+/** @brief The border between the widget outer top, right and bottom
+ * border and the diagram itself.
+ *
+ * The diagram is not painted on the whole extend of the widget.
+ * A border is left to allow that the selection handle can be painted
+ * completely even when a pixel on the border of the diagram is
+ * selected.
+ *
+ * This is the value for the top, right and bottom border. For the left
+ * border, see @ref leftBorderPhysical() instead.
+ *
+ * Measured in <em>physical pixels</em>. */
+int ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::defaultBorderPhysical() const
+{
+    const qreal border = q_pointer->handleRadius() + q_pointer->handleOutlineThickness() / 2.0;
+    return qCeil(border * q_pointer->devicePixelRatioF());
+}
+
+/** @brief The left border between the widget outer left border and the
+ * diagram itself.
+ *
+ * The diagram is not painted on the whole extend of the widget.
+ * A border is left to allow that the selection handle can be painted
+ * completely even when a pixel on the border of the diagram is
+ * selected. Also, there is space left for the focus indicator.
+ *
+ * This is the value for the left border. For the other three borders,
+ * see @ref defaultBorderPhysical() instead.
+ *
+ * Measured in <em>physical pixels</em>. */
+int ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::leftBorderPhysical() const
+{
+    const int focusIndicatorThickness = qCeil(q_pointer->handleOutlineThickness() * q_pointer->devicePixelRatioF());
+
+    // Candidate 1:
+    const int candidateOne = defaultBorderPhysical() + focusIndicatorThickness;
+
+    // Candidate 2: Generally recommended value for focus indicator:
+    const int candidateTwo = qCeil(q_pointer->spaceForFocusIndicator() * q_pointer->devicePixelRatioF());
+
+    return qMax(candidateOne, candidateTwo);
+}
+
+/** @brief The size of @ref m_chromaLightnessImage that would correspond
+ * to the current widget size.
+ *
+ * @returns The size of @ref m_chromaLightnessImage that would correspond
+ * to the current widget size. Measured in <em>physical pixels</em>. */
+QSize ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::getImageSizePhysicalForCurrentWidgetSize() const
+{
+    const QSize borderSizePhysical(
+        // Borders:
+        leftBorderPhysical() + defaultBorderPhysical(), // left + right
+        2 * defaultBorderPhysical()                     // top + bottom
+    );
+    return q_pointer->physicalPixelSize() - borderSizePhysical;
+}
+
+/** @brief Converts widget pixel positions to color.
+ *
+ * @param widgetPixelPosition The position of a pixel of the widget
+ * coordinate system. The given value  does not necessarily need to
+ * be within the actual displayed widget. It might even be negative.
+ *
+ * @returns The corresponding color for the (center of the) given
+ * widget pixel position. (The value is not normalized. It might have
+ * a negative C value if the position is on the left of the diagram,
+ * or an L value smaller than 0 or bigger than 100…)
+ *
+ * @sa @ref measurementdetails */
+LchDouble ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor(const QPoint widgetPixelPosition) const
+{
+    const QPointF offset(leftBorderPhysical(), defaultBorderPhysical());
+    const QPointF imageCoordinatePoint = widgetPixelPosition
+        // Offset to pass from widget reference system to image reference system:
+        - offset / q_pointer->devicePixelRatioF()
+        // Offset to pass from pixel positions to coordinate points:
+        + QPointF(0.5, 0.5);
+    LchDouble color;
+    color.h = m_currentColor.h;
+    const qreal diagramHeight = getImageSizePhysicalForCurrentWidgetSize().height() / q_pointer->devicePixelRatioF();
+    color.l = imageCoordinatePoint.y() * 100.0 / diagramHeight * (-1.0) + 100.0;
+    color.c = imageCoordinatePoint.x() * 100.0 / diagramHeight;
+    return color;
 }
 
 /** @brief React on a mouse press event.
@@ -133,33 +194,27 @@ void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromW
  * Reimplemented from base class.
  *
  * Does not differentiate between left, middle and right mouse click.
- * If the mouse is clicked within the <em>displayed</em> gamut, than the
- * handle is placed here and further
- * mouse movements are tracked.
+ *
+ * If the mouse moves inside the <em>displayed</em> gamut, the handle
+ * is displaced there. If the mouse moves outside the <em>displayed</em>
+ * gamut, the handle is displaced to a nearby in-gamut color.
  *
  * @param event The corresponding mouse event
- */
+ *
+ * @internal
+ *
+ * @todo This widget reacts on mouse press events also when they occur
+ * within the border. It might be nice if it would not. On the other
+ * hand: The border is small. Would it really be worth the pain to
+ * implement this? */
 void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
 {
-    // TODO In the following “if” condition, also accept out-of-gamut clicks
-    // when they are covered by the current handle.
+    d_pointer->m_isMouseEventActive = true;
+    d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
-        // Mouse focus is handled manually because so we can accept focus only
-        // on mouse clicks within the displayed gamut, while rejecting focus
-        // otherwise. In the constructor, therefore Qt::FocusPolicy::TabFocus
-        // is specified, so that manual handling of mouse focus is up to
-        // this code here.
-        // TODO Find another solution that guarantees that setFocusPolicy() API
-        // of this class behaves as expected, and not as a dirty hack that
-        // accepts mouse focus even when set to Qt::FocusPolicy::TabFocus.
-        setFocus(Qt::MouseFocusReason);
-        d_pointer->m_isMouseEventActive = true;
         setCursor(Qt::BlankCursor);
-        d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
     } else {
-        // Make sure default behavior like drag-window in KDE’s
-        // Breeze widget style works.
-        event->ignore();
+        unsetCursor();
     }
 }
 
@@ -167,30 +222,18 @@ void ChromaLightnessDiagram::mousePressEvent(QMouseEvent *event)
  *
  * Reimplemented from base class.
  *
- * Reacts only on mouse move events if previously there had been a mouse
- * press event within the displayed gamut. If the mouse moves inside the
- * <em>displayed</em> gamut, the handle is displaced there. If the mouse
- * moves outside the <em>displayed</em> gamut, the handle is displaced to
- * the nearest neighbor pixel within gamut.
+ * If the mouse moves inside the <em>displayed</em> gamut, the handle
+ * is displaced there. If the mouse moves outside the <em>displayed</em>
+ * gamut, the handle is displaced to a nearby in-gamut color.
  *
- * If previously there had not been a mouse press event, the mouse move
- * event is ignored.
- *
- * @param event The corresponding mouse event
- */
+ * @param event The corresponding mouse event */
 void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d_pointer->m_isMouseEventActive) {
-        if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
-            setCursor(Qt::BlankCursor);
-        } else {
-            unsetCursor();
-        }
-        d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
+    d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
+    if (d_pointer->isWidgetPixelPositionInGamut(event->pos())) {
+        setCursor(Qt::BlankCursor);
     } else {
-        // Make sure default behavior like drag-window in KDE’s
-        // Breeze widget style works.
-        event->ignore();
+        unsetCursor();
     }
 }
 
@@ -199,39 +242,25 @@ void ChromaLightnessDiagram::mouseMoveEvent(QMouseEvent *event)
  * Reimplemented from base class. Does not differentiate between left,
  * middle and right mouse click.
  *
- * If the mouse is inside the <em>displayed</em> gamut, the handle is
- * displaced there. If the mouse is outside the <em>displayed</em> gamut,
- * the handle is displaced to the nearest neighbor pixel within gamut.
+ * If the mouse moves inside the <em>displayed</em> gamut, the handle
+ * is displaced there. If the mouse moves outside the <em>displayed</em>
+ * gamut, the handle is displaced to a nearby in-gamut color.
  *
- * @param event The corresponding mouse event
- */
+ * @param event The corresponding mouse event */
 void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (d_pointer->m_isMouseEventActive) {
-        d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
-        unsetCursor();
-        d_pointer->m_isMouseEventActive = false;
-    } else {
-        // Make sure default behavior like drag-window in KDE’s
-        // Breeze widget style works.
-        event->ignore();
-    }
+    d_pointer->setCurrentColorFromWidgetPixelPosition(event->pos());
+    unsetCursor();
 }
-
-// TODO What when @ref m_color has a valid in-gamut color, but this color
-// is out of the <em>displayed</em> diagram? How to handle that?
 
 /** @brief Paint the widget.
  *
  * Reimplemented from base class.
  *
- * Paints the widget. Takes the existing
- * @ref ChromaLightnessDiagramPrivate::m_chromaLightnessImage and
- * paints it on the widget. Paints, if appropriate, the focus indicator.
- * Paints the handle.
- *
  * @param event the paint event
- */
+ *
+ * @todo What when @ref currentColor has a valid in-gamut color, but this color
+ * is out of the <em>displayed</em> diagram? How to handle that? */
 void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -253,16 +282,18 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     //       use the platform independent QImage as paint device; i.e. using
     //       QImage will ensure that the result has an identical pixel
     //       representation on any platform.”
-    QImage paintBuffer(size(), QImage::Format_ARGB32_Premultiplied);
+    QImage paintBuffer(physicalPixelSize(), QImage::Format_ARGB32_Premultiplied);
     paintBuffer.fill(Qt::transparent);
     QPainter painter(&paintBuffer);
-
     QPen pen;
 
     // Paint the diagram itself as available in the cache.
-    painter.drawImage(d_pointer->m_defaultBorder,                  // x position (top-left)
-                      d_pointer->m_defaultBorder,                  // y position (top-left)
-                      d_pointer->m_chromaLightnessImage.getImage() // image
+    painter.setRenderHint(QPainter::Antialiasing, false);
+    painter.drawImage(
+        // Operating in physical pixels:
+        d_pointer->leftBorderPhysical(),             // x position (top-left)
+        d_pointer->defaultBorderPhysical(),          // y position (top-left)
+        d_pointer->m_chromaLightnessImage.getImage() // image
     );
 
     // Paint a focus indicator.
@@ -296,77 +327,66 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     // to do that ourselves instead of relying on generic QStyle::PE_Frame or
     // similar solutions as their result seems to be quite unpredictable across
     // various styles. So we use handleOutlineThickness as line width and
-    // paint it at the left-most possible position. As the border() property
-    // accommodates also to handleRadius, the distance of the focus line
-    // to the real diagram also does, which looks nice.
-    // TODO This should be styled correctly. Find a solution with
-    // QStyle::PE_Frame. But: Some styles like dlight have invisible frames
-    // (all, even raised and sunken).
+    // paint it at the left-most possible position.
     if (hasFocus()) {
-        pen.setWidth(handleOutlineThickness());
+        pen = QPen();
+        pen.setWidthF(handleOutlineThickness() * devicePixelRatioF());
         pen.setColor(focusIndicatorColor());
+        pen.setCapStyle(Qt::PenCapStyle::FlatCap);
         painter.setPen(pen);
-        painter.drawLine(
-            // x1:
-            handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
-            // y1:
-            0 + d_pointer->m_defaultBorder,
-            // x2
-            handleOutlineThickness() / 2, // 0.5 is rounded down to 0.0
-            // y2:
-            size().height() - d_pointer->m_defaultBorder);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        const QPointF pointOne(
+            // x:
+            handleOutlineThickness() * devicePixelRatioF() / 2.0,
+            // y:
+            0 + d_pointer->defaultBorderPhysical());
+        const QPointF pointTwo(
+            // x:
+            handleOutlineThickness() * devicePixelRatioF() / 2.0,
+            // y:
+            physicalPixelSize().height() - d_pointer->defaultBorderPhysical());
+        painter.drawLine(pointOne, pointTwo);
     }
 
     // Paint the handle on-the-fly.
-    // Render anti-aliased looks better. But as Qt documentation says:
-    //
-    //      “Renderhints are used to specify flags to QPainter that may or
-    //       may not be respected by any given engine.”
-    //
-    // Painting here directly on the widget might lead to different
-    // anti-aliasing results depending on the underlying window system. This
-    // is especially problematic as anti-aliasing might shift or not a pixel
-    // to the left or to the right. So we paint on a QImage first. As QImage
-    // (at difference to QPixmap and a QWidget) is independent of native
-    // platform rendering, it guarantees identical anti-aliasing results on
-    // all platforms. Here the quote from QPainter class documentation:
-    //
-    //      “To get the optimal rendering result using QPainter, you should
-    //       use the platform independent QImage as paint device; i.e. using
-    //       QImage will ensure that the result has an identical pixel
-    //       representation on any platform.”
-    painter.setRenderHint(QPainter::Antialiasing);
-    QPoint imageCoordinates = d_pointer->currentImageCoordinates();
-    pen.setWidth(handleOutlineThickness());
+    const int diagramHeight = d_pointer->getImageSizePhysicalForCurrentWidgetSize().height();
+    QPointF colorCoordinatePoint = QPointF(
+        // x:
+        d_pointer->m_currentColor.c * diagramHeight / 100.0,
+        // y:
+        d_pointer->m_currentColor.l * diagramHeight / 100.0 * (-1) + diagramHeight);
+    colorCoordinatePoint += QPointF(d_pointer->leftBorderPhysical(),   // horizontal offset
+                                    d_pointer->defaultBorderPhysical() // vertical offset
+    );
+    pen = QPen();
+    pen.setWidthF(handleOutlineThickness() * devicePixelRatioF());
     pen.setColor(handleColorFromBackgroundLightness(d_pointer->m_currentColor.l));
     painter.setPen(pen);
-    painter.drawEllipse(
-        // Within this rectangle:
-        QRectF(
-            // x:
-            imageCoordinates.x() + d_pointer->m_defaultBorder - handleRadius(),
-            // y:
-            imageCoordinates.y() + d_pointer->m_defaultBorder - handleRadius(),
-            // width:
-            2 * handleRadius() + 1,
-            // height:
-            2 * handleRadius() + 1));
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.drawEllipse(colorCoordinatePoint,                 // center
+                        handleRadius() * devicePixelRatioF(), // x radius
+                        handleRadius() * devicePixelRatioF()  // y radius
+    );
 
     // Paint the buffer to the actual widget
-    QPainter(this).drawImage(0, 0, paintBuffer);
+    paintBuffer.setDevicePixelRatio(devicePixelRatioF());
+    QPainter widgetPainter(this);
+    widgetPainter.setRenderHint(QPainter::Antialiasing, true);
+    widgetPainter.drawImage(0, 0, paintBuffer);
 }
 
-/** @brief Transforms from widget to image coordinates
- *
- * @param widgetCoordinates a coordinate pair within the widget’s coordinate
- * system
- * @returns the corresponding coordinate pair within the coordinate system of
- * @ref m_chromaLightnessImage.
- */
-QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const
-{
-    return widgetCoordinates - QPoint(m_defaultBorder, m_defaultBorder);
-}
+// TODO xxx Review starts here.
+
+// TODO WARNING Prevent division by 0 in fromWidgetPixelPositionToColor!
+//              (The size could be 0. This leads to a division by 0.)
+//              Check this very same problem also in the other diagram widgets!
+
+// TODO WARNING When the color wheel changes the hue, than this widget might
+//              have an out-of-gamut handle position.
+
+// TODO Remove setDevicePixelRatioF from all *Image classes. (It is
+//      confusing, and at the same time there is no real need/benefit.)
+//      Complete list: ChromaHueImage, ColorWheelImage, GradientImage.
 
 /** @brief React on key press events.
  *
@@ -399,7 +419,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     // TODO singleStep & pageStep for ALL graphical widgets expressed in LCh
     // values, not in pixel. Use values as inherited from base class!
 
-    QPoint newWidgetCoordinates = d_pointer->currentImageCoordinates() + QPoint(d_pointer->m_defaultBorder, d_pointer->m_defaultBorder);
+    QPoint newWidgetCoordinates = d_pointer->currentImageCoordinates() + QPoint(d_pointer->leftBorderPhysical(), d_pointer->defaultBorderPhysical());
     switch (event->key()) {
     case Qt::Key_Up:
         if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, -1))) {
@@ -468,40 +488,44 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
     d_pointer->setCurrentColorFromWidgetPixelPosition(newWidgetCoordinates);
 }
 
-/**
+/** @brief ???
+ *
  * @returns the coordinates for m_color
  *
- * @todo It would be great if this function could be <tt>const</tt>.
+ * @todo get rid of this function
  */
-QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordinates()
+QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordinates() const
 {
+    const QSize size = getImageSizePhysicalForCurrentWidgetSize();
     return QPoint(
         // x:
-        qRound(m_currentColor.c * (m_chromaLightnessImage.getImage().height() - 1) / 100),
+        qRound(m_currentColor.c * (size.height() - 1) / 100),
         // y:
-        qRound(m_currentColor.l * (m_chromaLightnessImage.getImage().height() - 1) / 100 * (-1) + (m_chromaLightnessImage.getImage().height() - 1)));
+        qRound(m_currentColor.l * (size.height() - 1) / 100 * (-1) + (size.height() - 1)));
 }
 
-/** @brief Tests if image coordinates are in gamut.
- *  @returns <tt>true</tt> if the image coordinates are within the
- *  displayed gamut. Otherwise <tt>false</tt>.
+// NOTE Review is done yet.
+/** @brief Tests if a given widget pixel position is within
+ * the <em>displayed</em> gamut.
  *
- * @todo It would be great if this function could be <tt>const</tt>.
- */
-bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition)
+ * @param widgetPixelPosition The position of a pixel of the widget coordinate
+ * system. The given value  does not necessarily need to be within the
+ * actual displayed diagram or even the gamut itself. It might even be
+ * negative.
+ *
+ * @returns <tt>true</tt> if the widget pixel position is within the
+ * <em>currently displayed gamut</em>. Otherwise <tt>false</tt>. */
+bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const
 {
-    // variables
-    bool temp;
-    QColor diagramPixelColor;
-    const QPoint imageCoordinates = fromWidgetCoordinatesToImageCoordinates(widgetPixelPosition);
-
-    // code
-    temp = false;
-    if (m_chromaLightnessImage.getImage().valid(imageCoordinates)) {
-        diagramPixelColor = m_chromaLightnessImage.getImage().pixelColor(imageCoordinates);
-        temp = ((diagramPixelColor.alpha() != 0));
-    }
-    return temp;
+    const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
+    return (
+        // Test if C is in range. This is important because a negative C value
+        // can be in-gamut, but is not in the _displayed_ gamut.
+        inRange<qreal>(0, color.c, m_rgbColorSpace->maximumChroma())
+        // Test for out-of-range lightness (mainly for performance reasons)
+        && inRange<qreal>(0, color.l, 100)
+        // Test actually for in-gamut color
+        && m_rgbColorSpace->isInGamut(color));
 }
 
 /** @brief Setter for the @ref currentColor() property.
@@ -537,9 +561,7 @@ void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
     Q_UNUSED(event);
     d_pointer->m_chromaLightnessImage.setImageSize(
         // Update the image size will free memory of the cache inmediatly.
-        QSize(size().width() - 2 * d_pointer->m_defaultBorder, // x
-              size().height() - 2 * d_pointer->m_defaultBorder // y
-              ));
+        d_pointer->getImageSizePhysicalForCurrentWidgetSize());
     // As by Qt documentation:
     //     “The widget will be erased and receive a paint event
     //      immediately after processing the resize event. No drawing
@@ -570,13 +592,13 @@ QSize ChromaLightnessDiagram::sizeHint() const
 QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
     const int minimumHeight = qRound(
-        // Left border and right border:
-        2 * d_pointer->m_defaultBorder
+        // Top border and bottom border:
+        2 * d_pointer->defaultBorderPhysical() * devicePixelRatioF()
         // Add the height for the diagram:
         + gradientMinimumLength());
     const int minimumWidth = qRound(
         // Left border and right border:
-        2 * d_pointer->m_defaultBorder
+        (d_pointer->leftBorderPhysical() + d_pointer->defaultBorderPhysical()) * devicePixelRatioF()
         // Add the gradient minimum length from y axis, multiplied with
         // the factor to allow at correct scaling showing up the whole
         // chroma range of the gamut.

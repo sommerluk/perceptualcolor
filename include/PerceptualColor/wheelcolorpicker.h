@@ -56,9 +56,6 @@ class RgbColorSpace;
  * friendship in the code of this class (or at least, to rely less
  * on it)?
  *
- * @todo @ref WheelColorPickerPrivate::m_maximumChroma should get an
- * actually useful value (maybe coming from @ref RgbColorSpace ?).
- *
  * @todo Is the (double) focus indicator actually good design? Are there
  * better solutions?
  *

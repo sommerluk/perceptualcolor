@@ -50,7 +50,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::create();
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()

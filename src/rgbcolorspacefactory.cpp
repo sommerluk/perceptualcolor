@@ -38,7 +38,7 @@ namespace PerceptualColor
 /** @brief Create an sRGB color space object.
  *
  * @returns A shared pointer to a newly created sRGB color space object. */
-QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::create()
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb()
 {
     return QSharedPointer<PerceptualColor::RgbColorSpace>(new RgbColorSpace());
 }

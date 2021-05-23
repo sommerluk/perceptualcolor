@@ -37,6 +37,7 @@
 #include "constpropagatingrawpointer.h"
 
 #include <QImage>
+#include <QtMath>
 
 namespace PerceptualColor
 {
@@ -59,19 +60,6 @@ public:
     ChromaLightnessImage m_chromaLightnessImage;
     /** @brief Internal storage of the @ref currentColor property */
     LchDouble m_currentColor;
-    /** @brief The border between the widget outer top, right and bottom
-     * border and the diagram itself.
-     *
-     * The diagram is not painted on the whole extend of the widget.
-     * A border is left to allow that the selection handle can be painted
-     * completely even when a pixel on the border of the diagram is
-     * selected.
-     *
-     * This is the value for the top, right and bottom border. For the left
-     * border, see @ref m_leftBorder instead.
-     *
-     * Measured in <em>device-independant pixels</em>. */
-    const qreal m_defaultBorder = q_pointer->handleRadius() + q_pointer->handleOutlineThickness() / 2.0;
     /** @brief Holds if currently a mouse event is active or not.
      *
      * Default value is <tt>false</tt>.
@@ -87,31 +75,17 @@ public:
      * within the whole widget. However, <em>this</em> widget is meant as a
      * circular widget, only reacting on mouse events within the circle;
      * this requires this custom implementation. */
-    bool m_isMouseEventActive = false;
-    /** @brief The left border between the widget outer left border and the
-     * diagram itself.
-     *
-     * The diagram is not painted on the whole extend of the widget.
-     * A border is left to allow that the selection handle can be painted
-     * completely even when a pixel on the border of the diagram is
-     * selected.
-     *
-     * This is the value for the left border. For the other three borders,
-     * see @ref m_defaultBorder instead.
-     *
-     * Measured in <em>device-independant pixels</em>. */
-    const qreal m_leftBorder = qMax<qreal>(
-        // First candidate: normal border used in this widget, plus
-        // thickness of the focus indicator.
-        m_defaultBorder + q_pointer->handleOutlineThickness(),
-        // Second candidate: Generally recommended value for focus indicator
-        q_pointer->spaceForFocusIndicator());
+    bool m_isMouseEventActive = false; // TODO Remove me!
     /** @brief Pointer to RgbColorSpace() object */
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
     // Member functions
-    QPoint currentImageCoordinates();
-    bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition);
+    QPoint currentImageCoordinates() const;
+    int defaultBorderPhysical() const;
+    LchDouble fromWidgetPixelPositionToColor(const QPoint widgetPixelPosition) const;
+    QSize getImageSizePhysicalForCurrentWidgetSize() const;
+    bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const;
+    int leftBorderPhysical() const;
     void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);
 
 private:
@@ -120,8 +94,6 @@ private:
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<ChromaLightnessDiagram> q_pointer;
-
-    QPoint fromWidgetCoordinatesToImageCoordinates(const QPoint widgetCoordinates) const;
 };
 
 } // namespace PerceptualColor
