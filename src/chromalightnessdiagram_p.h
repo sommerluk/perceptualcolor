@@ -112,7 +112,6 @@ public:
     // Member functions
     QPoint currentImageCoordinates();
     bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition);
-    static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
     void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);
 
 private:

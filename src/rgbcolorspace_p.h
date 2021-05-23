@@ -33,6 +33,7 @@
 // Include the header of the public class of this private implementation.
 #include "rgbcolorspace.h"
 
+#include "chromalightnessimage.h"
 #include "constpropagatingrawpointer.h"
 #include "lchvalues.h"
 #include "rgbdouble.h"
@@ -53,6 +54,7 @@ public:
      * the class as a whole is <tt>final</tt>. */
     ~RgbColorSpacePrivate() noexcept = default;
 
+    // Data members:
     qreal m_blackpointL;
     QString m_cmsInfoCopyright;
     QString m_cmsInfoDescription;
@@ -64,9 +66,24 @@ public:
     cmsHTRANSFORM m_transformRgbToLabHandle;
     qreal m_whitepointL;
 
+    // Functions:
     cmsCIELab colorLab(const RgbDouble &rgb) const;
     RgbDouble colorRgbBoundSimple(const cmsCIELab &Lab) const;
     static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
+
+    // Dirty hacks:
+    static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
+    /** TODO WARNING This is a memory leak. This member is not deleted in
+     * the desctuctor of the class. This is because ChromaLightnessImage has
+     * a shared pointer to _this_ object. If nearestNeighborSearchImage
+     * would be on the heap, deleting in when _this_ object is deleted will
+     * call again deleting _this_ object, and this recursive destructor
+     * call will crash the library. Therefore, we implement
+     * nearestNeighborSearchImage as a pointer with memory leak to avoid
+     * the crash. This memory leak is not fixed currently, because
+     * anyway we need to re-write all the code for nearest-neigbor search. */
+    ChromaLightnessImage *nearestNeighborSearchImage;
+    static constexpr int nearestNeighborSearchImageHeight = 400;
 
 private:
     Q_DISABLE_COPY(RgbColorSpacePrivate)

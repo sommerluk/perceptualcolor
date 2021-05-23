@@ -253,7 +253,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         // will normalize the hue.
         LchDouble newColor = d_pointer->m_currentColor;
         newColor.h += standardWheelStepCount(event) * singleStepHue;
-        setCurrentColor(d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(newColor));
+        setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(newColor));
     } else {
         event->ignore();
     }
@@ -341,7 +341,7 @@ void ChromaHueDiagram::keyPressEvent(QKeyEvent *event)
         newColor.c = 0;
     }
     // Move the value into gamut (if necessary):
-    newColor = d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(newColor);
+    newColor = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(newColor);
     // Apply the new value:
     setCurrentColor(newColor);
 }
@@ -388,7 +388,7 @@ LchDouble ChromaHueDiagram::currentColor() const
  * @param newCurrentColor the new color */
 void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
 {
-    LchDouble newCorrectedColor = d_pointer->m_rgbColorSpace->inGamutColorByAdjustingChroma(newCurrentColor);
+    LchDouble newCorrectedColor = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(newCurrentColor);
 
     if (newCorrectedColor.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
@@ -527,7 +527,7 @@ cmsCIELab ChromaHueDiagram::ChromaHueDiagramPrivate::fromWidgetPixelPositionToLa
 void ChromaHueDiagram::ChromaHueDiagramPrivate::setColorFromWidgetPixelPosition(const QPoint position)
 {
     cmsCIELab lab = fromWidgetPixelPositionToLab(position);
-    q_pointer->setCurrentColor(m_rgbColorSpace->inGamutColorByAdjustingChroma(m_rgbColorSpace->toLch(lab)));
+    q_pointer->setCurrentColor(m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(m_rgbColorSpace->toLch(lab)));
 }
 
 /** @brief Tests if a wiget pixel positon is within the mouse sensible circle.

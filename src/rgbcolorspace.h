@@ -64,11 +64,12 @@ public:
     Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
     virtual ~RgbColorSpace() noexcept override;
     Q_INVOKABLE qreal blackpointL() const;
-    Q_INVOKABLE PerceptualColor::LchDouble inGamutColorByAdjustingChroma(const PerceptualColor::LchDouble &color) const;
     Q_INVOKABLE bool isInGamut(const cmsCIELab &lab) const;
     Q_INVOKABLE bool isInGamut(const double lightness, const double chroma, const double hue) const;
     Q_INVOKABLE bool isInGamut(const PerceptualColor::LchDouble &lch) const;
     Q_INVOKABLE int maximumChroma() const;
+    Q_INVOKABLE PerceptualColor::LchDouble nearestInGamutColorByAdjustingChroma(const PerceptualColor::LchDouble &color) const;
+    Q_INVOKABLE PerceptualColor::LchDouble nearestInGamutColorByAdjustingChromaLightness(const PerceptualColor::LchDouble &color);
     Q_INVOKABLE QString profileInfoCopyright() const;
     Q_INVOKABLE QString profileInfoDescription() const;
     Q_INVOKABLE QString profileInfoManufacturer() const;

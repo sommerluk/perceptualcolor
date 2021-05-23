@@ -81,6 +81,7 @@ class ChromaLightnessImage final
 public:
     explicit ChromaLightnessImage(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     QImage getImage();
+    void setBackgroundColor(const QColor newBackgroundColor);
     void setHue(const qreal newHue);
     void setImageSize(const QSize newImageSize);
 
@@ -90,6 +91,10 @@ private:
     /** @internal @brief Only for unit tests. */
     friend class TestChromaLightnessImage;
 
+    /** @brief Internal store for the background color.
+     *
+     * @sa @ref setBackgroundColor() */
+    QColor m_backgroundColor;
     /** @brief Internal store for the hue.
      *
      * This is the hue (h) value in the LCH color model.

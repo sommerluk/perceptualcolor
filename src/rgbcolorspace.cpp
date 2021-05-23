@@ -126,6 +126,11 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
         qCritical() << "Unable to find blackpoint and whitepoint on gray axis.";
         throw 0;
     }
+
+    // Dirty hacks:
+    d_pointer->nearestNeighborSearchImage = new ChromaLightnessImage(QSharedPointer<PerceptualColor::RgbColorSpace>(this));
+    d_pointer->nearestNeighborSearchImage->setImageSize(QSize(qRound(d_pointer->nearestNeighborSearchImageHeight / 100.0 * LchValues::humanMaximumChroma) + 1, d_pointer->nearestNeighborSearchImageHeight));
+    d_pointer->nearestNeighborSearchImage->setBackgroundColor(Qt::transparent);
 }
 
 /** @brief Destructor */
@@ -401,8 +406,12 @@ QString RgbColorSpace::profileInfoModel() const
 }
 
 /** @returns A <em>normalized</em> (this is guaranteed!) in-gamut color,
- * maybe with different chroma (and even lightness??) */
-PerceptualColor::LchDouble RgbColorSpace::inGamutColorByAdjustingChroma(const PerceptualColor::LchDouble &color) const
+ * maybe with different chroma (and even lightness??)
+ *
+ * @todo This function should never change anything than chroma. If it fails,
+ * it should throw an exception.
+ */
+PerceptualColor::LchDouble RgbColorSpace::nearestInGamutColorByAdjustingChroma(const PerceptualColor::LchDouble &color) const
 {
     LchDouble result = color;
     PolarPointF temp(result.c, result.h);
@@ -446,6 +455,82 @@ PerceptualColor::LchDouble RgbColorSpace::inGamutColorByAdjustingChroma(const Pe
     }
 
     return result;
+}
+
+PerceptualColor::LchDouble RgbColorSpace::nearestInGamutColorByAdjustingChromaLightness(const PerceptualColor::LchDouble &color)
+{
+    // TODO Would be great if this function could be const
+    QPoint myPixelPosition(qRound(color.c * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0), qRound(d_pointer->nearestNeighborSearchImageHeight - 1 - color.l * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0));
+    d_pointer->nearestNeighborSearchImage->setHue(color.h);
+    myPixelPosition = d_pointer->nearestNeighborSearch(myPixelPosition, d_pointer->nearestNeighborSearchImage->getImage());
+    LchDouble result = color;
+    result.c = myPixelPosition.x() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);
+    result.l = 100 - myPixelPosition.y() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);
+    return result;
+}
+
+/** @brief Search the nearest non-transparent neighbor pixel
+ *
+ * This implements a
+ * <a href="https://en.wikipedia.org/wiki/Nearest_neighbor_search">
+ * Nearest-neighbor-search</a>.
+ *
+ * @note This code is an inefficient implementation. See
+ * <a href="https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast">here</a>
+ * for a better approach.
+ *
+ * @param originalPoint The point for which you search the nearest neighbor,
+ * expressed in the coordinate system of the image. This point may be within
+ * or outside the image.
+ * @param image The image in which the nearest neighbor is searched.
+ * Must contain at least one pixel with an alpha value that is fully opaque.
+ * @returns
+ * \li If originalPoint itself is within the image and a
+ *     non-transparent pixel, it returns originalPoint.
+ * \li Else, if there is are non-transparent pixels in the image, the nearest
+ *     non-transparent pixel is returned. (If there are various nearest
+ *     neighbors at the same distance, it is undefined which one is returned.)
+ * \li Else there are no non-transparent pixels, and simply the point
+ *     <tt>0, 0</tt> is returned, but this is a very slow case.
+ *
+ * TODO Do not use nearest neighbor or other pixel based search algorithms,
+ * but work directly with LittleCMS, maybe with a limited, but well-defined,
+ * precision… */
+QPoint RgbColorSpace::RgbColorSpacePrivate::nearestNeighborSearch(const QPoint originalPoint, const QImage &image)
+{
+    // Test for special case:
+    // originalPoint itself is within the image and non-transparent
+    if (image.valid(originalPoint)) {
+        if (image.pixelColor(originalPoint).alpha() == 255) {
+            return originalPoint;
+        }
+    }
+
+    // No special case. So we have to actually perform
+    // a nearest-neighbor-search.
+    int x;
+    int y;
+    int currentBestX = 0; // 0 is the fallback value
+    int currentBestY = 0; // 0 is the fallback value
+    int currentBestDistanceSquare = std::numeric_limits<int>::max();
+    int x_distance;
+    int y_distance;
+    int temp;
+    for (x = 0; x < image.width(); x++) {
+        for (y = 0; y < image.height(); y++) {
+            if (image.pixelColor(x, y).alpha() == 255) {
+                x_distance = originalPoint.x() - x;
+                y_distance = originalPoint.y() - y;
+                temp = x_distance * x_distance + y_distance * y_distance;
+                if (temp < currentBestDistanceSquare) {
+                    currentBestX = x;
+                    currentBestY = y;
+                    currentBestDistanceSquare = temp;
+                }
+            }
+        }
+    }
+    return QPoint(currentBestX, currentBestY);
 }
 
 /** @brief Get information from an ICC profile via LittleCMS

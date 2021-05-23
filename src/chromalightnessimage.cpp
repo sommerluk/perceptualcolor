@@ -46,6 +46,22 @@ ChromaLightnessImage::ChromaLightnessImage(const QSharedPointer<PerceptualColor:
 {
 }
 
+/** @brief Setter for the backgroundColor property.
+ *
+ * @param newBackgroundColor The new background color. Set this to an
+ * invalid <tt>QColor</tt> to get the default background.
+ *
+ * @todo This function should become obsolete once @ref RgbColorSpace
+ * does not rely anymore on an image to find nearest in-gamut colors. */
+void ChromaLightnessImage::setBackgroundColor(const QColor newBackgroundColor)
+{
+    if (m_backgroundColor != newBackgroundColor) {
+        m_backgroundColor = newBackgroundColor;
+        // Free the memory used by the old image.
+        m_image = QImage();
+    }
+}
+
 /** @brief Setter for the image size property.
  *
  * This value fixes the size of the image.
@@ -123,7 +139,11 @@ QImage ChromaLightnessImage::getImage()
     }
 
     // Initialize the image background
-    m_image.fill(m_rgbColorSpace->toQColorRgbBound(LchValues::neutralGray));
+    if (m_backgroundColor.isValid()) {
+        m_image.fill(m_backgroundColor);
+    } else {
+        m_image.fill(m_rgbColorSpace->toQColorRgbBound(LchValues::neutralGray));
+    }
 
     // Paint the gamut.
     LCh.h = PolarPointF::normalizedAngleDegree(m_hue);

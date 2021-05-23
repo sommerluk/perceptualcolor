@@ -117,21 +117,15 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
  * adjusted). */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition)
 {
-    QPoint correctedImageCoordinates = nearestNeighborSearch(fromWidgetCoordinatesToImageCoordinates(widgetPixelPosition), m_chromaLightnessImage.getImage());
-    QPointF chromaLightness;
-    LchDouble lch;
-    if (correctedImageCoordinates != currentImageCoordinates()) {
-        // Convert from correctedImagecoordinates to chroma-lightness value:
-        chromaLightness = QPointF(
-            // x:
-            correctedImageCoordinates.x() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0),
-            // y:
-            correctedImageCoordinates.y() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0) * (-1) + 100);
-        lch.c = chromaLightness.x();
-        lch.l = chromaLightness.y();
-        lch.h = m_currentColor.h;
-        q_pointer->setCurrentColor(lch);
-    }
+    QPointF imagePixelPosition = widgetPixelPosition - QPointF(m_defaultBorder, m_defaultBorder);
+    LchDouble color;
+    color.h = m_currentColor.h;
+    // TODO Prevent division by 0!
+    color.l = imagePixelPosition.y() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0) * (-1.0) + 100.0;
+    color.c = imagePixelPosition.x() * 100.0 / (m_chromaLightnessImage.getImage().height() - 1.0);
+    q_pointer->setCurrentColor(
+        // Search for the nearest color without changing the hue:
+        m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(color));
 }
 
 /** @brief React on a mouse press event.
@@ -602,68 +596,6 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
 LchDouble PerceptualColor::ChromaLightnessDiagram::currentColor() const
 {
     return d_pointer->m_currentColor;
-}
-
-/** @brief Search the nearest non-transparent neighbor pixel
- *
- * This implements a <a href="https://en.wikipedia.org/wiki/Nearest_neighbor_search">Nearest-neighbor-search</a>.
- *
- * @note This code is an inefficient implementation. See
- * <a href="https://stackoverflow.com/questions/307445/finding-closest-non-black-pixel-in-an-image-fast">here</a>
- * for a better approach.
- *
- * @param originalPoint The point for which you search the nearest neighbor,
- * expressed in the coordinate system of the image. This point may be within
- * or outside the image.
- * @param image The image in which the nearest neighbor is searched.
- * Must contain at least one pixel with an alpha value that is fully opaque.
- * @returns
- * \li If originalPoint itself is within the image and a
- *     non-transparent pixel, it returns originalPoint.
- * \li Else, if there is are non-transparent pixels in the image, the nearest
- *     non-transparent pixel is returned. (If there are various nearest
- *     neighbors at the same distance, it is undefined which one is returned.)
- * \li Else there are no non-transparent pixels, and simply the point
- *     <tt>0, 0</tt> is returned, but this is a very slow case.
- *
- * TODO Do not use nearest neighbor or other pixel based search algorithms,
- * but work directly with LittleCMS, maybe with a limited, but well-defined,
- * precision… */
-QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::nearestNeighborSearch(const QPoint originalPoint, const QImage &image)
-{
-    // Test for special case:
-    // originalPoint itself is within the image and non-transparent
-    if (image.valid(originalPoint)) {
-        if (image.pixelColor(originalPoint).alpha() == 255) {
-            return originalPoint;
-        }
-    }
-
-    // No special case. So we have to actually perform
-    // a nearest-neighbor-search.
-    int x;
-    int y;
-    int currentBestX = 0; // 0 is the fallback value
-    int currentBestY = 0; // 0 is the fallback value
-    int currentBestDistanceSquare = std::numeric_limits<int>::max();
-    int x_distance;
-    int y_distance;
-    int temp;
-    for (x = 0; x < image.width(); x++) {
-        for (y = 0; y < image.height(); y++) {
-            if (image.pixelColor(x, y).alpha() == 255) {
-                x_distance = originalPoint.x() - x;
-                y_distance = originalPoint.y() - y;
-                temp = x_distance * x_distance + y_distance * y_distance;
-                if (temp < currentBestDistanceSquare) {
-                    currentBestX = x;
-                    currentBestY = y;
-                    currentBestDistanceSquare = temp;
-                }
-            }
-        }
-    }
-    return QPoint(currentBestX, currentBestY);
 }
 
 } // namespace PerceptualColor
