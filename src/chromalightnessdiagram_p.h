@@ -80,7 +80,6 @@ public:
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
     // Member functions
-    QPoint currentImageCoordinates() const;
     int defaultBorderPhysical() const;
     LchDouble fromWidgetPixelPositionToColor(const QPoint widgetPixelPosition) const;
     QSize getImageSizePhysicalForCurrentWidgetSize() const;

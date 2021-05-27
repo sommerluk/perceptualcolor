@@ -375,95 +375,55 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     widgetPainter.drawImage(0, 0, paintBuffer);
 }
 
-// TODO xxx Review starts here.
-
-// TODO WARNING Prevent division by 0 in fromWidgetPixelPositionToColor!
-//              (The size could be 0. This leads to a division by 0.)
-//              Check this very same problem also in the other diagram widgets!
-
-// TODO WARNING When the color wheel changes the hue, than this widget might
-//              have an out-of-gamut handle position.
-
-// TODO Remove setDevicePixelRatioF from all *Image classes. (It is
-//      confusing, and at the same time there is no real need/benefit.)
-//      Complete list: ChromaHueImage, ColorWheelImage, GradientImage.
-
 /** @brief React on key press events.
  *
  * Reimplemented from base class.
  *
  * Reacts on key press events. When the arrow keys are pressed, it moves the
- * handle by one pixel into the desired direction if this is still within
- * gamut. When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
+ * handle a small step into the desired direction
+ * When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
  * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
- * handle as much as possible into the desired direction as long as this is
- * still in the gamut.
+ * handle a big step into the desired direction.
  *
- * @param event the paint event
+ * Other key events are forwarded to the base class.
+ *
+ * @param event the event
  *
  * @internal
  *
- * @todo “it moves the handle by one pixel into the desired direction”. This
- * is bad. Behaviour should not be pixel-density-dependant. Use a fixed value
- * for this!
- *
- * @todo WARNING This function might have an infinite loop if called when the
- * currently selected color has no non-transparent pixel on its row or line.
- * This is a problem because it is well possible this will arrive
- * because of possible rounding errors!
+ * @todo Is the current behaviour (when pressing right arrow while yet
+ * at the right border of the gamut, also the lightness is adjusted to
+ * allow moving actually to the right) is a good idea?
  *
  * @todo Still the darkest color is far from RGB zero on usual widget size.
  * This has to get better to allow choosing RGB(0, 0, 0)! */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
-    // TODO singleStep & pageStep for ALL graphical widgets expressed in LCh
-    // values, not in pixel. Use values as inherited from base class!
-
-    QPoint newWidgetCoordinates = d_pointer->currentImageCoordinates() + QPoint(d_pointer->leftBorderPhysical(), d_pointer->defaultBorderPhysical());
+    LchDouble temp = d_pointer->m_currentColor;
     switch (event->key()) {
     case Qt::Key_Up:
-        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, -1))) {
-            newWidgetCoordinates += QPoint(0, -1);
-        }
+        temp.l += singleStepLightness;
         break;
     case Qt::Key_Down:
-        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, 1))) {
-            newWidgetCoordinates += QPoint(0, 1);
-        }
+        temp.l -= singleStepLightness;
         break;
     case Qt::Key_Left:
-        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(-1, 0))) {
-            newWidgetCoordinates += QPoint(-1, 0);
-        }
+        temp.c -= singleStepChroma;
         break;
     case Qt::Key_Right:
-        if (d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(1, 0))) {
-            newWidgetCoordinates += QPoint(1, 0);
-        }
+        temp.c += singleStepChroma;
         break;
     case Qt::Key_PageUp:
-        newWidgetCoordinates.setY(0);
-        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, 1))) {
-            newWidgetCoordinates += QPoint(0, 1);
-        }
+        temp.l += pageStepLightness;
         break;
     case Qt::Key_PageDown:
-        newWidgetCoordinates.setY(d_pointer->m_chromaLightnessImage.getImage().height() - 1);
-        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(0, -1))) {
-            newWidgetCoordinates += QPoint(0, -1);
-        }
+        temp.l -= pageStepLightness;
         break;
     case Qt::Key_Home:
-        newWidgetCoordinates.setX(0);
-        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(1, 0))) {
-            newWidgetCoordinates += QPoint(1, 0);
-        }
+        temp.c += pageStepChroma;
         break;
     case Qt::Key_End:
-        newWidgetCoordinates.setX(d_pointer->m_chromaLightnessImage.getImage().width() - 1);
-        while (!d_pointer->isWidgetPixelPositionInGamut(newWidgetCoordinates + QPoint(-1, 0))) {
-            newWidgetCoordinates += QPoint(-1, 0);
-        }
+        temp.c -= pageStepChroma;
         break;
     default:
         // Quote from Qt documentation:
@@ -485,26 +445,9 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 
     // Set the new image coordinates (only takes effect when image
     // coordinates are indeed different)
-    d_pointer->setCurrentColorFromWidgetPixelPosition(newWidgetCoordinates);
+    setCurrentColor(temp);
 }
 
-/** @brief ???
- *
- * @returns the coordinates for m_color
- *
- * @todo get rid of this function
- */
-QPoint ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::currentImageCoordinates() const
-{
-    const QSize size = getImageSizePhysicalForCurrentWidgetSize();
-    return QPoint(
-        // x:
-        qRound(m_currentColor.c * (size.height() - 1) / 100),
-        // y:
-        qRound(m_currentColor.l * (size.height() - 1) / 100 * (-1) + (size.height() - 1)));
-}
-
-// NOTE Review is done yet.
 /** @brief Tests if a given widget pixel position is within
  * the <em>displayed</em> gamut.
  *
@@ -528,17 +471,32 @@ bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositio
         && m_rgbColorSpace->isInGamut(color));
 }
 
+// TODO xxx Review starts here.
+
+// TODO WARNING Prevent division by 0 in fromWidgetPixelPositionToColor!
+//              (The size could be 0. This leads to a division by 0.)
+//              Check this very same problem also in the other diagram widgets!
+
+// TODO WARNING When the color wheel changes the hue, than this widget might
+//              have an out-of-gamut handle position.
+
+// TODO Remove setDevicePixelRatioF from all *Image classes. (It is
+//      confusing, and at the same time there is no real need/benefit.)
+//      Complete list: ChromaHueImage, ColorWheelImage, GradientImage.
+
 /** @brief Setter for the @ref currentColor() property.
  *
  * @param newCurrentColor the new @ref currentColor */
 void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor)
 {
-    if (newCurrentColor.hasSameCoordinates(d_pointer->m_currentColor)) {
+    const LchDouble newColorInGamut = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(newCurrentColor);
+
+    if (newColorInGamut.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
     }
 
     LchDouble oldColor = d_pointer->m_currentColor;
-    d_pointer->m_currentColor = newCurrentColor;
+    d_pointer->m_currentColor = newColorInGamut;
 
     // update if necessary, the diagram
     if (d_pointer->m_currentColor.h != oldColor.h) {
@@ -547,7 +505,7 @@ void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &n
 
     // schedule a paint event
     update();
-    Q_EMIT currentColorChanged(newCurrentColor);
+    Q_EMIT currentColorChanged(newColorInGamut);
 }
 
 /** @brief React on a resize event.

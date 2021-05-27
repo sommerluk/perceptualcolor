@@ -159,6 +159,20 @@ constexpr int singleStepHue = 360 / 100;
 
 /** @internal
  *
+ * @brief Amount of single step for lightness.
+ *
+ * Measured in LCh lightness units.
+ *
+ * The smaller of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * @sa @ref pageStepLightness */
+constexpr int singleStepLightness = 1;
+
+/** @internal
+ *
  * @brief Amount of page step for alpha.
  *
  * Measured for an alpha range from 0 (transparent) to 1 (opaque).
@@ -204,6 +218,22 @@ constexpr int pageStepChroma = 10 * singleStepChroma;
  * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
  * its single step. */
 constexpr int pageStepHue = 10 * singleStepHue;
+
+/** @internal
+ *
+ * @brief Amount of page step for lightness.
+ *
+ * Measured in LCh lightness units.
+ *
+ * The larger of two natural steps that a widget provides and
+ * typically corresponds to the user pressing a key or using the mouse
+ * wheel: The value will be incremented/decremented by the amount of this
+ * value.
+ *
+ * The value is 10 times @ref singleStepLightness. This behavior
+ * corresponds to QAbstractSlider, who’s page step is also 10 times bigger than
+ * its single step. */
+constexpr int pageStepLightness = 10 * singleStepLightness;
 
 qreal standardWheelStepCount(QWheelEvent *event);
 
