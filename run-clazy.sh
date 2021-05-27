@@ -69,10 +69,10 @@ unneeded-cast"
 # We run “make” with the argument “--jobs” without specifying the number
 # of parallel jobs. This means the number is jobs is maximum.
 mkdir --parents build \
-    && rm --recursive --force build/* \
+    && nice --adjustment 19 rm --recursive --force build/* \
     && cd build \
-    && cmake ../ -DCMAKE_CXX_COMPILER=clazy > /dev/null \
-    && make clean \
-    && make --jobs > /dev/null \
+    && nice --adjustment 19 cmake ../ -DCMAKE_CXX_COMPILER=clazy > /dev/null \
+    && nice --adjustment 19 make clean \
+    && nice --adjustment 19 make --jobs > /dev/null \
     && cd .. \
     && rm -r build/*

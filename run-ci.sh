@@ -42,9 +42,9 @@ while true; do
     case $yn in
         yes ) mkdir --parents build \
                 && cd build \
-                && cmake ../ > /dev/null \
-                && make --jobs > /dev/null \
-                && make clang-format; \
+                && nice --adjustment 19 cmake ../ > /dev/null \
+                && nice --adjustment 19 make --jobs > /dev/null \
+                && nice --adjustment 19 make clang-format; \
             echo "Code formatting done."; \
             exit;;
         * ) echo "Code formatting canceled."; \
@@ -63,8 +63,8 @@ done
 ( \
 mkdir --parents build \
     && cd build \
-    && cmake ../ > /dev/null \
-    && make --jobs > /dev/null \
+    && nice --adjustment 19 cmake ../ > /dev/null \
+    && nice --adjustment 19 make --jobs > /dev/null \
 )
 echo "Build done"
 
@@ -333,7 +333,7 @@ done
 
 ################# Unit tests #################
 (\
-cd build && ctest --verbose \
+cd build && nice --adjustment 19 ctest --verbose \
     | grep --invert-match --perl-regexp "^\d+: PASS   : " \
     | grep --invert-match --perl-regexp "^\d+: Test command: " \
     | grep --invert-match --perl-regexp "^\d+: Test timeout computed to be: " \

@@ -35,4 +35,4 @@
 # (Unfortunally, this touches all files, even those that don’t need a change.
 # Therefore, after calling this script, the next “make” call will rebuild
 # everything.
-sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/* include/PerceptualColor/* test/* tools/*
+nice --adjustment 19 sed -i '1s/^\(\xef\xbb\xbf\)\?/\xef\xbb\xbf/' src/* include/PerceptualColor/* test/* tools/*

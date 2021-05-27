@@ -25,10 +25,10 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-cppcheck
-cpplint src/*
-cpplint include/*
-cpplint test/*
-cpplint tools/*
-kwstyle
-vera++ --help
+nice --adjustment 19 cppcheck
+nice --adjustment 19 cpplint src/*
+nice --adjustment 19 cpplint include/*
+nice --adjustment 19 cpplint test/*
+nice --adjustment 19 cpplint tools/*
+nice --adjustment 19 kwstyle
+nice --adjustment 19 vera++ --help
