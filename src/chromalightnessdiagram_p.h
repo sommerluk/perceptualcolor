@@ -36,9 +36,6 @@
 #include "chromalightnessimage.h"
 #include "constpropagatingrawpointer.h"
 
-#include <QImage>
-#include <QtMath>
-
 namespace PerceptualColor
 {
 /** @internal
@@ -80,9 +77,9 @@ public:
     QSharedPointer<RgbColorSpace> m_rgbColorSpace;
 
     // Member functions
+    QSize calculateImageSizePhysical() const;
     int defaultBorderPhysical() const;
     LchDouble fromWidgetPixelPositionToColor(const QPoint widgetPixelPosition) const;
-    QSize getImageSizePhysicalForCurrentWidgetSize() const;
     bool isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const;
     int leftBorderPhysical() const;
     void setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition);

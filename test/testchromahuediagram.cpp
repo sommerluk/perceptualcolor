@@ -124,7 +124,7 @@ private Q_SLOTS:
         referenceColorChromaLch.h = 180;
         myDiagram.setCurrentColor(referenceColorChromaLch);
 
-        QKeyEvent myEvent {QEvent::None, 0, Qt::NoModifier};
+        QKeyEvent myEvent {QEvent::KeyPress, 0, Qt::NoModifier}; // TODO Use QTest::keyClick() instead!
 
         myDiagram.setCurrentColor(referenceColorChromaLch);
         myEvent = QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Qt::NoModifier);

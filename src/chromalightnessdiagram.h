@@ -30,9 +30,8 @@
 #include "PerceptualColor/perceptualcolorglobal.h"
 #include "perceptualcolorinternal.h"
 
-#include "PerceptualColor/constpropagatinguniquepointer.h"
-
 #include "PerceptualColor/abstractdiagram.h"
+#include "PerceptualColor/constpropagatinguniquepointer.h"
 #include "PerceptualColor/lchdouble.h"
 
 namespace PerceptualColor
@@ -55,20 +54,20 @@ class RgbColorSpace;
  *   width is twice the height, the lightness ranges from 0 to 100
  *   and the chroma ranges from 0 to 200.
  *
- * @note This widget <em>always</em> accepts focus by a mouse
- * click within the displayed gamut. This happens regardless of the
- * <tt>QWidget::focusPolicy</tt> property. If you set the
- * <tt>QWidget::focusPolicy</tt> property to a value that accepts
- * focus by mouse click, the focus will not only be accepted for
- * clicks within the actual display gamut, but also for clicks
- * within the surrounding rectangle. TODO Does this make sense?
+ * @internal
  *
  * @note This class is not part of the public API because its interface
  * is not polished enough. Notably it does not automatically scale the
  * diagram to fit a given gamut (means: to fit up to a given maximum
  * chroma). Even if we would fix this: We would need a public API
  * that is widthForHeight-dependent to allow the library user to
- * comfortably make use of this! */
+ * comfortably make use of this!
+ *
+ * @todo What to do if a gamut allows lightness < 0 or lightness > 100 ???
+ * What if a part of the gamut at the right is not displayed? (Thought
+ * this means that @ref RgbColorSpace has a bug.) Shouldn’t this be
+ * controlled?) Maybe it would be better to control this
+ * within @ref RgbColorSpace … */
 class ChromaLightnessDiagram : public AbstractDiagram
 {
     Q_OBJECT

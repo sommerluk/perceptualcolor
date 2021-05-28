@@ -35,16 +35,11 @@
 
 #include "helper.h"
 #include "lchvalues.h"
-#include "polarpointf.h"
-#include "rgbcolorspace.h"
-
-#include <math.h>
 
 #include <QApplication>
 #include <QDebug>
-#include <QMouseEvent>
 #include <QPainter>
-#include <QWidget>
+#include <QtMath>
 
 namespace PerceptualColor
 {
@@ -66,6 +61,9 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualCo
     d_pointer->m_currentColor = LchValues::srgbVersatileInitialColor;
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    d_pointer->m_chromaLightnessImage.setImageSize(
+        // Update the image size will free memory of the cache inmediatly.
+        d_pointer->calculateImageSizePhysical());
 }
 
 /** @brief Default destructor */
@@ -94,9 +92,13 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
  * @post If the pixel position is within the gamut, then
  * the corresponding @ref currentColor is set. If the pixel position
  * is outside the gamut, than a nearby in-gamut color is set (hue is
- * preverved, chroma and lightness are adjusted). */
+ * preverved, chroma and lightness are adjusted). Exception: If the
+ * widget is so small that no diagram is displayed, nothing will happen. */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition)
 {
+    if (!isWidgetPixelPositionInGamut(widgetPixelPosition)) {
+        return;
+    }
     const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
     q_pointer->setCurrentColor(
         // Search for the nearest color without changing the hue:
@@ -146,12 +148,12 @@ int ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::leftBorderPhysical() 
     return qMax(candidateOne, candidateTwo);
 }
 
-/** @brief The size of @ref m_chromaLightnessImage that would correspond
+/** @brief Calculate a size for @ref m_chromaLightnessImage that corresponds
  * to the current widget size.
  *
- * @returns The size of @ref m_chromaLightnessImage that would correspond
+ * @returns The size for @ref m_chromaLightnessImage that corresponds
  * to the current widget size. Measured in <em>physical pixels</em>. */
-QSize ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::getImageSizePhysicalForCurrentWidgetSize() const
+QSize ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::calculateImageSizePhysical() const
 {
     const QSize borderSizePhysical(
         // Borders:
@@ -170,7 +172,9 @@ QSize ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::getImageSizePhysica
  * @returns The corresponding color for the (center of the) given
  * widget pixel position. (The value is not normalized. It might have
  * a negative C value if the position is on the left of the diagram,
- * or an L value smaller than 0 or bigger than 100…)
+ * or an L value smaller than 0 or bigger than 100…) Exception: If
+ * the widget is too small to show a diagram, a default color is
+ * returned.
  *
  * @sa @ref measurementdetails */
 LchDouble ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor(const QPoint widgetPixelPosition) const
@@ -183,9 +187,14 @@ LchDouble ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixel
         + QPointF(0.5, 0.5);
     LchDouble color;
     color.h = m_currentColor.h;
-    const qreal diagramHeight = getImageSizePhysicalForCurrentWidgetSize().height() / q_pointer->devicePixelRatioF();
-    color.l = imageCoordinatePoint.y() * 100.0 / diagramHeight * (-1.0) + 100.0;
-    color.c = imageCoordinatePoint.x() * 100.0 / diagramHeight;
+    const qreal diagramHeight = calculateImageSizePhysical().height() / q_pointer->devicePixelRatioF();
+    if (diagramHeight > 0) {
+        color.l = imageCoordinatePoint.y() * 100.0 / diagramHeight * (-1.0) + 100.0;
+        color.c = imageCoordinatePoint.x() * 100.0 / diagramHeight;
+    } else {
+        color.l = 50;
+        color.c = 0;
+    }
     return color;
 }
 
@@ -257,10 +266,7 @@ void ChromaLightnessDiagram::mouseReleaseEvent(QMouseEvent *event)
  *
  * Reimplemented from base class.
  *
- * @param event the paint event
- *
- * @todo What when @ref currentColor has a valid in-gamut color, but this color
- * is out of the <em>displayed</em> diagram? How to handle that? */
+ * @param event the paint event */
 void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -349,7 +355,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
     }
 
     // Paint the handle on-the-fly.
-    const int diagramHeight = d_pointer->getImageSizePhysicalForCurrentWidgetSize().height();
+    const int diagramHeight = d_pointer->calculateImageSizePhysical().height();
     QPointF colorCoordinatePoint = QPointF(
         // x:
         d_pointer->m_currentColor.c * diagramHeight / 100.0,
@@ -379,8 +385,8 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  *
  * Reimplemented from base class.
  *
- * Reacts on key press events. When the arrow keys are pressed, it moves the
- * handle a small step into the desired direction
+ *  When the arrow keys are pressed, it moves the
+ * handle a small step into the desired direction.
  * When <tt>Qt::Key_PageUp</tt>, <tt>Qt::Key_PageDown</tt>,
  * <tt>Qt::Key_Home</tt> or <tt>Qt::Key_End</tt> are pressed, it moves the
  * handle a big step into the desired direction.
@@ -393,10 +399,7 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  *
  * @todo Is the current behaviour (when pressing right arrow while yet
  * at the right border of the gamut, also the lightness is adjusted to
- * allow moving actually to the right) is a good idea?
- *
- * @todo Still the darkest color is far from RGB zero on usual widget size.
- * This has to get better to allow choosing RGB(0, 0, 0)! */
+ * allow moving actually to the right) is a good idea? */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
     LchDouble temp = d_pointer->m_currentColor;
@@ -457,7 +460,12 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
  * negative.
  *
  * @returns <tt>true</tt> if the widget pixel position is within the
- * <em>currently displayed gamut</em>. Otherwise <tt>false</tt>. */
+ * <em>currently displayed gamut</em>. Otherwise <tt>false</tt>.
+ *
+ * @internal
+ *
+ * @todo How does isInGamut() react? Does it also control valid chroma
+ * and lightness ranges? */
 bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const
 {
     const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
@@ -471,40 +479,31 @@ bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositio
         && m_rgbColorSpace->isInGamut(color));
 }
 
-// TODO xxx Review starts here.
-
-// TODO WARNING Prevent division by 0 in fromWidgetPixelPositionToColor!
-//              (The size could be 0. This leads to a division by 0.)
-//              Check this very same problem also in the other diagram widgets!
-
-// TODO WARNING When the color wheel changes the hue, than this widget might
-//              have an out-of-gamut handle position.
-
-// TODO Remove setDevicePixelRatioF from all *Image classes. (It is
-//      confusing, and at the same time there is no real need/benefit.)
-//      Complete list: ChromaHueImage, ColorWheelImage, GradientImage.
-
 /** @brief Setter for the @ref currentColor() property.
  *
- * @param newCurrentColor the new @ref currentColor */
+ * @param newCurrentColor the new @ref currentColor
+ *
+ * @todo When an out-of-gamut color is given, both lightness and chroma
+ * are adjusted. But does this really make sense? In @ref WheelColorPicker,
+ * when using the hue wheel, also <em>both</em>, lightness <em>and</em> chroma
+ * will change. Isn’t that confusing? */
 void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor)
 {
-    const LchDouble newColorInGamut = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(newCurrentColor);
+    const LchDouble newColorInGamut =
+        // Move newCurrentColor into the gamut (if necessary) – while preserving the hue:
+        d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(newCurrentColor);
 
     if (newColorInGamut.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
     }
 
-    LchDouble oldColor = d_pointer->m_currentColor;
+    double oldHue = d_pointer->m_currentColor.h;
     d_pointer->m_currentColor = newColorInGamut;
-
-    // update if necessary, the diagram
-    if (d_pointer->m_currentColor.h != oldColor.h) {
+    if (d_pointer->m_currentColor.h != oldHue) {
+        // Update the diagram (only if the hue has changed):
         d_pointer->m_chromaLightnessImage.setHue(d_pointer->m_currentColor.h);
     }
-
-    // schedule a paint event
-    update();
+    update(); // Schedule a paint event
     Q_EMIT currentColorChanged(newColorInGamut);
 }
 
@@ -512,51 +511,48 @@ void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &n
  *
  * Reimplemented from base class.
  *
- * @param event The corresponding resize event
- */
+ * @param event The corresponding event */
 void ChromaLightnessDiagram::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     d_pointer->m_chromaLightnessImage.setImageSize(
         // Update the image size will free memory of the cache inmediatly.
-        d_pointer->getImageSizePhysicalForCurrentWidgetSize());
+        d_pointer->calculateImageSizePhysical());
     // As by Qt documentation:
     //     “The widget will be erased and receive a paint event
     //      immediately after processing the resize event. No drawing
     //      need be (or should be) done inside this handler.”
 }
 
-/** @brief Provide the size hint.
+/** @brief Recommmended size for the widget.
  *
  * Reimplemented from base class.
  *
- * @returns the size hint
+ * @returns Recommended size for the widget.
  *
- * @sa minimumSizeHint()
- */
+ * @sa @ref minimumSizeHint() */
 QSize ChromaLightnessDiagram::sizeHint() const
 {
     return minimumSizeHint() * scaleFromMinumumSizeHintToSizeHint;
 }
 
-/** @brief Provide the minimum size hint.
+/** @brief Recommended minimum size for the widget
  *
  * Reimplemented from base class.
  *
- * @returns the minimum size hint
+ * @returns Recommended minimum size for the widget.
  *
- * @sa sizeHint()
- */
+ * @sa @ref sizeHint() */
 QSize ChromaLightnessDiagram::minimumSizeHint() const
 {
     const int minimumHeight = qRound(
         // Top border and bottom border:
-        2 * d_pointer->defaultBorderPhysical() * devicePixelRatioF()
+        2.0 * d_pointer->defaultBorderPhysical() / devicePixelRatioF()
         // Add the height for the diagram:
         + gradientMinimumLength());
     const int minimumWidth = qRound(
         // Left border and right border:
-        (d_pointer->leftBorderPhysical() + d_pointer->defaultBorderPhysical()) * devicePixelRatioF()
+        (d_pointer->leftBorderPhysical() + d_pointer->defaultBorderPhysical()) / devicePixelRatioF()
         // Add the gradient minimum length from y axis, multiplied with
         // the factor to allow at correct scaling showing up the whole
         // chroma range of the gamut.
@@ -565,14 +561,8 @@ QSize ChromaLightnessDiagram::minimumSizeHint() const
     return QSize(minimumWidth, minimumHeight).expandedTo(QApplication::globalStrut());
 }
 
-// TODO what to do if a gamut allows lightness < 0 or lightness > 100 ???
-
-// TODO what if a part of the gamut at the right is not displayed?
-
-/** @brief Color of the current selection
- *
- * @returns color of the current selection
- */
+// No documentation here (documentation of properties
+// and its getters are in the header)
 LchDouble PerceptualColor::ChromaLightnessDiagram::currentColor() const
 {
     return d_pointer->m_currentColor;

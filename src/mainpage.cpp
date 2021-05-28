@@ -75,6 +75,26 @@
  *
  * @internal
  *
+ * @todo run-clang-tidy.sh crashes.
+ *
+ * @todo We prevent division by 0 in
+ * @ref PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor().
+ * We should make sure this happens also in the other diagram widgets!
+ *
+ * @todo Add a @ref PerceptualColor::ConstPropagatingUniquePointer to
+ * all classes, including the non-pimpl classes, to allow for later
+ * enhancements.
+ *
+ * @todo Remove setDevicePixelRatioF from all *Image classes. (It is
+ * confusing, and at the same time there is no real need/benefit.)
+ * Complete list: @ref PerceptualColor::ChromaHueImage,
+ * @ref PerceptualColor::ColorWheelImage, @ref PerceptualColor::GradientImage.
+ *
+ * @todo No caller graph/referenced by, in doxygen. (Result is not reliably. Better no graph
+ * than an incomplete graph.)
+ *
+ * @todo Default color for @ref PerceptualColor::ColorDialog?
+ *
  * @todo Test also on Windows. (Does it work well with VisualStudio?
  * Isn’t there a free version of VisualStudio? Test it with this
  * library!)
