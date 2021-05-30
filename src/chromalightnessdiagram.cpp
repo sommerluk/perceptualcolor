@@ -468,6 +468,14 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
  * and lightness ranges? */
 bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositionInGamut(const QPoint widgetPixelPosition) const
 {
+    if (calculateImageSizePhysical().isEmpty()) {
+        // If there is no displayed gamut, the anser must be false.
+        // But fromWidgetPixelPositionToColor() would return an in-gamut
+        // fallback color nevertheless. Therefore, we have to catch
+        // the special case with an empty diagram here manually.
+        return false;
+    }
+
     const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
     return (
         // Test if C is in range. This is important because a negative C value
@@ -492,7 +500,6 @@ void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &n
     const LchDouble newColorInGamut =
         // Move newCurrentColor into the gamut (if necessary) – while preserving the hue:
         d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(newCurrentColor);
-
     if (newColorInGamut.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
     }

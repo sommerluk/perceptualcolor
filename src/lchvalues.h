@@ -114,8 +114,13 @@ public:
      *
      * The hue range is not linear, but circular – and so are the widgets
      * displaying him: The handle has the same visibility, whereever he is
-     * and whatever the hue value is. Therefore, we use a neutral hue
-     * as default value. */
+     * and whatever the hue value is. Therefore, we use 0° as default value
+     * which seems to be the natural choise.
+     *
+     * @note An alternative to 0° might be 180°. If the lightness is 50%,
+     * among 0°, 90°, 180° and 270°, it’s 180° that has the lowest possible
+     * maximum chroma. So when choose 180°, with a given chroma, the resulting
+     * color is more vivid and clean than those at 0°, 90° and 270°. */
     static constexpr LchDouble srgbVersatileInitialColor {neutralLightness, srgbVersatileChroma, neutralHue};
 
 private:

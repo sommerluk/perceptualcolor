@@ -91,8 +91,6 @@
  * @todo No caller graph/referenced by, in doxygen. (Result is not reliably. Better no graph
  * than an incomplete graph.)
  *
- * @todo Default color for @ref PerceptualColor::ColorDialog?
- *
  * @todo Test also on Windows. (Does it work well with VisualStudio?
  * Isn’t there a free version of VisualStudio? Test it with this
  * library!)

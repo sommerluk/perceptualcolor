@@ -263,18 +263,30 @@ private Q_SLOTS:
         QTest::mouseRelease(&myWidget, Qt::MouseButton::LeftButton);
     }
 
-    void testPaintEvent()
+    void testPaintEventNormalSize()
+    {
+        ChromaLightnessDiagram myWidget {m_rgbColorSpace};
+        myWidget.show();
+        // Test normal size
+        myWidget.resize(100, 100);
+        myWidget.repaint();
+    }
+
+    void testPaintEventTooSmallSize()
+    {
+        ChromaLightnessDiagram myWidget {m_rgbColorSpace};
+        myWidget.show();
+        // Test small size (too small to show a diagram)
+        myWidget.resize(2, 2);
+        myWidget.repaint();
+    }
+
+    void testPaintEventEmptySize()
     {
         ChromaLightnessDiagram myWidget {m_rgbColorSpace};
         myWidget.show();
         // Test empty size
         myWidget.resize(0, 0);
-        myWidget.repaint();
-        // Test small size (too small to show a diagram)
-        myWidget.resize(2, 2);
-        myWidget.repaint();
-        // Test normal size
-        myWidget.resize(100, 100);
         myWidget.repaint();
     }
 
@@ -286,15 +298,14 @@ private Q_SLOTS:
         referenceColorLch.c = 20;
         referenceColorLch.h = 180;
         myDiagram.setCurrentColor(referenceColorLch);
-        if (myDiagram.currentColor().l != 50) {
-            throw;
-        }
-        if (myDiagram.currentColor().h != 180) {
-            throw;
-        }
-        if (myDiagram.currentColor().c != 0) {
-            throw;
-        }
+
+        // Assert pre-conditions:
+
+        QCOMPARE(myDiagram.currentColor().l, 50);
+        QCOMPARE(myDiagram.currentColor().c, 20);
+        QCOMPARE(myDiagram.currentColor().h, 180);
+
+        // Actual test:
 
         myDiagram.setCurrentColor(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Left);
@@ -323,13 +334,13 @@ private Q_SLOTS:
         myDiagram.setCurrentColor(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Home);
         QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c < referenceColorLch.c);
+        QVERIFY(myDiagram.currentColor().c > referenceColorLch.c);
         QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
 
         myDiagram.setCurrentColor(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_End);
         QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c > referenceColorLch.c);
+        QVERIFY(myDiagram.currentColor().c < referenceColorLch.c);
         QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
 
         myDiagram.setCurrentColor(referenceColorLch);
@@ -350,15 +361,15 @@ private Q_SLOTS:
 
         myDiagram.setCurrentColor(referenceColorLch);
         QTest::keyClick(&myDiagram, Qt::Key_Left);
-        QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QCOMPARE(myDiagram.currentColor().l, referenceColorLch.l);
+        QCOMPARE(myDiagram.currentColor().c, referenceColorLch.c);
+        QCOMPARE(myDiagram.currentColor().h, referenceColorLch.h);
 
         myDiagram.setCurrentColor(referenceColorLch);
-        QTest::keyClick(&myDiagram, Qt::Key_Home);
-        QVERIFY(myDiagram.currentColor().l == referenceColorLch.l);
-        QVERIFY(myDiagram.currentColor().c == referenceColorLch.c);
-        QVERIFY(myDiagram.currentColor().h == referenceColorLch.h);
+        QTest::keyClick(&myDiagram, Qt::Key_End);
+        QCOMPARE(myDiagram.currentColor().l, referenceColorLch.l);
+        QCOMPARE(myDiagram.currentColor().c, referenceColorLch.c);
+        QCOMPARE(myDiagram.currentColor().h, referenceColorLch.h);
 
         referenceColorLch.l = 0;
 
@@ -419,6 +430,7 @@ private Q_SLOTS:
         color.c = 20;
         color.h = 10;
         test.setCurrentColor(color);
+        QVERIFY(test.currentColor().hasSameCoordinates(color));
         QSignalSpy spy(&test, &ChromaLightnessDiagram::currentColorChanged);
         QCOMPARE(spy.count(), 0);
 

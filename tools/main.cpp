@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     // Instanciate the application object
     QApplication app(argc, argv);
-    app.setApplicationName(QObject::tr(u8"Perceptual color picker"));
+    app.setApplicationName(QObject::tr("Perceptual color picker"));
     // app.setLayoutDirection(Qt::RightToLeft);
     // QLocale::setDefault(QLocale::Bengali);
     // QLocale::setDefault(QLocale::German);

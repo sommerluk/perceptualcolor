@@ -58,31 +58,13 @@ ColorDialog::ColorDialog(QWidget *parent)
     , d_pointer(new ColorDialogPrivate(this))
 {
     d_pointer->initialize();
-    // As initial color, QColorDialog chooses white, probably because
-    // it’t quite neutral.
-    // We do things differently here: We want a color that has a chroma,
-    // because this way, new users do not see the widget diagrams at an
-    // extreme position, but somewhere in the middle. This is important,
-    // because extreme positions like “white” leave for example the
-    // chroma-hue-diagram at zero surface. Therefore, we try a middle
-    // lightness and a middle chroma (a lightness-chroma-combination that
-    // will be valid through the hole range of hue. For the hue, the natural
-    // choice would be 0°, which is red. Why choosing something different
-    // from 0° without a technical reason? If the lightness is 50%, among 0°,
-    // 90°, 180° and 270°, it’s 180° that has the lowest possible maximum C.
-    // Therefore, we choose 180°, because at a given chroma, the resulting
-    // color is more vivid than those at 0°, 90° and 270°. Also, be choose
-    // 180° because the color seems clean and colorful.
-    LchDouble initialColor;
-    initialColor.h = 180;
-    initialColor.l = LchValues::neutralLightness;
-    initialColor.c = LchValues::srgbVersatileChroma;
     // Calling setCurrentFullColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid
     // be default, and therefor different, setCurrentColor()
     // guaranties to update all widgets.
-    LchDouble lch = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(initialColor);
+    // TODO xxx
+    LchDouble lch = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(LchValues::srgbVersatileInitialColor);
     LchaDouble lcha;
     lcha.l = lch.l;
     lcha.c = lch.c;
@@ -464,7 +446,10 @@ void ColorDialog::ColorDialogPrivate::initialize()
     q_pointer->setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
 
     // Initialize the window title
-    q_pointer->setWindowTitle(tr("Select Color"));
+    // TODO Test that
+    // 1.) Our own translation has priority over the fallback
+    // 2.) Fallback to Qt translation works if no own translation is available
+    q_pointer->setWindowTitle(QColorDialog::tr("Select Color"));
 
     // Enable size grip
     // As this dialog can indeed be resized, the size grip should

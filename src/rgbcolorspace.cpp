@@ -460,10 +460,21 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutColorByAdjustingChroma(c
 PerceptualColor::LchDouble RgbColorSpace::nearestInGamutColorByAdjustingChromaLightness(const PerceptualColor::LchDouble &color)
 {
     // TODO Would be great if this function could be const
-    QPoint myPixelPosition(qRound(color.c * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0), qRound(d_pointer->nearestNeighborSearchImageHeight - 1 - color.l * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0));
-    d_pointer->nearestNeighborSearchImage->setHue(color.h);
+
+    // Initialization
+    LchDouble temp = color;
+    if (temp.c < 0) {
+        temp.c = 0;
+    }
+
+    if (isInGamut(temp)) {
+        return temp;
+    }
+
+    QPoint myPixelPosition(qRound(temp.c * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0), qRound(d_pointer->nearestNeighborSearchImageHeight - 1 - temp.l * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0));
+    d_pointer->nearestNeighborSearchImage->setHue(temp.h);
     myPixelPosition = d_pointer->nearestNeighborSearch(myPixelPosition, d_pointer->nearestNeighborSearchImage->getImage());
-    LchDouble result = color;
+    LchDouble result = temp;
     result.c = myPixelPosition.x() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);
     result.l = 100 - myPixelPosition.y() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);
     return result;
