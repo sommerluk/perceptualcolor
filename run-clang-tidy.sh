@@ -34,15 +34,18 @@
 # We run “make” with the argument “--jobs” without specifying the number
 # of parallel jobs. This means the number is jobs is maximum.
 mkdir --parents build \
+    && nice --adjustment 19 rm --recursive --force build/* \
     && cd build \
     && echo "cmake…" \
     && nice --adjustment 19 cmake ../ > /dev/null \
     && echo "make…" \
-    && nice --adjustment 19 make --jobs > /dev/null \
+    && nice --adjustment 19 make --jobs \
     && echo "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON…" \
     && nice --adjustment 19 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. \
     && echo "run-clang-tidy…" \
     && nice --adjustment 19 run-clang-tidy \
         | grep \
             --perl-regexp "^clang-tidy-10 -p=" \
-            --invert-match
+            --invert-match \
+    && cd .. \
+    && rm -r build/*

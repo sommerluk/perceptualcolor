@@ -75,8 +75,6 @@
  *
  * @internal
  *
- * @todo run-clang-tidy.sh crashes.
- *
  * @todo We prevent division by 0 in
  * @ref PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor().
  * We should make sure this happens also in the other diagram widgets!
