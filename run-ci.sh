@@ -42,8 +42,11 @@ while true; do
     case $yn in
         yes ) mkdir --parents build \
                 && cd build \
+                && echo "clang-format: cmake…" \
                 && nice --adjustment 19 cmake ../ > /dev/null \
+                && echo "clang-format: make…" \
                 && nice --adjustment 19 make --jobs > /dev/null \
+                && echo "clang-format: make clang-format…" \
                 && nice --adjustment 19 make clang-format; \
             echo "Code formatting done."; \
             exit;;
@@ -63,7 +66,10 @@ done
 ( \
 mkdir --parents build \
     && cd build \
+    && echo "Build the project if not yet done." \
+    && echo "cmake…" \
     && nice --adjustment 19 cmake ../ > /dev/null \
+    && echo "make…" \
     && nice --adjustment 19 make --jobs > /dev/null \
 )
 echo "Build done"
@@ -95,13 +101,13 @@ echo "Screenshots for documentation have been generated."
 # be able to filter it with grep. And we redirect stdout to /dev/null
 # (without changing where stderr is going):
 cp doxyfile.internal Doxyfile
-doxygen 2>&1 >/dev/null \
+nice --adjustment 19 doxygen 2>&1 >/dev/null \
     | grep \
         --invert-match \
         --perl-regexp "warning: return type of member .* is not documented" \
            | sed 's/^/Doxygen “public API and internals” documentation: /'
 cp doxyfile.external Doxyfile
-doxygen 2>&1 >/dev/null \
+nice --adjustment 19 doxygen 2>&1 >/dev/null \
     | grep \
         --invert-match \
         --perl-regexp "warning: return type of member .* is not documented" \
@@ -121,14 +127,14 @@ echo "Doxygen documention has been generated."
 # Or, you can install it as root:
 # sudo pip3 install reuse
 # Then, you do not have to add it manually to the path.
-reuse lint > /dev/null
+nice --adjustment 19 reuse lint > /dev/null
 if [ $? -eq 0 ];
 then
     # Everything is fine. No message is printed.
     echo
 else
     # “reuse lint” found problems. We call it again to print its messages.
-    reuse lint
+    nice --adjustment 19 reuse lint
 fi
 
 
@@ -332,6 +338,7 @@ done
 
 
 ################# Unit tests #################
+echo "Start unit tests…"
 (\
 cd build && nice --adjustment 19 ctest --verbose \
     | grep --invert-match --perl-regexp "^\d+: PASS   : " \
