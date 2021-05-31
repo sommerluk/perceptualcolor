@@ -51,7 +51,7 @@ namespace PerceptualColor
  *
  * @image html ColorDialog.png "ColorDialog" width=500
  *
- * It is an @ref qdialogsourceompatibility "almost source-compatible"
+ * It is an @ref qdialogsourceompatibility "mostly source-compatible"
  * replacement for QColorDialog. It also adds some extra functionality
  * that is not available in QColorDialog.
  *
@@ -90,8 +90,9 @@ namespace PerceptualColor
  * This dialog uses icons. See @ref hidpisupport "High DPI support"
  * about how to enable support for high-DPI icons.
  *
- * @note @anchor qdialogsourceompatibility The API of this class is
- * source-compatible to the API of QColorDialog, with the following exceptions:
+ * @note @anchor qdialogsourceompatibility The API of this class is mostly
+ * source-compatible to the API of QColorDialog. This is a list of
+ * incompatibilities:
  * - As this dialog does not provide functionality for custom colors and
  *   standard color, the corresponding static functions of QColorDialog are
  *   not available in this class.
