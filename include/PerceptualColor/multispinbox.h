@@ -45,7 +45,7 @@ namespace PerceptualColor
  * However, <em>this</em> widget is flexible. You can define on your own
  * the behaviour of each section.
  *
- * @image html MultiSpinBox.png "MultiSpinBox"
+ * @image html MultiSpinBox.png "MultiSpinBox" width=200
  *
  * This widget works with floating point precision. You can set the
  * precision individually by section using @ref SectionData::decimals.

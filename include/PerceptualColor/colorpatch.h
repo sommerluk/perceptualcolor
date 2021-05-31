@@ -41,15 +41,15 @@ namespace PerceptualColor
  * color. The instantiation and usage is simple. Example:
  * @snippet test/testcolorpatch.cpp ColorPatch Create widget
  *
- * @image html ColorPatch.png "ColorPatch"
+ * @image html ColorPatch.png "ColorPatch" width=50
  *
  * This widget is also able to display transparency:
  *
- * @image html ColorPatchSemiTransparent.png "ColorPatch with 50% transparency"
+ * @image html ColorPatchSemiTransparent.png "ColorPatch with 50% transparency" width=50
  *
  * There is also a representation for <tt>QColor::isValid() == true</tt>:
  *
- * @image html ColorPatchInvalid.png "ColorPatch with invalid color"
+ * @image html ColorPatchInvalid.png "ColorPatch with invalid color" width=50
  *
  * The default minimum size of this widget is similar to a
  * <tt>QToolButton</tt>. Depending on your use case, you might
