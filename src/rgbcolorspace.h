@@ -63,9 +63,7 @@ class RgbColorSpace : public QObject
 public:
     Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
     virtual ~RgbColorSpace() noexcept override;
-    Q_INVOKABLE qreal blackpointL() const;
     Q_INVOKABLE bool isInGamut(const cmsCIELab &lab) const;
-    Q_INVOKABLE bool isInGamut(const double lightness, const double chroma, const double hue) const;
     Q_INVOKABLE bool isInGamut(const PerceptualColor::LchDouble &lch) const;
     Q_INVOKABLE int maximumChroma() const;
     Q_INVOKABLE PerceptualColor::LchDouble nearestInGamutColorByAdjustingChroma(const PerceptualColor::LchDouble &color) const;
@@ -74,17 +72,21 @@ public:
     Q_INVOKABLE QString profileInfoDescription() const;
     Q_INVOKABLE QString profileInfoManufacturer() const;
     Q_INVOKABLE QString profileInfoModel() const;
-    Q_INVOKABLE cmsCIELab toLab(const QColor &rgbColor) const;
     Q_INVOKABLE PerceptualColor::LchDouble toLch(const cmsCIELab &lab) const;
     Q_INVOKABLE PerceptualColor::LchDouble toLch(const QColor &rgbColor) const;
-    Q_INVOKABLE QColor toQColorRgbBound(const cmsCIELab &Lab) const;
     Q_INVOKABLE QColor toQColorRgbBound(const PerceptualColor::LchDouble &lch) const;
     Q_INVOKABLE QColor toQColorRgbBound(const PerceptualColor::LchaDouble &lcha) const;
     Q_INVOKABLE QColor toQColorRgbUnbound(const cmsCIELab &Lab) const;                  // TODO Isn’t QColor _always_ bound???
     Q_INVOKABLE QColor toQColorRgbUnbound(const PerceptualColor::LchDouble &lch) const; // TODO Isn’t QColor _always_ bound???
-    Q_INVOKABLE qreal whitepointL() const;
 
 private:
+    // TODO These members are apparently not used elsewhere in the code.
+    Q_INVOKABLE qreal blackpointL() const;
+    Q_INVOKABLE bool isInGamut(const double lightness, const double chroma, const double hue) const;
+    Q_INVOKABLE cmsCIELab toLab(const QColor &rgbColor) const;
+    Q_INVOKABLE QColor toQColorRgbBound(const cmsCIELab &Lab) const;
+    Q_INVOKABLE qreal whitepointL() const;
+
     Q_DISABLE_COPY(RgbColorSpace)
 
     class RgbColorSpacePrivate;
