@@ -677,6 +677,11 @@ private Q_SLOTS:
         // The signal is really disconnected after the dialog has been closed.
         QCOMPARE(m_color, Qt::red);
 
+// TODO WARNING Input ff0000. Result is red color, but #000000 displayed. Why?
+// This seem to have something to do with this! Now that we got rid of
+// FullColorDescription, how to save the original RGB value to be able
+// to return it?
+
         // Now test if PerceptualColor::ColorDialog does the same
         // thing as our reference
         m_color = Qt::black;
