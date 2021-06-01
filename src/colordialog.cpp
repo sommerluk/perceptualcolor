@@ -343,7 +343,12 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
     }
     // Return to the finally considered value (the new one if valid, the old
     // one otherwise.)
-    m_rgbLineEdit->setText(m_rgbColorSpace->toQColorRgbUnbound(m_currentOpaqueColor).name());
+    m_rgbLineEdit->setText(
+        // m_currentOpaqueColor is supposed to be always in-gamut. However,
+        // because of rounding issues, a conversion to an unbounded RGB
+        // color could result in an invalid color. Therefore, we must
+        // use a conversion to a _bounded_ RGB color.
+        m_rgbColorSpace->toQColorRgbBound(m_currentOpaqueColor).name());
 }
 
 /** @brief Basic initialization.

@@ -121,17 +121,6 @@ namespace PerceptualColor
  * @todo This class should use the same default color as all other classes
  * of this library!
  *
- * @todo BUG Input \#ef6c00, than press Tab. The value changes
- * to \#000000. It should not change! Then: Press Shift-Tab: The value
- * changes to \#ef6b00. Why this value different from \#ef6c00?
- *
- * @todo BUG Current behaviour: @ref ColorDialogPrivate::m_wheelColorPicker
- * is getting the focus by Tab, but is not getting the focus by Shift-Tab.
- * Expected behaviour: It should get the focus both, on Tab as on Shift-Tab.
- *
- * @todo BUG: Put hex value ffff00. Push tab key. The value changes to
- * 000000. It shouldn't.
- *
  * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
  * With each focus switch, the values change. They shouldn't!
  *
@@ -140,10 +129,6 @@ namespace PerceptualColor
  * application programmer sets an RGB value. He expects that the getter of
  * the color property returns that very same RGB value without any rounding
  * errors! Therefore, we need double storage!
- *
- * @todo BUG: Apparently, keyboard control of @ref ChromaHueDiagram is
- * broken. And: keyboard control of the alpha spinbox does not react either.
- * Are both bugs connected?
  *
  * @todo BUG: Start the @ref ColorDialog with the color
  * <tt>QColor(Qt::yellow)</tt>. The @ref ChromaHueDiagram shows its handle
@@ -206,8 +191,6 @@ namespace PerceptualColor
  * with on-screen keyboard). But the + and - button for increasing
  * or decreasing the values might be too small. And mobile UI uses
  * often wheels for this use case…
- *
- * @todo In general: What would mean QML support?
  *
  * @todo Bug fix this:
  * - Set the value HSV 200 0 0

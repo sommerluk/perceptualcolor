@@ -677,11 +677,6 @@ private Q_SLOTS:
         // The signal is really disconnected after the dialog has been closed.
         QCOMPARE(m_color, Qt::red);
 
-// TODO WARNING Input ff0000. Result is red color, but #000000 displayed. Why?
-// This seem to have something to do with this! Now that we got rid of
-// FullColorDescription, how to save the original RGB value to be able
-// to return it?
-
         // Now test if PerceptualColor::ColorDialog does the same
         // thing as our reference
         m_color = Qt::black;
@@ -1007,11 +1002,38 @@ private Q_SLOTS:
     void testReadRgbHexValues()
     {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
+
+        // Test some value
         myDialog->d_pointer->m_rgbLineEdit->setText(QStringLiteral("#010203"));
         myDialog->d_pointer->readRgbHexValues();
         QCOMPARE(myDialog->currentColor().red(), 1);
         QCOMPARE(myDialog->currentColor().green(), 2);
         QCOMPARE(myDialog->currentColor().blue(), 3);
+        QCOMPARE(myDialog->d_pointer->m_rgbLineEdit->text(), QStringLiteral("#010203"));
+
+        // Test this value which is known to have triggered yet rounding errors!
+        myDialog->d_pointer->m_rgbLineEdit->setText(QStringLiteral("#ff0000"));
+        myDialog->d_pointer->readRgbHexValues();
+        QCOMPARE(myDialog->currentColor().red(), 255);
+        QCOMPARE(myDialog->currentColor().green(), 0);
+        QCOMPARE(myDialog->currentColor().blue(), 0);
+        QCOMPARE(myDialog->d_pointer->m_rgbLineEdit->text(), QStringLiteral("#ff0000"));
+
+        // Test this value which is known to have triggered yet rounding errors!
+        myDialog->d_pointer->m_rgbLineEdit->setText(QStringLiteral("#ef6c00"));
+        myDialog->d_pointer->readRgbHexValues();
+        QCOMPARE(myDialog->currentColor().red(), 239);
+        QCOMPARE(myDialog->currentColor().green(), 108);
+        QCOMPARE(myDialog->currentColor().blue(), 0);
+        QCOMPARE(myDialog->d_pointer->m_rgbLineEdit->text(), QStringLiteral("#ef6c00"));
+
+        // Test this value which is known to have triggered yet rounding errors!
+        myDialog->d_pointer->m_rgbLineEdit->setText(QStringLiteral("#ffff00"));
+        myDialog->d_pointer->readRgbHexValues();
+        QCOMPARE(myDialog->currentColor().red(), 255);
+        QCOMPARE(myDialog->currentColor().green(), 255);
+        QCOMPARE(myDialog->currentColor().blue(), 0);
+        QCOMPARE(myDialog->d_pointer->m_rgbLineEdit->text(), QStringLiteral("#ffff00"));
     }
 
     void testReadRgbNumericValues()
