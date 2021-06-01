@@ -55,7 +55,7 @@ namespace PerceptualColor
  *
  * @todo Declare Q_PROPERTY for @ref profileInfoCopyright(),
  *       @ref profileInfoDescription(), @ref profileInfoManufacturer(),
- *       @ref profileInfoModel(), @ref whitepointL() */
+ *       @ref profileInfoModel() */
 class RgbColorSpace : public QObject
 {
     Q_OBJECT
@@ -80,13 +80,6 @@ public:
     Q_INVOKABLE QColor toQColorRgbUnbound(const PerceptualColor::LchDouble &lch) const; // TODO Isn’t QColor _always_ bound???
 
 private:
-    // TODO These members are apparently not used elsewhere in the code.
-    Q_INVOKABLE qreal blackpointL() const;
-    Q_INVOKABLE bool isInGamut(const double lightness, const double chroma, const double hue) const;
-    Q_INVOKABLE cmsCIELab toLab(const QColor &rgbColor) const;
-    Q_INVOKABLE QColor toQColorRgbBound(const cmsCIELab &Lab) const;
-    Q_INVOKABLE qreal whitepointL() const;
-
     Q_DISABLE_COPY(RgbColorSpace)
 
     class RgbColorSpacePrivate;

@@ -55,6 +55,8 @@ public:
     ~RgbColorSpacePrivate() noexcept = default;
 
     // Data members:
+    /** @brief The darkest in-gamut point on the L* axis.
+     * @sa whitepointL */
     qreal m_blackpointL;
     QString m_cmsInfoCopyright;
     QString m_cmsInfoDescription;
@@ -64,12 +66,16 @@ public:
     cmsHTRANSFORM m_transformLabToRgb16Handle;
     cmsHTRANSFORM m_transformLabToRgbHandle;
     cmsHTRANSFORM m_transformRgbToLabHandle;
+    /** @brief The lightest in-gamut point on the L* axis.
+     * @sa blackpointL() */
     qreal m_whitepointL;
 
     // Functions:
     cmsCIELab colorLab(const RgbDouble &rgb) const;
     RgbDouble colorRgbBoundSimple(const cmsCIELab &Lab) const;
     static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
+    cmsCIELab toLab(const QColor &rgbColor) const;
+    QColor toQColorRgbBound(const cmsCIELab &Lab) const;
 
     // Dirty hacks:
     static QPoint nearestNeighborSearch(const QPoint originalPoint, const QImage &image);
@@ -82,7 +88,7 @@ public:
      * nearestNeighborSearchImage as a pointer with memory leak to avoid
      * the crash. This memory leak is not fixed currently, because
      * anyway we need to re-write all the code for nearest-neigbor search. */
-    ChromaLightnessImage *nearestNeighborSearchImage;
+    ChromaLightnessImage * m_nearestNeighborSearchImage;
     static constexpr int nearestNeighborSearchImageHeight = 400;
 
 private:

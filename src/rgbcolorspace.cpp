@@ -128,9 +128,9 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     }
 
     // Dirty hacks:
-    d_pointer->nearestNeighborSearchImage = new ChromaLightnessImage(QSharedPointer<PerceptualColor::RgbColorSpace>(this));
-    d_pointer->nearestNeighborSearchImage->setImageSize(QSize(qRound(d_pointer->nearestNeighborSearchImageHeight / 100.0 * LchValues::humanMaximumChroma) + 1, d_pointer->nearestNeighborSearchImageHeight));
-    d_pointer->nearestNeighborSearchImage->setBackgroundColor(Qt::transparent);
+    d_pointer->m_nearestNeighborSearchImage = new ChromaLightnessImage(QSharedPointer<PerceptualColor::RgbColorSpace>(this));
+    d_pointer->m_nearestNeighborSearchImage->setImageSize(QSize(qRound(d_pointer->nearestNeighborSearchImageHeight / 100.0 * LchValues::humanMaximumChroma) + 1, d_pointer->nearestNeighborSearchImageHeight));
+    d_pointer->m_nearestNeighborSearchImage->setBackgroundColor(Qt::transparent);
 }
 
 /** @brief Destructor */
@@ -150,22 +150,6 @@ RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(RgbColorSpace *backLin
 {
 }
 
-/** @brief The darkest in-gamut point on the L* axis.
- *
- * @sa whitepointL */
-qreal RgbColorSpace::blackpointL() const
-{
-    return d_pointer->m_blackpointL;
-}
-
-/** @brief The lightest in-gamut point on the L* axis.
- *
- * @sa blackpointL() */
-qreal RgbColorSpace::whitepointL() const
-{
-    return d_pointer->m_whitepointL;
-}
-
 /** @brief Calculates the Lab value
  *
  * @param rgbColor the color that will be converted. (If this is not an
@@ -173,18 +157,18 @@ qreal RgbColorSpace::whitepointL() const
  * @returns If the color is valid, the corresponding LCh value might also
  * be invalid.
  */
-cmsCIELab RgbColorSpace::toLab(const QColor &rgbColor) const
+cmsCIELab RgbColorSpace::RgbColorSpacePrivate::toLab(const QColor &rgbColor) const
 {
     RgbDouble my_rgb;
     my_rgb.red = rgbColor.redF();
     my_rgb.green = rgbColor.greenF();
     my_rgb.blue = rgbColor.blueF();
-    return d_pointer->colorLab(my_rgb);
+    return colorLab(my_rgb);
 }
 
 PerceptualColor::LchDouble RgbColorSpace::toLch(const QColor &rgbColor) const
 {
-    cmsCIELab lab = toLab(rgbColor);
+    cmsCIELab lab = d_pointer->toLab(rgbColor);
     cmsCIELCh lch;
     cmsLab2LCh(&lch, &lab);
     LchDouble result;
@@ -276,9 +260,9 @@ RgbDouble RgbColorSpace::RgbColorSpacePrivate::colorRgbBoundSimple(const cmsCIEL
  * @returns If the color is within the RGB gamut, a QColor with the RGB values.
  * A nearby (in-gamut) RGB QColor otherwise.
  */
-QColor RgbColorSpace::toQColorRgbBound(const cmsCIELab &Lab) const
+QColor RgbColorSpace::RgbColorSpacePrivate::toQColorRgbBound(const cmsCIELab &Lab) const
 {
-    RgbDouble temp = d_pointer->colorRgbBoundSimple(Lab);
+    RgbDouble temp = colorRgbBoundSimple(Lab);
     return QColor::fromRgbF(temp.red, temp.green, temp.blue);
 }
 
@@ -298,7 +282,7 @@ QColor RgbColorSpace::toQColorRgbBound(const LchDouble &lch) const
     temp.L = lab.L;
     temp.a = lab.a;
     temp.b = lab.b;
-    return toQColorRgbBound(temp);
+    return d_pointer->toQColorRgbBound(temp);
 }
 
 QColor RgbColorSpace::toQColorRgbBound(const PerceptualColor::LchaDouble &lcha) const
@@ -315,24 +299,6 @@ QColor RgbColorSpace::toQColorRgbBound(const PerceptualColor::LchaDouble &lcha) 
 // TODO What to do with in-gamut tests if LittleCMS has fallen back to
 // bounded mode because of too complicate profiles? Out in-gamut detection
 // would not work anymore!
-
-/** @brief check if an LCh value is within a specific RGB gamut
- * @param lightness The lightness value
- * @param chroma The chroma value
- * @param hue The hue value (angle in degree)
- * @returns Returns true if lightness/chroma/hue is in the specified
- * RGB gamut. Returns false otherwise. */
-bool RgbColorSpace::isInGamut(const double lightness, const double chroma, const double hue) const
-{
-    // variables
-    LchDouble LCh;
-
-    // code
-    LCh.l = lightness;
-    LCh.c = chroma;
-    LCh.h = hue;
-    return isInGamut(LCh);
-}
 
 /** @brief check if an LCh value is within a specific RGB gamut
  * @param lch the LCh color
@@ -443,12 +409,12 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutColorByAdjustingChroma(c
         }
         result = lowerChroma;
     } else {
-        if (result.l < blackpointL()) {
-            result.l = blackpointL();
+        if (result.l < d_pointer->m_blackpointL) {
+            result.l = d_pointer->m_blackpointL;
             result.c = 0;
         } else {
-            if (result.l > whitepointL()) {
-                result.l = blackpointL();
+            if (result.l > d_pointer->m_whitepointL) {
+                result.l = d_pointer->m_blackpointL;
                 result.c = 0;
             }
         }
@@ -472,8 +438,8 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutColorByAdjustingChromaLi
     }
 
     QPoint myPixelPosition(qRound(temp.c * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0), qRound(d_pointer->nearestNeighborSearchImageHeight - 1 - temp.l * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0));
-    d_pointer->nearestNeighborSearchImage->setHue(temp.h);
-    myPixelPosition = d_pointer->nearestNeighborSearch(myPixelPosition, d_pointer->nearestNeighborSearchImage->getImage());
+    d_pointer->m_nearestNeighborSearchImage->setHue(temp.h);
+    myPixelPosition = d_pointer->nearestNeighborSearch(myPixelPosition, d_pointer->m_nearestNeighborSearchImage->getImage());
     LchDouble result = temp;
     result.c = myPixelPosition.x() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);
     result.l = 100 - myPixelPosition.y() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);

@@ -118,8 +118,7 @@ namespace PerceptualColor
  *
  * @internal
  *
- * @todo This class should use the same default color as all other classes
- * of this library!
+ * @todo Mouse support for ChromaLightnessDiagram is broken!
  *
  * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
  * With each focus switch, the values change. They shouldn't!
