@@ -42,7 +42,7 @@ namespace PerceptualColor
 {
 /** @internal
  *
- * @brief Access to LittleCMS color management
+ * @brief Provides access to LittleCMS color management
  *
  * @todo Do not pimpl anymore?
  *
@@ -51,14 +51,15 @@ namespace PerceptualColor
  *
  * @todo We return double precision values. But doesn’t use LittleCMS
  *       only 16-bit-integer internally? On the other hand: Using double
- *       precision allows to filter out out-of-range values…
- *
- * @todo Declare Q_PROPERTY for @ref profileInfoCopyright(),
- *       @ref profileInfoDescription(), @ref profileInfoManufacturer(),
- *       @ref profileInfoModel() */
+ *       precision allows to filter out out-of-range values… */
 class RgbColorSpace : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString profileInfoCopyright READ profileInfoCopyright CONSTANT)
+    Q_PROPERTY(QString profileInfoDescription READ profileInfoDescription CONSTANT)
+    Q_PROPERTY(QString profileInfoManufacturer READ profileInfoManufacturer CONSTANT)
+    Q_PROPERTY(QString profileInfoModel READ profileInfoModel CONSTANT)
 
 public:
     Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
@@ -68,15 +69,15 @@ public:
     Q_INVOKABLE int maximumChroma() const;
     Q_INVOKABLE PerceptualColor::LchDouble nearestInGamutColorByAdjustingChroma(const PerceptualColor::LchDouble &color) const;
     Q_INVOKABLE PerceptualColor::LchDouble nearestInGamutColorByAdjustingChromaLightness(const PerceptualColor::LchDouble &color);
-    Q_INVOKABLE QString profileInfoCopyright() const;
-    Q_INVOKABLE QString profileInfoDescription() const;
-    Q_INVOKABLE QString profileInfoManufacturer() const;
-    Q_INVOKABLE QString profileInfoModel() const;
+    QString profileInfoCopyright() const;
+    QString profileInfoDescription() const;
+    QString profileInfoManufacturer() const;
+    QString profileInfoModel() const;
     Q_INVOKABLE PerceptualColor::LchDouble toLch(const cmsCIELab &lab) const;
     Q_INVOKABLE PerceptualColor::LchDouble toLch(const QColor &rgbColor) const;
     Q_INVOKABLE QColor toQColorRgbBound(const PerceptualColor::LchDouble &lch) const;
     Q_INVOKABLE QColor toQColorRgbBound(const PerceptualColor::LchaDouble &lcha) const;
-    Q_INVOKABLE QColor toQColorRgbUnbound(const cmsCIELab &Lab) const;                  // TODO Isn’t QColor _always_ bound???
+    Q_INVOKABLE QColor toQColorRgbUnbound(const cmsCIELab &Lab) const;                  // TODO Isn’t QColor _always_ bound??? No: Unbound means, out-of-gamut color create an INVALID QColor.
     Q_INVOKABLE QColor toQColorRgbUnbound(const PerceptualColor::LchDouble &lch) const; // TODO Isn’t QColor _always_ bound???
 
 private:
