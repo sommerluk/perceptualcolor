@@ -29,7 +29,7 @@
 
 // First included header is the public header of the class we are testing;
 // this forces the header to be self-contained.
-#include "fallbackiconengine.h"
+#include "refreshiconengine.h"
 
 #include <QIcon>
 #include <QPainter>
@@ -40,12 +40,12 @@ Q_DECLARE_METATYPE(QIcon::State)
 
 namespace PerceptualColor
 {
-class TestFallbackIconEngine : public QObject
+class TestRefreshIconEngine : public QObject
 {
     Q_OBJECT
 
 public:
-    TestFallbackIconEngine(QObject *parent = nullptr)
+    TestRefreshIconEngine(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -134,26 +134,26 @@ private Q_SLOTS:
     void testConstructorDestructorOnStack()
     {
         // The class should instanciate on the stack without crash.
-        FallbackIconEngine test;
+        RefreshIconEngine test;
     }
 
     void testConstructorDestructorOnHeap()
     {
         // The class should instanciate on the heap without crash.
-        QScopedPointer<FallbackIconEngine> test {new FallbackIconEngine};
+        QScopedPointer<RefreshIconEngine> test {new RefreshIconEngine};
     }
 
     void testClone()
     {
-        QScopedPointer<FallbackIconEngine> test1 {new FallbackIconEngine};
+        QScopedPointer<RefreshIconEngine> test1 {new RefreshIconEngine};
         QWidget testWidget;
         test1->setReferenceWidget(&testWidget);
         // The clone function should not crash.
         QScopedPointer<QIconEngine> test2 {test1->clone()};
-        FallbackIconEngine *test2a = dynamic_cast<FallbackIconEngine *>(test2.data());
+        RefreshIconEngine *test2a = dynamic_cast<RefreshIconEngine *>(test2.data());
         QVERIFY2(test2a != nullptr,
                  "The clone should correctly cast dynamically "
-                 "to FallbackIconEngine*.");
+                 "to RefreshIconEngine*.");
         // Test if the reference widget was copied correctly.
         QCOMPARE(test2a->m_referenceWidget, &testWidget);
     }
@@ -170,7 +170,7 @@ private Q_SLOTS:
         QFETCH(QIcon::State, state);
         QImage myImage(10, 10, QImage::Format::Format_ARGB32_Premultiplied);
         QPainter myPainter(&myImage);
-        FallbackIconEngine myEngine;
+        RefreshIconEngine myEngine;
 
         // Test if there is no crash also on strange values
 
@@ -183,25 +183,25 @@ private Q_SLOTS:
         qInstallMessageHandler(nullptr);
     }
 
-    void testPaintRefreshFallbackIcon_data()
+    void testPaintFallbackIcon_data()
     {
         helperProvideTestData();
     }
 
-    void testPaintRefreshFallbackIcon()
+    void testPaintFallbackIcon()
     {
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
         QImage myImage(10, 10, QImage::Format::Format_ARGB32_Premultiplied);
         QPainter myPainter(&myImage);
-        FallbackIconEngine myEngine;
+        RefreshIconEngine myEngine;
 
         // Test if there is no crash also on strange values
 
         // suppress warning on invalid sizes
         qInstallMessageHandler(voidMessageHandler);
 
-        myEngine.paintRefreshFallbackIcon(&myPainter, rect, mode);
+        myEngine.paintFallbackIcon(&myPainter, rect, mode);
 
         // do not suppress warnings anymore
         qInstallMessageHandler(nullptr);
@@ -217,7 +217,7 @@ private Q_SLOTS:
         QFETCH(QRect, rect);
         QFETCH(QIcon::Mode, mode);
         QFETCH(QIcon::State, state);
-        FallbackIconEngine myEngine;
+        RefreshIconEngine myEngine;
 
         // Test if there is no crash also on strange values
 
@@ -232,7 +232,7 @@ private Q_SLOTS:
 
     void testSetReferenceWidget()
     {
-        FallbackIconEngine myEngine;
+        RefreshIconEngine myEngine;
         QScopedPointer<QWidget> myWidget {new QWidget};
         // Setting reference widget shall not crash.
         myEngine.setReferenceWidget(myWidget.data());
@@ -242,7 +242,7 @@ private Q_SLOTS:
         // Should not crash
         myEngine.paint(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active, QIcon::State::On);
         // Should not crash
-        myEngine.paintRefreshFallbackIcon(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
+        myEngine.paintFallbackIcon(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
         // Should not crash
         myEngine.pixmap(QSize(11, 11), QIcon::Mode::Active, QIcon::State::On);
         // Now delete the widget, then test again for crashs
@@ -250,7 +250,7 @@ private Q_SLOTS:
         // Should not crash
         myEngine.paint(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active, QIcon::State::On);
         // Should not crash
-        myEngine.paintRefreshFallbackIcon(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
+        myEngine.paintFallbackIcon(&myPainter, QRect(1, 1, 11, 11), QIcon::Mode::Active);
         // Should not crash
         myEngine.pixmap(QSize(11, 11), QIcon::Mode::Active, QIcon::State::On);
     }
@@ -258,7 +258,7 @@ private Q_SLOTS:
 
 } // namespace PerceptualColor
 
-QTEST_MAIN(PerceptualColor::TestFallbackIconEngine)
+QTEST_MAIN(PerceptualColor::TestRefreshIconEngine)
 
 // The following “include” is necessary because we do not use a header file:
-#include "testfallbackiconengine.moc"
+#include "testrefreshiconengine.moc"

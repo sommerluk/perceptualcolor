@@ -88,7 +88,7 @@ public:
      * nearestNeighborSearchImage as a pointer with memory leak to avoid
      * the crash. This memory leak is not fixed currently, because
      * anyway we need to re-write all the code for nearest-neigbor search. */
-    ChromaLightnessImage * m_nearestNeighborSearchImage;
+    ChromaLightnessImage *m_nearestNeighborSearchImage;
     static constexpr int nearestNeighborSearchImageHeight = 400;
 
 private:

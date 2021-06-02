@@ -185,7 +185,6 @@ set(perceptualcolor_SRC
   src/colorwheel.cpp
   src/colorwheelimage.cpp
   src/extendeddoublevalidator.cpp
-  src/fallbackiconengine.cpp
   src/gradientimage.cpp
   src/gradientslider.cpp
   src/helper.cpp
@@ -193,6 +192,7 @@ set(perceptualcolor_SRC
   src/lchdouble.cpp
   src/multispinbox.cpp
   src/polarpointf.cpp
+  src/refreshiconengine.cpp
   src/rgbcolorspace.cpp
   src/rgbcolorspacefactory.cpp
   src/rgbdouble.cpp
@@ -345,7 +345,6 @@ add_unit_test(testcolorwheelimage)
 add_unit_test(testconstpropagatinguniquepointer)
 add_unit_test(testconstpropagatingrawpointer)
 add_unit_test(testextendeddoublevalidator)
-add_unit_test(testfallbackiconengine)
 add_unit_test(testgradientimage)
 add_unit_test(testgradientslider)
 add_unit_test(testhelper)
@@ -354,6 +353,7 @@ add_unit_test(testlchdouble)
 add_unit_test(testlchvalues)
 add_unit_test(testmultispinbox)
 add_unit_test(testpolarpointf)
+add_unit_test(testrefreshiconengine)
 add_unit_test(testrgbcolorspace)
 add_unit_test(testrgbcolorspacefactory)
 add_unit_test(testrgbdouble)

@@ -42,9 +42,9 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
-#include "fallbackiconengine.h"
 #include "helper.h"
 #include "lchvalues.h"
+#include "refreshiconengine.h"
 #include "rgbcolorspace.h"
 
 namespace PerceptualColor
@@ -472,7 +472,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
     q_pointer->setSizeGripEnabled(true);
 
     // Refresh button for the HLC spin box
-    FallbackIconEngine *myIconEngine = new FallbackIconEngine;
+    RefreshIconEngine *myIconEngine = new RefreshIconEngine;
     myIconEngine->setReferenceWidget(m_hlcSpinBox);
     // myIcon takes ownership of myIconEngine, therefore we won’t
     // delete myIconEngine manually.

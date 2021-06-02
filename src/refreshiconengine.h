@@ -24,8 +24,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef FALLBACKICONENGINE_H
-#define FALLBACKICONENGINE_H
+#ifndef REFRESHICONENGINE_H
+#define REFRESHICONENGINE_H
 
 #include "PerceptualColor/perceptualcolorglobal.h"
 #include "perceptualcolorinternal.h"
@@ -37,9 +37,11 @@ namespace PerceptualColor
 {
 /** @internal
  *
- * @brief An icon engine with fallback icons.
+ * @brief An fail-save icon engine that provides a <em>refresh</em> icon.
  *
- * This icon engine provides a <em>refresh</em> icon. It does a best
+ * This icon engine provides a <em>refresh</em> icon. It is fail-save,
+ * which means that it will never fail to provide an icon: This icon
+ * engine will always return a valid, non-null icon. It does a best
  * effort to find an icon that integrates well with the current icon
  * theme and widget style. It searches in various places to provide
  * this icon, eventually using the first one that it finds:
@@ -48,34 +50,30 @@ namespace PerceptualColor
  *    the application that uses this library. On Linux, it is common
  *    that an icon theme is provided. Which icon formats (SVG, PNG …)
  *    are supported depends on your Qt installation. On
- *    <a
- * href="https://kate-editor.org/post/2021/2021-03-07-cross-platform-light-dark-themes-and-icons/">
+ *    <a href="https://kate-editor.org/post/2021/2021-03-07-cross-platform-light-dark-themes-and-icons/">
  *    some platforms like KDE</a> the icons get automatically adapted to
  *    dark and light mode, on others not.
  * 2. The <tt>QStyle::StandardPixmap::SP_BrowserReload</tt> icon provided
  *    by the current <tt>QStyle</tt>.
- * 3. The fallback build-in icon that is hardcoded within this library.
- *    This icon is resolution-independed with High-DPI support (thought
- *    is does <em>not</em> rely on QtSVG) and adapts automatically
- *    to the current palette, thus providing automatically appropriate
- *    icon colors for dark mode and light mode. With the
- *    @ref setReferenceWidget() function it can integrate with
- *    a specific widget’s color palette (rather than the default
- *    color palette).
- *
- * Thanks to the fallback build-in icon, this icon engine will always
- * return a valid, non-null icon.
+ * 3. The fallback build-in icon that is hardcoded within this class.
+ *    This icon is resolution-independed with High-DPI support (and
+ *    is does <em>not</em> require SVG support in Qt for this) and
+ *    adapts automatically to the current palette, thus providing
+ *    automatically appropriate icon colors for dark mode and light
+ *    mode. With the @ref setReferenceWidget() function it can
+ *    integrate with a specific widget’s color palette (rather than
+ *    the default color palette).
  *
  * This icon engine does not use a cache. That means, the icon will
  * be recalculated each time again. This is less efficient, but it
  * makes sure the icon is always up-to-date, also inmediatly after
  * the widget style or the icon theme or both have changed. */
-class FallbackIconEngine : public QIconEngine
+class RefreshIconEngine : public QIconEngine
 {
 public:
-    explicit FallbackIconEngine();
+    explicit RefreshIconEngine();
     /** @brief Default destructor. */
-    virtual ~FallbackIconEngine() override = default;
+    virtual ~RefreshIconEngine() override = default;
     virtual QIconEngine *clone() const override;
     virtual void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
     virtual QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) override;
@@ -83,8 +81,8 @@ public:
 
 private:
     // Functions
-    explicit FallbackIconEngine(const FallbackIconEngine &other);
-    void paintRefreshFallbackIcon(QPainter *painter, const QRect rect, QIcon::Mode mode);
+    explicit RefreshIconEngine(const RefreshIconEngine &other);
+    void paintFallbackIcon(QPainter *painter, const QRect rect, QIcon::Mode mode);
 
     // Data members
     /** @brief Holds a guarded pointer to the reference widget.
@@ -92,9 +90,9 @@ private:
     QPointer<QWidget> m_referenceWidget = nullptr;
 
     /** @internal @brief Only for unit tests. */
-    friend class TestFallbackIconEngine;
+    friend class TestRefreshIconEngine;
 };
 
 } // namespace PerceptualColor
 
-#endif // FALLBACKICONENGINE_H
+#endif // REFRESHICONENGINE_H

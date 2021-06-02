@@ -29,7 +29,7 @@
 
 // Own headers
 // First the interface, which forces the header to be self-contained.
-#include "fallbackiconengine.h"
+#include "refreshiconengine.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -44,7 +44,7 @@ namespace PerceptualColor
  *
  * @pre Instanciating this class requires an existing <tt>QApplication</tt>
  * object. */
-FallbackIconEngine::FallbackIconEngine()
+RefreshIconEngine::RefreshIconEngine()
 {
     // We test if a QApplication object exists. While the constructor
     // would work without problems also when there is no QApplication
@@ -64,8 +64,8 @@ FallbackIconEngine::FallbackIconEngine()
         // So, it should not be necessary to throw an exception after
         // calling qFatal, because qFatal itself aborts the program.
         qFatal(
-            "FallbackIconEngine: Must construct a QApplication "
-            "before a FallbackIconEngine");
+            "RefreshIconEngine: Must construct a QApplication "
+            "before a RefreshIconEngine");
     }
 }
 
@@ -81,7 +81,7 @@ FallbackIconEngine::FallbackIconEngine()
  *
  * @param referenceWidget A pointer to the reference widget, or
  * <tt>nullptr</tt> to not use a reference widget. It is allowed that
- * the widget may be deleted in the future; if so, FallbackIconEngine
+ * the widget may be deleted in the future; if so, @ref RefreshIconEngine
  * will not crash, but simply fall back the the default palette of the
  * application.
  *
@@ -95,7 +95,7 @@ FallbackIconEngine::FallbackIconEngine()
  *   avoid this confusion.
  *
  * @sa @ref m_referenceWidget */
-void FallbackIconEngine::setReferenceWidget(QWidget *referenceWidget)
+void RefreshIconEngine::setReferenceWidget(QWidget *referenceWidget)
 {
     m_referenceWidget = referenceWidget;
 }
@@ -112,7 +112,7 @@ void FallbackIconEngine::setReferenceWidget(QWidget *referenceWidget)
  * @param state The state of the icon.
  * @returns The icon as a pixmap with the required size,
  * mode, and state. */
-QPixmap FallbackIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
+QPixmap RefreshIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state)
 {
     QImage iconImage {size, QImage::Format_ARGB32_Premultiplied};
     iconImage.fill(Qt::transparent);
@@ -137,7 +137,7 @@ QPixmap FallbackIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::S
  * @param painter Uses the given painter to paint the icon
  * @param rect into the rectangle rect
  * @param mode with the required mode. */
-void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter, const QRect rect, QIcon::Mode mode)
+void RefreshIconEngine::paintFallbackIcon(QPainter *painter, const QRect rect, QIcon::Mode mode)
 {
     if (rect.isEmpty()) {
         // Return on empty rectangles. This avoids bad calculations with
@@ -201,7 +201,7 @@ void FallbackIconEngine::paintRefreshFallbackIcon(QPainter *painter, const QRect
  * @param rect into the rectangle rect
  * @param mode with the required mode
  * @param state and state. */
-void FallbackIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
+void RefreshIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
 {
     // Initialize
     QIcon myIcon;
@@ -237,7 +237,7 @@ void FallbackIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
 
     // Third, if no other option has returned a valid icon, we use
     // our build-in icon.
-    paintRefreshFallbackIcon(painter, rect, mode);
+    paintFallbackIcon(painter, rect, mode);
 }
 
 /** @brief Returns a clone of this icon engine.
@@ -245,16 +245,16 @@ void FallbackIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
  * Reimplemented from base class, where this function is abstract.
  *
  * This idiom provides a sort of virtual copy constructor that can be
- * called by pointers to the base class of @ref FallbackIconEngine.
+ * called by pointers to the base class of @ref RefreshIconEngine.
  *
  * The implementation basicly calls the private copy constructor
- * @ref FallbackIconEngine(const FallbackIconEngine &other) and
+ * @ref RefreshIconEngine(const RefreshIconEngine &other) and
  * returns the result.
  *
  * @returns a clone of this icon engine. */
-QIconEngine *FallbackIconEngine::clone() const
+QIconEngine *RefreshIconEngine::clone() const
 {
-    return new FallbackIconEngine(*this);
+    return new RefreshIconEngine(*this);
 }
 
 /** @brief Copy constructor.
@@ -272,7 +272,7 @@ QIconEngine *FallbackIconEngine::clone() const
  * To avoid slicing, this copy constructor is private.
  *
  * @param other The other object that shall be copied to this one. */
-FallbackIconEngine::FallbackIconEngine(const FallbackIconEngine &other)
+RefreshIconEngine::RefreshIconEngine(const RefreshIconEngine &other)
     : QIconEngine(other)
 {
     m_referenceWidget = other.m_referenceWidget;

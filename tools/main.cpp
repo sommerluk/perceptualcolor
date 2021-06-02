@@ -35,16 +35,17 @@
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/rgbcolorspacefactory.h"
 #include "constpropagatingrawpointer.h"
-#include "fallbackiconengine.h"
 #include "polarpointf.h"
+#include "refreshiconengine.h"
+#include "rgbcolorspace.h"
 #include "version.h"
-// #include "rgbcolorspace.h"
 
 #include <lcms2.h>
-
-#include <QApplication>
+#include <math.h>
+#include <memory>
 
 #include <QAction>
+#include <QApplication>
 #include <QColorDialog>
 #include <QDateTimeEdit>
 #include <QDebug>
@@ -56,9 +57,6 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QtMath>
-
-#include <math.h>
-#include <memory>
 
 // TODO Test the main function etc from KColorChooser to see if
 // PerceptualColor::ColorDialog is really a drop-in replacement

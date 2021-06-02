@@ -35,8 +35,8 @@
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/wheelcolorpicker.h"
 #include "chromalightnessdiagram.h"
-#include "fallbackiconengine.h"
 #include "lchvalues.h"
+#include "refreshiconengine.h"
 #include "rgbcolorspace.h"
 
 #include <QApplication>
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     m_multiSpinBox.setSections(hsvSections);
     screenshot(&m_multiSpinBox);
     // Refresh button for the HLC spin box
-    FallbackIconEngine *myIconEngine = new FallbackIconEngine;
+    RefreshIconEngine *myIconEngine = new RefreshIconEngine;
     myIconEngine->setReferenceWidget(&m_multiSpinBox);
     // myIcon takes ownership of myIconEngine, therefore we won’t
     // delete myIconEngine manually.
