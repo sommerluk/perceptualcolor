@@ -96,9 +96,6 @@ ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::ChromaLightnessDiagramPri
  * widget is so small that no diagram is displayed, nothing will happen. */
 void ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::setCurrentColorFromWidgetPixelPosition(const QPoint widgetPixelPosition)
 {
-    if (!isWidgetPixelPositionInGamut(widgetPixelPosition)) {
-        return;
-    }
     const LchDouble color = fromWidgetPixelPositionToColor(widgetPixelPosition);
     q_pointer->setCurrentColor(
         // Search for the nearest color without changing the hue:
@@ -399,7 +396,9 @@ void ChromaLightnessDiagram::paintEvent(QPaintEvent *event)
  *
  * @todo Is the current behaviour (when pressing right arrow while yet
  * at the right border of the gamut, also the lightness is adjusted to
- * allow moving actually to the right) is a good idea? */
+ * allow moving actually to the right) really a good idea? Andway, it
+ * has a bug, and arrow-down does not work on blue hues because the
+ * gamut has some sort of corner, and there, the curser blocks. */
 void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 {
     LchDouble temp = d_pointer->m_currentColor;

@@ -251,7 +251,7 @@ private Q_SLOTS:
         myWidget.d_pointer->fromWidgetPixelPositionToColor(negative);
     }
 
-    void testMouseSupport()
+    void testMouseSupport1()
     {
         ChromaLightnessDiagram myWidget {m_rgbColorSpace};
         myWidget.show();
@@ -261,6 +261,79 @@ private Q_SLOTS:
         QTest::mousePress(&myWidget, Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier, QPoint(0, 0));
         QTest::mouseMove(&myWidget, QPoint(1, 1));
         QTest::mouseRelease(&myWidget, Qt::MouseButton::LeftButton);
+    }
+
+    void testMouseSupport2()
+    {
+        // Test reactions to mouse events when moving out-of-gamut
+        ChromaLightnessDiagram myWidget {m_rgbColorSpace};
+        myWidget.show();
+        constexpr int size = 100;
+        myWidget.resize(size, size);
+        LchDouble color;
+
+        // Test for top-left corner
+        QTest::mousePress(&myWidget,
+                          Qt::MouseButton::LeftButton,
+                          Qt::KeyboardModifier::NoModifier,
+                          // Press the mouse at a point with some chroma
+                          // (10%) and a medium lightness (50%). This makes
+                          // sure to get a point within the gamut.
+                          QPoint(size * 10 / 100, size * 50 / 100));
+        QTest::mouseRelease(&myWidget,
+                            Qt::MouseButton::LeftButton,
+                            Qt::KeyboardModifier::NoModifier,
+                            // Press the mouse at a point with some chroma
+                            // (10%) and a medium lightness (50%). This makes
+                            // sure to get a point within the gamut.
+                            QPoint(size * (-1), size * (-1)));
+        // Test if the widget value is really the nearest in-gamut color
+        color = myWidget.currentColor();
+        QCOMPARE(color.l, 100);
+        QCOMPARE(color.c, 0);
+
+        // Test for bottom-left corner
+        QTest::mousePress(&myWidget,
+                          Qt::MouseButton::LeftButton,
+                          Qt::KeyboardModifier::NoModifier,
+                          // Press the mouse at a point with some chroma
+                          // (10%) and a medium lightness (50%). This makes
+                          // sure to get a point within the gamut.
+                          QPoint(size * 10 / 100, size * 50 / 100));
+        QTest::mouseRelease(&myWidget,
+                            Qt::MouseButton::LeftButton,
+                            Qt::KeyboardModifier::NoModifier,
+                            // Press the mouse at a point with some chroma
+                            // (10%) and a medium lightness (50%). This makes
+                            // sure to get a point within the gamut.
+                            QPoint(size * (-1), size * 2));
+        // Test if the widget value is really the nearest in-gamut color
+        color = myWidget.currentColor();
+        QCOMPARE(color.l, 0);
+        QCOMPARE(color.c, 0);
+
+        // Test for middle-right position
+        QTest::mousePress(&myWidget,
+                          Qt::MouseButton::LeftButton,
+                          Qt::KeyboardModifier::NoModifier,
+                          // Press the mouse at a point with some chroma
+                          // (10%) and a medium lightness (50%). This makes
+                          // sure to get a point within the gamut.
+                          QPoint(size * 10 / 100, size * 50 / 100));
+        QTest::mouseRelease(&myWidget,
+                            Qt::MouseButton::LeftButton,
+                            Qt::KeyboardModifier::NoModifier,
+                            // Press the mouse at a point with some chroma
+                            // (10%) and a medium lightness (50%). This makes
+                            // sure to get a point within the gamut.
+                            QPoint(size * 10, size * 50 / 100));
+        // Test if the widget value is really the nearest in-gamut color
+        color = myWidget.currentColor();
+        // Lightness should be somewhere in the middle.
+        QVERIFY(color.l > 10);
+        QVERIFY(color.l < 90);
+        // At least 25 should be possible on all hues.
+        QVERIFY(color.c > 25);
     }
 
     void testPaintEventNormalSize()
