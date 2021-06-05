@@ -33,6 +33,7 @@
 // Include the header of the public class of this private implementation.
 #include "PerceptualColor/multispinbox.h"
 
+#include <QAccessibleWidget>
 #include <QPointer>
 
 #include "constpropagatingrawpointer.h"
@@ -119,6 +120,17 @@ private:
     /** @brief Pointer to the object from which <em>this</em> object
      *  is the private implementation. */
     ConstPropagatingRawPointer<MultiSpinBox> q_pointer;
+};
+
+/** @internal
+ *
+ * @brief Interface for accessible objects. */
+class AccessibleMultiSpinBox : public QAccessibleWidget
+{
+public:
+    AccessibleMultiSpinBox(MultiSpinBox *w);
+    virtual ~AccessibleMultiSpinBox();
+    static QAccessibleInterface *factory(const QString &classname, QObject *object);
 };
 
 } // namespace PerceptualColor

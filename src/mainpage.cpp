@@ -75,6 +75,8 @@
  *
  * @internal
  *
+ * @todo Support language change on-the-fly?
+ *
  * @todo We prevent division by 0 in
  * @ref PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor().
  * We should make sure this happens also in the other diagram widgets!
@@ -201,10 +203,10 @@
  * @todo A good widget library should
  * - run on all systems (✓ We do not use system-specific code nor do we
  *   rely on byte order)
- * - support hight-dpi (? work in progress)
+ * - support hight-dpi (✓)
  * - stylable by QStyle (? partial)
  * - stylable by style sheets (✗)
- * - accessibility (✗)
+ * - accessibility (✗) [This includes to work well with bigger fonts. Should then the gradient be thicker and the marker thicker? setAccessibleName(). ]
  *
  * @todo A good widget library should also be touchscreen-ready. Find
  * an alternative to @ref PerceptualColor::MultiSpinBox? How, for up

@@ -377,6 +377,7 @@ void ColorDialog::ColorDialogPrivate::initialize()
     white.h = 0;
     white.a = 1;
     m_lchLightnessSelector->setColors(black, white);
+    m_lchLightnessSelector->setAccessibleName(tr("Lightness"));
     m_chromaHueDiagram = new ChromaHueDiagram(m_rgbColorSpace);
     QHBoxLayout *tempLightnesFirstLayout = new QHBoxLayout();
     tempLightnesFirstLayout->addWidget(m_lchLightnessSelector);
@@ -413,8 +414,10 @@ void ColorDialog::ColorDialogPrivate::initialize()
     m_alphaSpinBox->setSingleStep(singleStepAlpha * 100);
     // m_alphaSpinBox is of type QDoubleSpinBox which does not allow to
     // configure the pageStep.
-    m_alphaLabel = new QLabel(tr("O&pacity:"));
+    const QString opacityLabel = tr("O&pacity:");
+    m_alphaLabel = new QLabel(opacityLabel);
     m_alphaLabel->setBuddy(m_alphaSpinBox);
+    m_alphaGradientSlider->setAccessibleName(opacityLabel);
     m_alphaLayout->addWidget(m_alphaLabel);
     m_alphaLayout->addWidget(m_alphaGradientSlider);
     m_alphaLayout->addWidget(m_alphaSpinBox);

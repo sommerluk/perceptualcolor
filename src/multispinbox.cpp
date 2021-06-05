@@ -108,6 +108,13 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
     // to really apply the changes, including updating
     // the validator.
     d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(0);
+
+    // Initialize accessibility support
+    QAccessible::installFactory(
+        // It’s save to call installFactory() multiple times with the
+        // same factory. If the factory is yet installed, it will not
+        // be installed again.
+        &AccessibleMultiSpinBox::factory);
 }
 
 /** @brief Default destructor */
@@ -795,6 +802,46 @@ void MultiSpinBox::MultiSpinBoxPrivate::reactOnCursorPositionChange(const int ol
     // Make sure that the buttons for step up and step down are updated.
 
     q_pointer->update();
+}
+
+/** @brief Constructor
+ *
+ * @param w The widget to which the newly created object will correspond. */
+AccessibleMultiSpinBox::AccessibleMultiSpinBox(MultiSpinBox *w)
+    : QAccessibleWidget(w, QAccessible::Role::SpinBox)
+{
+}
+
+/** @brief Destructor */
+AccessibleMultiSpinBox::~AccessibleMultiSpinBox()
+{
+}
+
+/** @brief Factory function.
+ *
+ * This signature of this function is exactly as defined by
+ * <tt>QAccessible::InterfaceFactory</tt>. A pointer to this function
+ * can therefore be passed to <tt>QAccessible::installFactory()</tt>.
+ *
+ * @param classname The class name for which an interface is requested
+ * @param object The object for which an interface is requested
+ *
+ * @returns If this class corresponds to the request, it returns an object
+ * of this class. Otherwise, a null-pointer will be returned. */
+QAccessibleInterface *AccessibleMultiSpinBox::factory(const QString &classname, QObject *object)
+{
+    QAccessibleInterface *interface = nullptr;
+    const QString multiSpinBoxClassName = QString::fromUtf8(
+        // className() returns const char *. Its encoding is not documented.
+        // Hopefully, as we use UTF8  in this library as “input character set”
+        // and also as “Narrow execution character set”, the encoding
+        // might be also UTF8…
+        MultiSpinBox::staticMetaObject.className());
+    MultiSpinBox *myMultiSpinBox = qobject_cast<MultiSpinBox *>(object);
+    if ((classname == multiSpinBoxClassName) && myMultiSpinBox) {
+        interface = new AccessibleMultiSpinBox(myMultiSpinBox);
+    }
+    return interface;
 }
 
 } // namespace PerceptualColor

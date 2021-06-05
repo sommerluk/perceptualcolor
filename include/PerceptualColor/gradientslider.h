@@ -87,6 +87,14 @@ class RgbColorSpace;
  *
  * @todo A better focus indicator. Some example code is commented out
  * in the implementation of @ref paintEvent().
+ *
+ * @todo This class @ref GradientSlider and also the class
+ * @ref ColorWheel could be subclasses of QAbstractSlider. This
+ * might integrate better with the user’s Qt code. On the other hand,
+ * this would mean a lot of work in this library to implement the
+ * complete interface of QAbstractSlider, and probably we would
+ * also need multiple inheritence because this class also depends
+ * on @ref AbstractDiagram which is itself yet a subclass of QWidget.
  */
 // The API is roughly orientated on QSlider/QAbstractSlider and on
 // KSelecter/KGradientSelector where appicable. Our API is however

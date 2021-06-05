@@ -31,6 +31,7 @@
 #include "PerceptualColor/colordialog.h"
 #include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/colorwheel.h"
+#include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/lchdouble.h"
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/rgbcolorspacefactory.h"
@@ -44,6 +45,7 @@
 #include <math.h>
 #include <memory>
 
+#include <QAccessible>
 #include <QAction>
 #include <QApplication>
 #include <QColorDialog>
@@ -55,6 +57,7 @@
 #include <QMetaObject>
 #include <QPainter>
 #include <QPushButton>
+#include <QSlider>
 #include <QVBoxLayout>
 #include <QtMath>
 
@@ -90,7 +93,19 @@ int main(int argc, char *argv[])
     //     "background: yellow; color: red; border: 15px solid #FF0000;"
     // );
 
-    qDebug() << (QSize(-1, -6).isEmpty());
+    //     QSlider mySlider;
+    //     mySlider.show();
+    //     qDebug() << QAccessible::queryAccessibleInterface(new QObject);
+    //     qDebug() << QAccessible::queryAccessibleInterface(new QWidget);
+    //     qDebug() << QAccessible::queryAccessibleInterface(new PerceptualColor::MultiSpinBox);
+    //     qDebug() << QAccessible::queryAccessibleInterface(
+    //         // Test with GradientSlider
+    //         new PerceptualColor::GradientSlider(
+    //             // Create a new color space just to keep this debug code independant:
+    //             PerceptualColor::RgbColorSpaceFactory::createSrgb()
+    //         )
+    //     );
+    //     qDebug() << QAccessible::queryAccessibleInterface(&m_colorDialog);
 
     // Run
     return app.exec();
