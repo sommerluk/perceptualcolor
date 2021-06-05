@@ -221,8 +221,9 @@ namespace PerceptualColor
  * central physical pixel with an in-gamut color. Solution: Limit the range
  * of the lightness selector? Or a better algorithm in @ref ChromaHueDiagram?
  *
- * @todo Support for other models like HSL, Munsell? With an option to
- * enable or disable them? (NCS not, because it is not free.)
+ * @todo Support for other models like HSL (HSB is yet identical to HSV?),
+ * Munsell? With an option to enable or disable them? (NCS not, because
+ * it is not free…)
  *
  * @todo Provide (on demand) two patches, like Scribus also does: One for the
  * old color (cannot be modified by the user) and another one for the new

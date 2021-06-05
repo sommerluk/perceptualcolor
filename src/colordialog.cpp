@@ -593,7 +593,7 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
         // not be clear which is the correct rendering, and a slightly
         // wrong rendering will not harm…
         QStringList profileInfo;
-        profileInfo.append(tr("<b>Information about the currently used RGB color profile</b>"));
+        profileInfo.append(tr("<b>Currently used RGB color space</b>"));
         if (!m_rgbColorSpace->profileInfoDescription().isEmpty()) {
             profileInfo.append(tr("Description: <i>%1</i>").arg(m_rgbColorSpace->profileInfoDescription()));
         }

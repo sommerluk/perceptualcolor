@@ -59,9 +59,12 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     // Create an ICC profile object for the sRGB color space.
     cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
     d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoDescription); // TODO This results in "sRGB built-in". Use instead a more descriptive name that has also to be localized with tr().
+    d_pointer->m_cmsInfoDescription = tr("sRGB color space");
     d_pointer->m_cmsInfoCopyright = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoCopyright);
     d_pointer->m_cmsInfoManufacturer = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoManufacturer);
+    d_pointer->m_cmsInfoManufacturer = tr("LittleCMS");
     d_pointer->m_cmsInfoModel = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoModel);
+    d_pointer->m_cmsInfoModel = QString();
     // TODO Only change the description to "sRGB" if the build-in sRGB is
     // used, not when an actual external ICC profile is used.
     //    m_cmsInfoDescription = tr("sRGB"); // TODO ???
