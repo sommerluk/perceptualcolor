@@ -368,7 +368,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectVal
  * @sa @ref setCurrentIndexAndUpdateTextAndSelectValue */
 void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(int newIndex)
 {
-    if (!inRange(0, newIndex, m_sections.count() - 1)) {
+    if (!isInRange(0, newIndex, m_sections.count() - 1)) {
         qWarning() << "The function" << __func__ << "in file" << __FILE__ << "near to line" << __LINE__ << "was called with an invalid “newIndex“ argument of" << newIndex << "thought the valid range is currently [" << 0 << ", "
                    << m_sections.count() - 1 << "]. This is a bug.";
         throw 0;

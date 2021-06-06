@@ -191,6 +191,14 @@ private Q_SLOTS:
         cmsDeleteTransform(m_transformLabToRgbHandle);
     }
 
+    void testMetaTypeDeclaration()
+    {
+        QVariant test;
+        // The next line should produce a compiler error is the
+        // type is not declared to Qt’s Meta Object System.
+        test.setValue(RgbDouble());
+    }
+
     void testSnippet01()
     {
         cmsCIELab lab = snippet01();

@@ -73,7 +73,7 @@ ChromaHueDiagram::ChromaHueDiagram(const QSharedPointer<PerceptualColor::RgbColo
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
 
     // Initialize the color
-    setCurrentColor(LchValues::srgbVersatileInitialColor);
+    setCurrentColor(LchValues::srgbVersatileInitialColor());
 }
 
 /** @brief Default destructor */
@@ -249,8 +249,7 @@ void ChromaHueDiagram::wheelEvent(QWheelEvent *event)
         event->accept();
         // Calculate the new hue.
         // This may result in a hue smaller then 0° or bigger then 360°.
-        // This is no problem because the constructor of FullColorDescription
-        // will normalize the hue.
+        // This should not make any problems.
         LchDouble newColor = d_pointer->m_currentColor;
         newColor.h += standardWheelStepCount(event) * singleStepHue;
         setCurrentColor(d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(newColor));
@@ -388,15 +387,13 @@ LchDouble ChromaHueDiagram::currentColor() const
  * @param newCurrentColor the new color */
 void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
 {
-    LchDouble newCorrectedColor = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(newCurrentColor);
-
-    if (newCorrectedColor.hasSameCoordinates(d_pointer->m_currentColor)) {
+    if (newCurrentColor.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
     }
 
     LchDouble oldColor = d_pointer->m_currentColor;
 
-    d_pointer->m_currentColor = newCorrectedColor;
+    d_pointer->m_currentColor = newCurrentColor;
 
     // Update, if necessary, the diagram.
     if (d_pointer->m_currentColor.l != oldColor.l) {
@@ -407,7 +404,7 @@ void ChromaHueDiagram::setCurrentColor(const LchDouble &newCurrentColor)
     update();
 
     // Emit notify signal
-    Q_EMIT currentColorChanged(newCorrectedColor);
+    Q_EMIT currentColorChanged(newCurrentColor);
 }
 
 /** @brief The point that is the center of the diagram coordinate system.

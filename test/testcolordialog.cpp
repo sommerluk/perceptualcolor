@@ -37,8 +37,7 @@
 #include <QScopedPointer>
 #include <QtTest>
 
-#include <PerceptualColor/multispinbox.h>
-
+#include "PerceptualColor/multispinbox.h"
 #include "rgbcolorspace.h"
 
 class TestColorDialogSnippetClass : public QWidget
@@ -56,6 +55,7 @@ public:
         : QWidget(parent)
     {
     }
+
     void testSnippet05()
     {
         //! [ColorDialog Open]
@@ -207,6 +207,11 @@ private:
         QCOMPARE(perceptualDialog->result(), qColorDialog->result());
         QCOMPARE(perceptualDialog->parent(), qColorDialog->parent());
         QCOMPARE(perceptualDialog->parentWidget(), qColorDialog->parentWidget());
+    }
+
+    void helperReceiveSignals(QColor color)
+    {
+        m_color = color;
     }
 
 private Q_SLOTS:
@@ -653,9 +658,29 @@ private Q_SLOTS:
         QCOMPARE(static_cast<int>(m_perceptualDialog->currentColor().spec()), static_cast<int>(opaqueColor.spec()));
     }
 
-    void helperReceiveSignals(QColor color)
+    void testSetCurrentColor()
     {
-        m_color = color;
+        m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
+        m_perceptualDialog->show();
+        m_perceptualDialog->setCurrentColor(Qt::yellow);
+
+        // Get internal LCH value
+        const LchDouble color = m_perceptualDialog->d_pointer->m_currentOpaqueColor;
+
+        // The very same LCH value has to be found in all widgets using it.
+        // (This is not trivial, because even coming from RGB, because of
+        // rounding errors, you can get out-of-gamut LCH values when the
+        // original RGB value was near to the border. And the child
+        // widgets may change the LCH value that is given to them
+        // to fit it into the gamut – each widget with a different
+        // algorithm.)
+        QVERIFY(color.hasSameCoordinates(m_perceptualDialog->d_pointer->m_wheelColorPicker->currentColor()));
+        QVERIFY(color.hasSameCoordinates(m_perceptualDialog->d_pointer->m_chromaHueDiagram->currentColor()));
+        // We do not also control this here for
+        // m_perceptualDialog->d_pointer->m_hlcSpinBox because this
+        // widget rounds the given value to the current decimal precicion
+        // it’s using. Therefore, it’s pointless to control here
+        // for rounding errors.
     }
 
     void testOpen()
@@ -975,6 +1000,18 @@ private Q_SLOTS:
     {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
         QList<MultiSpinBox::SectionData> mySections = myDialog->d_pointer->m_hlcSpinBox->sections();
+
+        // Test with a normal value
+        mySections[0].value = 10;
+        mySections[1].value = 11;
+        mySections[2].value = 12;
+        myDialog->d_pointer->m_hlcSpinBox->setSections(mySections);
+        myDialog->d_pointer->readHlcNumericValues();
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.h, 10);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.l, 11);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.c, 12);
+
+        // Test with an out-of-gamut value.
         mySections[0].value = 10;
         mySections[1].value = 11;
         mySections[2].value = 12;
@@ -1158,6 +1195,67 @@ private Q_SLOTS:
                  "the expanded width.");
     }
 
+    void testLayoutDimensionsChanged()
+    {
+        m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
+        m_perceptualDialog->setLayoutDimensions(ColorDialog::DialogLayoutDimensions::collapsed);
+        QSignalSpy spyPerceptualDialog(
+            // QObject to spy:
+            m_perceptualDialog.data(),
+            // Signal to spy:
+            &PerceptualColor::ColorDialog::layoutDimensionsChanged);
+        // Setting a different DialogLayoutDimensions will emit a signal
+        m_perceptualDialog->setLayoutDimensions(ColorDialog::DialogLayoutDimensions::expanded);
+        QCOMPARE(spyPerceptualDialog.count(), 1);
+        // Setting the same DialogLayoutDimensions will not emit a signal again
+        m_perceptualDialog->setLayoutDimensions(ColorDialog::DialogLayoutDimensions::expanded);
+        QCOMPARE(spyPerceptualDialog.count(), 1);
+    }
+
+    void testRoundingErrors()
+    {
+        // Moving around between the widgets with the Tab key should
+        // never trigger a value change. (There could be a value
+        // change because of rounding errors if the value gets updated
+        // after the focus leaves, even though no editing has been
+        // done. This would not be correct, and this test controls this.)
+
+        m_perceptualDialog.reset(new PerceptualColor::ColorDialog());
+        m_perceptualDialog->setCurrentColor(Qt::yellow);
+        m_perceptualDialog->show();
+        QApplication::setActiveWindow(m_perceptualDialog.data());
+
+        for (int i = 0; i < m_perceptualDialog->d_pointer->m_tabWidget->count(); i++) {
+            m_perceptualDialog->d_pointer->m_tabWidget->setCurrentIndex(i);
+            const QWidget *oldFocusWidget = QApplication::focusWidget();
+            const QColor oldColor = m_perceptualDialog->currentColor();
+            const LchDouble oldOpaqueLchColor = m_perceptualDialog->d_pointer->m_currentOpaqueColor;
+            do {
+                QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
+                QCOMPARE(oldColor, m_perceptualDialog->currentColor());
+                QVERIFY(oldOpaqueLchColor.hasSameCoordinates(
+                    // Using .hasSameCoordinates because operator== is not available
+                    m_perceptualDialog->d_pointer->m_currentOpaqueColor));
+            } while (oldFocusWidget != QApplication::focusWidget());
+        };
+    }
+
+    void testSnippet02()
+    {
+        snippet02();
+    }
+
+    void testSnippet03()
+    {
+        snippet03();
+    }
+
+    void testSnippet05()
+    {
+        TestColorDialogSnippetClass mySnippets;
+        mySnippets.testSnippet05();
+    }
+
     void benchmarkCreateAndShowPerceptualDialog()
     {
         m_perceptualDialog.reset(nullptr);
@@ -1242,22 +1340,6 @@ private Q_SLOTS:
             m_qDialog->setCurrentColor(Qt::yellow);
             m_qDialog->repaint();
         }
-    }
-
-    void testSnippet02()
-    {
-        snippet02();
-    }
-
-    void testSnippet03()
-    {
-        snippet03();
-    }
-
-    void testSnippet05()
-    {
-        TestColorDialogSnippetClass mySnippets;
-        mySnippets.testSnippet05();
     }
 
 private:

@@ -67,8 +67,8 @@ constexpr qreal gamutPrecision = 0.001;
  * @param low the lower limit
  * @param x the value that will be tested
  * @param high the higher limit
- * @returns @snippet this Helper inRange */
-template<typename T> bool inRange(const T &low, const T &x, const T &high)
+ * @returns @snippet this Helper isInRange */
+template<typename T> bool isInRange(const T &low, const T &x, const T &high)
 {
     return (
         // The Doxygen comments contain @private because apparently
@@ -76,9 +76,9 @@ template<typename T> bool inRange(const T &low, const T &x, const T &high)
         // The snippet marker [] is hidden within HTML comments to avoid
         // that is shows up literally in the private documentation, and this
         // independant from the HIDE_IN_BODY_DOCS parameter in Doxyfile.
-        //! @private @internal <!-- [Helper inRange] -->
+        //! @private @internal <!-- [Helper isInRange] -->
         (low <= x) && (x <= high)
-        //! @private @internal <!-- [Helper inRange] -->
+        //! @private @internal <!-- [Helper isInRange] -->
     );
 }
 

@@ -143,7 +143,7 @@ QImage ChromaLightnessImage::getImage()
     if (m_backgroundColor.isValid()) {
         m_image.fill(m_backgroundColor);
     } else {
-        m_image.fill(m_rgbColorSpace->toQColorRgbBound(LchValues::neutralGray));
+        m_image.fill(m_rgbColorSpace->toQColorRgbBound(LchValues::neutralGray()));
     }
 
     // Paint the gamut.

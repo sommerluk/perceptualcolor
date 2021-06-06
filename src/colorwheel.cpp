@@ -246,7 +246,7 @@ void ColorWheel::wheelEvent(QWheelEvent *event)
         && (event->angleDelta().y() != 0)
         // then:
     ) {
-        setHue(d_pointer->m_hue + standardWheelStepCount(event) * singleStepHue);
+        d_pointer->setHueNormalized(d_pointer->m_hue + standardWheelStepCount(event) * singleStepHue);
     } else {
         event->ignore();
     }
@@ -270,16 +270,16 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Plus:
-        setHue(d_pointer->m_hue + singleStepHue);
+        d_pointer->setHueNormalized(d_pointer->m_hue + singleStepHue);
         break;
     case Qt::Key_Minus:
-        setHue(d_pointer->m_hue - singleStepHue);
+        d_pointer->setHueNormalized(d_pointer->m_hue - singleStepHue);
         break;
     case Qt::Key_Insert:
-        setHue(d_pointer->m_hue + pageStepHue);
+        d_pointer->setHueNormalized(d_pointer->m_hue + pageStepHue);
         break;
     case Qt::Key_Delete:
-        setHue(d_pointer->m_hue - pageStepHue);
+        d_pointer->setHueNormalized(d_pointer->m_hue - pageStepHue);
         break;
     default:
         /* Quote from Qt documentation:
@@ -427,12 +427,21 @@ qreal ColorWheel::hue() const
  *  @param newHue the new hue */
 void ColorWheel::setHue(const qreal newHue)
 {
-    qreal temp = PolarPointF::normalizedAngleDegree(newHue);
-    if (d_pointer->m_hue != temp) {
-        d_pointer->m_hue = temp;
+    if (d_pointer->m_hue != newHue) {
+        d_pointer->m_hue = newHue;
         Q_EMIT hueChanged(d_pointer->m_hue);
         update();
     }
+}
+
+/** @brief Setter for the @ref hue property.
+ *  @param newHue the new hue
+ *  @post Normalizes newHue, and than sets @ref hue to the normalized value.
+ */
+void ColorWheel::ColorWheelPrivate::setHueNormalized(const qreal newHue)
+{
+    const qreal temp = PolarPointF::normalizedAngleDegree(newHue);
+    q_pointer->setHue(temp);
 }
 
 /** @brief Recommmended size for the widget.

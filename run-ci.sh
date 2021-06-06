@@ -43,7 +43,7 @@ while true; do
         yes ) mkdir --parents build \
                 && cd build \
                 && echo "clang-format: cmake…" \
-                && nice --adjustment 19 cmake ../ > /dev/null \
+                && nice --adjustment 19 cmake ../ -DCMAKE_CXX_COMPILER=clazy > /dev/null \
                 && echo "clang-format: make…" \
                 && nice --adjustment 19 make --jobs > /dev/null \
                 && echo "clang-format: make clang-format…" \
@@ -68,7 +68,7 @@ mkdir --parents build \
     && cd build \
     && echo "Build the project if not yet done." \
     && echo "cmake…" \
-    && nice --adjustment 19 cmake ../ > /dev/null \
+    && nice --adjustment 19 cmake ../ -DCMAKE_CXX_COMPILER=clazy > /dev/null \
     && echo "make…" \
     && nice --adjustment 19 make --jobs > /dev/null \
 )

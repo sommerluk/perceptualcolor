@@ -147,12 +147,12 @@ private Q_SLOTS:
     {
         AbstractDiagram myDiagram;
         myDiagram.resize(50, 50);
-        QVERIFY2(inRange(49.0, myDiagram.maximumWidgetSquareSize(), 50.0),
+        QVERIFY2(isInRange(49.0, myDiagram.maximumWidgetSquareSize(), 50.0),
                  "Verify that maximumWidgetSquareSize is within expected "
                  "rounding range.");
         // Next try: off by one.
         myDiagram.resize(51, 51);
-        QVERIFY2(inRange(50.0, myDiagram.maximumWidgetSquareSize(), 51.0),
+        QVERIFY2(isInRange(50.0, myDiagram.maximumWidgetSquareSize(), 51.0),
                  "Verify that maximumWidgetSquareSize is within expected "
                  "rounding range.");
     }

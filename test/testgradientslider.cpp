@@ -423,6 +423,41 @@ private Q_SLOTS:
         myWidget.resize(QSize(14, 14));
         myWidget.repaint();
     }
+
+    void testOutOfGamutColors()
+    {
+        GradientSlider myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize(100, 100));
+
+        // Test that setting out-of-gamut colors works
+        const LchaDouble myFirstColor(100, 150, 0, 1);
+        const LchaDouble mySecondColor(0, 150, 0, 1);
+        myWidget.setFirstColor(myFirstColor);
+        myWidget.setSecondColor(mySecondColor);
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.firstColor()));
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.d_pointer->m_firstColor));
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.secondColor()));
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.d_pointer->m_secondColor));
+    }
+
+    void testOutOfRange()
+    {
+        GradientSlider myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize(100, 100));
+
+        // Test that setting colors, that are not only out-of-gamut colors
+        // but also out of a reasonable range, works.
+        const LchaDouble myFirstColor(300, 550, -10, 1);
+        const LchaDouble mySecondColor(-100, -150, 890, 1);
+        myWidget.setFirstColor(myFirstColor);
+        myWidget.setSecondColor(mySecondColor);
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.firstColor()));
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.d_pointer->m_firstColor));
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.secondColor()));
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.d_pointer->m_secondColor));
+    }
 };
 
 } // namespace PerceptualColor

@@ -62,12 +62,11 @@ namespace PerceptualColor
  * Example:
  * @snippet test/testrgbdouble.cpp Use RgbDouble
  *
- * This class is declared as type to Qt's type system:
- * <tt>Q_DECLARE_METATYPE(PerceptualColor::RgbDouble)</tt>.
- * Depending on your use case (for example if you want to use it
- * reliably in Qt's signals and slots), you might consider calling
- * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
- * object.
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use it reliably in Qt's signals
+ * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object.
  *
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::RgbDouble &value)

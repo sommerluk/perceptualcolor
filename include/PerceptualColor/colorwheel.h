@@ -77,8 +77,11 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorWheel : public AbstractDiagram
      * This is the hue angle, as defined in the LCH color model.
      *
      *
-     * Measured in degree. Valid range: [0°, 360°[
-     * The value is gets normalized to this range. So
+     * Measured in degree.
+     *
+     * Valid range: [0°, 360°[. The widget accepts initially also
+     * out-of-range values, but once a user interaction has taken
+     * place, it will hold a normalized value. So
      * \li 0 gets 0
      * \li 359.9 gets 359.9
      * \li 360 gets 0

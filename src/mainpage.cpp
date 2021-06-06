@@ -75,7 +75,10 @@
  *
  * @internal
  *
- * @todo Support language change on-the-fly?
+ * @todo Provide Q_DECLARE_TYPEINFO for our types? Provide an init()
+ * function that calls qRegisterMetaType() for all our types?
+ *
+ * @todo Support i18n language change on-the-fly?
  *
  * @todo We prevent division by 0 in
  * @ref PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor().
@@ -130,6 +133,7 @@
  * @todo Review and unit tests for these classes:
  * @ref PerceptualColor::ChromaLightnessDiagram,
  * @ref PerceptualColor::RgbColorSpace
+ * <br/>
  *
  * @todo It might be interesting to use <tt>QStyle::PM_FocusFrameHMargin</tt>
  * <em>(Horizontal margin that the focus frame will outset the widget
@@ -250,9 +254,6 @@
  * See https://community.kde.org/Frameworks/Frameworks_Localization_Policy for
  * ideas.
  *
- * @todo Qt6 property bindings (QProperty QPropertyBinding) for all
- * properties?
- *
  * @todo Translations: Color picker/Select Color → Farbwähler/Farbauswahl etc…
  *
  * @todo Qt Designer support for the widgets. Quote from a blog from Viking
@@ -298,10 +299,12 @@
  * as proposed in “Extending CIELAB - Vividness, V, depth, D, and clarity, T”
  * by Roy S. Berns?
  *
- * @todo Spell checking for the documentation */
+ * @todo Spell checking for the documentation, if possible also grammar
+ * checking with LanguageTool */
 
 /** @page build Build instructions and requirements
- * The library depends on (and therefore you has to link against):
+ * The library depends on (and therefore you has to link against) these
+ * shared/dynamic libraries:
  *
  * |                         | Qt                 | LittleCMS               |
  * | :---------------------- | :----------------- | :---------------------- |
@@ -311,6 +314,15 @@
  *
  * <em>* Qt 5.6 introduces <tt>QPaintDevice::devicePixelRatioF()</tt> which is
  * used in this library.</em>
+ *
+ * Please make sure that you comply with the licences of the libraries
+ * you are using.
+ *
+ * There is also a LittleCMS plugin called <em>fast_float plug-in</em> that
+ * you can include into the source code of your application and load it
+ * in your main function before using this library. This can make
+ * color management faster. (Note that this plugin has a different license
+ * than LittleCMS itself.)
  *
  * This library requires minimum C++17.
  * <!--
@@ -612,7 +624,23 @@
  * @ref PerceptualColor::ConstPropagatingRawPointer as it would change also
  * all the access rights to the pointed object to always <tt>const</tt>. */
 
-/** @page rangeoflchandlabvalues Range of LCH and LAB values
+/** @page lchrange Range of LCH values
+ *
+ * The LCH values in this library are implemented with the following range:
+ *
+ * |    L     |    C     |    H     |
+ * | :------: |:-------: | :------: |
+ * | [0, 100] | [0, 200] | [0, 360[ |
+ *
+ * This range is enough to cover the hole range of human perception. Note
+ * that the actual range of human perception has an irregular shape and
+ * covers only parts of all possible combinations of LCH values. And
+ * the actual gamut of real-word output devices is smaller than the
+ * human perception.
+ *
+ * @internal
+ *
+ * @section lchrangerationale Rationale
  *
  * The gamut of actual human perception within the LAB color model (and
  * its alternative representation LCH) has an irregular shape. Its maximum
@@ -630,7 +658,7 @@
  * The maximum range for a, b and Chroma (C) is complex. It is <em>not</em>
  * limited by definition. A useful limit is the actual human perception.
  *
- * |                               |        a          |         b         | C           |
+ * |                               |        a          |         b         |      C      |
  * | :---------------------------- |:----------------: | :---------------: | :---------: |
  * | Usual implementation¹         |    [−128, 127]    |    [−128, 127]    |             |
  * | Human perception (Wikipedia)² |    [−170, 100]    |    [−100, 150]    |             |

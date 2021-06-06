@@ -81,6 +81,7 @@ public:
     QPointF fromWheelToWidgetCoordinates(const PolarPointF wheelCoordinates) const;
     PolarPointF fromWidgetToWheelCoordinates(const QPoint widgetCoordinatePoint) const;
     qreal innerDiameter() const;
+    void setHueNormalized(const qreal newHue);
 
 private:
     Q_DISABLE_COPY(ColorWheelPrivate)

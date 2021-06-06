@@ -168,6 +168,75 @@ private Q_SLOTS:
         myWidget.resize(QSize(14, 14));
         myWidget.repaint();
     }
+
+    void testSetOutOfGamutColors()
+    {
+        WheelColorPicker myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize(400, 400));
+
+        // Test that setting out-of-gamut colors works
+
+        const LchDouble myFirstColor(100, 150, 0);
+        myWidget.setCurrentColor(myFirstColor);
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(myFirstColor.hasSameCoordinates(
+            // This widget has no own storage of this property, but
+            // relies on its child widget:
+            myWidget.d_pointer->m_chromaLightnessDiagram->currentColor()));
+
+        const LchDouble mySecondColor(0, 150, 0);
+        myWidget.setCurrentColor(mySecondColor);
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(mySecondColor.hasSameCoordinates(
+            // This widget has no own storage of this property, but
+            // relies on its child widget:
+            myWidget.d_pointer->m_chromaLightnessDiagram->currentColor()));
+    }
+
+    void testSetOutOfRangeColors()
+    {
+        WheelColorPicker myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize(400, 400));
+
+        // Test that setting colors, that are not only out-of-gamut colors
+        // but also out of a reasonable range, works.
+
+        const LchDouble myFirstColor(300, 550, -10);
+        myWidget.setCurrentColor(myFirstColor);
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(myFirstColor.hasSameCoordinates(
+            // This widget has no own storage of this property, but
+            // relies on its child widget:
+            myWidget.d_pointer->m_chromaLightnessDiagram->currentColor()));
+
+        const LchDouble mySecondColor(-100, -150, 890);
+        myWidget.setCurrentColor(mySecondColor);
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(mySecondColor.hasSameCoordinates(
+            // This widget has no own storage of this property, but
+            // relies on its child widget:
+            myWidget.d_pointer->m_chromaLightnessDiagram->currentColor()));
+    }
+
+    void testHueChanges()
+    {
+        WheelColorPicker myWidget {m_rgbColorSpace};
+        myWidget.resize(QSize(400, 400));
+
+        // Choose a color with an extreme, but still clearly in-gamut chroma
+        // (at least for the build-in sRGB gamut, with which we are testing):
+        const LchDouble myColor(32, 115, 300);
+        myWidget.setCurrentColor(myColor);
+
+        // Move the wheel to a hue that allows much less chroma:
+        myWidget.d_pointer->m_colorWheel->setHue(222);
+
+        // Now, the chroma-lightness coordinatas are out-of-gamut for
+        // the new hue. Test if they have been corrected:
+        QVERIFY(m_rgbColorSpace->isInGamut(myWidget.currentColor()));
+    }
 };
 
 } // namespace PerceptualColor

@@ -83,29 +83,14 @@ int main(int argc, char *argv[])
     m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
     QColor myColor = QColor(Qt::yellow);
     myColor.setAlphaF(0.5);
-    //     m_colorDialog.setCurrentColor(myColor);
+    m_colorDialog.setCurrentColor(myColor);
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
     m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
     m_colorDialog.show();
     // m_colorDialog.setEnabled(false);
-
     // m_colorDialog.setStyleSheet(
     //     "background: yellow; color: red; border: 15px solid #FF0000;"
     // );
-
-    //     QSlider mySlider;
-    //     mySlider.show();
-    //     qDebug() << QAccessible::queryAccessibleInterface(new QObject);
-    //     qDebug() << QAccessible::queryAccessibleInterface(new QWidget);
-    //     qDebug() << QAccessible::queryAccessibleInterface(new PerceptualColor::MultiSpinBox);
-    //     qDebug() << QAccessible::queryAccessibleInterface(
-    //         // Test with GradientSlider
-    //         new PerceptualColor::GradientSlider(
-    //             // Create a new color space just to keep this debug code independant:
-    //             PerceptualColor::RgbColorSpaceFactory::createSrgb()
-    //         )
-    //     );
-    //     qDebug() << QAccessible::queryAccessibleInterface(&m_colorDialog);
 
     // Run
     return app.exec();

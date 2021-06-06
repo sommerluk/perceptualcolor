@@ -67,9 +67,9 @@ namespace PerceptualColor
  * when initialized with Cartesian coordinates (0, 0) then the result is
  * radial 0 and angle 0. See also @ref isSamePoint().
  *
- * This class is declared as type to Qt’s type system:
- * <tt>Q_DECLARE_METATYPE(PerceptualColor::PolarPointF)</tt>. Depending on
- * your use case (for example if you want to use it reliably in Qt's signals
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use it reliably in Qt's signals
  * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
  * this type, once you have a QApplication object.
  *

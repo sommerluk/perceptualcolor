@@ -40,6 +40,7 @@
 #include "rgbcolorspace.h"
 
 #include <QApplication>
+#include <QStyle>
 #include <QStyleFactory>
 
 using namespace PerceptualColor;
@@ -68,30 +69,51 @@ int main(int argc, char *argv[])
 {
     // Prepare configuratin before instanciating the application object
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     // Instanciate the application object
     QApplication app(argc, argv);
+
     // The actual image size depends on the device pixel ratio of the
     // machine that is running this program. It would be better if
     // the result would be the same at all platforms, but the question
     // is: How?. The following lines are apparently useless:
-    //
     // QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
     // qreal scaleFactor = 1.0;
     // const QString sf = QString::number(scaleFactor, 'f', 2);
     // qputenv("QT_SCALE_FACTOR", sf.toLatin1());
+
+    QStyle *style = nullptr;
+    // We prefer the Fusion style because he is the most cross-platform
+    // style, to generating the screenshots does not depend on the
+    // current system.
+    //
     // Possible styles (not all available in all setups):
     // "Breeze", "dsemilight", "dsemidark", "dlight", "ddark", "kvantum-dark",
     // "kvantum", "cleanlooks", "gtk2", "cde", "motif", "plastique", "Oxygen",
     // "QtCurve", "Windows", "Fusion"
-    QStyle *style = nullptr;
-    style = QStyleFactory::create(QStringLiteral("Breeze"));
-    if (style == nullptr) {
-        style = QStyleFactory::create(QStringLiteral("Oxygen"));
-    }
     if (style == nullptr) {
         style = QStyleFactory::create(QStringLiteral("Fusion"));
     }
+    if (style == nullptr) {
+        style = QStyleFactory::create(QStringLiteral("Breeze"));
+    }
+    if (style == nullptr) {
+        style = QStyleFactory::create(QStringLiteral("Oxygen"));
+    }
     QApplication::setStyle(style); // This call is save even if style==nulltrp.
+
+    // We use the Windows style’s palette instead of Fusion’s palette
+    // because Fusion’s palette depends on the systems settings. But
+    // we want something system-independant to make the screenshots
+    // look always the same.
+    QPalette standardPalette; // Default constructor initializes default palette
+    QSharedPointer<QStyle> windowsStyle(QStyleFactory::create(QStringLiteral("Windows")));
+    if (windowsStyle != nullptr) {
+        standardPalette = windowsStyle->standardPalette();
+    }
+    QApplication::setPalette(standardPalette);
+
+    // Other initializations
     app.setApplicationName(QStringLiteral("Perceptual color picker"));
     app.setLayoutDirection(Qt::LeftToRight);
     QLocale::setDefault(QLocale::English);
@@ -100,7 +122,7 @@ int main(int argc, char *argv[])
     QSharedPointer<RgbColorSpace> m_colorSpace {new RgbColorSpace};
     const QColor defaultInitialColor = m_colorSpace->toQColorRgbBound(
         // Choose the same initial color as many widgets
-        LchValues::srgbVersatileInitialColor);
+        LchValues::srgbVersatileInitialColor());
     QColor myColor;
 
     ChromaHueDiagram m_chromaHueDiagram(m_colorSpace);

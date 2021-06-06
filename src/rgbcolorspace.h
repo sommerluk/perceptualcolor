@@ -42,12 +42,7 @@ namespace PerceptualColor
 {
 /** @internal
  *
- * @brief Provides access to LittleCMS color management
- *
- * @todo Do not pimpl anymore?
- *
- * @todo (Optionally) use the fast-float plug-in for faster caluculation?
- *       Is this possible as a run-time choise?
+ * @brief Provides access to LittleCMS color management library
  *
  * @todo We return double precision values. But doesn’t use LittleCMS
  *       only 16-bit-integer internally? On the other hand: Using double

@@ -218,7 +218,7 @@ QImage ColorWheelImage::getImage()
     for (x = 0; x < m_imageSizePhysical; ++x) {
         for (y = 0; y < m_imageSizePhysical; ++y) {
             polarCoordinates = PolarPointF(QPointF(x - center, center - y));
-            if (inRange<qreal>(minimumRadial, polarCoordinates.radial(), maximumRadial)
+            if (isInRange<qreal>(minimumRadial, polarCoordinates.radial(), maximumRadial)
 
             ) {
                 // We are within the wheel

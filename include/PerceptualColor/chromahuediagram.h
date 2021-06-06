@@ -122,6 +122,9 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ChromaHueDiagram : public AbstractDiagram
      * values. However, the LCh lightness value cannot be changed by the
      * user, but only by the programmer through this property.
      *
+     * The programmer can set this property to out-of-gamut values; the
+     * user cannot.
+     *
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
      * @sa NOTIFY @ref currentColorChanged() */

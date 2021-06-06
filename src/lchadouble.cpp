@@ -50,13 +50,9 @@ static_assert(std::is_same_v<cmsFloat64Number, double>);
 static_assert(sizeof(double) == sizeof(cmsFloat64Number));
 
 static_assert(std::is_trivially_copyable_v<LchaDouble>);
+static_assert(std::is_trivial_v<LchaDouble>);
 
 static_assert(std::is_standard_layout_v<LchaDouble>);
-
-/** @brief Default constructor. */
-LchaDouble::LchaDouble()
-{
-}
 
 /** @brief Constructor from value
  * @param newL lightness for the new object

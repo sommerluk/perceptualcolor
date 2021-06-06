@@ -51,9 +51,21 @@ static_assert(sizeof(double) == sizeof(cmsFloat64Number));
 
 static_assert(sizeof(LchDouble) == sizeof(cmsCIELCh));
 
+static_assert(std::is_trivially_copyable_v<LchDouble>);
 static_assert(std::is_trivial_v<LchDouble>);
 
 static_assert(std::is_standard_layout_v<LchDouble>);
+
+/** @brief Constructor from value
+ * @param newL lightness for the new object
+ * @param newC chroma for the new object
+ * @param newH hue for the new object */
+LchDouble::LchDouble(double newL, double newC, double newH)
+    : l(newL)
+    , c(newC)
+    , h(newH)
+{
+}
 
 /** @brief Adds QDebug() support for this data type.
  * @param dbg Existing debug object

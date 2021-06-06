@@ -55,8 +55,9 @@ namespace PerceptualColor
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class ColorDialog::ColorDialogPrivate final
+class ColorDialog::ColorDialogPrivate final : public QObject
 {
+    Q_OBJECT
 public:
     ColorDialogPrivate(ColorDialog *backLink);
     /** @brief Default destructor
@@ -89,12 +90,8 @@ public:
     QPointer<ColorPatch> m_colorPatch;
     /** @brief Holds the current color without alpha information
      *
-     * @note The alpha information within this data member is meaningless.
-     * Ignore it. The information about the alpha channel is actually stored
-     * within @ref m_alphaGradientSlider.
-     *
      * @sa @ref currentColor() */
-    LchDouble m_currentOpaqueColor;
+    LchDouble m_currentOpaqueColor = LchDouble(-300, -300, -1); // Quite invalid default
     /** @brief Pointer to the @ref GradientSlider for LCh lightness. */
     QPointer<GradientSlider> m_lchLightnessSelector;
     /** @brief Pointer to the @ref MultiSpinBox for HLC. */
@@ -108,7 +105,11 @@ public:
      * @sa @ref setCurrentOpaqueColor() */
     bool m_isColorChangeInProgress = false;
     /** @brief Internal storage for property @ref layoutDimensions */
-    PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions = ColorDialog::DialogLayoutDimensions::collapsed;
+    PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions =
+        //! [layoutDimensionsDefaultValue]
+        ColorDialog::DialogLayoutDimensions::collapsed
+        //! [layoutDimensionsDefaultValue]
+        ;
     /** @brief Pointer to the graphical selector widget that groups lightness
      *  and chroma-hue selector. */
     QPointer<QWidget> m_lightnessFirstWidget;
@@ -150,7 +151,7 @@ public:
     void applyLayoutDimensions();
     void initialize();
     QWidget *initializeNumericPage();
-    void setCurrentFullColor(const LchaDouble &color);
+    void setCurrentColorWithAlpha(const LchaDouble &color);
 
 public Q_SLOTS:
     void readHlcNumericValues();

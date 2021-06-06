@@ -43,7 +43,7 @@ namespace PerceptualColor
  * Example:
  * @snippet test/testLchaDouble.cpp Use LchaDouble
  *
- * More details about the valid range: @ref rangeoflchandlabvalues
+ * More details about the valid range: @ref lchrange
  *
  * This class intentionally does not provide the operators <em>equal
  * to</em> (<tt>operator==</tt>) and <em>not equal to</em>
@@ -57,12 +57,11 @@ namespace PerceptualColor
  * no coparision operators are provided by this class. See also
  * @ref hasSameCoordinates.
  *
- * This class is declared as type to Qt's type system:
- * <tt>Q_DECLARE_METATYPE(PerceptualColor::LchaDouble)</tt>.
- * Depending on your use case (for example if you want to use it
- * reliably in Qt's signals and slots), you might consider calling
- * <tt>qRegisterMetaType()</tt> for this type, once you have a QApplication
- * object.
+ * This type is declared as type to Qt’s type system via
+ * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+ * example if you want to use it reliably in Qt's signals
+ * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+ * this type, once you have a QApplication object.
  *
  * This data type can be passed to QDebug thanks to
  * @ref operator<<(QDebug dbg, const PerceptualColor::LchaDouble &value)
@@ -74,7 +73,7 @@ namespace PerceptualColor
  * it make sense? */
 struct PERCEPTUALCOLOR_IMPORTEXPORT LchaDouble {
 public:
-    LchaDouble();
+    LchaDouble() = default;
     LchaDouble(double newL, double newC, double newH, double newA);
     /** @brief Lightness, mesured in percent.
      *
@@ -85,7 +84,7 @@ public:
      * <tt>0</tt> means no chroma (grayscale). The maximum value depends on
      * the gamut. For sRGB for example it’s a given value, but other gamuts
      * can be bigger, but the practical limit is the gamut of the
-     * @ref rangeoflchandlabvalues "human perception", beyond which a
+     * @ref lchrange "human perception", beyond which a
      * Chroma value does not make sense. */
     double c;
     /** @brief Hue, measured in degree.

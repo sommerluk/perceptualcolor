@@ -58,19 +58,20 @@ ColorDialog::ColorDialog(QWidget *parent)
     , d_pointer(new ColorDialogPrivate(this))
 {
     d_pointer->initialize();
-    // Calling setCurrentFullColor() guaranties to update all widgets
-    // because it always sets a valid color, even when the color
-    // parameter was invalid. As m_currentOpaqueColor is invalid
-    // be default, and therefor different, setCurrentColor()
-    // guaranties to update all widgets.
-    // TODO xxx
-    LchDouble lch = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(LchValues::srgbVersatileInitialColor);
+    // As m_currentOpaqueColor is invalid be default, and therefore
+    // different to our value, setCurrentColorWithAlpha() will actually
+    // update all widgets.
+    LchDouble lch =
+        // Move the color into the currently actually used gamut
+        d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(
+            // Default color:
+            LchValues::srgbVersatileInitialColor());
     LchaDouble lcha;
     lcha.l = lch.l;
     lcha.c = lch.c;
     lcha.h = lch.h;
     lcha.a = 1;
-    d_pointer->setCurrentFullColor(lcha);
+    d_pointer->setCurrentColorWithAlpha(lcha);
 }
 
 /** @brief Constructor
@@ -155,14 +156,14 @@ void ColorDialog::setCurrentColor(const QColor &color)
     lcha.c = lch.c;
     lcha.h = lch.h;
     lcha.a = temp.alphaF();
-    d_pointer->setCurrentFullColor(lcha);
+    d_pointer->setCurrentColorWithAlpha(lcha);
 }
 
 /** @brief Sets the @ref currentColor property.
  *
  * @param color The new color to set. The alpha value is taken
  * into account. */
-void ColorDialog::ColorDialogPrivate::setCurrentFullColor(const LchaDouble &color)
+void ColorDialog::ColorDialogPrivate::setCurrentColorWithAlpha(const LchaDouble &color)
 {
     qreal myAlphaF;
     if (q_pointer->testOption(ColorDialogOption::ShowAlphaChannel)) {
@@ -235,7 +236,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &col
         // Nothing to do!
         return;
     }
-
+    //     qDebug() << "setCurrentOpaqueColor: Current m_currentOpaqueColor:" << m_currentOpaqueColor << " Requested color:" << color;
     // If we have really work to do, block recursive calls of this function
     m_isColorChangeInProgress = true;
 
@@ -307,6 +308,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &col
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readLightnessValue()
 {
+    //     qDebug() << "readLightnessValue called";
     LchDouble lch = m_currentOpaqueColor;
     lch.l = m_lchLightnessSelector->value() * 100;
     setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(lch));
@@ -316,6 +318,7 @@ void ColorDialog::ColorDialogPrivate::readLightnessValue()
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 {
+    //     qDebug() << "readHsvNumericValues called";
     QList<MultiSpinBox::SectionData> hsvSections = m_hsvSpinBox->sections();
     setCurrentOpaqueQColor(QColor::fromHsvF(hsvSections[0].value / 360.0, hsvSections[1].value / 255.0, hsvSections[2].value / 255.0));
 }
@@ -324,6 +327,7 @@ void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readRgbNumericValues()
 {
+    //     qDebug() << "readRgbNumericValues called";
     QList<MultiSpinBox::SectionData> rgbSections = m_rgbSpinBox->sections();
     setCurrentOpaqueQColor(QColor::fromRgbF(rgbSections[0].value / 255.0, rgbSections[1].value / 255.0, rgbSections[2].value / 255.0));
 }
@@ -332,6 +336,7 @@ void ColorDialog::ColorDialogPrivate::readRgbNumericValues()
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readRgbHexValues()
 {
+    //     qDebug() << "readRgbHexValues called";
     QString temp = m_rgbLineEdit->text();
     if (!temp.startsWith(QStringLiteral(u"#"))) {
         temp = QStringLiteral(u"#") + temp;
@@ -436,27 +441,75 @@ void ColorDialog::ColorDialogPrivate::initialize()
     q_pointer->setLayout(tempMainLayout);
 
     // initialize signal-slot-connections
-    connect(m_rgbSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() { readRgbNumericValues(); });
-    connect(m_rgbLineEdit, &QLineEdit::editingFinished, q_pointer, [this]() { readRgbHexValues(); });
-    connect(m_hsvSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() { readHsvNumericValues(); });
-    connect(m_hlcSpinBox, &MultiSpinBox::editingFinished, q_pointer, [this]() { readHlcNumericValues(); });
-    connect(m_lchLightnessSelector, &GradientSlider::valueChanged, q_pointer, [this]() { readLightnessValue(); });
-    connect(m_wheelColorPicker, &WheelColorPicker::currentColorChanged, q_pointer, [this](const PerceptualColor::LchDouble &color) { setCurrentOpaqueColor(color); });
-    connect(m_chromaHueDiagram, &ChromaHueDiagram::currentColorChanged, q_pointer, [this](const PerceptualColor::LchDouble &color) { setCurrentOpaqueColor(color); });
-    connect(m_alphaGradientSlider, &GradientSlider::valueChanged, q_pointer, [this]() { updateColorPatch(); });
-    connect(m_alphaGradientSlider, &GradientSlider::valueChanged, q_pointer, [this](const qreal newFraction) {
-        const QSignalBlocker blocker(m_alphaSpinBox);
-        m_alphaSpinBox->setValue(newFraction * 100);
-    });
-    connect(m_alphaSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), q_pointer, [this](const double newValue) { m_alphaGradientSlider->setValue(newValue / 100); });
+    connect(m_rgbSpinBox,                             // sender
+            &MultiSpinBox::editingFinished,           // signal
+            this,                                     // receiver
+            &ColorDialogPrivate::readRgbNumericValues // slot
+    );
+    connect(m_rgbLineEdit,                        // sender
+            &QLineEdit::editingFinished,          // signal
+            this,                                 // receiver
+            &ColorDialogPrivate::readRgbHexValues // slot
+    );
+    connect(m_hsvSpinBox,                             // sender
+            &MultiSpinBox::editingFinished,           // signal
+            this,                                     // receiver
+            &ColorDialogPrivate::readHsvNumericValues // slot
+    );
+    connect(m_hlcSpinBox,                             // sender
+            &MultiSpinBox::editingFinished,           // signal
+            this,                                     // receiver
+            &ColorDialogPrivate::readHlcNumericValues // slot
+    );
+    connect(m_lchLightnessSelector,                 // sender
+            &GradientSlider::valueChanged,          // signal
+            this,                                   // receiver
+            &ColorDialogPrivate::readLightnessValue // slot
+    );
+    connect(m_wheelColorPicker,                        // sender
+            &WheelColorPicker::currentColorChanged,    // signal
+            this,                                      // receiver
+            &ColorDialogPrivate::setCurrentOpaqueColor // slot
+    );
+    connect(m_chromaHueDiagram,                        // sender
+            &ChromaHueDiagram::currentColorChanged,    // signal
+            this,                                      // receiver
+            &ColorDialogPrivate::setCurrentOpaqueColor // slot
+    );
+    connect(m_alphaGradientSlider,                // sender
+            &GradientSlider::valueChanged,        // signal
+            this,                                 // receiver
+            &ColorDialogPrivate::updateColorPatch // slot
+    );
+    connect(m_alphaGradientSlider,            // sender
+            &GradientSlider::valueChanged,    // signal
+            this,                             // receiver
+            [this](const qreal newFraction) { // lambda
+                const QSignalBlocker blocker(m_alphaSpinBox);
+                m_alphaSpinBox->setValue(newFraction * 100);
+            });
+    connect(m_alphaSpinBox,                                       // sender
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged), // signal
+            this,                                                 // receiver
+            [this](const double newValue) {                       // lambda
+                // m_alphaGradientSlider has range [0, 1], while the signal
+                // has range [0, 100]. This has to be adapted:
+                m_alphaGradientSlider->setValue(newValue / 100);
+            });
 
     // Initialize the options
     q_pointer->setOptions(QColorDialog::ColorDialogOption::DontUseNativeDialog);
 
-    // Initialize the window title
-    // TODO Test that
-    // 1.) Our own translation has priority over the fallback
-    // 2.) Fallback to Qt translation works if no own translation is available
+    // Initialize the window title.
+    // We use QColorDialog::tr() instead of tr(). The string will end
+    // up nevertheless in the translation file of this library. We use
+    // "Select Color" as string, just as QColorDialog does. When our
+    // library is running:
+    // 1.) Our own translation has priority
+    // 2.) If we do not find an own translation, it will fallback
+    //     automatically to Qt translation files, which are likely
+    //     to provide a translation for this string.
+    // TODO Test this!
     q_pointer->setWindowTitle(QColorDialog::tr("Select Color"));
 
     // Enable size grip
@@ -482,19 +535,26 @@ void ColorDialog::ColorDialogPrivate::initialize()
     QIcon myIcon = QIcon(myIconEngine);
     QAction *myAction = new QAction(myIcon,          // icon
                                     QLatin1String(), // text
-                                    // The q_pointer’s object is still not fully initialized at
-                                    // this point, but it’s base class constructor has fully run;
-                                    // this should be enough to use functionality based on QWidget.
+                                    // The q_pointer’s object is still not
+                                    // fully initialized at this point, but
+                                    // it’s base class constructor has fully
+                                    // run; this should be enough to use
+                                    // functionality based on QWidget.
                                     q_pointer // parent object
     );
     m_hlcSpinBox->addActionButton(myAction, QLineEdit::ActionPosition::TrailingPosition);
-    connect(myAction, &QAction::triggered, q_pointer, [this]() { readHlcNumericValues(); });
+    connect(myAction,                                 // sender
+            &QAction::triggered,                      // signal
+            this,                                     // receiver
+            &ColorDialogPrivate::readHlcNumericValues // slot
+    );
 }
 
 /** @brief Reads the HLC numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
 {
+    //     qDebug() << "readHlcNumericValues called";
     QList<MultiSpinBox::SectionData> hlcSections = m_hlcSpinBox->sections();
     LchDouble lch;
     lch.h = hlcSections[0].value;
@@ -809,6 +869,9 @@ ColorDialog::DialogLayoutDimensions ColorDialog::layoutDimensions() const
  * @param newLayoutDimensions the new layout dimensions */
 void ColorDialog::setLayoutDimensions(const ColorDialog::DialogLayoutDimensions newLayoutDimensions)
 {
+    if (newLayoutDimensions == d_pointer->m_layoutDimensions) {
+        return;
+    }
     d_pointer->m_layoutDimensions = newLayoutDimensions;
     d_pointer->applyLayoutDimensions();
     Q_EMIT layoutDimensionsChanged(d_pointer->m_layoutDimensions);

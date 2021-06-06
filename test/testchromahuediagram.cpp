@@ -308,6 +308,45 @@ private Q_SLOTS:
         myWidget.repaint();
     }
 
+    void testOutOfGamutColors()
+    {
+        ChromaHueDiagram myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize(400, 400));
+
+        // Test that setting out-of-gamut colors works
+
+        const LchDouble myFirstColor(100, 150, 0);
+        myWidget.setCurrentColor(myFirstColor);
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+
+        const LchDouble mySecondColor(0, 150, 0);
+        myWidget.setCurrentColor(mySecondColor);
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+    }
+
+    void testOutOfRange()
+    {
+        ChromaHueDiagram myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize(400, 400));
+
+        // Test that setting colors, that are not only out-of-gamut colors
+        // but also out of a reasonable range, works.
+
+        const LchDouble myFirstColor(300, 550, -10);
+        myWidget.setCurrentColor(myFirstColor);
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(myFirstColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+
+        const LchDouble mySecondColor(-100, -150, 890);
+        myWidget.setCurrentColor(mySecondColor);
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.currentColor()));
+        QVERIFY(mySecondColor.hasSameCoordinates(myWidget.d_pointer->m_currentColor));
+    }
+
     void testSnipped01()
     {
         snippet01();

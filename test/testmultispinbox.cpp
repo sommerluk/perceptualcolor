@@ -75,13 +75,25 @@ static void snippet02()
     delete myHsvSpinBox;
 }
 
-class testSnippet02
+class testSnippet02 : public PerceptualColor::MultiSpinBox
 {
+    Q_OBJECT
+
     //! [MultiSpinBox Full-featured interface]
+    // TODO Make sure that the interface of QAbstractSpinBox is
+    // completly (re)implemented. For example: Is it necessary or
+    // a good idea to reimplement functions like QAbstractSpinBox::fixup()
+    // and/or QAbstractSpinBox::validate()?
+
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(int sectionCount READ sectionCount NOTIFY sectionCountChanged)
+
+public:
     void addSection(PerceptualColor::MultiSpinBox::SectionData newSection);
     void addSections(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
     void append(PerceptualColor::MultiSpinBox::SectionData newSection);
     void append(QList<PerceptualColor::MultiSpinBox::SectionData> newSections);
+    QString cleanText(int index) const; // See also “cleanText”
     void clearSections();
     int currentIndex() const;
     PerceptualColor::MultiSpinBox::SectionData currentSection() const;
@@ -97,13 +109,64 @@ class testSnippet02
     void removeSection(int index);
     void replaceSection(int index, PerceptualColor::MultiSpinBox::SectionData newSection);
     PerceptualColor::MultiSpinBox::SectionData sectionAt(int index) const;
-    int sectionCount() const;
+    int sectionCount() const; // Somewhat redundant with MultiSpinBox::sections().count()
     QList<PerceptualColor::MultiSpinBox::SectionData> sections() const;
-    void setCurrentIndex(int newIndex);
+    QString sectionText(int index) const; // See also “cleanText”
+    void setSelectedSection(int index);   // A better name might be “selectSection”
     void setSections(const QList<PerceptualColor::MultiSpinBox::SectionData> &newSections);
     void swapSections(int i, int j);
+
+    // What about these functions? They…
+    // …are public in QDoubleSpinBox
+    // …are protected in QSpinBox
+    // …do not exist in QDateTimeEdit
+    // …do not exist in QAbstractSpinBox:
+    QString textFromValue(double value) const;
+    double valueFromText(const QString &text) const;
+
+Q_SIGNALS:
+    void currentIndexChanged(int newCurrentIndex);
+    void sectionCountChanged(int newSectionCount);
+
+    // The following signal in Qt 5.15 seems to not alwyas be emitted
+    // when actually text changes, but instead only if actually the value
+    // changes. So if the text changes from  “0.1” to “0.10” this signal
+    // is not emitted because the value itself did not change. This is
+    // couter-intuitive because the behaviour does not correspond to the
+    // name of the signal. It’s therefore better not no implement this
+    // signal.
+    void textChanged(const QString &newText);
+
+    // The following signal is emitted always when the value changes.
+    // If we separate the section configuration from the section value,
+    // we could provide the new value of tpye QList<double> as an
+    // argument of this signal and also declare a property corresponding
+    // to this signal.
+    void valueChanged();
+
+public Q_SLOTS:
+    void setCurrentIndex(int newIndex);
     //! [MultiSpinBox Full-featured interface]
+
+    //! [SectionData Addons]
+    // Possible additions to SectionData:
+public:
+    QAbstractSpinBox::StepType stepType;
+    double singleStep;
+    //! [SectionData Addons]
 };
+int testSnippet02::currentIndex() const
+{
+    return 0;
+}
+void testSnippet02::setCurrentIndex(int newIndex)
+{
+    Q_UNUSED(newIndex)
+}
+int testSnippet02::sectionCount() const
+{
+    return 0;
+}
 
 namespace PerceptualColor
 {
@@ -1170,6 +1233,14 @@ private Q_SLOTS:
         // Trigger the value fix
         QTest::keyClick(widget.data(), Qt::Key_Return);
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"360°  0%  255"));
+    }
+
+    void testMetaTypeDeclaration()
+    {
+        QVariant test;
+        // The next line should produce a compiler error is the
+        // type is not declared to Qt’s Meta Object System.
+        test.setValue(MultiSpinBox::SectionData());
     }
 
     void testSnippet02()

@@ -73,6 +73,13 @@ namespace PerceptualColor
  * are planned. However, a full-featured interface could look like that:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
  *
+ * @todo When creating a <tt>QDoubleSpinBox</tt> with <tt>decimals == 2</tt>
+ * and then <tt>setValue(1.3579)</tt>, than <tt>value() == 1.36</tt>. So
+ * <tt>QDoubleSpinBox</tt> does not store internally the original value
+ * it gets via <tt>setValue</tt> but a value rounded to the current
+ * decimal precision. @ref MultiSpinBox should adopt the exactly same
+ * behaviour (for consistency). This should be controlled by unit tests.
+ *
  * @todo MultiSpinBox should never become 0 because the validator
  * allows something that the converter cannot convert!
  *
@@ -168,7 +175,19 @@ public:
      * This data type can be passed to QDebug thanks to
      * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value)
      *
+     * This type is declared as type to Qt’s type system via
+     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+     * example if you want to use it reliably in Qt's signals
+     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object.
+     *
      * @internal
+     *
+     * Possible additions to SectionData:
+     * @snippet test/testmultispinbox.cpp SectionData Addons
+     *
+     * @todo Wouldn’t it be better to use the same defaults as QDoubleSpinBox?
+     * Like decimals==2.This could be controlled in a unit test.
      *
      * @todo How to make this future-proof? Maybe later we want to add
      * singleStep() or pageStep() values? Are d-pointers working well when
@@ -253,5 +272,7 @@ private:
 PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value);
 
 } // namespace PerceptualColor
+
+Q_DECLARE_METATYPE(PerceptualColor::MultiSpinBox::SectionData)
 
 #endif // MULTISPINBOX_H

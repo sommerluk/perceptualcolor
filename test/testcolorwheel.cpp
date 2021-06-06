@@ -37,6 +37,8 @@
 #include <QLineEdit>
 #include <QtTest>
 
+#include "helper.h"
+
 namespace PerceptualColor
 {
 class TestColorWheel : public QObject
@@ -136,22 +138,6 @@ private Q_SLOTS:
         myWheel.setHue(referenceHue);
         QCOMPARE(mySpy.count(), 1);
         QCOMPARE(myWheel.hue(), referenceHue);
-
-        // Test that the property is correctly normalized
-        myWheel.setHue(0);
-        QCOMPARE(myWheel.hue(), 0);
-        myWheel.setHue(359.9);
-        QCOMPARE(myWheel.hue(), 359.9);
-        myWheel.setHue(360);
-        QCOMPARE(myWheel.hue(), 0);
-        myWheel.setHue(361.2);
-        QCOMPARE(myWheel.hue(), 1.2);
-        myWheel.setHue(7200);
-        QCOMPARE(myWheel.hue(), 0);
-        myWheel.setHue(-1);
-        QCOMPARE(myWheel.hue(), 359);
-        myWheel.setHue(-1.3);
-        QCOMPARE(myWheel.hue(), 358.7);
     }
 
     void testMinimumSizeHint()
@@ -235,6 +221,23 @@ private Q_SLOTS:
         myWidget.repaint();
         myWidget.resize(QSize(14, 14));
         myWidget.repaint();
+    }
+
+    void testOutOfRange()
+    {
+        ColorWheel myWidget {m_rgbColorSpace};
+        myWidget.show();
+        myWidget.resize(QSize(400, 400));
+
+        // Test setting out-of-range hues
+
+        const qreal hue = 500;
+        myWidget.setHue(hue);
+        // Out-of-range hues should initially be preserved.
+        QCOMPARE(myWidget.hue(), 500);
+        // After user interaction, they should be normalized.
+        QTest::keyClick(&myWidget, Qt::Key_Plus);
+        QVERIFY(isInRange<qreal>(0, myWidget.hue(), 360));
     }
 };
 

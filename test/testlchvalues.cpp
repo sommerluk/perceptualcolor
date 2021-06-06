@@ -149,13 +149,13 @@ private Q_SLOTS:
     void testNeutralGray()
     {
         // Test that the unified initialization is done in the correct order.
-        QCOMPARE(LchValues::neutralGray.l,
+        QCOMPARE(LchValues::neutralGray().l,
                  50 // Should be half the way between light and dark
         );
-        QCOMPARE(LchValues::neutralGray.c,
+        QCOMPARE(LchValues::neutralGray().c,
                  0 // Should have no chroma
         );
-        QCOMPARE(LchValues::neutralGray.h,
+        QCOMPARE(LchValues::neutralGray().h,
                  0 // Hue does not matter, but by convention should be 0
         );
     }

@@ -159,6 +159,14 @@ RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(RgbColorSpace *backLin
  * RGB color, it will be converted first into an RGB color by QColor methods.)
  * @returns If the color is valid, the corresponding LCh value might also
  * be invalid.
+ *
+ * @returns ???
+ *
+ * @note By definition, each RGB color in a given color space is an in-gamut
+ * color in this very same color space. Nevertheless, because of rounding
+ * errors, when converting colors that are near to the outer hull of the
+ * gamut/color space, than @ref isInGamut() might return <tt>false</tt> for
+ * a return value of this function.
  */
 cmsCIELab RgbColorSpace::RgbColorSpacePrivate::toLab(const QColor &rgbColor) const
 {
@@ -169,6 +177,15 @@ cmsCIELab RgbColorSpace::RgbColorSpacePrivate::toLab(const QColor &rgbColor) con
     return colorLab(my_rgb);
 }
 
+/**
+ * @returns ???
+ *
+ * @note By definition, each RGB color in a given color space is an in-gamut
+ * color in this very same color space. Nevertheless, because of rounding
+ * errors, when converting colors that are near to the outer hull of the
+ * gamut/color space, than @ref isInGamut() might return <tt>false</tt> for
+ * a return value of this function.
+ */
 PerceptualColor::LchDouble RgbColorSpace::toLch(const QColor &rgbColor) const
 {
     cmsCIELab lab = d_pointer->toLab(rgbColor);
@@ -214,7 +231,7 @@ QColor RgbColorSpace::toQColorRgbUnbound(const cmsCIELab &Lab) const
         &rgb,                                 // output
         1                                     // convert exactly 1 value
     );
-    if (inRange<cmsFloat64Number>(0, rgb.red, 1) && inRange<cmsFloat64Number>(0, rgb.green, 1) && inRange<cmsFloat64Number>(0, rgb.blue, 1)) {
+    if (isInRange<cmsFloat64Number>(0, rgb.red, 1) && isInRange<cmsFloat64Number>(0, rgb.green, 1) && isInRange<cmsFloat64Number>(0, rgb.blue, 1)) {
         // We are within the gamut
         temp = QColor::fromRgbF(rgb.red, rgb.green, rgb.blue);
     }
@@ -339,7 +356,7 @@ bool RgbColorSpace::isInGamut(const cmsCIELab &lab) const
         1                                     // convert exactly 1 value
     );
 
-    return (inRange<cmsFloat64Number>(0, rgb.red, 1) && inRange<cmsFloat64Number>(0, rgb.green, 1) && inRange<cmsFloat64Number>(0, rgb.blue, 1));
+    return (isInRange<cmsFloat64Number>(0, rgb.red, 1) && isInRange<cmsFloat64Number>(0, rgb.green, 1) && isInRange<cmsFloat64Number>(0, rgb.blue, 1));
 }
 
 QString RgbColorSpace::profileInfoCopyright() const

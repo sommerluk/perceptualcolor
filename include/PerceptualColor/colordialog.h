@@ -118,7 +118,15 @@ namespace PerceptualColor
  *
  * @internal
  *
- * @todo Mouse support for ChromaLightnessDiagram is broken!
+ * @todo The LCh-hue (and so the graphical widgets) jumps forward and backward
+ * when changing RGB-based values (also HSV) when entering and leaving the gray
+ * axis, due to lack of hue information. Would it be an option to store the
+ * old hue to get a meaningful hue?
+ * Should it be only really for the gray axis, or allow a certain tolerance
+ * around the gray axis is necessary to make this work well - and if so,
+ * how much tolerance? Would it be useful to define a certain hue, for
+ * example 0°, as default hue for when no old hue is available but the
+ * new value is on the gray axis?
  *
  * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
  * With each focus switch, the values change. They shouldn't!
@@ -137,6 +145,15 @@ namespace PerceptualColor
  * @todo BUG: Start the dialog. → Go to tab “numeric”. → HLC is 270°. → Click
  * within the “Hex” spinbox. → Click within the “HSV” spinbox. Now, HLC
  * changes from 270° to 269°. → Why?
+ *
+ * @todo If there is no alpha widget <em>and</em> the actual layout is
+ * expanded (either explicitly by @ref DialogLayoutDimensions::expanded
+ * or implicitly by @ref DialogLayoutDimensions::screenSizeDependent on
+ * bigger screens) <em>than</em> it would make sense to move
+ * the @ref ColorDialogPrivate::m_buttonBox into the same column as
+ * the @ref ColorDialogPrivate::m_numericalWidget, namely <em>below</em>
+ * the @ref ColorDialogPrivate::m_numericalWidget. This saves screen
+ * space and does not confuse the user.
  *
  * @todo Custom layout management that has a specific height-per-width ratio
  * considering the @ref ChromaHueDiagram and and @ref WheelColorPicker
@@ -282,7 +299,13 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      *
      * @sa READ @ref currentColor() const
      * @sa WRITE @ref setCurrentColor()
-     * @sa NOTIFY @ref currentColorChanged() */
+     * @sa NOTIFY @ref currentColorChanged()
+     *
+     * @internal
+     *
+     * @note This property does not have <tt>USER true</tt>. While it would
+     * be nice to have it, we do not do this because of conformance with
+     * QColorDialog, which doesn’t have it either. */
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
     /** @brief Various options that affect the look and feel of the dialog
@@ -328,7 +351,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * visible at the same time.
      *
      * Default value:
-     * <tt>PerceptualColor::DialogLayoutDimensions::collapsed</tt>
+     * @snippet src/colordialog_p.h layoutDimensionsDefaultValue
      *
      * When the layout dimension effectively changes, also the dialog size
      * is adapted.
@@ -340,14 +363,32 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
     Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
 
 public:
-    /** @brief Local alias for QColorDialog::ColorDialogOption */
+    /** @brief Local alias for QColorDialog::ColorDialogOption
+     *
+     * This type is declared as type to Qt’s type system via
+     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+     * example if you want to use it reliably in Qt's signals
+     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object. */
     typedef QColorDialog::ColorDialogOption ColorDialogOption;
-    /** @brief Local alias for QColorDialog::ColorDialogOptions */
+    /** @brief Local alias for QColorDialog::ColorDialogOptions
+     *
+     * This type is declared as type to Qt’s type system via
+     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+     * example if you want to use it reliably in Qt's signals
+     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object. */
     typedef QColorDialog::ColorDialogOptions ColorDialogOptions;
     /** @brief Layout dimensions
      *
      * This enum is declared to the meta-object system. This happens
-     * automatically. You do not need to make any manual calls. */
+     * automatically. You do not need to make any manual calls.
+     *
+     * This type is declared as type to Qt’s type system via
+     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
+     * example if you want to use it reliably in Qt's signals
+     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object. */
     enum class DialogLayoutDimensions {
         screenSizeDependent, /**< Decide automatically between
             <tt>collapsed</tt> and <tt>expanded</tt> layout: <tt>collapsed</tt>
@@ -428,5 +469,9 @@ private:
 };
 
 } // namespace PerceptualColor
+
+Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::ColorDialogOption)
+Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::ColorDialogOptions)
+Q_DECLARE_METATYPE(PerceptualColor::ColorDialog::DialogLayoutDimensions)
 
 #endif // COLORDIALOG_H

@@ -75,6 +75,9 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
         [this](const qreal newHue) {
             LchDouble lch = d_pointer->m_chromaLightnessDiagram->currentColor();
             lch.h = newHue;
+            // We have to be sure that the color is in-gamut also for the
+            // new hue. If it is not, we adjust it:
+            lch = d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(lch);
             d_pointer->m_chromaLightnessDiagram->setCurrentColor(lch);
         });
     connect(d_pointer->m_chromaLightnessDiagram,
@@ -92,7 +95,12 @@ WheelColorPicker::WheelColorPicker(const QSharedPointer<PerceptualColor::RgbColo
         &WheelColorPickerPrivate::handleFocusChanged);
 
     // Initial color
-    setCurrentColor(LchValues::srgbVersatileInitialColor);
+    setCurrentColor(
+        // Though LchValues::srgbVersatileInitialColor() is expected to
+        // be in-gamut, its more secure to guarantee this explicitly:
+        d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(
+            // Default sRGB initial color:
+            LchValues::srgbVersatileInitialColor()));
 }
 
 /** @brief Default destructor */
@@ -336,6 +344,10 @@ void WheelColorPicker::setCurrentColor(const LchDouble &newCurrentColor)
 {
     // The following line will also emit the signal of this class:
     d_pointer->m_chromaLightnessDiagram->setCurrentColor(newCurrentColor);
+
+    // Avoid that setting the new hue will move the color into gamut.
+    // (As documented, this function accepts happyly out-of-gamut colors.)
+    QSignalBlocker myBlocker(d_pointer->m_colorWheel);
     d_pointer->m_colorWheel->setHue(d_pointer->m_chromaLightnessDiagram->currentColor().h);
 }
 

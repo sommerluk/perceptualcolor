@@ -58,7 +58,7 @@ ChromaLightnessDiagram::ChromaLightnessDiagram(const QSharedPointer<PerceptualCo
     d_pointer->m_rgbColorSpace = colorSpace;
 
     // Initialization
-    d_pointer->m_currentColor = LchValues::srgbVersatileInitialColor;
+    d_pointer->m_currentColor = LchValues::srgbVersatileInitialColor();
     setFocusPolicy(Qt::FocusPolicy::StrongFocus);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     d_pointer->m_chromaLightnessImage.setImageSize(
@@ -447,7 +447,9 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
 
     // Set the new image coordinates (only takes effect when image
     // coordinates are indeed different)
-    setCurrentColor(temp);
+    setCurrentColor(
+        // Search for the nearest color without changing the hue:
+        d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(temp));
 }
 
 /** @brief Tests if a given widget pixel position is within
@@ -479,9 +481,9 @@ bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositio
     return (
         // Test if C is in range. This is important because a negative C value
         // can be in-gamut, but is not in the _displayed_ gamut.
-        inRange<qreal>(0, color.c, m_rgbColorSpace->maximumChroma())
+        isInRange<qreal>(0, color.c, m_rgbColorSpace->maximumChroma())
         // Test for out-of-range lightness (mainly for performance reasons)
-        && inRange<qreal>(0, color.l, 100)
+        && isInRange<qreal>(0, color.l, 100)
         // Test actually for in-gamut color
         && m_rgbColorSpace->isInGamut(color));
 }
@@ -496,21 +498,18 @@ bool ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::isWidgetPixelPositio
  * will change. Isn’t that confusing? */
 void ChromaLightnessDiagram::setCurrentColor(const PerceptualColor::LchDouble &newCurrentColor)
 {
-    const LchDouble newColorInGamut =
-        // Move newCurrentColor into the gamut (if necessary) – while preserving the hue:
-        d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(newCurrentColor);
-    if (newColorInGamut.hasSameCoordinates(d_pointer->m_currentColor)) {
+    if (newCurrentColor.hasSameCoordinates(d_pointer->m_currentColor)) {
         return;
     }
 
     double oldHue = d_pointer->m_currentColor.h;
-    d_pointer->m_currentColor = newColorInGamut;
+    d_pointer->m_currentColor = newCurrentColor;
     if (d_pointer->m_currentColor.h != oldHue) {
         // Update the diagram (only if the hue has changed):
         d_pointer->m_chromaLightnessImage.setHue(d_pointer->m_currentColor.h);
     }
     update(); // Schedule a paint event
-    Q_EMIT currentColorChanged(newColorInGamut);
+    Q_EMIT currentColorChanged(newCurrentColor);
 }
 
 /** @brief React on a resize event.

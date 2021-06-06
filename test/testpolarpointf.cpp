@@ -259,6 +259,14 @@ private Q_SLOTS:
         // do not suppress warning for generating invalid QColor anymore
         qInstallMessageHandler(nullptr);
     }
+
+    void testMetaTypeDeclaration()
+    {
+        QVariant test;
+        // The next line should produce a compiler error is the
+        // type is not declared to Qt’s Meta Object System.
+        test.setValue(PolarPointF());
+    }
 };
 
 } // namespace PerceptualColor

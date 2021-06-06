@@ -308,7 +308,7 @@ private Q_SLOTS:
         test.setLightness(lightness);
         // Test the lightness. We are using QColor’s simple (non-color-managed)
         // lightness property. Therefore, we allow a tolerance up to 10%.
-        QVERIFY2(PerceptualColor::inRange(lightness * 0.9, test.getImage().pixelColor(imageSize / 2, imageSize / 2).lightnessF() * 100, lightness * 1.1),
+        QVERIFY2(PerceptualColor::isInRange(lightness * 0.9, test.getImage().pixelColor(imageSize / 2, imageSize / 2).lightnessF() * 100, lightness * 1.1),
                  "Verify that the correct lightness is applied. "
                  "(10% tolerance is allowed.)");
     }
@@ -425,7 +425,7 @@ private Q_SLOTS:
         const qreal maximumChromaAtCenter = qMax(qMax(chromaAtCenterA, chromaAtCenterB), qMax(chromaAtCenterC, chromaAtCenterD));
         for (int x = positionAtCenter1 - 2; x <= positionAtCenter2 + 2; ++x) {
             for (int y = positionAtCenter1 - 2; y <= positionAtCenter2 + 2; ++y) {
-                if (inRange(positionAtCenter1, x, positionAtCenter2) && inRange(positionAtCenter1, y, positionAtCenter2)) {
+                if (isInRange(positionAtCenter1, x, positionAtCenter2) && isInRange(positionAtCenter1, y, positionAtCenter2)) {
                     continue;
                 }
                 const qreal chromaAround = colorSpace->toLch(test.getImage().pixelColor(x, y)).c;

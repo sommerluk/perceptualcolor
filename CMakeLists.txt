@@ -190,6 +190,8 @@ set(perceptualcolor_SRC
   src/helper.cpp
   src/lchadouble.cpp
   src/lchdouble.cpp
+  src/lchvalues.cpp
+  src/multicolor.cpp
   src/multispinbox.cpp
   src/polarpointf.cpp
   src/refreshiconengine.cpp
