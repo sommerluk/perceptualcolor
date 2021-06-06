@@ -129,7 +129,7 @@ private Q_SLOTS:
         myWidget.repaint();
     }
 
-    void testSetCurrentColorFromWidgetPixelPosition()
+    void testSetCurrentColorFromWidgetPixelPosition1()
     {
         // Also very small widget sizes should not crash the widget.
         // This might happen because if the widget is too small, there
@@ -142,6 +142,43 @@ private Q_SLOTS:
         // Executing the following lines should not crash!
         myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(positive);
         myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(negative);
+    }
+
+    void testSetCurrentColorFromWidgetPixelPosition2()
+    {
+        // Test this function for out-of-gamut positions
+        ChromaLightnessDiagram myWidget {m_rgbColorSpace};
+        myWidget.show();
+        constexpr int size = 100;
+        myWidget.resize(size, size);
+        LchDouble color;
+
+        // Test for top-left corner
+        myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(
+            // Same x and y spacing from top-left corner
+            QPoint(size * (-1), size * (-1)));
+        color = myWidget.currentColor();
+        QCOMPARE(color.l, 100);
+        QCOMPARE(color.c, 0);
+
+        // Test for bottom-left corner
+        myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(
+            // Same x and y spacing from bottom-left corner
+            QPoint(size * (-1), size * 2));
+        color = myWidget.currentColor();
+        QCOMPARE(color.l, 0);
+        QCOMPARE(color.c, 0);
+
+        // Test for middle-right position
+        myWidget.d_pointer->setCurrentColorFromWidgetPixelPosition(
+            // x position far from diagram boundaries, y position in the middle
+            QPoint(size * 10, size * 50 / 100));
+        color = myWidget.currentColor();
+        // Lightness should be somewhere in the middle.
+        QVERIFY(color.l > 10);
+        QVERIFY(color.l < 90);
+        // At least 25 should be possible on all hues.
+        QVERIFY(color.c > 25);
     }
 
     void testDefaultBorderPhysical()

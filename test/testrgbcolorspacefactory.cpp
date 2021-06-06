@@ -100,7 +100,7 @@ private Q_SLOTS:
         // Make a random call, just to be sure that a method call will not crash:
         temp->profileInfoDescription();
         // Make sure the returned value is actually the sRGB gamut.
-        QCOMPARE(temp->profileInfoDescription(), QStringLiteral("sRGB built-in"));
+        QCOMPARE(temp->profileInfoDescription(), QStringLiteral("sRGB color space"));
     }
 
     void testSnipped01()
