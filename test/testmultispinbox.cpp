@@ -192,6 +192,7 @@ private Q_SLOTS:
     {
         // Called before the first test function is executed
         MultiSpinBox::SectionData mySection;
+        mySection.decimals = 0;
         mySection.minimum = 0;
         mySection.maximum = 360;
         mySection.prefix = QLatin1String();
@@ -220,6 +221,22 @@ private Q_SLOTS:
     void cleanup()
     {
         // Called after every test function
+    }
+
+    void testSectionDataDefaultValues()
+    {
+        // The default values should be the same as for QDoubleSpinBox
+        MultiSpinBox::SectionData mySectionData;
+        QDoubleSpinBox myDoubleSpinBox;
+        QCOMPARE(mySectionData.decimals, myDoubleSpinBox.decimals());
+        QCOMPARE(mySectionData.isWrapping, myDoubleSpinBox.wrapping());
+        QCOMPARE(mySectionData.maximum, myDoubleSpinBox.maximum());
+        QCOMPARE(mySectionData.minimum, myDoubleSpinBox.minimum());
+        QCOMPARE(mySectionData.prefix, myDoubleSpinBox.prefix());
+        QCOMPARE(mySectionData.singleStep, myDoubleSpinBox.singleStep());
+        QCOMPARE(mySectionData.stepType, myDoubleSpinBox.stepType());
+        QCOMPARE(mySectionData.suffix, myDoubleSpinBox.suffix());
+        QCOMPARE(mySectionData.value, myDoubleSpinBox.value());
     }
 
     void testConstructor()
@@ -412,6 +429,7 @@ private Q_SLOTS:
         // sure being bigger than the default minimal widget size.
         QList<MultiSpinBox::SectionData> config;
         MultiSpinBox::SectionData section;
+        section.decimals = 0;
         section.minimum = 1;
         section.value = 8;
         section.maximum = 9;

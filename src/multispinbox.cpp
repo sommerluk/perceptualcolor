@@ -650,21 +650,23 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
  * decreases it. */
 void MultiSpinBox::stepBy(int steps)
 {
+    const int currentIndex = d_pointer->m_currentIndex;
+    d_pointer->m_sections[currentIndex].value += steps * d_pointer->m_sections[currentIndex].singleStep;
     // As explained in QAbstractSpinBox documentation:
     //    “Note that this function is called even if the resulting value will
     //     be outside the bounds of minimum and maximum. It's this function's
     //     job to handle these situations.”
     // Therefore, the result is bound to the actual minimum and maximum
     // values:
-    d_pointer->m_sections[d_pointer->m_currentIndex].value += steps;
-    d_pointer->m_sections[d_pointer->m_currentIndex] = d_pointer->fixedSection(d_pointer->m_sections[d_pointer->m_currentIndex]);
+    d_pointer->m_sections[currentIndex] =
+        // Call function that fixes out-of-boundary values
+        d_pointer->fixedSection(d_pointer->m_sections[currentIndex]);
     // Update the internal representation
     d_pointer->updatePrefixValueSuffixText();
     // Update the content of the QLineEdit and select the current
     // value (as cursor text selection):
-    d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(d_pointer->m_currentIndex);
-    // Make sure that the buttons for step up and step down are updated.
-    update();
+    d_pointer->setCurrentIndexAndUpdateTextAndSelectValue(currentIndex);
+    update(); // Make sure the buttons for step-up and step-down are updated.
 }
 
 /** @brief Updates the value of the current section in @ref m_sections.
@@ -730,7 +732,11 @@ bool MultiSpinBox::event(QEvent *event)
         d_pointer->updatePrefixValueSuffixText();
         d_pointer->m_validator->setPrefix(d_pointer->m_textBeforeCurrentValue);
         d_pointer->m_validator->setSuffix(d_pointer->m_textAfterCurrentValue);
-        d_pointer->m_validator->setRange(d_pointer->m_sections.at(d_pointer->m_currentIndex).minimum, d_pointer->m_sections.at(d_pointer->m_currentIndex).maximum);
+        d_pointer->m_validator->setRange(
+            // Minimum
+            d_pointer->m_sections.at(d_pointer->m_currentIndex).minimum,
+            // Maximum
+            d_pointer->m_sections.at(d_pointer->m_currentIndex).maximum);
         lineEdit()->setText(d_pointer->m_textBeforeCurrentValue + d_pointer->m_textOfCurrentValue + d_pointer->m_textAfterCurrentValue);
     }
     return QAbstractSpinBox::event(event);

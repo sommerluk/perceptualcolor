@@ -183,30 +183,22 @@ public:
      *
      * @internal
      *
-     * Possible additions to SectionData:
-     * @snippet test/testmultispinbox.cpp SectionData Addons
+     * This data type allows all configuration settings that are available
+     * in QAbstractSpinBox, except <tt>stepType</tt>.
      *
-     * @todo Wouldn’t it be better to use the same defaults as QDoubleSpinBox?
-     * Like decimals==2.This could be controlled in a unit test.
+     * @todo Make sure that things like “maximum >= minimum” are
+     * guaranteed. Maybe get rid of this class (at least in the public API)
+     * and provide direct access functions in the public API,
+     * like <tt>setPrefix(int index)</tt>.
      *
      * @todo How to make this future-proof? Maybe later we want to add
-     * singleStep() or pageStep() values? Are d-pointers working well when
+     * <tt>stepType</tt> values? Are d-pointers working well when
      * this data structure has to be copy-able? */
     struct SectionData {
         /** @brief The number of digits after the decimal point.
          *
          * (This value can also be <tt>0</tt> to get integer-like behavoir.) */
-        int decimals = 0;
-        /** @brief The maximum possible value of the section. */
-        double maximum = 100;
-        /** @brief The minimum possible value of the section. */
-        double minimum = 0;
-        /** @brief A prefix to be displayed before the value. */
-        QString prefix;
-        /** @brief A suffix to be displayed behind the value. */
-        QString suffix;
-        /** @brief The current actual value of the section. */
-        double value = 0;
+        int decimals = 2;
         /** @brief Holds whether or not @ref value wraps around when it
          * reaches @ref minimum or @ref maximum.
          *
@@ -231,6 +223,25 @@ public:
          * |   720 |                 360 |                  0 |
          * |   725 |                 360 |                  5 | */
         bool isWrapping = false;
+        /** @brief The maximum possible value of the section. */
+        double maximum = 99.99;
+        /** @brief The minimum possible value of the section. */
+        double minimum = 0;
+        /** @brief A prefix to be displayed before the value. */
+        QString prefix;
+        /** The smaller of two natural steps.
+         *
+         * Valid range: >= 0
+         *
+         * When the user uses the arrows to change the spin box’s value
+         * the value will be incremented/decremented by the amount of the
+         * @ref singleStep (except if @ref stepType provides different
+         * behaviour). */
+        double singleStep = 1;
+        /** @brief A suffix to be displayed behind the value. */
+        QString suffix;
+        /** @brief The current actual value of the section. */
+        double value = 0;
     };
 
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
