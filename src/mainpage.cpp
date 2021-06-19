@@ -75,6 +75,9 @@
  *
  * @internal
  *
+ * @todo Where possible: Make the pimpl inherit from <tt>public QObject</tt>
+ * to allow to get rid of lambdas in the connect statements.
+ *
  * @todo In https://phabricator.kde.org/T12359 is recommanded to provide
  * RESET statements for all properties for better compatibility with QML.
  * As we provide widgets, this should not be too important. Are there also

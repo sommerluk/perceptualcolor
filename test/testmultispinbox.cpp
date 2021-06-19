@@ -82,11 +82,6 @@ class testSnippet02 : public PerceptualColor::MultiSpinBox
     Q_OBJECT
 
     //! [MultiSpinBox Full-featured interface]
-    // TODO Make sure that the interface of QAbstractSpinBox is
-    // completly (re)implemented. For example: Is it necessary or
-    // a good idea to reimplement functions like QAbstractSpinBox::fixup()
-    // and/or QAbstractSpinBox::validate()?
-
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(int sectionCount READ sectionCount NOTIFY sectionCountChanged)
 

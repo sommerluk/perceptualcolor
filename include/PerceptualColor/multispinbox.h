@@ -140,8 +140,10 @@ namespace PerceptualColor
  * invalid)?!
  *
  * @todo This class inherits from QAbstractSpinBox, which provides
- * properties. We have to make sure these properties work also for
- * this class. There are various types of properties.
+ * properties and virtual functions. Is it necessary or
+ * a good idea to reimplement functions like QAbstractSpinBox::fixup()
+ * and/or QAbstractSpinBox::validate()? We have to make sure all properties
+ * work also for this class. There are various types of properties.
  * 1.) Properties that have to be implemented here in @ref MultiSpinBox (such
  *     as <tt>correctionMode</tt> or <tt>showGroupSeparator</tt>).
  * 2.) Properties that should work “out of the box” but should be tested

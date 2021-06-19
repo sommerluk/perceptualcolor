@@ -45,8 +45,10 @@ namespace PerceptualColor
  *
  *  @brief Private implementation within the <em>Pointer to
  *  implementation</em> idiom */
-class MultiSpinBox::MultiSpinBoxPrivate final
+class MultiSpinBox::MultiSpinBoxPrivate final : public QObject
 {
+    Q_OBJECT
+
 public:
     MultiSpinBoxPrivate(MultiSpinBox *backLink);
     /** @brief Default destructor

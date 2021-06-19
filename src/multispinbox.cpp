@@ -97,9 +97,21 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
     lineEdit()->setValidator(d_pointer->m_validator);
 
     // Connect signals and slots
-    connect(lineEdit(), &QLineEdit::textChanged, this, [this](const QString &lineEditText) { d_pointer->updateCurrentValueFromText(lineEditText); });
-    connect(lineEdit(), &QLineEdit::cursorPositionChanged, this, [this](const int oldPos, const int newPos) { d_pointer->reactOnCursorPositionChange(oldPos, newPos); });
-    connect(this, &QAbstractSpinBox::editingFinished, this, [this]() { d_pointer->setCurrentIndexToZeroAndUpdateTextAndSelectValue(); });
+    connect(lineEdit(),                                      // sender
+            &QLineEdit::textChanged,                         // signal
+            d_pointer.get(),                                 // receiver
+            &MultiSpinBoxPrivate::updateCurrentValueFromText // slot
+    );
+    connect(lineEdit(),                                       // sender
+            &QLineEdit::cursorPositionChanged,                // signal
+            d_pointer.get(),                                  // receiver
+            &MultiSpinBoxPrivate::reactOnCursorPositionChange // slot
+    );
+    connect(this,                                                                  // sender
+            &QAbstractSpinBox::editingFinished,                                    // signal
+            d_pointer.get(),                                                       // receiver
+            &MultiSpinBoxPrivate::setCurrentIndexToZeroAndUpdateTextAndSelectValue // slot
+    );
 
     // Initialize the configuration (default: only one section)
     d_pointer->m_sectionValues.append(MultiSpinBoxPrivate::defaultSectionValue);
@@ -166,8 +178,14 @@ QSize MultiSpinBox::sizeHint() const
         // For each section, test if the minimum value or the maximum
         // takes more space (width). Choose the one that takes more place
         // (width).
-        textOfMinimumValue = locale().toString(myConfiguration.at(i).minimum, 'f', myConfiguration.at(i).decimals);
-        textOfMaximumValue = locale().toString(myConfiguration.at(i).maximum, 'f', myConfiguration.at(i).decimals);
+        textOfMinimumValue = locale().toString(myConfiguration.at(i).minimum, // value
+                                               'f',                           // format
+                                               myConfiguration.at(i).decimals // precision
+        );
+        textOfMaximumValue = locale().toString(myConfiguration.at(i).maximum, // value
+                                               'f',                           // format
+                                               myConfiguration.at(i).decimals // precision
+        );
         if (myFontMetrics.horizontalAdvance(textOfMinimumValue) > myFontMetrics.horizontalAdvance(textOfMaximumValue)) {
             completeString += textOfMinimumValue;
         } else {
@@ -188,7 +206,14 @@ QSize MultiSpinBox::sizeHint() const
     QStyleOptionSpinBox myStyleOptionsForSpinBoxes;
     initStyleOption(&myStyleOptionsForSpinBoxes);
     QSize contentSize(width, height);
-    QSize result = style()->sizeFromContents(QStyle::CT_SpinBox, &myStyleOptionsForSpinBoxes, contentSize, this).expandedTo(QApplication::globalStrut());
+    // Calculate widget size necessary to display a given content
+    QSize result = style()
+                       ->sizeFromContents(QStyle::CT_SpinBox,          // type
+                                          &myStyleOptionsForSpinBoxes, // style options
+                                          contentSize,                 // size of the content
+                                          this                         // optional widget argument (for better caluclations)
+                                          )
+                       .expandedTo(QApplication::globalStrut());
 
     if (d_pointer->m_actionButtonCount > 0) {
         // Determine the size of icons for actions similar to what Qt
@@ -214,7 +239,10 @@ QSize MultiSpinBox::sizeHint() const
         //
         // TODO That‘s wrong. Normal spinboxes work fine in all CDE,
         // Motif and Kvantum styles. It should work also for MultiSpinBox!
-        const int actionButtonIconSize = style()->pixelMetric(QStyle::PM_SmallIconSize, nullptr, lineEdit());
+        const int actionButtonIconSize = style()->pixelMetric(QStyle::PM_SmallIconSize, // pixel metric type
+                                                              nullptr,                  // style options
+                                                              lineEdit()                // widget (optional)
+        );
         const int actionButtonMargin = actionButtonIconSize / 4;
         const int actionButtonWidth = actionButtonIconSize + 6;
         // Only 1 margin per button:
@@ -373,8 +401,11 @@ void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexAndUpdateTextAndSelectVal
 void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(int newIndex)
 {
     if (!isInRange(0, newIndex, m_sectionConfigurations.count() - 1)) {
-        qWarning() << "The function" << __func__ << "in file" << __FILE__ << "near to line" << __LINE__ << "was called with an invalid “newIndex“ argument of" << newIndex << "thought the valid range is currently [" << 0 << ", "
-                   << m_sectionConfigurations.count() - 1 << "]. This is a bug.";
+        qWarning() << "The function" << __func__                                      //
+                   << "in file" << __FILE__                                           //
+                   << "near to line" << __LINE__                                      //
+                   << "was called with an invalid “newIndex“ argument of" << newIndex //
+                   << "thought the valid range is currently [" << 0 << ", " << m_sectionConfigurations.count() - 1 << "]. This is a bug.";
         throw 0;
     }
 
@@ -767,8 +798,12 @@ void MultiSpinBox::MultiSpinBoxPrivate::updateCurrentValueFromText(const QString
     } else {
         // The text does not start with the correct characters.
         // This is an error.
-        qWarning() << "The function" << __func__ << "in file" << __FILE__ << "near to line" << __LINE__ << "was called with the invalid “lineEditText“ argument “" << lineEditText
-                   << "” that does not start with the expected character sequence “" << m_textBeforeCurrentValue << ". The call is ignored. This is a bug.";
+        qWarning() << "The function" << __func__                                                                         //
+                   << "in file" << __FILE__                                                                              //
+                   << "near to line" << __LINE__                                                                         //
+                   << "was called with the invalid “lineEditText“ argument “" << lineEditText                            //
+                   << "” that does not start with the expected character sequence “" << m_textBeforeCurrentValue << ". " //
+                   << "The call is ignored. This is a bug.";
         return;
     }
     if (cleanText.endsWith(m_textAfterCurrentValue)) {
@@ -776,8 +811,12 @@ void MultiSpinBox::MultiSpinBoxPrivate::updateCurrentValueFromText(const QString
     } else {
         // The text does not start with the correct characters.
         // This is an error.
-        qWarning() << "The function" << __func__ << "in file" << __FILE__ << "near to line" << __LINE__ << "was called with the invalid “lineEditText“ argument “" << lineEditText
-                   << "” that does not end with the expected character sequence “" << m_textAfterCurrentValue << ". The call is ignored. This is a bug.";
+        qWarning() << "The function" << __func__                                                                      //
+                   << "in file" << __FILE__                                                                           //
+                   << "near to line" << __LINE__                                                                      //
+                   << "was called with the invalid “lineEditText“ argument “" << lineEditText                         //
+                   << "” that does not end with the expected character sequence “" << m_textAfterCurrentValue << ". " //
+                   << "The call is ignored. This is a bug.";
         return;
     }
 
