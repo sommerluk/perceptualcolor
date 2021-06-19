@@ -240,6 +240,11 @@ private Q_SLOTS:
         QCOMPARE(myMulti.sectionConfigurations().at(0).prefix, myDoubleSpinBox.prefix());
         QCOMPARE(myMulti.sectionConfigurations().at(0).singleStep, myDoubleSpinBox.singleStep());
         QCOMPARE(myMulti.sectionConfigurations().at(0).suffix, myDoubleSpinBox.suffix());
+
+        // Whitebox tests
+        QCOMPARE(myMulti.sectionValues(), QList<double> {0});
+        QCOMPARE(myMulti.d_pointer->m_sectionValues, QList<double> {0});
+        QCOMPARE(myMulti.d_pointer->m_currentIndex, 0);
     }
 
     void testConstructor()
@@ -332,8 +337,11 @@ private Q_SLOTS:
         myConfigurations.append(MultiSpinBox::SectionConfiguration());
         myConfigurations.append(MultiSpinBox::SectionConfiguration());
         MultiSpinBox test;
+        QCOMPARE(test.sectionConfigurations().count(), 1);
+        QCOMPARE(test.d_pointer->m_currentIndex, 0);
         test.setSectionConfigurations(myConfigurations);
         QCOMPARE(test.sectionConfigurations().count(), 3);
+        QCOMPARE(test.d_pointer->m_currentIndex, 0);
 
         // Empty configurations shall be ignored
         test.setSectionConfigurations(QList<MultiSpinBox::SectionConfiguration>());
@@ -982,6 +990,23 @@ private Q_SLOTS:
         QCOMPARE(widget->sectionValues().at(2), 0);
     }
 
+    void testStepUpDown()
+    {
+        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
+        widget->setSectionConfigurations(exampleConfigurations);
+        QCOMPARE(widget->sectionValues().at(0), 0);
+        widget->stepUp();
+        QCOMPARE(widget->sectionValues().at(0), 1);
+        widget->stepUp();
+        QCOMPARE(widget->sectionValues().at(0), 2);
+        widget->stepDown();
+        QCOMPARE(widget->sectionValues().at(0), 1);
+        widget->stepDown();
+        QCOMPARE(widget->sectionValues().at(0), 0);
+        widget->stepDown();
+        QCOMPARE(widget->sectionValues().at(0), 0);
+    }
+
     void testUpdateValueFromText1()
     {
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
@@ -1189,14 +1214,14 @@ private Q_SLOTS:
         mySpinBox.addActionButton(new QAction(QStringLiteral(u"test"), &mySpinBox), QLineEdit::ActionPosition::TrailingPosition);
         QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 1);
         QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
-                 "Verify that the size hint has a bigger width than before after "
-                 "an action button has been added.");
+                 "Verify: After adding an action button, "
+                 "the size hint has a bigger width than before.");
         oldWidth = mySpinBox.sizeHint().width();
         mySpinBox.addActionButton(new QAction(QStringLiteral(u"test"), &mySpinBox), QLineEdit::ActionPosition::TrailingPosition);
         QCOMPARE(mySpinBox.d_pointer->m_actionButtonCount, 2);
         QVERIFY2(mySpinBox.sizeHint().width() > oldWidth,
-                 "Verify that the size hint has a bigger width than before after "
-                 "an action button has been added.");
+                 "Verify: After adding an action button, "
+                 "the size hint has a bigger width than before.");
     }
 
     void testFixSectionValue_data()
@@ -1234,7 +1259,6 @@ private Q_SLOTS:
         QList<double> myValues;
         myValues.append(value);
         mySpinBox.setSectionValues(myValues);
-        mySpinBox.d_pointer->fixSectionValue(0);
         QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigFalse);
 
         myConfiguration.isWrapping = true;
@@ -1242,7 +1266,6 @@ private Q_SLOTS:
         myConfigurations.append(myConfiguration);
         mySpinBox.setSectionConfigurations(myConfigurations);
         mySpinBox.setSectionValues(myValues);
-        mySpinBox.d_pointer->fixSectionValue(0);
         QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigTrue);
     }
 
@@ -1281,7 +1304,6 @@ private Q_SLOTS:
         QList<double> myValues;
         myValues.append(value);
         mySpinBox.setSectionValues(myValues);
-        mySpinBox.d_pointer->fixSectionValue(0);
         QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigFalse);
 
         myConfiguration.isWrapping = true;
@@ -1289,11 +1311,10 @@ private Q_SLOTS:
         myConfigurations.append(myConfiguration);
         mySpinBox.setSectionConfigurations(myConfigurations);
         mySpinBox.setSectionValues(myValues);
-        mySpinBox.d_pointer->fixSectionValue(0);
         QCOMPARE(mySpinBox.sectionValues().at(0), expectedOnIsWrappigTrue);
     }
 
-    void testValuesSetterAndConfigurationSetters()
+    void testValuesSetterAndConfigurationsSetter()
     {
         // Both, sectionValues() and sectionConfigurations() have a count()
         // that has to be identical. The count of sectionConfigurations() is
@@ -1366,42 +1387,111 @@ private Q_SLOTS:
         QCOMPARE(myMulti.sectionValues().at(1), 0);
     }
 
-    void testReturnKey()
+    void testSectionValuesChangedSignalBasic()
     {
-        QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
-        widget->show();
-        widget->setSectionConfigurations(exampleConfigurations);
-        // Assert that the setup is okay.
-        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  0%  0"));
+        // Initialize
+        MultiSpinBox myMulti;
+        MultiSpinBox::SectionConfiguration myConfig;
+        QList<MultiSpinBox::SectionConfiguration> myConfigs;
+        myConfigs.append(myConfig);
+        myConfigs.append(myConfig);
+        myMulti.setSectionConfigurations(myConfigs);
+        myMulti.show();
+        QSignalSpy spyMulti(&myMulti, //
+                            &MultiSpinBox::sectionValuesChanged);
+        QDoubleSpinBox myDouble;
+        myDouble.show();
+        QSignalSpy spyDouble(&myDouble,                                           //
+                             QOverload<double>::of(&QDoubleSpinBox::valueChanged) //
+        );
 
-        // Go to begin of the line edit
-        QTest::keyClick(widget.data(), Qt::Key_Home);
-        // Input
-        QTest::keyClick(widget.data(), Qt::Key_3);
-        QTest::keyClick(widget.data(), Qt::Key_7);
-        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"370°  0%  0"));
-        // Trigger the value fix
-        QTest::keyClick(widget.data(), Qt::Key_Return);
-        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"360°  0%  0"));
+        // Set a value different from the default
+        myMulti.setSectionValues(QList<double> {2, 2});
+        myDouble.setValue(2);
+        QCOMPARE(spyMulti.count(), 1);
+        QCOMPARE(spyMulti.count(), spyDouble.count());
 
-        // Go to end of the line edit
-        QTest::keyClick(widget.data(), Qt::Key_End);
-        // Input
-        QTest::keyClick(widget.data(), Qt::Key_9);
-        QTest::keyClick(widget.data(), Qt::Key_9);
-        QTest::keyClick(widget.data(), Qt::Key_9);
-        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"360°  0%  0999"));
-        // Trigger the value fix
-        QTest::keyClick(widget.data(), Qt::Key_Return);
-        QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"360°  0%  255"));
+        // Setting the same value again should not call again the signal
+        myMulti.setSectionValues(QList<double> {2, 2});
+        myDouble.setValue(2);
+        QCOMPARE(spyMulti.count(), 1);
+        QCOMPARE(spyMulti.count(), spyDouble.count());
+
+        // Setting a value list which has only one differet element triggers:
+        myMulti.setSectionValues(QList<double> {2, 3});
+        myDouble.setValue(3);
+        QCOMPARE(spyMulti.count(), 2);
+        QCOMPARE(spyMulti.count(), spyDouble.count());
+    }
+
+    void testSectionValuesChangedSignalKeyboardTracking()
+    {
+        // Initialize
+        MultiSpinBox myMulti;
+        myMulti.setSectionConfigurations(
+            // Use only one section to allow to compare easily
+            // with QDoubleSpinBox
+            QList<MultiSpinBox::SectionConfiguration> {MultiSpinBox::SectionConfiguration()});
+        myMulti.show();
+        QSignalSpy spyMulti(&myMulti, //
+                            &MultiSpinBox::sectionValuesChanged);
+        QDoubleSpinBox myDouble;
+        myDouble.show();
+        QSignalSpy spyDouble(&myDouble,                                           //
+                             QOverload<double>::of(&QDoubleSpinBox::valueChanged) //
+        );
+
+        // Test with keyboard tracking
+        myMulti.setKeyboardTracking(true);
+        myDouble.setKeyboardTracking(true);
+
+        // Get test data
+        QApplication::setActiveWindow(&myMulti);
+        QTest::keyClick(&myMulti, Qt::Key_Up); // Get text selection
+        QTest::keyClick(&myMulti, Qt::Key::Key_5);
+        QTest::keyClick(&myMulti, Qt::Key::Key_4);
+        QCOMPARE(myMulti.sectionValues().at(0), 54); // Assertion
+
+        // Get reference data
+        QApplication::setActiveWindow(&myDouble);
+        QTest::keyClick(&myDouble, Qt::Key_Up);
+        QTest::keyClick(&myDouble, Qt::Key::Key_5);
+        QTest::keyClick(&myDouble, Qt::Key::Key_4);
+        QCOMPARE(myDouble.value(), 54); // Assertion
+
+        // Test conformance of MultiSpinBox with QDoubleSpinBox’s behaviour
+        QCOMPARE(spyMulti.count(), spyDouble.count());
+        for (int i = 0; i < spyMulti.count(); ++i) {
+            QCOMPARE(spyMulti                    // Get value of first section of MultiSpinBox…
+                         .at(i)                  // Signal at position i
+                         .at(0)                  // First argument of this signal
+                         .value<QList<double>>() // Convert to original type
+                         .at(0),                 // First section of the MultiSpinBox
+                     spyDouble                   // Get value of QSpinBox…
+                         .at(i)                  // Signal at position i
+                         .at(0)                  // First argument of this signal
+                         .toDouble()             // Convert to original type
+            );
+        }
     }
 
     void testMetaTypeDeclaration()
     {
         QVariant test;
-        // The next line should produce a compiler error is the
+        // The next line should produce a compiler error if the
         // type is not declared to Qt’s Meta Object System.
         test.setValue(MultiSpinBox::SectionConfiguration());
+    }
+
+    void testMetaTypeDeclarationForPropertySectionValues()
+    {
+        // The data type QList<double> seems to be automatically declared
+        // because it’s an instance of QList. This unit test controls this
+        // assumption.
+        QVariant test;
+        // The next line should produce a compiler error if the
+        // type is not declared to Qt’s Meta Object System.
+        test.setValue(QList<double>());
     }
 
     void testSnippet02()

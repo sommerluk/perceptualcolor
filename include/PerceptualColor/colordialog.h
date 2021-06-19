@@ -367,16 +367,16 @@ public:
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use it reliably in Qt’s signals
-     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
     typedef QColorDialog::ColorDialogOption ColorDialogOption;
     /** @brief Local alias for QColorDialog::ColorDialogOptions
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use it reliably in Qt’s signals
-     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
     typedef QColorDialog::ColorDialogOptions ColorDialogOptions;
     /** @brief Layout dimensions
@@ -386,8 +386,8 @@ public:
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use it reliably in Qt’s signals
-     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
     enum class DialogLayoutDimensions {
         screenSizeDependent, /**< Decide automatically between

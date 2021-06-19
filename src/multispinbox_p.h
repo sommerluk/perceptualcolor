@@ -111,12 +111,12 @@ public:
     QPointer<ExtendedDoubleValidator> m_validator;
 
     // Functions
-    void fixSectionValue(int index);
     QString formattedValue(int index) const;
     bool isCursorPositionAtCurrentSectionValue(const int cursorPosition) const;
-    void setCurrentIndexAndUpdateTextAndSelectValue(int newIndex = 0);
+    void setCurrentIndexAndUpdateTextAndSelectValue(int newIndex);
     void setCurrentIndexToZeroAndUpdateTextAndSelectValue();
     void setCurrentIndexWithoutUpdatingText(int newIndex);
+    void setSectionValuesWithoutFurtherUpdating(const QList<double> &newSectionValues);
     void updatePrefixValueSuffixText();
 
 public Q_SLOTS:

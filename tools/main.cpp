@@ -51,6 +51,7 @@
 #include <QColorDialog>
 #include <QDateTimeEdit>
 #include <QDebug>
+#include <QDoubleSpinBox>
 #include <QImageReader>
 #include <QLabel>
 #include <QLineEdit>
@@ -58,6 +59,7 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QSlider>
+#include <QStyleFactory>
 #include <QVBoxLayout>
 #include <QtMath>
 
@@ -86,11 +88,80 @@ int main(int argc, char *argv[])
     m_colorDialog.setCurrentColor(myColor);
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
     m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
-    m_colorDialog.show();
     // m_colorDialog.setEnabled(false);
-    // m_colorDialog.setStyleSheet(
-    //     "background: yellow; color: red; border: 15px solid #FF0000;"
-    // );
+    // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");
+    m_colorDialog.show();
+
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("kvantum")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("gtk2")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("QtCurve")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Fusion")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("cde")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Cleanlooks")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("motif")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Plastique")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("dlight")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("ddark")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Oxygen")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Breeze")));
+    // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Windows")));
+
+    QDoubleSpinBox *mySpinBox = new QDoubleSpinBox;
+    mySpinBox->setPrefix(QStringLiteral("Prefix"));
+    mySpinBox->setSuffix(QStringLiteral("Suffix"));
+    mySpinBox->setMinimum(80);
+    mySpinBox->setMaximum(90);
+
+    // PerceptualColor::MultiSpinBox *mySpinBox = new PerceptualColor::MultiSpinBox;
+    // PerceptualColor::MultiSpinBox::SectionConfiguration myConfig;
+    // myConfig.prefix = QStringLiteral("Prefix");
+    // myConfig.suffix = QStringLiteral("Suffix");
+    // myConfig.maximum = 9;
+    // QList<PerceptualColor::MultiSpinBox::SectionConfiguration> myConfigs;
+    // myConfigs.append(myConfig);
+    // myConfigs.append(myConfig);
+    // mySpinBox->setSectionConfigurations(myConfigs);
+
+    // QDateTimeEdit *mySpinBox = new QDateTimeEdit;
+    // mySpinBox->setDisplayFormat(QStringLiteral("dd.MM.yyyy"));
+
+    QWidget myWidget;
+    QPushButton *myButton = new QPushButton;
+    QHBoxLayout *myLayout = new QHBoxLayout;
+    myLayout->addWidget(mySpinBox);
+    myLayout->addWidget(myButton);
+    myWidget.setLayout(myLayout);
+    mySpinBox->setButtonSymbols(QAbstractSpinBox::ButtonSymbols::NoButtons);
+    // mySpinBox->setAlignment(Qt::AlignRight);
+    // mySpinBox->setFrame(false);
+    // mySpinBox->setReadOnly(true);
+    // mySpinBox->setSpecialValueText(QStringLiteral("test"));
+    // mySpinBox->setWrapping(true);
+    mySpinBox->setAccelerated(true);
+    // qDebug() << mySpinBox->isGroupSeparatorShown();
+    mySpinBox->setGroupSeparatorShown(true);
+    mySpinBox->setKeyboardTracking(true);
+    // mySpinBox->setCorrectionMode(QAbstractSpinBox::CorrectionMode::CorrectToNearestValue);
+    mySpinBox->setKeyboardTracking(false);
+    qDebug() << mySpinBox->correctionMode();
+    // QString myString = QString::fromUtf8("abcd");
+    // int myInt = 2;
+    // mySpinBox->validate(myString, myInt);
+    mySpinBox->interpretText();
+    // mySpinBox->fixup(myString);
+
+    myWidget.show();
+
+    QAbstractButton::connect(                                 //
+        myButton,                                             //
+        &QAbstractButton::clicked,                            //
+        mySpinBox,                                            //
+        &QAbstractSpinBox::selectAll);                        //
+    QAbstractSpinBox::connect(                                //
+        mySpinBox,                                            //
+        QOverload<double>::of(&QDoubleSpinBox::valueChanged), //
+        mySpinBox,                                            //
+        [mySpinBox]() { qDebug() << mySpinBox->value(); });   //
 
     // Run
     return app.exec();

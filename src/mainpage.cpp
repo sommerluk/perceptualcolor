@@ -213,8 +213,12 @@
  * setters and getters)
  *
  * @todo A good widget library should
+ * - provide a complete documentation (✓)
  * - run on all systems (✓ We do not use system-specific code nor do we
  *   rely on byte order)
+ * - internationalization (i18n) done. This include support for right-to-left
+ *   layouts, as well as be ready for translation. (✓)
+ * - localization (l10n)
  * - support hight-dpi (✓)
  * - stylable by QStyle (? partial)
  * - stylable by style sheets (✗)

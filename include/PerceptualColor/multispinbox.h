@@ -58,21 +58,71 @@ namespace PerceptualColor
  * You can also have additional buttons within the spin box via the
  * @ref addActionButton() function.
  *
+ * @note This class inherits from <tt>QAbstractSpinBox</tt>, but some
+ * parts of the parent class’s API are not supported in <em>this</em>
+ * class. Do not use them:
+ * - <tt>selectAll()</tt> does not work as expected.
+ * - <tt>wrapping()</tt> is ignored. Instead, you can configures
+ *   the <em>wrapping</em> individually for each section via
+ *   @ref SectionConfiguration::isWrapping.
+ * - <tt>specialValue()</tt> is not supported.
+ *   <!-- Just as in QDateTimeEdit! -->
+ * - <tt>hasAcceptableInput()</tt> is not guaranteed to obey to a particular
+ *   and stable semantic.
+ * - <tt>fixup()</tt>, <tt>interpretText()</tt>, <tt>validate()</tt> are
+ *   not used nor do they anything.
+ * - <tt>keyboardTracking()</tt> is ignored. See the signal
+ *   @ref sectionValuesChanged for details.
+ * - <tt>correctionMode()</tt> is ignored.
+ * - <tt>isGroupSeparatorShown</tt> is ignored.
+ *
  * @internal
  *
- * @note It would be possible to add more functions to work with
- * section data. The interface could theoretically
+ * Further remarks on inherited API of <tt>QAbstractSpinBox</tt>:
+ * - <tt>selectAll()</tt>:
+ *   This slot has a default behaviour that relies on internal
+ *   <tt>QAbstracSpinBox</tt> private implementations, which we cannot use
+ *   because they are not part of the public API and can therefore change
+ *   at any moment. As it isn’t virtual, we cannot reimplement it either.
+ * - <tt>fixup(), interpretText(), validate()</tt>:
+ *   As long as we do not  interact with the private API of
+ *   <tt>QAbstractSpinBox</tt> (which we  cannot do because
+ *   there is no stability guaranteed), those functions  are never
+ *   called by <tt>QAbstractSpinBox</tt> nor does their default
+ *   implementation do anything. (They seem rather like an implementation
+ *   detail of Qt that was leaked to the public API.) We don’t use them
+ *   either.
+ * - <tt>isGroupSeparatorShown</tt>:
+ *   Implementing this seems complicate. In the base class, the setter
+ *   is  not virtual, and this property does not have a notify signal
+ *   eihter.  But we would have to react on a changes in this property:
+ *   The content of the <tt>QLineEdit</tt> has to be updated. And the
+ *   @ref minimumSizeHint and the @ref sizeHint will change, therefore
+ *   <tt>updateGeometry</tt> has to be called. It seems better not to
+ *   implement this. Alternativly, it could be implemented with a
+ *   per-section approach via  @ref SectionConfiguration.
+ *
+ * @note The interface of this class could theoretically
  * be similar to other Qt classes that offer similar concepts of various
  * data within a list: QComboBox, QHeaderView, QDateTimeEdit, QList – of
- * course with consistent naming. But probably it’s not worth the pain.
- * Currently, we only allow to get and set all the sections as whole, and for
- * our internal usage, that’s enought. Allowing changes to individual would
- * require a lot of additional code to make sure that after such a change,
- * the text curser is set the the appropriate position and the text selection
- * is also appropriate. For the moment, no further interface functions
- * are planned. And we continue with our configation-object-based interfaces.
+ * course with consistent naming. But usually you will not modify a single
+ * section configuration, but the hole set of configurations. Therefore
+ * we do the configuration by @ref SectionConfiguration objects, similiar
+ * to <tt>QNetworkConfiguration</tt> objects. Allowing changes to individual
+ * sections would require a lot of additional code to make sure that after
+ * such a change, the text curser is set the the appropriate position and
+ * the text selection is also appropriate. This might be problematic,
+ * and gives also little benefit.
  * However, a full-featured interface could look like that:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
+ *
+ * @todo Now, @ref setSectionValues does not select automatically the first
+ * section anymore. Is this in conformance with <tt>QDateTimeEdit</tt>?
+ *
+ * @todo <tt>Crtl-A</tt> support for this class. (Does this shortcut
+ * trigger <tt>selectAll()</tt>?)
+ *
+ * @todo <tt>Ctrl-U</tt> support for this class? If so, do it via @ref clear().
  *
  * @todo When creating a <tt>QDoubleSpinBox</tt> with <tt>decimals == 2</tt>
  * and then <tt>setValue(1.3579)</tt>, than <tt>value() == 1.36</tt>. So
@@ -161,6 +211,31 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
 
+    /** @brief A list containing the values of all sections.
+     *
+     * @note It is not this property, but @ref sectionConfigurations
+     * which determines the actually available count of sections in this
+     * widget. If you want to change the number of available sections,
+     * call <em>first</em> @ref setSectionConfigurations and only
+     * <em>after</em> that adapt this property.
+     *
+     * @invariant This property contains always as many elements as
+     * @ref sectionConfigurations contains.
+     *
+     * @sa READ @ref sectionValues() const
+     * @sa WRITE @ref setSectionValues()
+     * @sa NOTIFY @ref sectionValuesChanged()
+     *
+     * @internal
+     *
+     * @todo Does QList<double> work in queued signals out-of-the-box?
+     * Unit tests!
+     *
+     * @todo  Actually implement NOTIFY signal and unit-test it! It has
+     * to follow QAbstracSpinBox::keyboardTracking settings (and maybe
+     * other settings from QAbstractSpinBox)! */
+    Q_PROPERTY(QList<double> sectionValues READ sectionValues WRITE setSectionValues NOTIFY sectionValuesChanged USER true)
+
 public:
     /** @brief The configuration of a single section
      * within a @ref MultiSpinBox.
@@ -173,8 +248,8 @@ public:
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use it reliably in Qt’s signals
-     * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object.
      *
      * @internal
@@ -230,7 +305,7 @@ public:
         double minimum = 0;
         /** @brief A prefix to be displayed before the value. */
         QString prefix;
-        /** The smaller of two natural steps.
+        /** @brief The smaller of two natural steps.
          *
          * Valid range: >= 0
          *
@@ -246,14 +321,37 @@ public:
     /** @brief Default destructor */
     virtual ~MultiSpinBox() noexcept override;
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
+    virtual void clear() override;
     virtual QSize minimumSizeHint() const override;
-    // TODO Does QList<double> work in queued signals out-of-the-box? Do the property declaration!
     Q_INVOKABLE QList<MultiSpinBox::SectionConfiguration> sectionConfigurations() const;
-    Q_INVOKABLE QList<double> sectionValues() const;
+    /** @brief Getter for property @ref sectionValues
+     *  @returns the property @ref sectionValues */
+    QList<double> sectionValues() const;
     Q_INVOKABLE void setSectionConfigurations(const QList<MultiSpinBox::SectionConfiguration> &newSectionConfigurations);
-    Q_INVOKABLE void setSectionValues(const QList<double> &newSectionValues);
     virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
+
+public Q_SLOTS:
+    void setSectionValues(const QList<double> &newSectionValues);
+
+Q_SIGNALS:
+    /** @brief Notify signal for property @ref sectionValues.
+     *
+     * This signal is emitted whenever the value in one or more sections
+     * changes.
+     *
+     * @param newSectionValues the new @ref sectionValues
+     *
+     * Depending on your use case (for
+     * example if you want to use for <em>queued</em> signal-slot connections),
+     * you might consider calling <tt>qRegisterMetaType()</tt> for
+     * this type, once you have a QApplication object.
+     *
+     * @note The property <tt>keyboardTracking()</tt> of the base class
+     * is currently ignored. Keyboard tracking is <em>always</em> enabled:
+     * The spinbox emits this signal while the new value is being entered
+     * from the keyboard – one signal for each key stroke. */
+    void sectionValuesChanged(const QList<double> &newSectionValues);
 
 protected:
     virtual void changeEvent(QEvent *event) override;

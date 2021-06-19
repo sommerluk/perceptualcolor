@@ -152,7 +152,7 @@ private Q_SLOTS:
     void testMetaTypeDeclaration()
     {
         QVariant test;
-        // The next line should produce a compiler error is the
+        // The next line should produce a compiler error if the
         // type is not declared to Qt’s Meta Object System.
         test.setValue(LchDouble());
     }

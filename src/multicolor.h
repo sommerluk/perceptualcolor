@@ -54,8 +54,8 @@ namespace PerceptualColor
  *
  * This type is declared as type to Qt’s type system via
  * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use it reliably in Qt’s signals
- * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
+ * example if you want to use for <em>queued</em> signal-slot connections),
+ * you might consider calling <tt>qRegisterMetaType()</tt> for
  * this type, once you have a QApplication object.
  *
  * This data type can be passed to QDebug thanks to
