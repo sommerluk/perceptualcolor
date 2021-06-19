@@ -224,6 +224,8 @@ private Q_SLOTS:
         MultiSpinBox::SectionConfiguration mySectionConfiguration;
         MultiSpinBox myMulti;
         QDoubleSpinBox myDoubleSpinBox;
+
+        // Test default values of the configuration object:
         QCOMPARE(mySectionConfiguration.decimals, myDoubleSpinBox.decimals());
         QCOMPARE(mySectionConfiguration.isWrapping, myDoubleSpinBox.wrapping());
         QCOMPARE(mySectionConfiguration.maximum, myDoubleSpinBox.maximum());
@@ -231,7 +233,18 @@ private Q_SLOTS:
         QCOMPARE(mySectionConfiguration.prefix, myDoubleSpinBox.prefix());
         QCOMPARE(mySectionConfiguration.singleStep, myDoubleSpinBox.singleStep());
         QCOMPARE(mySectionConfiguration.suffix, myDoubleSpinBox.suffix());
+
+        // Test default section values
         QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test default values of the configuration directly in the widget
+        QCOMPARE(myMulti.sectionConfigurations().at(0).decimals, myDoubleSpinBox.decimals());
+        QCOMPARE(myMulti.sectionConfigurations().at(0).isWrapping, myDoubleSpinBox.wrapping());
+        QCOMPARE(myMulti.sectionConfigurations().at(0).maximum, myDoubleSpinBox.maximum());
+        QCOMPARE(myMulti.sectionConfigurations().at(0).minimum, myDoubleSpinBox.minimum());
+        QCOMPARE(myMulti.sectionConfigurations().at(0).prefix, myDoubleSpinBox.prefix());
+        QCOMPARE(myMulti.sectionConfigurations().at(0).singleStep, myDoubleSpinBox.singleStep());
+        QCOMPARE(myMulti.sectionConfigurations().at(0).suffix, myDoubleSpinBox.suffix());
     }
 
     void testConstructor()
