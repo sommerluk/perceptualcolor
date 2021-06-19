@@ -158,28 +158,35 @@ int main(int argc, char *argv[])
     screenshot(&m_gradientSlider);
 
     MultiSpinBox m_multiSpinBox;
-    PerceptualColor::MultiSpinBox::SectionData mySection;
-    QList<PerceptualColor::MultiSpinBox::SectionData> hsvSections;
+    PerceptualColor::MultiSpinBox::SectionConfiguration mySection;
+    QList<PerceptualColor::MultiSpinBox::SectionConfiguration> hsvSectionConfigurations;
+    QList<double> values;
+
     mySection.decimals = 1;
     mySection.prefix = QString();
     mySection.minimum = 0;
-    mySection.value = 310;
     mySection.isWrapping = true;
     mySection.maximum = 360;
     mySection.suffix = QStringLiteral(u"° ");
-    hsvSections.append(mySection);
+    hsvSectionConfigurations.append(mySection);
+    values.append(310);
+
     mySection.prefix = QStringLiteral(u" ");
     mySection.minimum = 0;
-    mySection.value = 200;
     mySection.maximum = 255;
     mySection.isWrapping = false;
     mySection.suffix = QStringLiteral(u" ");
-    hsvSections.append(mySection);
-    mySection.value = 100;
+    hsvSectionConfigurations.append(mySection);
+    values.append(200);
+
     mySection.suffix = QString();
-    hsvSections.append(mySection);
-    m_multiSpinBox.setSections(hsvSections);
+    hsvSectionConfigurations.append(mySection);
+    values.append(100);
+
+    m_multiSpinBox.setSectionConfigurations(hsvSectionConfigurations);
+    m_multiSpinBox.setSectionValues(values);
     screenshot(&m_multiSpinBox);
+
     // Refresh button for the HLC spin box
     RefreshIconEngine *myIconEngine = new RefreshIconEngine;
     myIconEngine->setReferenceWidget(&m_multiSpinBox);
@@ -191,7 +198,8 @@ int main(int argc, char *argv[])
                                     &m_multiSpinBox  // parent object
     );
     MultiSpinBox m_multiSpinBoxWithButton;
-    m_multiSpinBoxWithButton.setSections(hsvSections);
+    m_multiSpinBoxWithButton.setSectionConfigurations(hsvSectionConfigurations);
+    m_multiSpinBoxWithButton.setSectionValues(values);
     m_multiSpinBoxWithButton.addActionButton(myAction, QLineEdit::ActionPosition::TrailingPosition);
     screenshot(&m_multiSpinBoxWithButton, QStringLiteral("WithButton"));
 

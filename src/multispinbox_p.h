@@ -58,6 +58,10 @@ public:
     /** @brief Only for unit tests. */
     friend class TestMultiSpinBox;
 
+    // constexpr
+    /** @brief Default value of a section */
+    static constexpr double defaultSectionValue = 0;
+
     /** @brief Counter for all actions added by @ref addActionButton. */
     int m_actionButtonCount = 0;
     /** @brief Holds the index of the currently selected section.
@@ -68,9 +72,11 @@ public:
      *
      * This list is guaranteed to contain at least <em>one</em> section.
      *
-     * @sa @ref sections()
-     * @sa @ref setSections() */
-    QList<MultiSpinBox::SectionData> m_sections;
+     * @sa @ref sectionConfigurations()
+     * @sa @ref setSectionConfigurations() */
+    QList<MultiSpinBox::SectionConfiguration> m_sectionConfigurations;
+    /** @brief Internal storage for property @ref sectionValues. */
+    QList<double> m_sectionValues;
     /** @brief The string of everything <em>after</em> the value of the
      * current section.
      *
@@ -102,8 +108,9 @@ public:
      * difficult to differenciate from the actual value. */
     QPointer<ExtendedDoubleValidator> m_validator;
 
-    static MultiSpinBox::SectionData fixedSection(const MultiSpinBox::SectionData &section);
-    QString formattedValue(const SectionData &mySection) const;
+    // Functions
+    void fixSectionValue(int index);
+    QString formattedValue(int index) const;
     bool isCursorPositionAtCurrentSectionValue(const int cursorPosition) const;
     void setCurrentIndexAndUpdateTextAndSelectValue(int newIndex = 0);
     void setCurrentIndexToZeroAndUpdateTextAndSelectValue();

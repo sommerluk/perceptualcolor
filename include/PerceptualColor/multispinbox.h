@@ -48,7 +48,7 @@ namespace PerceptualColor
  * @image html MultiSpinBox.png "MultiSpinBox" width=200
  *
  * This widget works with floating point precision. You can set the
- * precision individually by section using @ref SectionData::decimals.
+ * precision individually by section using @ref SectionConfiguration::decimals.
  * (This value can also be <tt>0</tt> to get integer-like behavoir.)
  *
  * Example code to create a @ref MultiSpinBox for a HSV color value
@@ -61,7 +61,7 @@ namespace PerceptualColor
  * @internal
  *
  * @note It would be possible to add more functions to work with
- * @ref MultiSpinBox::SectionData. The interface could theoretically
+ * section data. The interface could theoretically
  * be similar to other Qt classes that offer similar concepts of various
  * data within a list: QComboBox, QHeaderView, QDateTimeEdit, QList – of
  * course with consistent naming. But probably it’s not worth the pain.
@@ -70,7 +70,8 @@ namespace PerceptualColor
  * require a lot of additional code to make sure that after such a change,
  * the text curser is set the the appropriate position and the text selection
  * is also appropriate. For the moment, no further interface functions
- * are planned. However, a full-featured interface could look like that:
+ * are planned. And we continue with our configation-object-based interfaces.
+ * However, a full-featured interface could look like that:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
  *
  * @todo When creating a <tt>QDoubleSpinBox</tt> with <tt>decimals == 2</tt>
@@ -153,27 +154,20 @@ namespace PerceptualColor
  *
  * @todo Do not text-cursor-select more than <em>one</em> value when
  * editing (or do not allow text selection at all)? Also: Selecting text
- * with the mouse cursor seems somewhat impredictable.
- *
- * @todo Splitting @ref MultiSpinBox::SectionData into
- * <tt>SectionConfiguration</tt> and <tt>value</tt>? Disadvantage: Requires
- * to double all access functions. Advantage: Often, you only want the value,
- * and not the <tt>SectionConfiguration</tt>. But this change is probably
- * not worth all the work for little benefit…
- */
+ * with the mouse cursor seems somewhat impredictable. */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT
 
 public:
-    /** @brief The data of a single section within a @ref MultiSpinBox.
+    /** @brief The configuration of a single section
+     * within a @ref MultiSpinBox.
      *
-     * For a specific section within a @ref MultiSpinBox, this data structure
-     * contains on the one hand the @ref value itself, and on the other hand
-     * also the various setting parameters for the widget.
+     * For a specific section within a @ref MultiSpinBox, this configuration
+     * contains various settings.
      *
      * This data type can be passed to QDebug thanks to
-     * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value)
+     * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionConfiguration &value)
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
@@ -183,8 +177,12 @@ public:
      *
      * @internal
      *
-     * This data type allows all configuration settings that are available
-     * in QAbstractSpinBox, except <tt>stepType</tt>.
+     * Also Qt itself uses this configuration-object-based approach with its
+     * QNetworkConfiguration class (including @ref pimpl and
+     * copy-constructors).
+     *
+     * This data type provides currently all configuration settings that are
+     * available in QAbstractSpinBox, except <tt>stepType</tt>.
      *
      * @todo Make sure that things like “maximum >= minimum” are
      * guaranteed. Maybe get rid of this class (at least in the public API)
@@ -194,19 +192,20 @@ public:
      * @todo How to make this future-proof? Maybe later we want to add
      * <tt>stepType</tt> values? Are d-pointers working well when
      * this data structure has to be copy-able? */
-    struct SectionData {
+    struct SectionConfiguration {
         /** @brief The number of digits after the decimal point.
          *
          * (This value can also be <tt>0</tt> to get integer-like behavoir.) */
         int decimals = 2;
-        /** @brief Holds whether or not @ref value wraps around when it
-         * reaches @ref minimum or @ref maximum.
+        /** @brief Holds whether or not @ref sectionValues wrap around when
+         * they reaches @ref minimum or @ref maximum.
          *
          * The default is <tt>false</tt>.
          *
-         * If <tt>false</tt>, @ref value shall be bound between @ref minimum
-         * and  @ref maximum. If <tt>true</tt>, @ref value shall be treated
-         * as a circular value.
+         * If <tt>false</tt>, @ref sectionValues shall be bound between
+         * @ref minimum and  @ref maximum. If <tt>true</tt>,
+         * @ref sectionValues shall be treated
+         * as a circular sectionValues.
          *
          * Example: You have a section that displays a value measured in
          * degree. @ref minimum is <tt>0</tt>. @ref maximum is <tt>360</tt>.
@@ -235,13 +234,10 @@ public:
          *
          * When the user uses the arrows to change the spin box’s value
          * the value will be incremented/decremented by the amount of the
-         * @ref singleStep (except if @ref stepType provides different
-         * behaviour). */
+         * @ref singleStep. */
         double singleStep = 1;
         /** @brief A suffix to be displayed behind the value. */
         QString suffix;
-        /** @brief The current actual value of the section. */
-        double value = 0;
     };
 
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
@@ -249,8 +245,11 @@ public:
     virtual ~MultiSpinBox() noexcept override;
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual QSize minimumSizeHint() const override;
-    Q_INVOKABLE QList<MultiSpinBox::SectionData> sections() const;
-    Q_INVOKABLE void setSections(const QList<MultiSpinBox::SectionData> &newSections);
+    // TODO Does QList<double> work in queued signals out-of-the-box? Do the property declaration!
+    Q_INVOKABLE QList<MultiSpinBox::SectionConfiguration> sectionConfigurations() const;
+    Q_INVOKABLE QList<double> sectionValues() const;
+    Q_INVOKABLE void setSectionConfigurations(const QList<MultiSpinBox::SectionConfiguration> &newSectionConfigurations);
+    Q_INVOKABLE void setSectionValues(const QList<double> &newSectionValues);
     virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
 
@@ -280,10 +279,10 @@ private:
     friend class TestMultiSpinBox;
 };
 
-PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionData &value);
+PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionConfiguration &value);
 
 } // namespace PerceptualColor
 
-Q_DECLARE_METATYPE(PerceptualColor::MultiSpinBox::SectionData)
+Q_DECLARE_METATYPE(PerceptualColor::MultiSpinBox::SectionConfiguration)
 
 #endif // MULTISPINBOX_H

@@ -250,28 +250,28 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &col
     // Update all the widgets for opaque color…
     QColor tempRgbQColor = m_rgbColorSpace->toQColorRgbBound(color);
     tempRgbQColor.setAlpha(255);
-    QList<MultiSpinBox::SectionData> tempSections;
+    QList<double> valueList;
 
     // Update RGB widget
-    tempSections = m_rgbSpinBox->sections();
-    tempSections[0].value = tempRgbQColor.redF() * 255;
-    tempSections[1].value = tempRgbQColor.greenF() * 255;
-    tempSections[2].value = tempRgbQColor.blueF() * 255;
-    m_rgbSpinBox->setSections(tempSections);
+    valueList.clear();
+    valueList.append(tempRgbQColor.redF() * 255);
+    valueList.append(tempRgbQColor.greenF() * 255);
+    valueList.append(tempRgbQColor.blueF() * 255);
+    m_rgbSpinBox->setSectionValues(valueList);
 
     // Update HSV widget
-    tempSections = m_hsvSpinBox->sections();
-    tempSections[0].value = tempRgbQColor.hsvHueF() * 360;
-    tempSections[1].value = tempRgbQColor.hsvSaturationF() * 255;
-    tempSections[2].value = tempRgbQColor.valueF() * 255;
-    m_hsvSpinBox->setSections(tempSections);
+    valueList.clear();
+    valueList.append(tempRgbQColor.hsvHueF() * 360);
+    valueList.append(tempRgbQColor.hsvSaturationF() * 255);
+    valueList.append(tempRgbQColor.valueF() * 255);
+    m_hsvSpinBox->setSectionValues(valueList);
 
     // Update HLC widget
-    tempSections = m_hlcSpinBox->sections();
-    tempSections[0].value = m_currentOpaqueColor.h;
-    tempSections[1].value = m_currentOpaqueColor.l;
-    tempSections[2].value = m_currentOpaqueColor.c;
-    m_hlcSpinBox->setSections(tempSections);
+    valueList.clear();
+    valueList.append(m_currentOpaqueColor.h);
+    valueList.append(m_currentOpaqueColor.l);
+    valueList.append(m_currentOpaqueColor.c);
+    m_hlcSpinBox->setSectionValues(valueList);
 
     // Update RGB hex widget
     m_rgbLineEdit->setText(tempRgbQColor.name());
@@ -319,8 +319,14 @@ void ColorDialog::ColorDialogPrivate::readLightnessValue()
 void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 {
     //     qDebug() << "readHsvNumericValues called";
-    QList<MultiSpinBox::SectionData> hsvSections = m_hsvSpinBox->sections();
-    setCurrentOpaqueQColor(QColor::fromHsvF(hsvSections[0].value / 360.0, hsvSections[1].value / 255.0, hsvSections[2].value / 255.0));
+    QList<double> hsvValues = m_hsvSpinBox->sectionValues();
+    setCurrentOpaqueQColor(
+        // Create a QColor object…
+        QColor::fromHsvF(
+            // …from HSV spinbox.
+            hsvValues.at(0) / 360.0,
+            hsvValues.at(1) / 255.0,
+            hsvValues.at(2) / 255.0));
 }
 
 /** @brief Reads the decimal RGB numbers in the dialog and
@@ -328,8 +334,14 @@ void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 void ColorDialog::ColorDialogPrivate::readRgbNumericValues()
 {
     //     qDebug() << "readRgbNumericValues called";
-    QList<MultiSpinBox::SectionData> rgbSections = m_rgbSpinBox->sections();
-    setCurrentOpaqueQColor(QColor::fromRgbF(rgbSections[0].value / 255.0, rgbSections[1].value / 255.0, rgbSections[2].value / 255.0));
+    QList<double> rgbValues = m_rgbSpinBox->sectionValues();
+    setCurrentOpaqueQColor(
+        // Create a QColor object…
+        QColor::fromRgbF(
+            // …from the RGB spinbox values.
+            rgbValues.at(0) / 255.0,
+            rgbValues.at(1) / 255.0,
+            rgbValues.at(2) / 255.0));
 }
 
 /** @brief Reads the hexadecimal RGB numbers in the dialog and
@@ -533,15 +545,15 @@ void ColorDialog::ColorDialogPrivate::initialize()
     // myIcon takes ownership of myIconEngine, therefore we won’t
     // delete myIconEngine manually.
     QIcon myIcon = QIcon(myIconEngine);
-    QAction *myAction = new QAction(myIcon,          // icon
-                                    QLatin1String(), // text
-                                    // The q_pointer’s object is still not
-                                    // fully initialized at this point, but
-                                    // it’s base class constructor has fully
-                                    // run; this should be enough to use
-                                    // functionality based on QWidget.
-                                    q_pointer // parent object
-    );
+    QAction *myAction = new QAction(
+        // Icon:
+        myIcon,
+        // Text:
+        QLatin1String(),
+        // The q_pointer’s object is still not fully initialized at this point,
+        // but it’s base class constructor has fully run; this should be enough
+        // to use functionality based on QWidget. So: Parent object:
+        q_pointer);
     m_hlcSpinBox->addActionButton(myAction, QLineEdit::ActionPosition::TrailingPosition);
     connect(myAction,                                 // sender
             &QAction::triggered,                      // signal
@@ -554,12 +566,11 @@ void ColorDialog::ColorDialogPrivate::initialize()
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
 {
-    //     qDebug() << "readHlcNumericValues called";
-    QList<MultiSpinBox::SectionData> hlcSections = m_hlcSpinBox->sections();
+    QList<double> hlcValues = m_hlcSpinBox->sectionValues();
     LchDouble lch;
-    lch.h = hlcSections[0].value;
-    lch.l = hlcSections[1].value;
-    lch.c = hlcSections[2].value;
+    lch.h = hlcValues.at(0);
+    lch.l = hlcValues.at(1);
+    lch.c = hlcValues.at(2);
     setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(lch));
 }
 
@@ -570,12 +581,12 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
 {
     // Setup
     constexpr int decimals = 0;
-    MultiSpinBox::SectionData mySection;
+    MultiSpinBox::SectionConfiguration mySection;
     mySection.decimals = decimals;
 
     // Create RGB MultiSpinBox
     m_rgbSpinBox = new MultiSpinBox();
-    QList<MultiSpinBox::SectionData> rgbSections;
+    QList<MultiSpinBox::SectionConfiguration> rgbSections;
     mySection.minimum = 0;
     mySection.maximum = 255;
     mySection.suffix = QStringLiteral(u" ");
@@ -584,7 +595,7 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     rgbSections.append(mySection);
     mySection.suffix = QString();
     rgbSections.append(mySection);
-    m_rgbSpinBox->setSections(rgbSections);
+    m_rgbSpinBox->setSectionConfigurations(rgbSections);
     m_rgbSpinBox->setWhatsThis(tr("<p>Red, green, blue: 0–255</p>"));
 
     // Create widget for the hex style color representation
@@ -603,7 +614,7 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
 
     // Create HSV spin box
     m_hsvSpinBox = new MultiSpinBox();
-    QList<MultiSpinBox::SectionData> hsvSections;
+    QList<MultiSpinBox::SectionConfiguration> hsvSections;
     mySection.prefix = QString();
     mySection.minimum = 0;
     mySection.maximum = 360;
@@ -617,7 +628,7 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     hsvSections.append(mySection);
     mySection.suffix = QString();
     hsvSections.append(mySection);
-    m_hsvSpinBox->setSections(hsvSections);
+    m_hsvSpinBox->setSectionConfigurations(hsvSections);
     m_hsvSpinBox->setWhatsThis(
         tr("<p>Hue: 0°–360°</p>"
            "<p>Saturation: 0–255</p>"
@@ -668,7 +679,7 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     }
 
     // Create widget for the HLC color representation
-    QList<MultiSpinBox::SectionData> hlcSections;
+    QList<MultiSpinBox::SectionConfiguration> hlcSections;
     m_hlcSpinBox = new MultiSpinBox;
     mySection.minimum = 0;
     mySection.maximum = 360;
@@ -686,7 +697,7 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     mySection.suffix = QLatin1String();
     mySection.isWrapping = false;
     hlcSections.append(mySection);
-    m_hlcSpinBox->setSections(hlcSections);
+    m_hlcSpinBox->setSectionConfigurations(hlcSections);
     m_hlcSpinBox->setWhatsThis(
         tr("<p>Hue: 0°–360°</p>"
            "<p>Lightness: 0%–100%</p>"
