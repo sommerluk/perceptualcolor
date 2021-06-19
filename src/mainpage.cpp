@@ -75,8 +75,6 @@
  *
  * @internal
  *
- * @todo Search for <em>’s</em> and substitute it by <em>’s</em>.
- *
  * @todo Provide Q_DECLARE_TYPEINFO for our types? Provide an init()
  * function that calls qRegisterMetaType() for all our types?
  *
