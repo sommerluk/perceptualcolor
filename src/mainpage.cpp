@@ -75,7 +75,7 @@
  *
  * @internal
  *
- * @todo Search for <em>'s</em> and substitute it by <em>’s</em>.
+ * @todo Search for <em>’s</em> and substitute it by <em>’s</em>.
  *
  * @todo Provide Q_DECLARE_TYPEINFO for our types? Provide an init()
  * function that calls qRegisterMetaType() for all our types?
@@ -270,7 +270,7 @@
  * @todo Use <a href="https://lvc.github.io/abi-compliance-checker/">
  * abi-compliance-checker</a> to control ABI compatibility.
  *
- * @todo Follow KDE's <a href="https://hig.kde.org/index.html">HIG</a>
+ * @todo Follow KDE’s <a href="https://hig.kde.org/index.html">HIG</a>
  *
  * @todo Test linking against lcms.h in version 2.0.0 for compatibility
  * (or require more recent version?)

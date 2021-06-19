@@ -42,8 +42,8 @@ namespace PerceptualColor
  * set the brush color.
  *
  * At difference to QColorDialog, this
- * dialog's graphical components are perceptually uniform and therefore more
- * intuitive. It's internally based on the LCh color model, which does reflect
+ * dialog’s graphical components are perceptually uniform and therefore more
+ * intuitive. It’s internally based on the LCh color model, which does reflect
  * the human perception much better than RGB or its transforms like HSV. At
  * the same time, this dialog does not require the user itself to know
  * anything about LCh at all, because the graphical representations is
@@ -97,7 +97,7 @@ namespace PerceptualColor
  *   standard color, the corresponding static functions of QColorDialog are
  *   not available in this class.
  * - The option <tt>ColorDialogOption::DontUseNativeDialog</tt>
- *   will always remain <tt>false</tt> (even if set explicitly), because it's
+ *   will always remain <tt>false</tt> (even if set explicitly), because it’s
  *   just the point of this library to provide an own, non-native dialog.
  * - While the enum declaration @ref ColorDialogOption itself is aliased
  *   here, this isn't possible for the enum values itself. Therefor, when
@@ -320,7 +320,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * | DontUseNativeDialog | true          | Use Qt’s standard color dialog instead of the operating system native color dialog.
      *
      *   @invariant The option <tt>ColorDialogOption::DontUseNativeDialog</tt>
-     *   will always be <tt>true</tt> because it's just the point of
+     *   will always be <tt>true</tt> because it’s just the point of
      *   this library to provide an own, non-native dialog. (If you
      *   set  <tt>ColorDialogOption::DontUseNativeDialog</tt> explicitly
      *   to <tt>false</tt>, this will silently be ignored, while the
@@ -367,7 +367,7 @@ public:
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use it reliably in Qt's signals
+     * example if you want to use it reliably in Qt’s signals
      * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
     typedef QColorDialog::ColorDialogOption ColorDialogOption;
@@ -375,7 +375,7 @@ public:
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use it reliably in Qt's signals
+     * example if you want to use it reliably in Qt’s signals
      * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
     typedef QColorDialog::ColorDialogOptions ColorDialogOptions;
@@ -386,7 +386,7 @@ public:
      *
      * This type is declared as type to Qt’s type system via
      * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use it reliably in Qt's signals
+     * example if you want to use it reliably in Qt’s signals
      * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
      * this type, once you have a QApplication object. */
     enum class DialogLayoutDimensions {

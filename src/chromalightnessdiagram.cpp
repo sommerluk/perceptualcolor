@@ -437,7 +437,7 @@ void ChromaLightnessDiagram::keyPressEvent(QKeyEvent *event)
         //      The default implementation closes popup widgets if the
         //      user presses the key sequence for QKeySequence::Cancel
         //      (typically the Escape key). Otherwise the event is
-        //      ignored, so that the widget's parent can interpret it.“
+        //      ignored, so that the widget’s parent can interpret it.“
         QWidget::keyPressEvent(event);
         return;
     }

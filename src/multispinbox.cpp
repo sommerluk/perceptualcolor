@@ -731,7 +731,7 @@ void MultiSpinBox::stepBy(int steps)
     d_pointer->m_sectionValues[currentIndex] += steps * d_pointer->m_sectionConfigurations.at(currentIndex).singleStep;
     // As explained in QAbstractSpinBox documentation:
     //    “Note that this function is called even if the resulting value will
-    //     be outside the bounds of minimum and maximum. It's this function's
+    //     be outside the bounds of minimum and maximum. It’s this function’s
     //     job to handle these situations.”
     // Therefore, the result is bound to the actual minimum and maximum
     // values:

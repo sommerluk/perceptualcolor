@@ -1,4 +1,4 @@
-﻿# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT
 #
 # Copyright (c) 2020 Lukas Sommer sommerluk@gmail.com
 #
@@ -258,7 +258,7 @@ kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 
 ################# Build library #################
 # TODO enable this
-# The headers have to be added here explicitly because otherwise Qt's MOC
+# The headers have to be added here explicitly because otherwise Qt’s MOC
 # would not find them because they are not in the same directory as the
 # corresponding .cpp files
 # add_library(perceptualcolor SHARED
@@ -301,7 +301,7 @@ add_library(perceptualcolorexport SHARED
 )
 # Setting the symbol visibility to “visible”. Following GCC documentation,
 # indeed the option for “visible” is called “default” (Sounds strange, but
-# it's true.)
+# it’s true.)
 set_target_properties(perceptualcolorexport PROPERTIES CXX_VISIBILITY_PRESET
     default
 )

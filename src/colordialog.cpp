@@ -131,7 +131,7 @@ QColor ColorDialog::currentColor() const
  * @param color the new color
  * @post The property @ref currentColor is adapted as follows:
  * - If <em>color</em> is not valid, <tt>Qt::black</tt> is used instead.
- * - If <em>color</em>'s <tt>QColor::Spec</tt> is <em>not</em>
+ * - If <em>color</em>’s <tt>QColor::Spec</tt> is <em>not</em>
  *   <tt>QColor::Spec::Rgb</tt> then it will be converted silently
  *   to <tt>QColor::Spec::Rgb</tt>
  * - The RGB part of @ref currentColor will be the RGB part of <tt>color</tt>.
@@ -830,7 +830,7 @@ QColor ColorDialog::selectedColor() const
  * Reimplemented from base class.
  *
  * When a dialog, that wasn't formerly visible, gets visible,
- * it's @ref selectedColor value is cleared.
+ * it’s @ref selectedColor value is cleared.
  *
  * @param visible holds whether or not the dialog should be visible */
 void ColorDialog::setVisible(bool visible)
@@ -910,7 +910,7 @@ void ColorDialog::ColorDialogPrivate::applyLayoutDimensions()
         // devices (high-DPI…).
 
         // We should not use more than 70% of the screen for a dialog.
-        // That's roughly the same as the default maximum sizes for
+        // That’s roughly the same as the default maximum sizes for
         // a QDialog.
         effectivelyAvailableScreenWidth = qRound(QGuiApplication::primaryScreen()->availableSize().width() * 0.7);
 

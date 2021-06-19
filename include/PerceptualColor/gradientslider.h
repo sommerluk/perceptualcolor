@@ -119,11 +119,11 @@ class PERCEPTUALCOLOR_IMPORTEXPORT GradientSlider : public AbstractDiagram
      * orientations are <tt>Qt::Horizontal</tt> and <tt>Qt::Vertical</tt>.
      *
      * Also, <tt>Qt::Orientation</tt> is declared in this header as type to
-     * Qt's type system: <tt>Q_DECLARE_METATYPE(Qt::Orientation)</tt>. This
+     * Qt’s type system: <tt>Q_DECLARE_METATYPE(Qt::Orientation)</tt>. This
      * is done because Qt itself does not declare this type as meta type.
      * Because we use it here in a property including a signal, we have to
      * declare this type. Depending on your use case (for example if you
-     * want to use it reliably in Qt's signals and slots), you might consider
+     * want to use it reliably in Qt’s signals and slots), you might consider
      * calling <tt>qRegisterMetaType()</tt> for this type, once you have
      * a QApplication object.
      *

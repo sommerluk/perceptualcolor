@@ -154,7 +154,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     // Ignare clicks outside the wheel
     if (myPolarPoint.radial() > radius) {
         // Make sure default coordinates like drag-window
-        // in KDE's Breeze widget style works:
+        // in KDE’s Breeze widget style works:
         event->ignore();
         return;
     }
@@ -168,7 +168,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         setHue(myPolarPoint.angleDegree());
     } else {
         // Make sure default coordinates like drag-window
-        // in KDE's Breeze widget style works:
+        // in KDE’s Breeze widget style works:
         event->ignore();
     }
 
@@ -193,7 +193,7 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
     if (d_pointer->m_isMouseEventActive) {
         setHue(d_pointer->fromWidgetToWheelCoordinates(event->pos()).angleDegree());
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze
+        // Make sure default coordinates like drag-window in KDE’s Breeze
         // widget style works
         event->ignore();
     }
@@ -217,7 +217,7 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
         d_pointer->m_isMouseEventActive = false;
         setHue(d_pointer->fromWidgetToWheelCoordinates(event->pos()).angleDegree());
     } else {
-        // Make sure default coordinates like drag-window in KDE's Breeze
+        // Make sure default coordinates like drag-window in KDE’s Breeze
         // widget style works
         event->ignore();
     }
@@ -291,7 +291,7 @@ void ColorWheel::keyPressEvent(QKeyEvent *event)
          * The default implementation closes popup widgets if the user
          * presses the key sequence for QKeySequence::Cancel (typically
          * the Escape key). Otherwise the event is ignored, so that the
-         * widget's parent can interpret it. */
+         * widget’s parent can interpret it. */
         QWidget::keyPressEvent(event);
         break;
     }

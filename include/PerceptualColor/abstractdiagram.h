@@ -44,7 +44,7 @@ namespace PerceptualColor
  *
  * @note Qt provides some possibilities to declare that a certain widget
  * has a fixed ration between width and height. You can reimplement
- * <tt>QWidget::hasHeightForWidth()</tt> (indicates that the widget's preferred
+ * <tt>QWidget::hasHeightForWidth()</tt> (indicates that the widget’s preferred
  * height depends on its width) and <tt>QWidget::heightForWidth()</tt>
  * (returns the preferred height for this widget, given the width <tt>w</tt>).
  * However, Qt’s layout management makes only very limited use of this

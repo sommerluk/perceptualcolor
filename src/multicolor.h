@@ -54,7 +54,7 @@ namespace PerceptualColor
  *
  * This type is declared as type to Qt’s type system via
  * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
- * example if you want to use it reliably in Qt's signals
+ * example if you want to use it reliably in Qt’s signals
  * and slots), you might consider calling <tt>qRegisterMetaType()</tt> for
  * this type, once you have a QApplication object.
  *
@@ -83,7 +83,7 @@ public:
         sacrifyChroma /**< Preserve the hue and the lightness and change the
                            chroma until we are within the gamut. Note that it
                            is not always possible to preserve the lightness
-                           even when it's in the range 0..100 because some
+                           even when it’s in the range 0..100 because some
                            color profiles do not have pure black in the gamut.
                            In these cases first the nearest available
                            lightness is searched, and than the nearest
