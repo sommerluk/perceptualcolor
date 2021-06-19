@@ -75,6 +75,11 @@
  *
  * @internal
  *
+ * @todo In https://phabricator.kde.org/T12359 is recommanded to provide
+ * RESET statements for all properties for better compatibility with QML.
+ * As we provide widgets, this should not be too important. Are there also
+ * good arguments for widgets to provide RESET?
+ *
  * @todo Provide Q_DECLARE_TYPEINFO for our types? Provide an init()
  * function that calls qRegisterMetaType() for all our types?
  *
