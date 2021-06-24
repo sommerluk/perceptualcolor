@@ -193,7 +193,10 @@ void ColorDialog::ColorDialogPrivate::setCurrentColorWithAlpha(const LchaDouble 
  * @param member the slot that will receive the @ref colorSelected() signal */
 void ColorDialog::open(QObject *receiver, const char *member)
 {
-    connect(this, SIGNAL(colorSelected(QColor)), receiver, member);
+    connect(this,                          // sender
+            SIGNAL(colorSelected(QColor)), // signal
+            receiver,                      // receiver
+            member);                       // slot
     d_pointer->m_receiverToBeDisconnected = receiver;
     d_pointer->m_memberToBeDisconnected = member;
     QDialog::open();
@@ -441,8 +444,14 @@ void ColorDialog::ColorDialogPrivate::initialize()
 
     // Create the default buttons
     m_buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(m_buttonBox, &QDialogButtonBox::accepted, q_pointer, &PerceptualColor::ColorDialog::accept);
-    connect(m_buttonBox, &QDialogButtonBox::rejected, q_pointer, &PerceptualColor::ColorDialog::reject);
+    connect(m_buttonBox,                            // sender
+            &QDialogButtonBox::accepted,            // signal
+            q_pointer,                              // receiver
+            &PerceptualColor::ColorDialog::accept); // slot
+    connect(m_buttonBox,                            // sender
+            &QDialogButtonBox::rejected,            // signal
+            q_pointer,                              // receiver
+            &PerceptualColor::ColorDialog::reject); // slot
 
     // Create the main layout
     QVBoxLayout *tempMainLayout = new QVBoxLayout();
@@ -864,7 +873,11 @@ void ColorDialog::done(int result)
         // syntax, given that d_pointer->m_memberToBeDisconnected
         // can contain different classes, which would be difficult
         // it typing the class name directly in the new syntax.
-        disconnect(this, SIGNAL(colorSelected(QColor)), d_pointer->m_receiverToBeDisconnected, d_pointer->m_memberToBeDisconnected.constData());
+        disconnect(this,                                           // sender
+                   SIGNAL(colorSelected(QColor)),                  // signal
+                   d_pointer->m_receiverToBeDisconnected,          // receiver
+                   d_pointer->m_memberToBeDisconnected.constData() // slot
+        );
         d_pointer->m_receiverToBeDisconnected = nullptr;
     }
 }
