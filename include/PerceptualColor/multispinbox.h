@@ -34,6 +34,7 @@
 #include <QLineEdit>
 
 #include "PerceptualColor/constpropagatinguniquepointer.h"
+#include "PerceptualColor/multispinboxsectionconfiguration.h"
 
 namespace PerceptualColor
 {
@@ -48,7 +49,7 @@ namespace PerceptualColor
  * @image html MultiSpinBox.png "MultiSpinBox" width=200
  *
  * This widget works with floating point precision. You can set the
- * precision individually by section using @ref SectionConfiguration::decimals.
+ * precision individually by section using @ref MultiSpinBoxSectionConfiguration::decimals.
  * (This value can also be <tt>0</tt> to get integer-like behavoir.)
  *
  * Example code to create a @ref MultiSpinBox for a HSV color value
@@ -64,7 +65,7 @@ namespace PerceptualColor
  * - <tt>selectAll()</tt> does not work as expected.
  * - <tt>wrapping()</tt> is ignored. Instead, you can configures
  *   the <em>wrapping</em> individually for each section via
- *   @ref SectionConfiguration::isWrapping.
+ *   @ref MultiSpinBoxSectionConfiguration::isWrapping.
  * - <tt>specialValue()</tt> is not supported.
  *   <!-- Just as in QDateTimeEdit! -->
  * - <tt>hasAcceptableInput()</tt> is not guaranteed to obey to a particular
@@ -100,14 +101,14 @@ namespace PerceptualColor
  *   @ref minimumSizeHint and the @ref sizeHint will change, therefore
  *   <tt>updateGeometry</tt> has to be called. It seems better not to
  *   implement this. Alternativly, it could be implemented with a
- *   per-section approach via  @ref SectionConfiguration.
+ *   per-section approach via  @ref MultiSpinBoxSectionConfiguration.
  *
  * @note The interface of this class could theoretically
  * be similar to other Qt classes that offer similar concepts of various
  * data within a list: QComboBox, QHeaderView, QDateTimeEdit, QList – of
  * course with consistent naming. But usually you will not modify a single
  * section configuration, but the hole set of configurations. Therefore
- * we do the configuration by @ref SectionConfiguration objects, similiar
+ * we do the configuration by @ref MultiSpinBoxSectionConfiguration objects, similiar
  * to <tt>QNetworkConfiguration</tt> objects. Allowing changes to individual
  * sections would require a lot of additional code to make sure that after
  * such a change, the text curser is set the the appropriate position and
@@ -211,90 +212,17 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
     Q_PROPERTY(QList<double> sectionValues READ sectionValues WRITE setSectionValues NOTIFY sectionValuesChanged USER true)
 
 public:
-    /** @brief The configuration of a single section
-     * within a @ref MultiSpinBox.
-     *
-     * For a specific section within a @ref MultiSpinBox, this configuration
-     * contains various settings.
-     *
-     * This data type can be passed to QDebug thanks to
-     * @ref operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionConfiguration &value)
-     *
-     * This type is declared as type to Qt’s type system via
-     * <tt>Q_DECLARE_METATYPE</tt>. Depending on your use case (for
-     * example if you want to use for <em>queued</em> signal-slot connections),
-     * you might consider calling <tt>qRegisterMetaType()</tt> for
-     * this type, once you have a QApplication object.
-     *
-     * @internal
-     *
-     * Also Qt itself uses this configuration-object-based approach with its
-     * QNetworkConfiguration class (including @ref pimpl and
-     * copy-constructors).
-     *
-     * @todo Use @ref pimpl with setters and getters. This solves two
-     * problems: First: Make sure that things like “maximum >= minimum” are
-     * guaranteed. Second: Make this future-proof! Maybe later we want to add
-     * <tt>stepType</tt> values? */
-    struct SectionConfiguration {
-        /** @brief The number of digits after the decimal point.
-         *
-         * (This value can also be <tt>0</tt> to get integer-like behavoir.) */
-        int decimals = 2;
-        /** @brief Holds whether or not @ref sectionValues wrap around when
-         * they reaches @ref minimum or @ref maximum.
-         *
-         * The default is <tt>false</tt>.
-         *
-         * If <tt>false</tt>, @ref sectionValues shall be bound between
-         * @ref minimum and  @ref maximum. If <tt>true</tt>,
-         * @ref sectionValues shall be treated
-         * as a circular sectionValues.
-         *
-         * Example: You have a section that displays a value measured in
-         * degree. @ref minimum is <tt>0</tt>. @ref maximum is <tt>360</tt>.
-         * The following corrections would be applied to input:
-         * | Input | isWrapping == false | isWrapping == true |
-         * | ----: | ------------------: | -----------------: |
-         * |    -5 |                   0 |                355 |
-         * |     0 |                   0 |                  0 |
-         * |     5 |                   5 |                  5 |
-         * |   355 |                 355 |                355 |
-         * |   360 |                 360 |                  0 |
-         * |   365 |                 360 |                  5 |
-         * |   715 |                 360 |                355 |
-         * |   720 |                 360 |                  0 |
-         * |   725 |                 360 |                  5 | */
-        bool isWrapping = false;
-        /** @brief The maximum possible value of the section. */
-        double maximum = 99.99;
-        /** @brief The minimum possible value of the section. */
-        double minimum = 0;
-        /** @brief A prefix to be displayed before the value. */
-        QString prefix;
-        /** @brief The smaller of two natural steps.
-         *
-         * Valid range: >= 0
-         *
-         * When the user uses the arrows to change the spin box’s value
-         * the value will be incremented/decremented by the amount of the
-         * @ref singleStep. */
-        double singleStep = 1;
-        /** @brief A suffix to be displayed behind the value. */
-        QString suffix;
-    };
-
     Q_INVOKABLE MultiSpinBox(QWidget *parent = nullptr);
     /** @brief Default destructor */
     virtual ~MultiSpinBox() noexcept override;
     void addActionButton(QAction *action, QLineEdit::ActionPosition position);
     virtual void clear() override;
     virtual QSize minimumSizeHint() const override;
-    Q_INVOKABLE QList<MultiSpinBox::SectionConfiguration> sectionConfigurations() const;
+    Q_INVOKABLE QList<PerceptualColor::MultiSpinBoxSectionConfiguration> sectionConfigurations() const;
     /** @brief Getter for property @ref sectionValues
      *  @returns the property @ref sectionValues */
     QList<double> sectionValues() const;
-    Q_INVOKABLE void setSectionConfigurations(const QList<MultiSpinBox::SectionConfiguration> &newSectionConfigurations);
+    Q_INVOKABLE void setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSectionConfiguration> &newSectionConfigurations);
     virtual QSize sizeHint() const override;
     virtual void stepBy(int steps) override;
 
@@ -346,10 +274,6 @@ private:
     friend class TestMultiSpinBox;
 };
 
-PERCEPTUALCOLOR_IMPORTEXPORT QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionConfiguration &value);
-
 } // namespace PerceptualColor
-
-Q_DECLARE_METATYPE(PerceptualColor::MultiSpinBox::SectionConfiguration)
 
 #endif // MULTISPINBOX_H

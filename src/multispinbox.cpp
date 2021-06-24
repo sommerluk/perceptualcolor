@@ -98,7 +98,7 @@ MultiSpinBox::MultiSpinBox(QWidget *parent)
 
     // Initialize the configuration (default: only one section).
     // This will also change section values to exactly one element.
-    setSectionConfigurations(QList<SectionConfiguration> {SectionConfiguration()});
+    setSectionConfigurations(QList<MultiSpinBoxSectionConfiguration> {MultiSpinBoxSectionConfiguration()});
     setSectionValues(QList<double> {MultiSpinBoxPrivate::defaultSectionValue});
     d_pointer->m_currentIndex = -1; // This will force
     // setCurrentIndexAndUpdateTextAndSelectValue()
@@ -165,7 +165,7 @@ QSize MultiSpinBox::sizeHint() const
     ensurePolished();
 
     const QFontMetrics myFontMetrics(fontMetrics());
-    QList<MultiSpinBox::SectionConfiguration> myConfiguration = d_pointer->m_sectionConfigurations;
+    QList<MultiSpinBoxSectionConfiguration> myConfiguration = d_pointer->m_sectionConfigurations;
     int height = lineEdit()->sizeHint().height();
     int width = 0;
     QString textOfMinimumValue;
@@ -175,17 +175,19 @@ QSize MultiSpinBox::sizeHint() const
     // Get the text for all the sections
     for (int i = 0; i < myConfiguration.count(); ++i) {
         // Prefix
-        completeString += myConfiguration.at(i).prefix;
+        completeString += myConfiguration.at(i).prefix();
         // For each section, test if the minimum value or the maximum
         // takes more space (width). Choose the one that takes more place
         // (width).
-        textOfMinimumValue = locale().toString(myConfiguration.at(i).minimum, // value
-                                               'f',                           // format
-                                               myConfiguration.at(i).decimals // precision
+        textOfMinimumValue = locale().toString( //
+            myConfiguration.at(i).minimum(),    // value
+            'f',                                // format
+            myConfiguration.at(i).decimals()    // precision
         );
-        textOfMaximumValue = locale().toString(myConfiguration.at(i).maximum, // value
-                                               'f',                           // format
-                                               myConfiguration.at(i).decimals // precision
+        textOfMaximumValue = locale().toString( //
+            myConfiguration.at(i).maximum(),    // value
+            'f',                                // format
+            myConfiguration.at(i).decimals()    // precision
         );
         if (myFontMetrics.horizontalAdvance(textOfMinimumValue) > myFontMetrics.horizontalAdvance(textOfMaximumValue)) {
             completeString += textOfMinimumValue;
@@ -193,7 +195,7 @@ QSize MultiSpinBox::sizeHint() const
             completeString += textOfMaximumValue;
         }
         // Suffix
-        completeString += myConfiguration.at(i).suffix;
+        completeString += myConfiguration.at(i).suffix();
     }
 
     // Add some extra space, just as QSpinBox seems to do also.
@@ -318,7 +320,7 @@ QString MultiSpinBox::MultiSpinBoxPrivate::formattedValue(int index) const
         // Format as floating point with decimal digits
         'f',
         // Number of decimal digits
-        m_sectionConfigurations.at(index).decimals);
+        m_sectionConfigurations.at(index).decimals());
 }
 
 /** @brief Updates prefix, value and suffix text
@@ -335,23 +337,23 @@ void MultiSpinBox::MultiSpinBoxPrivate::updatePrefixValueSuffixText()
     // Update m_currentSectionTextBeforeValue
     m_textBeforeCurrentValue = QString();
     for (i = 0; i < m_currentIndex; ++i) {
-        m_textBeforeCurrentValue.append(m_sectionConfigurations.at(i).prefix);
+        m_textBeforeCurrentValue.append(m_sectionConfigurations.at(i).prefix());
         m_textBeforeCurrentValue.append(formattedValue(i));
-        m_textBeforeCurrentValue.append(m_sectionConfigurations.at(i).suffix);
+        m_textBeforeCurrentValue.append(m_sectionConfigurations.at(i).suffix());
     }
-    m_textBeforeCurrentValue.append(m_sectionConfigurations.at(m_currentIndex).prefix);
+    m_textBeforeCurrentValue.append(m_sectionConfigurations.at(m_currentIndex).prefix());
 
     // Update m_currentSectionTextOfTheValue
     m_textOfCurrentValue = formattedValue(m_currentIndex);
 
     // Update m_currentSectionTextAfterValue
     m_textAfterCurrentValue = QString();
-    m_textAfterCurrentValue.append(m_sectionConfigurations.at(m_currentIndex).suffix);
+    m_textAfterCurrentValue.append(m_sectionConfigurations.at(m_currentIndex).suffix());
     for (i = m_currentIndex + 1; i < m_sectionConfigurations.count(); ++i) {
-        m_textAfterCurrentValue.append(m_sectionConfigurations.at(i).prefix);
+        m_textAfterCurrentValue.append(m_sectionConfigurations.at(i).prefix());
 
         m_textAfterCurrentValue.append(formattedValue(i));
-        m_textAfterCurrentValue.append(m_sectionConfigurations.at(i).suffix);
+        m_textAfterCurrentValue.append(m_sectionConfigurations.at(i).suffix());
     }
 }
 
@@ -420,7 +422,11 @@ void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(int n
     updatePrefixValueSuffixText();
     m_validator->setPrefix(m_textBeforeCurrentValue);
     m_validator->setSuffix(m_textAfterCurrentValue);
-    m_validator->setRange(m_sectionConfigurations.at(m_currentIndex).minimum, m_sectionConfigurations.at(m_currentIndex).maximum);
+    m_validator->setRange(
+        // Minimum:
+        m_sectionConfigurations.at(m_currentIndex).minimum(),
+        // Maximum:
+        m_sectionConfigurations.at(m_currentIndex).maximum());
 
     // The state (enabled/disabled) of the buttons “Step up” and “Step down”
     // has to be updated. To force this, update() is called manually here:
@@ -435,11 +441,11 @@ void MultiSpinBox::MultiSpinBoxPrivate::setCurrentIndexWithoutUpdatingText(int n
  * @returns whether stepping up and down is legal */
 QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
 {
-    const SectionConfiguration currentSectionConfiguration = d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex);
+    const MultiSpinBoxSectionConfiguration currentSectionConfiguration = d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex);
     const double currentSectionValue = sectionValues().at(d_pointer->m_currentIndex);
 
     // When wrapping is enabled, step up and step down are always possible.
-    if (currentSectionConfiguration.isWrapping) {
+    if (currentSectionConfiguration.isWrapping()) {
         return QAbstractSpinBox::StepEnabled(StepUpEnabled | StepDownEnabled);
     }
 
@@ -447,33 +453,15 @@ QAbstractSpinBox::StepEnabled MultiSpinBox::stepEnabled() const
     // maximum and minimum.
     QAbstractSpinBox::StepEnabled result;
     // Test is step up should be enabled…
-    if (currentSectionValue < currentSectionConfiguration.maximum) {
+    if (currentSectionValue < currentSectionConfiguration.maximum()) {
         result.setFlag(StepUpEnabled, true);
     }
 
     // Test is step down should be enabled…
-    if (currentSectionValue > currentSectionConfiguration.minimum) {
+    if (currentSectionValue > currentSectionConfiguration.minimum()) {
         result.setFlag(StepDownEnabled, true);
     }
     return result;
-}
-
-/** @brief Adds QDebug() support for this data type.
- * @param dbg Existing debug object
- * @param value Value to stream into the debug object
- * @returns Debug object with value streamed in */
-QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionConfiguration &value)
-{
-    dbg.nospace() << "\nMultiSpinBox::SectionConfiguration("  // Opening line
-                  << "\n    prefix: " << value.prefix         //
-                  << "\n    minimum: " << value.minimum       //
-                  << "\n    decimals: " << value.decimals     //
-                  << "\n    isWrapping: " << value.isWrapping //
-                  << "\n    maximum: " << value.maximum       //
-                  << "\n    suffix: " << value.suffix         //
-                  << "\n)"                                    // Closing line
-        ;
-    return dbg.maybeSpace();
 }
 
 /** @brief Sets the configuration for the sections.
@@ -482,12 +470,12 @@ QDebug operator<<(QDebug dbg, const PerceptualColor::MultiSpinBox::SectionConfig
  *
  * @param newSectionConfigurations Defines the new sections. The new section
  * count in this widget is the section count given in this list. Each section
- * should have valid values: <tt>@ref SectionConfiguration.minimum ≤
- * @ref SectionConfiguration.maximum</tt>. If the @ref sectionValues are
+ * should have valid values: <tt>@ref MultiSpinBoxSectionConfiguration.minimum ≤
+ * @ref MultiSpinBoxSectionConfiguration.maximum</tt>. If the @ref sectionValues are
  * not valid within the new section configurations, they will be fixed.
  *
  * @sa @ref sectionConfigurations() */
-void MultiSpinBox::setSectionConfigurations(const QList<MultiSpinBox::SectionConfiguration> &newSectionConfigurations)
+void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSpinBoxSectionConfiguration> &newSectionConfigurations)
 {
     if (newSectionConfigurations.count() < 1) {
         return;
@@ -496,14 +484,14 @@ void MultiSpinBox::setSectionConfigurations(const QList<MultiSpinBox::SectionCon
     // Make sure that m_currentIndex will not run out-of-bound.
     d_pointer->m_currentIndex = qBound(0, d_pointer->m_currentIndex, newSectionConfigurations.count());
 
-    // Make sure the new SectionConfiguration is valid
+    // Make sure the new MultiSpinBoxSectionConfiguration is valid
     // (minimum <= maximum) before applying it.
     d_pointer->m_sectionConfigurations.clear();
-    SectionConfiguration tempSection;
+    MultiSpinBoxSectionConfiguration tempSection;
     for (int i = 0; i < newSectionConfigurations.count(); ++i) {
         tempSection = newSectionConfigurations.at(i);
-        if (tempSection.maximum < tempSection.minimum) {
-            tempSection.maximum = tempSection.minimum;
+        if (tempSection.maximum() < tempSection.minimum()) {
+            tempSection.setMaximum(tempSection.minimum());
         }
         d_pointer->m_sectionConfigurations.append(tempSection);
     }
@@ -529,7 +517,7 @@ void MultiSpinBox::setSectionConfigurations(const QList<MultiSpinBox::SectionCon
  * @returns the configuration of all sections.
  *
  * @sa @ref setSectionConfigurations() */
-QList<MultiSpinBox::SectionConfiguration> MultiSpinBox::sectionConfigurations() const
+QList<PerceptualColor::MultiSpinBoxSectionConfiguration> MultiSpinBox::sectionConfigurations() const
 {
     return d_pointer->m_sectionConfigurations;
 }
@@ -576,23 +564,23 @@ void MultiSpinBox::MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(c
 
     // Make sure the new section values are
     // valid (minimum <= value <= maximum):
-    SectionConfiguration myConfig;
+    MultiSpinBoxSectionConfiguration myConfig;
     double rangeWidth;
     qreal temp; // TODO Why qreal and not double?
     for (int i = 0; i < sectionCount; ++i) {
         myConfig = m_sectionConfigurations.at(i);
-        if (myConfig.isWrapping) {
-            rangeWidth = myConfig.maximum - myConfig.minimum;
+        if (myConfig.isWrapping()) {
+            rangeWidth = myConfig.maximum() - myConfig.minimum();
             if (rangeWidth <= 0) {
                 // This is a speciel case.
                 // This happens when minimum == maximum (or
                 // if minimum > maximum, which is invalid).
-                fixedNewSectionValues[i] = myConfig.minimum;
+                fixedNewSectionValues[i] = myConfig.minimum();
             } else {
                 // floating-point modulo (fmod) operation
                 temp = fmod(
                     // Dividend:
-                    fixedNewSectionValues.at(i) - myConfig.minimum,
+                    fixedNewSectionValues.at(i) - myConfig.minimum(),
                     // Divisor:
                     rangeWidth);
                 if (temp < 0) {
@@ -600,15 +588,15 @@ void MultiSpinBox::MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(c
                     // in positive results:
                     temp += rangeWidth;
                 }
-                temp += myConfig.minimum;
+                temp += myConfig.minimum();
                 fixedNewSectionValues[i] = temp;
             }
         } else {
             fixedNewSectionValues[i] = qBound(
                 // If there is no wrapping, simply bound:
-                myConfig.minimum,
+                myConfig.minimum(),
                 fixedNewSectionValues.at(i),
-                myConfig.maximum);
+                myConfig.maximum());
         }
     }
 
@@ -779,12 +767,12 @@ void MultiSpinBox::focusInEvent(QFocusEvent *event)
  * > trigger a call to <tt>stepBy(10)</tt>.
  *
  * @param steps Number of steps to be taken. The step size is
- * the @ref SectionConfiguration::singleStep of the current section. */
+ * the @ref MultiSpinBoxSectionConfiguration::singleStep of the current section. */
 void MultiSpinBox::stepBy(int steps)
 {
     const int currentIndex = d_pointer->m_currentIndex;
     QList<double> myValues = sectionValues();
-    myValues[currentIndex] += steps * d_pointer->m_sectionConfigurations.at(currentIndex).singleStep;
+    myValues[currentIndex] += steps * d_pointer->m_sectionConfigurations.at(currentIndex).singleStep();
     // As explained in QAbstractSpinBox documentation:
     //    “Note that this function is called even if the resulting value will
     //     be outside the bounds of minimum and maximum. It’s this function’s
@@ -871,9 +859,9 @@ bool MultiSpinBox::event(QEvent *event)
         d_pointer->m_validator->setSuffix(d_pointer->m_textAfterCurrentValue);
         d_pointer->m_validator->setRange(
             // Minimum
-            d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex).minimum,
+            d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex).minimum(),
             // Maximum
-            d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex).maximum);
+            d_pointer->m_sectionConfigurations.at(d_pointer->m_currentIndex).maximum());
         lineEdit()->setText(d_pointer->m_textBeforeCurrentValue + d_pointer->m_textOfCurrentValue + d_pointer->m_textAfterCurrentValue);
     }
     return QAbstractSpinBox::event(event);
@@ -925,9 +913,9 @@ void MultiSpinBox::MultiSpinBoxPrivate::reactOnCursorPositionChange(const int ol
     int sectionOfTheNewCursorPosition;
     int reference = 0;
     for (sectionOfTheNewCursorPosition = 0; sectionOfTheNewCursorPosition < m_sectionConfigurations.count() - 1; ++sectionOfTheNewCursorPosition) {
-        reference += m_sectionConfigurations.at(sectionOfTheNewCursorPosition).prefix.length();
+        reference += m_sectionConfigurations.at(sectionOfTheNewCursorPosition).prefix().length();
         reference += formattedValue(sectionOfTheNewCursorPosition).length();
-        reference += m_sectionConfigurations.at(sectionOfTheNewCursorPosition).suffix.length();
+        reference += m_sectionConfigurations.at(sectionOfTheNewCursorPosition).suffix().length();
         if (newPos <= reference) {
             break;
         }

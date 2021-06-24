@@ -158,28 +158,28 @@ int main(int argc, char *argv[])
     screenshot(&m_gradientSlider);
 
     MultiSpinBox m_multiSpinBox;
-    PerceptualColor::MultiSpinBox::SectionConfiguration mySection;
-    QList<PerceptualColor::MultiSpinBox::SectionConfiguration> hsvSectionConfigurations;
+    PerceptualColor::MultiSpinBoxSectionConfiguration mySection;
+    QList<PerceptualColor::MultiSpinBoxSectionConfiguration> hsvSectionConfigurations;
     QList<double> values;
 
-    mySection.decimals = 1;
-    mySection.prefix = QString();
-    mySection.minimum = 0;
-    mySection.isWrapping = true;
-    mySection.maximum = 360;
-    mySection.suffix = QStringLiteral(u"° ");
+    mySection.setDecimals(1);
+    mySection.setPrefix(QString());
+    mySection.setMinimum(0);
+    mySection.setWrapping(true);
+    mySection.setMaximum(360);
+    mySection.setSuffix(QStringLiteral(u"° "));
     hsvSectionConfigurations.append(mySection);
     values.append(310);
 
-    mySection.prefix = QStringLiteral(u" ");
-    mySection.minimum = 0;
-    mySection.maximum = 255;
-    mySection.isWrapping = false;
-    mySection.suffix = QStringLiteral(u" ");
+    mySection.setPrefix(QStringLiteral(u" "));
+    mySection.setMinimum(0);
+    mySection.setMaximum(255);
+    mySection.setWrapping(false);
+    mySection.setSuffix(QStringLiteral(u" "));
     hsvSectionConfigurations.append(mySection);
     values.append(200);
 
-    mySection.suffix = QString();
+    mySection.setSuffix(QString());
     hsvSectionConfigurations.append(mySection);
     values.append(100);
 

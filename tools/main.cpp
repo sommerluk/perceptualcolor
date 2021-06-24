@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
     // Initialize the color dialog
     PerceptualColor::ColorDialog m_colorDialog;
-    m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
+    // m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
     QColor myColor = QColor(Qt::yellow);
     myColor.setAlphaF(0.5);
     m_colorDialog.setCurrentColor(myColor);
@@ -109,15 +109,23 @@ int main(int argc, char *argv[])
     QDoubleSpinBox *mySpinBox = new QDoubleSpinBox;
     mySpinBox->setPrefix(QStringLiteral("Prefix"));
     mySpinBox->setSuffix(QStringLiteral("Suffix"));
-    mySpinBox->setMinimum(80);
-    mySpinBox->setMaximum(90);
+    mySpinBox->setDecimals(3);
+    qDebug() << mySpinBox->maximum();
+    mySpinBox->setMinimum(7.125);
+    mySpinBox->setMaximum(8.125);
+    mySpinBox->setValue(7.126);
+    qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
+    mySpinBox->setDecimals(2);
+    qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
+    mySpinBox->setDecimals(3);
+    qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
 
     // PerceptualColor::MultiSpinBox *mySpinBox = new PerceptualColor::MultiSpinBox;
-    // PerceptualColor::MultiSpinBox::SectionConfiguration myConfig;
+    // PerceptualColor::MultiSpinBoxSectionConfiguration myConfig;
     // myConfig.prefix = QStringLiteral("Prefix");
     // myConfig.suffix = QStringLiteral("Suffix");
     // myConfig.maximum = 9;
-    // QList<PerceptualColor::MultiSpinBox::SectionConfiguration> myConfigs;
+    // QList<PerceptualColor::MultiSpinBoxSectionConfiguration> myConfigs;
     // myConfigs.append(myConfig);
     // myConfigs.append(myConfig);
     // mySpinBox->setSectionConfigurations(myConfigs);
@@ -150,7 +158,7 @@ int main(int argc, char *argv[])
     mySpinBox->interpretText();
     // mySpinBox->fixup(myString);
 
-    myWidget.show();
+    // myWidget.show();
 
     QAbstractButton::connect(                                 //
         myButton,                                             //

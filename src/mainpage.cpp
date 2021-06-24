@@ -75,6 +75,23 @@
  *
  * @internal
  *
+ * @todo Declare a non-const dereference operator within
+ * @ref PerceptualColor::ConstPropagatingUniquePointer and get rid of all
+ * <tt>.get()</tt> within <tt>connect()</tt> calls.
+ *
+ * @todo From KDE’s binary compatibility info page: In order to make a class
+ * to extend in the future you should follow these rules:
+ * - add d-pointer. See below.
+ * - add non-inline virtual destructor even if the body is empty.
+ * - reimplement event in QObject-derived classes, even if the body for
+ *   the function is just calling the base class' implementation. This is
+ *   specifically to avoid problems caused by adding a reimplemented virtual
+ *   function as discussed below.
+ * - make all constructors non-inline.
+ * - write non-inline implementations of the copy constructor and assignment
+ *   operator unless the class cannot be copied by value (e.g. classes
+ *   inherited from QObject can't be)
+ *
  * @todo Where possible: Make the pimpl inherit from <tt>public QObject</tt>
  * to allow to get rid of lambdas in the connect statements.
  *

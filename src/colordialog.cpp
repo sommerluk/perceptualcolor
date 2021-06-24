@@ -590,19 +590,19 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
 {
     // Setup
     constexpr int decimals = 0;
-    MultiSpinBox::SectionConfiguration mySection;
-    mySection.decimals = decimals;
+    MultiSpinBoxSectionConfiguration mySection;
+    mySection.setDecimals(decimals);
 
     // Create RGB MultiSpinBox
     m_rgbSpinBox = new MultiSpinBox();
-    QList<MultiSpinBox::SectionConfiguration> rgbSections;
-    mySection.minimum = 0;
-    mySection.maximum = 255;
-    mySection.suffix = QStringLiteral(u" ");
+    QList<MultiSpinBoxSectionConfiguration> rgbSections;
+    mySection.setMinimum(0);
+    mySection.setMaximum(255);
+    mySection.setSuffix(QStringLiteral(u" "));
     rgbSections.append(mySection);
-    mySection.prefix = QStringLiteral(u" ");
+    mySection.setPrefix(QStringLiteral(u" "));
     rgbSections.append(mySection);
-    mySection.suffix = QString();
+    mySection.setSuffix(QString());
     rgbSections.append(mySection);
     m_rgbSpinBox->setSectionConfigurations(rgbSections);
     m_rgbSpinBox->setWhatsThis(tr("<p>Red, green, blue: 0–255</p>"));
@@ -623,19 +623,19 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
 
     // Create HSV spin box
     m_hsvSpinBox = new MultiSpinBox();
-    QList<MultiSpinBox::SectionConfiguration> hsvSections;
-    mySection.prefix = QString();
-    mySection.minimum = 0;
-    mySection.maximum = 360;
-    mySection.isWrapping = true;
-    mySection.suffix = QStringLiteral(u"° ");
+    QList<MultiSpinBoxSectionConfiguration> hsvSections;
+    mySection.setPrefix(QString());
+    mySection.setMinimum(0);
+    mySection.setMaximum(360);
+    mySection.setWrapping(true);
+    mySection.setSuffix(QStringLiteral(u"° "));
     hsvSections.append(mySection);
-    mySection.prefix = QStringLiteral(u" ");
-    mySection.maximum = 255;
-    mySection.isWrapping = false;
-    mySection.suffix = QStringLiteral(u" ");
+    mySection.setPrefix(QStringLiteral(u" "));
+    mySection.setMaximum(255);
+    mySection.setWrapping(false);
+    mySection.setSuffix(QStringLiteral(u" "));
     hsvSections.append(mySection);
-    mySection.suffix = QString();
+    mySection.setSuffix(QString());
     hsvSections.append(mySection);
     m_hsvSpinBox->setSectionConfigurations(hsvSections);
     m_hsvSpinBox->setWhatsThis(
@@ -688,23 +688,23 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     }
 
     // Create widget for the HLC color representation
-    QList<MultiSpinBox::SectionConfiguration> hlcSections;
+    QList<MultiSpinBoxSectionConfiguration> hlcSections;
     m_hlcSpinBox = new MultiSpinBox;
-    mySection.minimum = 0;
-    mySection.maximum = 360;
-    mySection.prefix = QLatin1String();
-    mySection.suffix = QStringLiteral(u"° ");
-    mySection.isWrapping = true;
+    mySection.setMinimum(0);
+    mySection.setMaximum(360);
+    mySection.setPrefix(QLatin1String());
+    mySection.setSuffix(QStringLiteral(u"° "));
+    mySection.setWrapping(true);
     hlcSections.append(mySection);
-    mySection.maximum = 100;
-    mySection.prefix = QStringLiteral(u" ");
-    mySection.suffix = QStringLiteral(u"% ");
-    mySection.isWrapping = false;
+    mySection.setMaximum(100);
+    mySection.setPrefix(QStringLiteral(u" "));
+    mySection.setSuffix(QStringLiteral(u"% "));
+    mySection.setWrapping(false);
     hlcSections.append(mySection);
-    mySection.maximum = LchValues::humanMaximumChroma;
-    mySection.prefix = QStringLiteral(u" ");
-    mySection.suffix = QLatin1String();
-    mySection.isWrapping = false;
+    mySection.setMaximum(LchValues::humanMaximumChroma);
+    mySection.setPrefix(QStringLiteral(u" "));
+    mySection.setSuffix(QLatin1String());
+    mySection.setWrapping(false);
     hlcSections.append(mySection);
     m_hlcSpinBox->setSectionConfigurations(hlcSections);
     m_hlcSpinBox->setWhatsThis(

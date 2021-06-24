@@ -225,38 +225,45 @@ grep \
 grep \
     --recursive \
     --perl-regexp "^cms" \
-    $PUBLIC_HEADERS
+    $PUBLIC_HEADERS \
+         | sed 's/^/Do not expose LittleCMS’ API in our public API: /'
 grep \
     --recursive \
     --perl-regexp "[^a-zA-Z]cms[a-zA-Z0-9]" \
     $PUBLIC_HEADERS \
     | grep \
         --perl-regexp "\<tt\>cms" \
-        --invert-match
+        --invert-match \
+         | sed 's/^/Do not expose LittleCMS’ API in our public API: /'
 grep \
     --recursive \
     --fixed-strings "lcms2.h" \
-    $PUBLIC_HEADERS
-    
+    $PUBLIC_HEADERS \
+         | sed 's/^/Do not expose LittleCMS’ API in our public API: /'
+
 # -> Do not use the “code” and “endcode” tags for Doxygen documentation. Use
 #    @snippet instead! That allows that the example code is actually compiled
 #    and that helps detecting errors.
 grep \
     --recursive \
     --fixed-strings "\\code" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use snippets instead of “code” or “endcode”: /'
 grep \
     --recursive \
     --fixed-strings "\\endcode" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use snippets instead of “code” or “endcode”: /'
 grep \
     --recursive \
     --fixed-strings "@code" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use snippets instead of “code” or “endcode”: /'
 grep \
     --recursive \
     --fixed-strings "@endcode" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use snippets instead of “code” or “endcode”: /'
 
 # -> Doxygen style: Do not use “@em xyz”. Prefer instead “<em>xyz</em>” which
 #    might be longer, but has a clearer start point and end point, which is
@@ -266,26 +273,31 @@ grep \
 grep \
     --recursive \
     --fixed-strings "\\em" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
 grep \
     --recursive \
     --fixed-strings "@em" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
 grep \
     --recursive \
     --fixed-strings "\\c" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
 grep \
    --recursive  \
     --perl-regexp "@c(?=([^a-zA-Z]|$))" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use HTML tags instead of Doxygen commands for “em”: /'
 
 # -> Coding style: Do not use the “NULL” macro, but its counterpart “nullptr”
 #    which is more type save.
 grep \
     --recursive \
     --fixed-strings "NULL" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Do not use the NULL macro: /'
 
 # -> Coding style: Do not use inline functions. If used in a header,
 #    once exposed, they cannot be changed without breaking binary
@@ -297,7 +309,8 @@ grep \
 grep \
     --recursive \
     --fixed-strings "inline" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Do not use inline functions: /'
 
 # -> In some Qt classes, devicePixelRatio() returns in integer.
 #    Don’t do that and use floating point precision instead. Often,
@@ -306,7 +319,8 @@ grep \
 grep \
     --recursive \
     --perl-regexp "devicePixelRatio(?!F)" \
-    $CODE_WITHOUT_UNIT_TESTS
+    $CODE_WITHOUT_UNIT_TESTS \
+         | sed 's/^/Use devicePixelRatioF instead of devicePixelRatio: /'
 
 # Qt’s documentation about QImage::Format says: For optimal performance only
 # use the format types QImage::Format_ARGB32_Premultiplied,
@@ -315,7 +329,8 @@ grep \
 grep \
     --recursive \
     --perl-regexp "QImage::Format_(?!(ARGB32_Premultiplied|RGB32|RGB16))" \
-    $ALL_CODE
+    $ALL_CODE \
+         | sed 's/^/Use exclusivly ARGB32_Premultiplied or RGB32 or RGB16 as QImage formats: /'
 
 # When using snippets, don’t do this within a namespace. As they are
 # meant for documentation, they should always contain fully-qualified

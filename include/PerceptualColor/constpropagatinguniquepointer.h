@@ -54,6 +54,10 @@ namespace PerceptualColor
  * Example code:
  * @snippet test/testconstpropagatinguniquepointer.cpp example
  *
+ * Currently, move-assignment is not supported. Use
+ * <tt>std::unique_prt::reset()</tt> instead. As there is no
+ * support for deleters anyway, this should be equivalent.
+ *
  * @note A @ref ConstPropagatingUniquePointer pointer variable itself
  * may not be const! @internal (Otherwise, this would make <tt>const</tt>
  * <em>all</em> access even to non-const functions of the pointed

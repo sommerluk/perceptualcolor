@@ -76,7 +76,7 @@ public:
      *
      * @sa @ref sectionConfigurations()
      * @sa @ref setSectionConfigurations() */
-    QList<MultiSpinBox::SectionConfiguration> m_sectionConfigurations;
+    QList<MultiSpinBoxSectionConfiguration> m_sectionConfigurations;
     /** @brief Internal storage for property @ref sectionValues. */
     QList<double> m_sectionValues;
     /** @brief The string of everything <em>after</em> the value of the

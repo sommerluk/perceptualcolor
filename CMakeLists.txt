@@ -193,6 +193,7 @@ set(perceptualcolor_SRC
   src/lchvalues.cpp
   src/multicolor.cpp
   src/multispinbox.cpp
+  src/multispinboxsectionconfiguration.cpp
   src/polarpointf.cpp
   src/refreshiconengine.cpp
   src/rgbcolorspace.cpp
@@ -214,6 +215,7 @@ set(perceptualcolor_HEADERS
   include/PerceptualColor/lchadouble.h
   include/PerceptualColor/lchdouble.h
   include/PerceptualColor/multispinbox.h
+  include/PerceptualColor/multispinboxsectionconfiguration.h
   include/PerceptualColor/perceptualcolorglobal.h
   include/PerceptualColor/rgbcolorspacefactory.h
   include/PerceptualColor/wheelcolorpicker.h
@@ -354,6 +356,7 @@ add_unit_test(testlchadouble)
 add_unit_test(testlchdouble)
 add_unit_test(testlchvalues)
 add_unit_test(testmultispinbox)
+add_unit_test(testmultispinboxsectionconfiguration)
 add_unit_test(testpolarpointf)
 add_unit_test(testrefreshiconengine)
 add_unit_test(testrgbcolorspace)
