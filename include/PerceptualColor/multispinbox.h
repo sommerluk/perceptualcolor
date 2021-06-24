@@ -124,13 +124,6 @@ namespace PerceptualColor
  *
  * @todo <tt>Ctrl-U</tt> support for this class? If so, do it via @ref clear().
  *
- * @todo When creating a <tt>QDoubleSpinBox</tt> with <tt>decimals == 2</tt>
- * and then <tt>setValue(1.3579)</tt>, than <tt>value() == 1.36</tt>. So
- * <tt>QDoubleSpinBox</tt> does not store internally the original value
- * it gets via <tt>setValue</tt> but a value rounded to the current
- * decimal precision. @ref MultiSpinBox should adopt the exactly same
- * behaviour (for consistency). This should be controlled by unit tests.
- *
  * @todo MultiSpinBox should never become 0 because the validator
  * allows something that the converter cannot convert!
  *
@@ -170,7 +163,12 @@ namespace PerceptualColor
  * the mouse or uses the key ↑ than the value changes to 16.7 while the
  * display changes to 17. Isn’t is highly confusing that – after a user
  * interaction – the new internal value is different from what the users sees?
- * How does QDoubleSpinBox solves this?
+ * When creating a <tt>QDoubleSpinBox</tt> with <tt>decimals == 2</tt>
+ * and then <tt>setValue(1.3579)</tt>, than <tt>value() == 1.36</tt>. So
+ * <tt>QDoubleSpinBox</tt> does not store internally the original value
+ * it gets via <tt>setValue</tt> but a value rounded to the current
+ * decimal precision. @ref MultiSpinBox should adopt the exactly same
+ * behaviour (for consistency). This should be controlled by unit tests.
  *
  * @todo When using this widget in @ref ColorDialog, there are rounding
  * differences, for example when choosing HSV 210° 27 19, then RGB becomes
@@ -188,21 +186,6 @@ namespace PerceptualColor
  * Maybe our @ref ExtendedDoubleValidator should not rely on Qt’s validator,
  * but on if QLocale is able to convert (result: valid) or not (result:
  * invalid)?!
- *
- * @todo This class inherits from QAbstractSpinBox, which provides
- * properties and virtual functions. Is it necessary or
- * a good idea to reimplement functions like QAbstractSpinBox::fixup()
- * and/or QAbstractSpinBox::validate()? We have to make sure all properties
- * work also for this class. There are various types of properties.
- * 1.) Properties that have to be implemented here in @ref MultiSpinBox (such
- *     as <tt>correctionMode</tt> or <tt>showGroupSeparator</tt>).
- * 2.) Properties that should work “out of the box” but should be tested
- *     nevertheless (such as <tt>frame</tt> or <tt>accelerated</tt>
- *     or <tt>readonly</tt>).
- * 3.) Properties that cannot work with this class for design reasons, and
- *     this has to be documentated (such as <tt>wrapping</tt> which cannot
- *      be set for the hole @ref MultiSpinBox but has to be individual per
- *     section).
  *
  * @todo Do not text-cursor-select more than <em>one</em> value when
  * editing (or do not allow text selection at all)? Also: Selecting text
@@ -224,16 +207,7 @@ class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
      *
      * @sa READ @ref sectionValues() const
      * @sa WRITE @ref setSectionValues()
-     * @sa NOTIFY @ref sectionValuesChanged()
-     *
-     * @internal
-     *
-     * @todo Does QList<double> work in queued signals out-of-the-box?
-     * Unit tests!
-     *
-     * @todo  Actually implement NOTIFY signal and unit-test it! It has
-     * to follow QAbstracSpinBox::keyboardTracking settings (and maybe
-     * other settings from QAbstractSpinBox)! */
+     * @sa NOTIFY @ref sectionValuesChanged() */
     Q_PROPERTY(QList<double> sectionValues READ sectionValues WRITE setSectionValues NOTIFY sectionValuesChanged USER true)
 
 public:
@@ -258,17 +232,10 @@ public:
      * QNetworkConfiguration class (including @ref pimpl and
      * copy-constructors).
      *
-     * This data type provides currently all configuration settings that are
-     * available in QAbstractSpinBox, except <tt>stepType</tt>.
-     *
-     * @todo Make sure that things like “maximum >= minimum” are
-     * guaranteed. Maybe get rid of this class (at least in the public API)
-     * and provide direct access functions in the public API,
-     * like <tt>setPrefix(int index)</tt>.
-     *
-     * @todo How to make this future-proof? Maybe later we want to add
-     * <tt>stepType</tt> values? Are d-pointers working well when
-     * this data structure has to be copy-able? */
+     * @todo Use @ref pimpl with setters and getters. This solves two
+     * problems: First: Make sure that things like “maximum >= minimum” are
+     * guaranteed. Second: Make this future-proof! Maybe later we want to add
+     * <tt>stepType</tt> values? */
     struct SectionConfiguration {
         /** @brief The number of digits after the decimal point.
          *
