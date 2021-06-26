@@ -189,6 +189,20 @@ private Q_SLOTS:
         QVERIFY2(pageStepHue > singleStepHue, "Hue page step is bigger than single step.");
         QVERIFY2(singleStepHue > 0, "Hue single step is positive.");
     }
+
+    void testRounding()
+    {
+        QCOMPARE(roundToDigits(12.3456, 6), 12.345600);
+        QCOMPARE(roundToDigits(12.3456, 5), 12.34560);
+        QCOMPARE(roundToDigits(12.3456, 4), 12.3456);
+        QCOMPARE(roundToDigits(12.3456, 3), 12.346);
+        QCOMPARE(roundToDigits(12.3456, 2), 12.35);
+        QCOMPARE(roundToDigits(12.3456, 1), 12.3);
+        QCOMPARE(roundToDigits(12.3456, 0), 12.);
+        QCOMPARE(roundToDigits(12.3456, -1), 10.);
+        QCOMPARE(roundToDigits(12.3456, -2), 0.);
+        QCOMPARE(roundToDigits(92.3456, -2), 100.);
+    }
 };
 
 } // namespace PerceptualColor

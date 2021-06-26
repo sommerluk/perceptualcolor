@@ -484,17 +484,8 @@ void MultiSpinBox::setSectionConfigurations(const QList<PerceptualColor::MultiSp
     // Make sure that m_currentIndex will not run out-of-bound.
     d_pointer->m_currentIndex = qBound(0, d_pointer->m_currentIndex, newSectionConfigurations.count());
 
-    // Make sure the new MultiSpinBoxSectionConfiguration is valid
-    // (minimum <= maximum) before applying it.
-    d_pointer->m_sectionConfigurations.clear();
-    MultiSpinBoxSectionConfiguration tempSection;
-    for (int i = 0; i < newSectionConfigurations.count(); ++i) {
-        tempSection = newSectionConfigurations.at(i);
-        if (tempSection.maximum() < tempSection.minimum()) {
-            tempSection.setMaximum(tempSection.minimum());
-        }
-        d_pointer->m_sectionConfigurations.append(tempSection);
-    }
+    // Set new section configuration
+    d_pointer->m_sectionConfigurations = newSectionConfigurations;
 
     // Make sure the value list has the correct length and the
     // values are updated to the new configuration:

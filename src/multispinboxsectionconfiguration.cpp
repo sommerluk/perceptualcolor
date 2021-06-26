@@ -35,9 +35,13 @@
 
 #include <QDebug>
 
+#include "helper.h"
+
 namespace PerceptualColor
 {
-/** @brief Constructor */
+/** @brief Constructor
+ *
+ * The object is initialized with default values. */
 MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration()
     : d_pointer(new MultiSpinBoxSectionConfigurationPrivate())
 {
@@ -111,7 +115,7 @@ int MultiSpinBoxSectionConfiguration::decimals() const
  * @param newDecimals The new decimals values. */
 void MultiSpinBoxSectionConfiguration::setDecimals(int newDecimals)
 {
-    d_pointer->m_decimals = newDecimals;
+    d_pointer->m_decimals = qBound(0, newDecimals, 323);
 }
 
 /** @brief Holds whether or not @ref MultiSpinBox::sectionValues wrap
@@ -157,7 +161,7 @@ void MultiSpinBoxSectionConfiguration::setWrapping(bool newIsWrapping)
  * @sa @ref setMaximum */
 double MultiSpinBoxSectionConfiguration::maximum() const
 {
-    return d_pointer->m_maximum;
+    return roundToDigits(d_pointer->m_maximum, d_pointer->m_decimals);
 }
 
 /** @brief Setter for @ref maximum property.
@@ -166,6 +170,9 @@ double MultiSpinBoxSectionConfiguration::maximum() const
 void MultiSpinBoxSectionConfiguration::setMaximum(double newMaximum)
 {
     d_pointer->m_maximum = newMaximum;
+    if (d_pointer->m_minimum > d_pointer->m_maximum) {
+        d_pointer->m_minimum = d_pointer->m_maximum;
+    }
 }
 
 /** @brief The minimum possible value of the section.
@@ -173,7 +180,7 @@ void MultiSpinBoxSectionConfiguration::setMaximum(double newMaximum)
  * @sa @ref setMinimum */
 double MultiSpinBoxSectionConfiguration::minimum() const
 {
-    return d_pointer->m_minimum;
+    return roundToDigits(d_pointer->m_minimum, d_pointer->m_decimals);
 }
 
 /** @brief Setter for @ref minimum property.
@@ -182,6 +189,9 @@ double MultiSpinBoxSectionConfiguration::minimum() const
 void MultiSpinBoxSectionConfiguration::setMinimum(double newMinimum)
 {
     d_pointer->m_minimum = newMinimum;
+    if (d_pointer->m_maximum < d_pointer->m_minimum) {
+        d_pointer->m_maximum = d_pointer->m_minimum;
+    }
 }
 
 /** @brief A prefix to be displayed before the value.
@@ -219,7 +229,7 @@ double MultiSpinBoxSectionConfiguration::singleStep() const
  * @param newSingleStep The new single step value. */
 void MultiSpinBoxSectionConfiguration::setSingleStep(double newSingleStep)
 {
-    d_pointer->m_singleStep = newSingleStep;
+    d_pointer->m_singleStep = qMax<double>(0, newSingleStep);
 }
 
 /** @brief A suffix to be displayed behind the value.

@@ -141,4 +141,13 @@ QImage transparencyBackground(qreal devicePixelRatioF)
     return temp;
 }
 
+double roundToDigits(double value, int precision)
+{
+    const double multiplier = std::pow(
+        // Make sure that pow returns a double:
+        static_cast<double>(10),
+        precision);
+    return std::round(value * multiplier) / multiplier;
+}
+
 } // namespace PerceptualColor

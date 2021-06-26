@@ -1498,6 +1498,25 @@ private Q_SLOTS:
         }
     }
 
+    void testRoundingBehaviour()
+    {
+        MultiSpinBoxSectionConfiguration myConfig;
+        myConfig.setDecimals(0);
+        myConfig.setMinimum(0);
+        myConfig.setMaximum(360);
+        myConfig.setWrapping(true);
+        MultiSpinBox mySpinBox;
+        mySpinBox.setSectionConfigurations(
+            // Create the QList on the fly…
+            QList<MultiSpinBoxSectionConfiguration> {myConfig});
+        // The MultiSpinBox is supposed to never show “360”, but instead “0”.
+        mySpinBox.setSectionValues(
+            // Create the QList on the fly…
+            QList<double> {359.9} // Choose a value that rounds up to 360.
+        );
+        QCOMPARE(mySpinBox.text(), QStringLiteral("0"));
+    }
+
     void testMetaTypeDeclaration()
     {
         QVariant test;
