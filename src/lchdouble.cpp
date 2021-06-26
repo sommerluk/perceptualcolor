@@ -67,7 +67,9 @@ LchDouble::LchDouble(double newL, double newC, double newH)
 {
 }
 
-/** @brief Adds QDebug() support for this data type.
+/** @brief Adds QDebug() support for data type
+ * @ref PerceptualColor::LchDouble
+ *
  * @param dbg Existing debug object
  * @param value Value to stream into the debug object
  * @returns Debug object with value streamed in

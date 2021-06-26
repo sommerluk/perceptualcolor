@@ -248,7 +248,9 @@ void MultiSpinBoxSectionConfiguration::setSuffix(const QString &newSuffix)
     d_pointer->m_suffix = newSuffix;
 }
 
-/** @brief Adds QDebug() support for this data type.
+/** @brief Adds QDebug() support for data type
+ * @ref PerceptualColor::MultiSpinBoxSectionConfiguration
+ *
  * @param dbg Existing debug object
  * @param value Value to stream into the debug object
  * @returns Debug object with value streamed in */

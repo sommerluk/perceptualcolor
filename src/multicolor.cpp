@@ -216,19 +216,24 @@ bool MultiColor::isValid() const
     return m_isValid;
 }
 
-/** @brief Adds QDebug() support for this data type.
+/** @internal
+ *
+ * @brief Adds QDebug() support for data type
+ * @ref PerceptualColor::MultiColor
+ *
  * @param dbg Existing debug object
  * @param value Value to stream into the debug object
  * @returns Debug object with value streamed in */
 QDebug operator<<(QDebug dbg, const PerceptualColor::MultiColor &value)
 {
-    dbg.nospace() << "MultiColor(\n"
-                  << " - RGB: " << value.toRgb().red << " " << value.toRgb().green << " " << value.toRgb().blue << "\n"
-                  << " - RGBQColor: " << value.toRgbQColor() << "\n"
-                  << " - HSVQColor: " << value.toHsvQColor() << "\n"
-                  << " - LCh: " << value.toLch().l << " " << value.toLch().c << " " << value.toLch().h << "°\n"
-                  << " - Alpha: " << value.alpha() << "\n"
-                  << ")";
+    dbg.nospace() //
+        << "MultiColor(\n"
+        << " - RGB: " << value.toRgb().red << " " << value.toRgb().green << " " << value.toRgb().blue << "\n"
+        << " - RGBQColor: " << value.toRgbQColor() << "\n"
+        << " - HSVQColor: " << value.toHsvQColor() << "\n"
+        << " - LCh: " << value.toLch().l << " " << value.toLch().c << " " << value.toLch().h << "°\n"
+        << " - Alpha: " << value.alpha() << "\n"
+        << ")";
     return dbg.maybeSpace();
 }
 

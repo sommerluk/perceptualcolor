@@ -43,7 +43,11 @@
 
 namespace PerceptualColor
 {
-/** @brief Adds QDebug() support for this data type.
+/** @internal
+ *
+ * @brief Adds QDebug() support for data type
+ * @ref PerceptualColor::RgbDouble
+ *
  * @param dbg Existing debug object
  * @param value Value to stream into the debug object
  * @returns Debug object with value streamed in */

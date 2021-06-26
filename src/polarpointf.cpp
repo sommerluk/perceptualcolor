@@ -145,7 +145,11 @@ QPointF PolarPointF::toCartesian() const
     return QPointF(m_radial * cos(qDegreesToRadians(m_angleDegree)), m_radial * sin(qDegreesToRadians(m_angleDegree)));
 }
 
-/** @brief Adds QDebug() support for this data type.
+/** @internal
+ *
+ * @brief Adds QDebug() support for data type
+ * @ref PerceptualColor::PolarPointF
+ *
  * @param dbg Existing debug object
  * @param value Value to stream into the debug object
  * @returns Debug object with value streamed in */
