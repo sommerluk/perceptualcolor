@@ -75,10 +75,6 @@
  *
  * @internal
  *
- * @todo Declare a non-const dereference operator within
- * @ref PerceptualColor::ConstPropagatingUniquePointer and get rid of all
- * <tt>.get()</tt> within <tt>connect()</tt> calls.
- *
  * @todo From KDE’s binary compatibility info page: In order to make a class
  * to extend in the future you should follow these rules:
  * - add d-pointer. See below.
@@ -100,10 +96,10 @@
  * As we provide widgets, this should not be too important. Are there also
  * good arguments for widgets to provide RESET?
  *
- * @todo Provide Q_DECLARE_TYPEINFO for our types? Provide an init()
- * function that calls qRegisterMetaType() for all our types?
+ * @todo Provide an init() function that calls qRegisterMetaType() for
+ * all our types?
  *
- * @todo Support i18n language change on-the-fly?
+ * @todo Support i18n language change and/or locale change on-the-fly?
  *
  * @todo We prevent division by 0 in
  * @ref PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate::fromWidgetPixelPositionToColor().
@@ -117,9 +113,6 @@
  * confusing, and at the same time there is no real need/benefit.)
  * Complete list: @ref PerceptualColor::ChromaHueImage,
  * @ref PerceptualColor::ColorWheelImage, @ref PerceptualColor::GradientImage.
- *
- * @todo No caller graph/referenced by, in doxygen. (Result is not reliably. Better no graph
- * than an incomplete graph.)
  *
  * @todo Test also on Windows. (Does it work well with VisualStudio?
  * Isn’t there a free version of VisualStudio? Test it with this
@@ -229,7 +222,7 @@
  * @todo mark all public non-slot functions with Q_INVOKABLE (except property
  * setters and getters)
  *
- * @todo A good widget library should
+ * @todo A good widget library should…
  * - provide a complete documentation (✓)
  * - run on all systems (✓ We do not use system-specific code nor do we
  *   rely on byte order)
@@ -239,7 +232,9 @@
  * - support hight-dpi (✓)
  * - stylable by QStyle (? partial)
  * - stylable by style sheets (✗)
- * - accessibility (✗) [This includes to work well with bigger fonts. Should then the gradient be thicker and the marker thicker? setAccessibleName(). ]
+ * - accessibility (✗) [This includes to work well with bigger
+ *   fonts. Should then the gradient be thicker and the marker
+ *   thicker? setAccessibleName(). ]
  *
  * @todo A good widget library should also be touchscreen-ready. Find
  * an alternative to @ref PerceptualColor::MultiSpinBox? How, for up
