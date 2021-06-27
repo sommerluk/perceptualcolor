@@ -405,8 +405,8 @@ void ColorDialog::ColorDialogPrivate::initialize()
     m_lightnessFirstWidget = new QWidget();
     m_lightnessFirstWidget->setLayout(tempLightnesFirstLayout);
     m_tabWidget = new QTabWidget;
-    m_tabWidget->addTab(tempHueFirstWidget, tr("&Hue first"));
-    m_tabWidget->addTab(m_lightnessFirstWidget, tr("&Lightness first"));
+    m_tabWidget->addTab(tempHueFirstWidget, tr("&Hue-based"));
+    m_tabWidget->addTab(m_lightnessFirstWidget, tr("&Lightness-based"));
 
     // Create the ColorPatch
     m_colorPatch = new ColorPatch();
