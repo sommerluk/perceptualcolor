@@ -256,6 +256,10 @@ namespace PerceptualColor
  * the @ref ColorDialogPrivate::m_numericalWidget. This saves screen
  * space and does not confuse the user.
  *
+ * @todo Provide an overloaded version of @ref open() that accepts
+ * arguments for new-style connect statements, making use of compiler
+ * checks.
+ *
  * @todo Custom layout management that has a specific height-per-width ratio
  * considering the @ref ChromaHueDiagram and and @ref WheelColorPicker
  * and <em>their</em> useful height-per-width ratio.

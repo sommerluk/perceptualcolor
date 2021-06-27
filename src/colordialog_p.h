@@ -104,6 +104,11 @@ public:
      * within this dialog.
      * @sa @ref setCurrentOpaqueColor() */
     bool m_isColorChangeInProgress = false;
+    /** @brief Holds whether the current text of @ref m_rgbLineEdit differs
+     * from the value in @ref m_currentOpaqueColor.
+     * @sa @ref readRgbHexValues
+     * @sa @ref updateRgbHexButBlockSignals */
+    bool m_isDirtyRgbLineEdit = false;
     /** @brief Internal storage for property @ref layoutDimensions */
     PerceptualColor::ColorDialog::DialogLayoutDimensions m_layoutDimensions =
         //! [layoutDimensionsDefaultValue]
@@ -154,14 +159,17 @@ public:
     void setCurrentColorWithAlpha(const LchaDouble &color);
 
 public Q_SLOTS:
+    void readChromaHueDiagramValue();
     void readHlcNumericValues();
     void readHsvNumericValues();
     void readLightnessValue();
     void readRgbHexValues();
     void readRgbNumericValues();
-    void setCurrentOpaqueColor(const PerceptualColor::LchDouble &color);
-    void setCurrentOpaqueQColor(const QColor &color);
+    void readWheelColorPickerValues();
+    void setCurrentOpaqueColor(const PerceptualColor::LchDouble &color, QWidget *const ignoreWidget);
     void updateColorPatch();
+    void updateHlcButBlockSignals();
+    void updateRgbHexButBlockSignals();
 
 private:
     Q_DISABLE_COPY(ColorDialogPrivate)

@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     QColor myColor = QColor(Qt::yellow);
     myColor.setAlphaF(0.5);
     m_colorDialog.setCurrentColor(myColor);
-    // m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
+    m_colorDialog.setOption(QColorDialog::ColorDialogOption::NoButtons);
     m_colorDialog.setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
     // m_colorDialog.setEnabled(false);
     // m_colorDialog.setStyleSheet("background: yellow; color: red; border: 15px solid #FF0000;");

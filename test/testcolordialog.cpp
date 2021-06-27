@@ -209,12 +209,14 @@ private:
         QCOMPARE(perceptualDialog->parentWidget(), qColorDialog->parentWidget());
     }
 
+private Q_SLOTS:
+    // This is just a helper slot, not an actual test.
+    // It is neither called by QTest (because it has a parameter).
     void helperReceiveSignals(QColor color)
     {
         m_color = color;
     }
 
-private Q_SLOTS:
     void initTestCase()
     {
         // Called before the first test function is executed
@@ -1095,7 +1097,7 @@ private Q_SLOTS:
         myOpaqueColor.l = 30;
         myOpaqueColor.c = 40;
         myOpaqueColor.h = 50;
-        myDialog->d_pointer->setCurrentOpaqueColor(myOpaqueColor);
+        myDialog->d_pointer->setCurrentOpaqueColor(myOpaqueColor, nullptr);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.l, 30);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.c, 40);
         QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.h, 50);
@@ -1103,19 +1105,6 @@ private Q_SLOTS:
         QCOMPARE(qRound(myValues.at(0)), 113);
         QCOMPARE(qRound(myValues.at(1)), 53);
         QCOMPARE(qRound(myValues.at(2)), 23);
-    }
-
-    void testSetCurrentOpaqueQColor()
-    {
-        QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
-        myDialog->d_pointer->setCurrentOpaqueQColor(QColor(1, 2, 3));
-        QCOMPARE(myDialog->currentColor().red(), 1);
-        QCOMPARE(myDialog->currentColor().green(), 2);
-        QCOMPARE(myDialog->currentColor().blue(), 3);
-        QList<double> myValues = myDialog->d_pointer->m_rgbSpinBox->sectionValues();
-        QCOMPARE(myValues.at(0), 1);
-        QCOMPARE(myValues.at(1), 2);
-        QCOMPARE(myValues.at(2), 3);
     }
 
     void testUpdateColorPatch()
@@ -1127,7 +1116,8 @@ private Q_SLOTS:
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().red(), 1);
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().green(), 2);
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().blue(), 3);
-        QCOMPARE(myDialog->d_pointer->m_colorPatch->color().alphaF(), myDialog->d_pointer->m_alphaGradientSlider->value());
+        QCOMPARE(myDialog->d_pointer->m_colorPatch->color().alphaF(), //
+                 myDialog->d_pointer->m_alphaGradientSlider->value());
     }
 
     void testSizeGrip()
@@ -1156,24 +1146,44 @@ private Q_SLOTS:
     {
         m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
         // Test default value
-        QCOMPARE(m_perceptualDialog->layoutDimensions(), PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
+        QCOMPARE(                                   //
+            m_perceptualDialog->layoutDimensions(), //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
 
         // Test if values are correctly stored before showing
-        m_perceptualDialog->setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
-        QCOMPARE(m_perceptualDialog->layoutDimensions(), PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
-        m_perceptualDialog->setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
-        QCOMPARE(m_perceptualDialog->layoutDimensions(), PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
-        m_perceptualDialog->setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
-        QCOMPARE(m_perceptualDialog->layoutDimensions(), PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
+        m_perceptualDialog->setLayoutDimensions( //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
+        QCOMPARE(                                   //
+            m_perceptualDialog->layoutDimensions(), //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
+        m_perceptualDialog->setLayoutDimensions( //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
+        QCOMPARE(                                   //
+            m_perceptualDialog->layoutDimensions(), //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
+        m_perceptualDialog->setLayoutDimensions( //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
+        QCOMPARE(                                   //
+            m_perceptualDialog->layoutDimensions(), //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
 
         // Test if values are correctly stored after showing
         m_perceptualDialog->show();
-        m_perceptualDialog->setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
-        QCOMPARE(m_perceptualDialog->layoutDimensions(), PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
-        m_perceptualDialog->setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
-        QCOMPARE(m_perceptualDialog->layoutDimensions(), PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
-        m_perceptualDialog->setLayoutDimensions(PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
-        QCOMPARE(m_perceptualDialog->layoutDimensions(), PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
+        m_perceptualDialog->setLayoutDimensions( //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
+        QCOMPARE(                                   //
+            m_perceptualDialog->layoutDimensions(), //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::collapsed);
+        m_perceptualDialog->setLayoutDimensions( //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
+        QCOMPARE(                                   //
+            m_perceptualDialog->layoutDimensions(), //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::expanded);
+        m_perceptualDialog->setLayoutDimensions( //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
+        QCOMPARE(                                   //
+            m_perceptualDialog->layoutDimensions(), //
+            PerceptualColor::ColorDialog::DialogLayoutDimensions::screenSizeDependent);
     }
 
     void testApplyLayoutDimensions()
@@ -1212,8 +1222,23 @@ private Q_SLOTS:
         QCOMPARE(spyPerceptualDialog.count(), 1);
     }
 
+    void testRoundingErrors_data()
+    {
+        QTest::addColumn<QColor>("color");
+        QTest::newRow("Qt::yellow") << QColor(Qt::yellow);
+        qreal red = 1;
+        qreal green = 1;
+        qreal blue = 0;
+        while (blue < 1) {
+            QTest::newRow(QString(QStringLiteral("RGB %1 %2 %3")).arg(red).arg(green).arg(blue).toUtf8().data()) << QColor::fromRgbF(red, green, blue);
+            blue += 0.1;
+        }
+    }
+
     void testRoundingErrors()
     {
+        QFETCH(QColor, color);
+
         // Moving around between the widgets with the Tab key should
         // never trigger a value change. (There could be a value
         // change because of rounding errors if the value gets updated
@@ -1221,7 +1246,7 @@ private Q_SLOTS:
         // done. This would not be correct, and this test controls this.)
 
         m_perceptualDialog.reset(new PerceptualColor::ColorDialog());
-        m_perceptualDialog->setCurrentColor(Qt::yellow);
+        m_perceptualDialog->setCurrentColor(color);
         m_perceptualDialog->show();
         QApplication::setActiveWindow(m_perceptualDialog.data());
 
@@ -1273,6 +1298,64 @@ private Q_SLOTS:
         hlc = m_perceptualDialog->d_pointer->m_hlcSpinBox->sectionValues();
         QVERIFY(hlc.at(2) >= 94);
         QVERIFY(hlc.at(2) <= 96);
+    }
+
+    void testBlackHSV()
+    {
+        // In the HSV color space, if V is 0 then the color is black.
+        // Both, H and S are meaningless. When converting from other
+        // color spaces, they get probably a default value. However,
+        // when the user is editing the HSV spin box, we does not expect
+        // that H or S change when switching from one section to another
+        // or when the focus leaves. Make sure that H and S are preserved
+        // during editing even if V becomes 0:
+
+        // Create a ColorDialog
+        m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
+
+        const QList<double> hsvTestData {201, 33, 0};
+        m_perceptualDialog->d_pointer->m_hsvSpinBox->setSectionValues(hsvTestData);
+        QCOMPARE(m_perceptualDialog->d_pointer->m_hsvSpinBox->sectionValues(), //
+                 hsvTestData);
+        m_perceptualDialog->d_pointer->readHsvNumericValues();
+        QCOMPARE(m_perceptualDialog->d_pointer->m_hsvSpinBox->sectionValues(), //
+                 hsvTestData);
+    }
+
+    void testRoundingMultipleError()
+    {
+        // This is a test for a bug discoverd during development.
+
+        // Create a ColorDialog:
+        m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
+
+        // The user puts into the HLC spin box the value 100° 98% 94:
+        m_perceptualDialog->d_pointer->m_hlcSpinBox->setSectionValues( //
+            QList<double> {100, 98, 94});
+        // This is an out-of-gamut color which is not corrected until
+        // the focus will leave the widget or the Return key is pressed.
+        // The nearest in-gamut color is around 100° 97% 94; this color
+        // is used internally to perform the conversion to RGB and other
+        // color spaces. (It is however still not visible in the HLC
+        // spin box.)
+        //
+        // The RGB spin box becomes 253, 255, 10:
+        const QList<double> expectedRgbValues {253, 255, 10};
+        QCOMPARE(m_perceptualDialog->d_pointer->m_rgbSpinBox->sectionValues(), //
+                 expectedRgbValues);
+        // Now, the user finishes the editing process (the focus leaves
+        // the widget or the Return key is pressed or the action button
+        // is clicked):
+        m_perceptualDialog->d_pointer->updateHlcButBlockSignals();
+        // The buggy result during development phase was an RGB value
+        // of 252 254 4. Why?
+        // - The internal value was around 100° 97% 94, but not exactly.
+        // - Now, the exact (!) value of 100° 97% 94 is applied, and this
+        //   one, converted to RGB, triggers a different rounding.
+        // The expected result is however still the very same RGB value
+        // as above:
+        QCOMPARE(m_perceptualDialog->d_pointer->m_rgbSpinBox->sectionValues(), //
+                 expectedRgbValues);
     }
 
     void testSnippet02()

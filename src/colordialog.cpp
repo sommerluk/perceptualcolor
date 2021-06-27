@@ -178,7 +178,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentColorWithAlpha(const LchaDouble 
     lch.l = color.l;
     lch.c = color.c;
     lch.h = color.h;
-    setCurrentOpaqueColor(lch);
+    setCurrentOpaqueColor(lch, nullptr);
 }
 
 /** @brief Opens the dialog and connects its @ref colorSelected() signal to
@@ -202,15 +202,6 @@ void ColorDialog::open(QObject *receiver, const char *member)
     QDialog::open();
 }
 
-/** @brief Convenience version of @ref setCurrentOpaqueColor(), accepting
- * QColor
- * @param color the new color. Expected to be in RGB color
- *              space (RGB, HSV etc.) */
-void ColorDialog::ColorDialogPrivate::setCurrentOpaqueQColor(const QColor &color)
-{
-    setCurrentOpaqueColor(m_rgbColorSpace->toLch(color));
-}
-
 /** @brief Updates the color patch widget
  *
  * @post The color patch widget will show the color
@@ -223,24 +214,29 @@ void ColorDialog::ColorDialogPrivate::updateColorPatch()
     m_colorPatch->setColor(tempRgbQColor);
 }
 
-/** @brief Updates @ref m_currentOpaqueColor and all affected widgets.
+/** @brief Updates @ref m_currentOpaqueColor and affected widgets.
  *
- * This function ignores the alpha component!
  * @param color the new color
+ *
+ * @param ignoreWidget A widget that should <em>not</em> be updated. Or
+ * <tt>nullptr</tt> to update <em>all</em> widgets.
+ *
  * @post If this function is called recursively, nothing happens. Else
  * the color is moved into the gamut, then @ref m_currentOpaqueColor is
- * updated, and the corresponding widgets are updated.
+ * updated, and the corresponding widgets are updated (except the widget
+ * specified to be ignored – if any).
+ *
  * @note Recursive functions calls are ignored. This is useful, because you
  * can connect signals from various widgets to this slot without having to
  * worry about infinite recursions. */
-void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &color)
+void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColor::LchDouble &color, QWidget *const ignoreWidget)
 {
     if (m_isColorChangeInProgress || (color.hasSameCoordinates(m_currentOpaqueColor))) {
         // Nothing to do!
         return;
     }
-    //     qDebug() << "setCurrentOpaqueColor: Current m_currentOpaqueColor:" << m_currentOpaqueColor << " Requested color:" << color;
-    // If we have really work to do, block recursive calls of this function
+
+    // If we have really some work to do, block recursive calls of this function
     m_isColorChangeInProgress = true;
 
     // Save currentColor() for later comparison
@@ -256,46 +252,68 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &col
     QList<double> valueList;
 
     // Update RGB widget
-    valueList.clear();
-    valueList.append(tempRgbQColor.redF() * 255);
-    valueList.append(tempRgbQColor.greenF() * 255);
-    valueList.append(tempRgbQColor.blueF() * 255);
-    m_rgbSpinBox->setSectionValues(valueList);
+    if (m_rgbSpinBox != ignoreWidget) {
+        valueList.clear();
+        valueList.append(tempRgbQColor.redF() * 255);
+        valueList.append(tempRgbQColor.greenF() * 255);
+        valueList.append(tempRgbQColor.blueF() * 255);
+        m_rgbSpinBox->setSectionValues(valueList);
+    }
 
     // Update HSV widget
-    valueList.clear();
-    valueList.append(tempRgbQColor.hsvHueF() * 360);
-    valueList.append(tempRgbQColor.hsvSaturationF() * 255);
-    valueList.append(tempRgbQColor.valueF() * 255);
-    m_hsvSpinBox->setSectionValues(valueList);
+    if (m_hsvSpinBox != ignoreWidget) {
+        valueList.clear();
+        valueList.append(tempRgbQColor.hsvHueF() * 360);
+        valueList.append(tempRgbQColor.hsvSaturationF() * 255);
+        valueList.append(tempRgbQColor.valueF() * 255);
+        m_hsvSpinBox->setSectionValues(valueList);
+    }
 
     // Update HLC widget
-    valueList.clear();
-    valueList.append(m_currentOpaqueColor.h);
-    valueList.append(m_currentOpaqueColor.l);
-    valueList.append(m_currentOpaqueColor.c);
-    m_hlcSpinBox->setSectionValues(valueList);
+    if (m_hlcSpinBox != ignoreWidget) {
+        valueList.clear();
+        valueList.append(m_currentOpaqueColor.h);
+        valueList.append(m_currentOpaqueColor.l);
+        valueList.append(m_currentOpaqueColor.c);
+        m_hlcSpinBox->setSectionValues(valueList);
+    }
 
     // Update RGB hex widget
-    m_rgbLineEdit->setText(tempRgbQColor.name());
+    if (m_rgbLineEdit != ignoreWidget) {
+        m_rgbLineEdit->setText(tempRgbQColor.name());
+    }
 
-    // Update the diagrams
-    m_lchLightnessSelector->setValue(color.l / static_cast<qreal>(100));
-    m_chromaHueDiagram->setCurrentColor(color);
-    m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
+    // Update lightness selector
+    if (m_lchLightnessSelector != ignoreWidget) {
+        m_lchLightnessSelector->setValue(color.l / static_cast<qreal>(100));
+    }
 
-    // Update alpha
-    LchaDouble tempColor;
-    tempColor.l = m_currentOpaqueColor.l;
-    tempColor.c = m_currentOpaqueColor.c;
-    tempColor.h = m_currentOpaqueColor.h;
-    tempColor.a = 0;
-    m_alphaGradientSlider->setFirstColor(tempColor);
-    tempColor.a = 1;
-    m_alphaGradientSlider->setSecondColor(tempColor);
+    // Update chroma-hue diagram
+    if (m_chromaHueDiagram != ignoreWidget) {
+        m_chromaHueDiagram->setCurrentColor(color);
+    }
+
+    // Update wheel color picker
+    if (m_wheelColorPicker != ignoreWidget) {
+        m_wheelColorPicker->setCurrentColor(m_currentOpaqueColor);
+    }
+
+    // Update alpha gradient slider
+    if (m_alphaGradientSlider != ignoreWidget) {
+        LchaDouble tempColor;
+        tempColor.l = m_currentOpaqueColor.l;
+        tempColor.c = m_currentOpaqueColor.c;
+        tempColor.h = m_currentOpaqueColor.h;
+        tempColor.a = 0;
+        m_alphaGradientSlider->setFirstColor(tempColor);
+        tempColor.a = 1;
+        m_alphaGradientSlider->setSecondColor(tempColor);
+    }
 
     // Update widgets that take alpha information
-    updateColorPatch();
+    if (m_colorPatch != ignoreWidget) {
+        updateColorPatch();
+    }
 
     // Emit signal currentColorChanged() only if necessary
     if (q_pointer->currentColor() != oldQColor) {
@@ -311,47 +329,57 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const LchDouble &col
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readLightnessValue()
 {
-    //     qDebug() << "readLightnessValue called";
     LchDouble lch = m_currentOpaqueColor;
     lch.l = m_lchLightnessSelector->value() * 100;
-    setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(lch));
+    setCurrentOpaqueColor(                                          //
+        m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(lch), //
+        m_lchLightnessSelector);
 }
 
 /** @brief Reads the HSV numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readHsvNumericValues()
 {
-    //     qDebug() << "readHsvNumericValues called";
-    QList<double> hsvValues = m_hsvSpinBox->sectionValues();
-    setCurrentOpaqueQColor(
-        // Create a QColor object…
-        QColor::fromHsvF(
-            // …from HSV spinbox.
-            hsvValues.at(0) / 360.0,
-            hsvValues.at(1) / 255.0,
-            hsvValues.at(2) / 255.0));
+    const QList<double> hsvValues = m_hsvSpinBox->sectionValues();
+    setCurrentOpaqueColor(m_rgbColorSpace->toLch(QColor::fromHsvF(
+                              // …from HSV spinbox.
+                              hsvValues.at(0) / 360.0,
+                              hsvValues.at(1) / 255.0,
+                              hsvValues.at(2) / 255.0)),
+                          m_hsvSpinBox);
 }
 
 /** @brief Reads the decimal RGB numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readRgbNumericValues()
 {
-    //     qDebug() << "readRgbNumericValues called";
     QList<double> rgbValues = m_rgbSpinBox->sectionValues();
-    setCurrentOpaqueQColor(
-        // Create a QColor object…
-        QColor::fromRgbF(
-            // …from the RGB spinbox values.
-            rgbValues.at(0) / 255.0,
-            rgbValues.at(1) / 255.0,
-            rgbValues.at(2) / 255.0));
+    setCurrentOpaqueColor(m_rgbColorSpace->toLch(QColor::fromRgbF(
+                              // …from the RGB spinbox values.
+                              rgbValues.at(0) / 255.0,
+                              rgbValues.at(1) / 255.0,
+                              rgbValues.at(2) / 255.0)),
+                          m_rgbSpinBox);
+}
+
+/** @brief Reads the color of the @ref WheelColorPicker in the dialog and
+ * updates the dialog accordingly. */
+void ColorDialog::ColorDialogPrivate::readWheelColorPickerValues()
+{
+    setCurrentOpaqueColor(m_wheelColorPicker->currentColor(), m_wheelColorPicker);
+}
+
+/** @brief Reads the color of the @ref ChromaHueDiagram in the dialog and
+ * updates the dialog accordingly. */
+void ColorDialog::ColorDialogPrivate::readChromaHueDiagramValue()
+{
+    setCurrentOpaqueColor(m_chromaHueDiagram->currentColor(), m_chromaHueDiagram);
 }
 
 /** @brief Reads the hexadecimal RGB numbers in the dialog and
  * updates the dialog accordingly. */
 void ColorDialog::ColorDialogPrivate::readRgbHexValues()
 {
-    //     qDebug() << "readRgbHexValues called";
     QString temp = m_rgbLineEdit->text();
     if (!temp.startsWith(QStringLiteral(u"#"))) {
         temp = QStringLiteral(u"#") + temp;
@@ -359,10 +387,19 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
     QColor rgb;
     rgb.setNamedColor(temp);
     if (rgb.isValid()) {
-        setCurrentOpaqueQColor(rgb);
+        setCurrentOpaqueColor(m_rgbColorSpace->toLch(rgb), m_rgbLineEdit);
+    } else {
+        m_isDirtyRgbLineEdit = true;
     }
-    // Return to the finally considered value (the new one if valid, the old
-    // one otherwise.)
+}
+
+/** @brief Updates the RGB Hex widget to @ref m_currentOpaqueColor.
+ *
+ * @post The @ref m_rgbLineEdit gets the value of @ref m_currentOpaqueColor.
+ * During this operation, all signals of @ref m_rgbLineEdit are blocked. */
+void ColorDialog::ColorDialogPrivate::updateRgbHexButBlockSignals()
+{
+    QSignalBlocker mySignalBlocker(m_rgbLineEdit);
     m_rgbLineEdit->setText(
         // m_currentOpaqueColor is supposed to be always in-gamut. However,
         // because of rounding issues, a conversion to an unbounded RGB
@@ -463,39 +500,49 @@ void ColorDialog::ColorDialogPrivate::initialize()
 
     // initialize signal-slot-connections
     connect(m_rgbSpinBox,                             // sender
-            &MultiSpinBox::editingFinished,           // signal
+            &MultiSpinBox::sectionValuesChanged,      // signal
             this,                                     // receiver
             &ColorDialogPrivate::readRgbNumericValues // slot
     );
     connect(m_rgbLineEdit,                        // sender
-            &QLineEdit::editingFinished,          // signal
+            &QLineEdit::textChanged,              // signal
             this,                                 // receiver
             &ColorDialogPrivate::readRgbHexValues // slot
     );
+    connect(m_rgbLineEdit,                                   // sender
+            &QLineEdit::editingFinished,                     // signal
+            this,                                            // receiver
+            &ColorDialogPrivate::updateRgbHexButBlockSignals // slot
+    );
     connect(m_hsvSpinBox,                             // sender
-            &MultiSpinBox::editingFinished,           // signal
+            &MultiSpinBox::sectionValuesChanged,      // signal
             this,                                     // receiver
             &ColorDialogPrivate::readHsvNumericValues // slot
     );
     connect(m_hlcSpinBox,                             // sender
-            &MultiSpinBox::editingFinished,           // signal
+            &MultiSpinBox::sectionValuesChanged,      // signal
             this,                                     // receiver
             &ColorDialogPrivate::readHlcNumericValues // slot
+    );
+    connect(m_hlcSpinBox,                                 // sender
+            &MultiSpinBox::editingFinished,               // signal
+            this,                                         // receiver
+            &ColorDialogPrivate::updateHlcButBlockSignals // slot
     );
     connect(m_lchLightnessSelector,                 // sender
             &GradientSlider::valueChanged,          // signal
             this,                                   // receiver
             &ColorDialogPrivate::readLightnessValue // slot
     );
-    connect(m_wheelColorPicker,                        // sender
-            &WheelColorPicker::currentColorChanged,    // signal
-            this,                                      // receiver
-            &ColorDialogPrivate::setCurrentOpaqueColor // slot
+    connect(m_wheelColorPicker,                             // sender
+            &WheelColorPicker::currentColorChanged,         // signal
+            this,                                           // receiver
+            &ColorDialogPrivate::readWheelColorPickerValues // slot
     );
-    connect(m_chromaHueDiagram,                        // sender
-            &ChromaHueDiagram::currentColorChanged,    // signal
-            this,                                      // receiver
-            &ColorDialogPrivate::setCurrentOpaqueColor // slot
+    connect(m_chromaHueDiagram,                            // sender
+            &ChromaHueDiagram::currentColorChanged,        // signal
+            this,                                          // receiver
+            &ColorDialogPrivate::readChromaHueDiagramValue // slot
     );
     connect(m_alphaGradientSlider,                // sender
             &GradientSlider::valueChanged,        // signal
@@ -564,11 +611,27 @@ void ColorDialog::ColorDialogPrivate::initialize()
         // to use functionality based on QWidget. So: Parent object:
         q_pointer);
     m_hlcSpinBox->addActionButton(myAction, QLineEdit::ActionPosition::TrailingPosition);
-    connect(myAction,                                 // sender
-            &QAction::triggered,                      // signal
-            this,                                     // receiver
-            &ColorDialogPrivate::readHlcNumericValues // slot
+    connect(myAction,                                     // sender
+            &QAction::triggered,                          // signal
+            this,                                         // receiver
+            &ColorDialogPrivate::updateHlcButBlockSignals // slot
     );
+}
+
+/** @brief Updates the HLC spin box to @ref m_currentOpaqueColor.
+ *
+ * @post The @ref m_hlcSpinBox gets the value of @ref m_currentOpaqueColor.
+ * During this operation, all signals of @ref m_hlcSpinBox are blocked. */
+void ColorDialog::ColorDialogPrivate::updateHlcButBlockSignals()
+{
+    QSignalBlocker mySignalBlocker(m_hlcSpinBox);
+    // Update HLC widget
+    const QList<double> valueList {
+        m_currentOpaqueColor.h, //
+        m_currentOpaqueColor.l, //
+        m_currentOpaqueColor.c  //
+    };
+    m_hlcSpinBox->setSectionValues(valueList);
 }
 
 /** @brief Reads the HLC numbers in the dialog and
@@ -580,7 +643,11 @@ void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
     lch.h = hlcValues.at(0);
     lch.l = hlcValues.at(1);
     lch.c = hlcValues.at(2);
-    setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(lch));
+    setCurrentOpaqueColor(
+        // new color
+        m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(lch),
+        // widget that will ignored during updating
+        m_hlcSpinBox);
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.
