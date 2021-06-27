@@ -580,7 +580,7 @@ void ColorDialog::ColorDialogPrivate::readHlcNumericValues()
     lch.h = hlcValues.at(0);
     lch.l = hlcValues.at(1);
     lch.c = hlcValues.at(2);
-    setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(lch));
+    setCurrentOpaqueColor(m_rgbColorSpace->nearestInGamutColorByAdjustingChromaLightness(lch));
 }
 
 /** @brief Initialize the numeric input widgets of this dialog.

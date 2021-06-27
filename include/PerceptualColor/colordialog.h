@@ -132,14 +132,6 @@ namespace PerceptualColor
  * example 0°, as default hue for when no old hue is available but the
  * new value is on the gray axis?
  *
- * @todo BUG: Start with dialog with Qt::yellow. You get HLC 100° 98% 95.
- * Push the apply button. Actual result: HLC 100° 98% 24 which has a far
- * different chroma value. Expected result: There might be some rounding,
- * but not such a big difference in chroma. And: Ideally, every once displayed
- * value is always recognized as valid. When the color space conversion
- * takes place, we can make this sure for HLC values, but then comes the
- * also rounding in @ref MultiSpinBox.
- *
  * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
  * With each focus switch, the values change. They shouldn't!
  *
@@ -246,6 +238,14 @@ namespace PerceptualColor
  * like in browsers, which is a concept many users might be familiar to.
  * Crtl+Tab to switch to the next tab in the list. Crtl+Shift+Tab to switch
  * to the previous tab in the list.
+ *
+ * @todo Start with dialog with Qt::yellow. You get HLC 100° 98% 95.
+ * Push the apply button. Actual result: HLC 100° 98% 94 which has a slightly
+ * different chroma value. Expected result: Ideally there would be no rounding
+ * difference at all: Every once displayed value is always recognized as
+ * valid. When the color space conversion takes place, we could (and should)
+ * make this sure for HLC values. But then comes the also the rounding
+ * in @ref MultiSpinBox. Is there any solution?
  *
  * @todo If there is no alpha widget <em>and</em> the actual layout is
  * expanded (either explicitly by @ref DialogLayoutDimensions::expanded

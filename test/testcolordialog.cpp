@@ -1240,6 +1240,41 @@ private Q_SLOTS:
         };
     }
 
+    void testYellowRounding()
+    {
+        // During development was observed a particular bug for which
+        // we test here.
+
+        // Create a ColorDialog
+        m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
+
+        // Start with Qt::yellow as initial color.
+        // If this RGB value is interpreted in the sRGB (LittleCMS build-in)
+        // profile, it has a particular property. Because of the irregular
+        // shape of the sRGB color space at this position, thinking in
+        // LCH values, when reducing (!) the chroma step-by-step, we run
+        // out-of-gamut, before going again in-gamut at even lower chroma
+        // values.
+        m_perceptualDialog->setCurrentColor(QColor(Qt::yellow));
+        // The value is also converted to HLC 100°, 98%, 95 (rounded)
+        // visible in the HLC spin box.
+        QList<double> hlc = m_perceptualDialog->d_pointer->m_hlcSpinBox->sectionValues();
+        QCOMPARE(hlc.at(0), 100); // assertion
+        QCOMPARE(hlc.at(1), 98);  // assertion
+        QCOMPARE(hlc.at(2), 95);  // assertion
+        // Now, the user clicks on the “Apply” button within the HLC spin box.
+        // We simulate this by simply calling the slot that is connected
+        // to this action:
+        m_perceptualDialog->d_pointer->readHlcNumericValues();
+        // Now, during development there was a bug observerd: The buggy
+        // behaviour was that the chroma value was changed from 95 to 24.
+        // The expected result was that the chroma value only changes
+        // slightly because of rounding (or ideally not at all).
+        hlc = m_perceptualDialog->d_pointer->m_hlcSpinBox->sectionValues();
+        QVERIFY(hlc.at(2) >= 94);
+        QVERIFY(hlc.at(2) <= 96);
+    }
+
     void testSnippet02()
     {
         snippet02();
