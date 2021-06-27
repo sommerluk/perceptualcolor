@@ -247,9 +247,7 @@ private Q_SLOTS:
 
     void testInteraction()
     {
-        // This test is suprisingly slow.
         QScopedPointer<PerceptualColor::MultiSpinBox> widget(new PerceptualColor::MultiSpinBox());
-        widget->show();
         widget->setSectionConfigurations(exampleConfigurations);
         // Assert that the setup is okay.
         QCOMPARE(widget->lineEdit()->text(), QStringLiteral(u"0°  0%  0"));
@@ -264,6 +262,8 @@ private Q_SLOTS:
         QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
         QTest::keyClick(widget.data(), Qt::Key_Left, Qt::ShiftModifier, 0);
         // Copy to clipboard
+        // TODO The following line that copies to clipboard
+        // is suprisingly extremly slow.
         QTest::keyClick(widget.data(), Qt::Key_C, Qt::ControlModifier, 0);
         // Go to second section
         QTest::keyClick(widget.data(), Qt::Key_Right);
