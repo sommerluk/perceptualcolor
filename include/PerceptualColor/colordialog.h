@@ -138,7 +138,7 @@ namespace PerceptualColor
  * but not such a big difference in chroma. And: Ideally, every once displayed
  * value is always recognized as valid. When the color space conversion
  * takes place, we can make this sure for HLC values, but then comes the
- * also rounding in @ref MultiSpinBox…
+ * also rounding in @ref MultiSpinBox.
  *
  * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
  * With each focus switch, the values change. They shouldn't!
