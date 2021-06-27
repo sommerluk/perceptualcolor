@@ -207,15 +207,39 @@ void RefreshIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode 
     QIcon myIcon;
 
     // First, try to load an icon from the current icon theme.
-    myIcon = QIcon::fromTheme(QStringLiteral("view-refresh"));
+    myIcon = QIcon::fromTheme(QStringLiteral("dialog-apply"));
+    if (!myIcon.isNull()) {
+        myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
+        return;
+    }
+    myIcon = QIcon::fromTheme(QStringLiteral("gtk-apply"));
+    if (!myIcon.isNull()) {
+        myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
+        return;
+    }
+    myIcon = QIcon::fromTheme(QStringLiteral("dialog-ok-apply"));
+    if (!myIcon.isNull()) {
+        myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
+        return;
+    }
+    myIcon = QIcon::fromTheme(QStringLiteral("gtk-ok-apply"));
+    if (!myIcon.isNull()) {
+        myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
+        return;
+    }
+    myIcon = QIcon::fromTheme(QStringLiteral("dialog-ok"));
+    if (!myIcon.isNull()) {
+        myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
+        return;
+    }
+    myIcon = QIcon::fromTheme(QStringLiteral("gtk-ok"));
     if (!myIcon.isNull()) {
         myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
         return;
     }
 
     // Sedond, if the current icon theme has no icon (not all platforms
-    // provide icon themes, and even those who provide it might be incomplete,
-    // like for example Adwaite which has no icon for view-refresh),
+    // provide icon themes, and even those who provide it might be incomplete)
     // then try to use a build-in icon from the current widget style.
     // The q_pointer’s object is still not fully initialized at
     // this point, but it’s base class constructor has fully run;
@@ -229,7 +253,7 @@ void RefreshIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode 
     } else {
         referenceStyle = m_referenceWidget->style();
     }
-    myIcon = referenceStyle->standardIcon(QStyle::StandardPixmap::SP_BrowserReload);
+    myIcon = referenceStyle->standardIcon(QStyle::StandardPixmap::SP_DialogApplyButton);
     if (!myIcon.isNull()) {
         myIcon.paint(painter, rect, Qt::AlignCenter, mode, state);
         return;
