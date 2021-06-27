@@ -48,9 +48,10 @@ namespace PerceptualColor
  *
  * @image html MultiSpinBox.png "MultiSpinBox" width=200
  *
- * This widget works with floating point precision. You can set the
- * precision individually by section using @ref MultiSpinBoxSectionConfiguration::decimals.
- * (This value can also be <tt>0</tt> to get integer-like behavoir.)
+ * This widget works with floating point precision. You can set
+ * the number of decimal places for each section individually,
+ * via @ref MultiSpinBoxSectionConfiguration::decimals. (This
+ * value can also be <tt>0</tt> to get integer-like behavoir.)
  *
  * Example code to create a @ref MultiSpinBox for a HSV color value
  * (Hue 0°–360°, Saturation 0–255, Value 0–255) comes here:
@@ -117,16 +118,13 @@ namespace PerceptualColor
  * However, a full-featured interface could look like that:
  * @snippet test/testmultispinbox.cpp MultiSpinBox Full-featured interface
  *
- * @todo Now, @ref setSectionValues does not select automatically the first
- * section anymore. Is this in conformance with <tt>QDateTimeEdit</tt>?
- *
  * @todo <tt>Crtl-A</tt> support for this class. (Does this shortcut
- * trigger <tt>selectAll()</tt>?)
+ * trigger <tt>selectAll()</tt>?) <tt>Ctrl-U</tt> support for this class?
+ * If so, do it via @ref clear().
  *
- * @todo <tt>Ctrl-U</tt> support for this class? If so, do it via @ref clear().
- *
- * @todo MultiSpinBox should never become 0 because the validator
- * allows something that the converter cannot convert!
+ * @todo Do really not text-cursor-select more than <em>one</em> value when
+ * editing (or do not allow text selection at all)?? Also: Selecting text
+ * with the mouse cursor seems somewhat impredictable
  *
  * @todo Bug: In @ref ColorDialog, choose a tab with one of the diagrams.
  * Then, switch back the the “numeric“ tab. Expected behaviour: When
@@ -141,9 +139,15 @@ namespace PerceptualColor
  * or “<tt>80e</tt>”. Depending on the locale, it is possible to
  * actually enter these characters, but apparently on validation it
  * is not accepted and the value is replaced by <tt>0</tt>.
+ * MultiSpinBox should never become 0 because the validator
+ * allows something that the converter cannot convert!
  *
- * @todo Sometimes, after a click on the action, the first section
- * is selected. Sometimes not. That’s inconsistant!
+ * @todo Now, @ref setSectionValues does not select automatically the first
+ * section anymore. Is this in conformance with <tt>QDateTimeEdit</tt>?
+ * Test: Change the value in the middle. Push “Apply” button. Now, the
+ * curser is at the end of the spin box, but the active section is still
+ * the one in the middle (you can try this by using your mouse wheel on
+ * the widget).
  *
  * @todo Currently, if the widget has <em>not</em> the focus but the
  * mouse moves over it and the scroll wheel is used, it’s the first
@@ -159,38 +163,12 @@ namespace PerceptualColor
  * accepted (thought later “corrected” to 0), and sometimes not. This
  * behaviour is inconsistend and wrong.
  *
- * @todo Imagine a section in a @ref MultiSpinBox that has 0 decimals and
- * a value of 15.7. It is displayed as 16. When the user scrolls up with
- * the mouse or uses the key ↑ than the value changes to 16.7 while the
- * display changes to 17. Isn’t is highly confusing that – after a user
- * interaction – the new internal value is different from what the users sees?
- * When creating a <tt>QDoubleSpinBox</tt> with <tt>decimals == 2</tt>
- * and then <tt>setValue(1.3579)</tt>, than <tt>value() == 1.36</tt>. So
- * <tt>QDoubleSpinBox</tt> does not store internally the original value
- * it gets via <tt>setValue</tt> but a value rounded to the current
- * decimal precision. @ref MultiSpinBox should adopt the exactly same
- * behaviour (for consistency). This should be controlled by unit tests.
- *
- * @todo When using this widget in @ref ColorDialog, there are rounding
- * differences, for example when choosing HSV 210° 27 19, then RGB becomes
- * 17 18 19. But when passing through an RGB field, HSV will be changed
- * to 210° 26.8405 19 even if in the RGB field nothing was changed by the
- * user. This is confusing. Also: If values are 0 and then passing through
- * fields of other color representations, the value can become something
- * like 0.001 by rounding error, and so the Arrow-Down-Button will be
- * enabled thought the displayed value is 0 (and this was the value previously
- * manually entered by the user); this is confusing.
- *
  * @todo Apparently, the validator doesn’t restict the input actually to the
  * given range. For QDoubleSpinBox however, the line edit <em>is</em>
  * restricted! Example: even if 100 is maximum, it is possible to write 444.
  * Maybe our @ref ExtendedDoubleValidator should not rely on Qt’s validator,
  * but on if QLocale is able to convert (result: valid) or not (result:
- * invalid)?!
- *
- * @todo Do not text-cursor-select more than <em>one</em> value when
- * editing (or do not allow text selection at all)? Also: Selecting text
- * with the mouse cursor seems somewhat impredictable. */
+ * invalid)?!. */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBox : public QAbstractSpinBox
 {
     Q_OBJECT

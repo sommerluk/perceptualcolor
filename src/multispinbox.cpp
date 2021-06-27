@@ -601,9 +601,13 @@ void MultiSpinBox::MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(c
 /** @brief Setter for @ref sectionValues property.
  *
  * @param newSectionValues The new section values. This list must have
- * exactly as many items as @ref sectionConfigurations. If the new values
- * are not within the boundaries defined in the @ref sectionConfigurations,
- * they will be adapted before being applied.
+ * exactly as many items as @ref sectionConfigurations.
+ *
+ * The values will be bound between
+ * @ref MultiSpinBoxSectionConfiguration::minimum and
+ * @ref MultiSpinBoxSectionConfiguration::maximum. Their precision will be
+ * reduced to as many decimal places as given by
+ * @ref MultiSpinBoxSectionConfiguration::decimals.
  *
  * @internal
  *

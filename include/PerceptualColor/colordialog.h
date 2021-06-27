@@ -114,9 +114,13 @@ namespace PerceptualColor
  *   While QColorDialog would round to full integers, <em>this</em> dialog
  *   preserves the floating point precision.
  * - When the default constructor is used, unlike QColorDialog, the default
- *   color is <em>not</em> <tt>Qt::white</tt>.
+ *   color is <em>not</em> guaranteed to be <tt>Qt::white</tt>.
  *
  * @internal
+ *
+ * In the QColorDialog API, the function <tt>QColorDialog::getRgba()</tt> has
+ * been deprecated during the Qt5 live cicly. This class does not provide
+ * source compatibility with obsolete functions of teh QColorDialog API.
  *
  * @todo The LCh-hue (and so the graphical widgets) jumps forward and backward
  * when changing RGB-based values (also HSV) when entering and leaving the gray
@@ -127,6 +131,14 @@ namespace PerceptualColor
  * how much tolerance? Would it be useful to define a certain hue, for
  * example 0°, as default hue for when no old hue is available but the
  * new value is on the gray axis?
+ *
+ * @todo BUG: Start with dialog with Qt::yellow. You get HLC 100° 98% 95.
+ * Push the apply button. Actual result: HLC 100° 98% 24 which has a far
+ * different chroma value. Expected result: There might be some rounding,
+ * but not such a big difference in chroma. And: Ideally, every once displayed
+ * value is always recognized as valid. When the color space conversion
+ * takes place, we can make this sure for HLC values, but then comes the
+ * also rounding in @ref MultiSpinBox…
  *
  * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
  * With each focus switch, the values change. They shouldn't!
@@ -146,19 +158,6 @@ namespace PerceptualColor
  * within the “Hex” spinbox. → Click within the “HSV” spinbox. Now, HLC
  * changes from 270° to 269°. → Why?
  *
- * @todo If there is no alpha widget <em>and</em> the actual layout is
- * expanded (either explicitly by @ref DialogLayoutDimensions::expanded
- * or implicitly by @ref DialogLayoutDimensions::screenSizeDependent on
- * bigger screens) <em>than</em> it would make sense to move
- * the @ref ColorDialogPrivate::m_buttonBox into the same column as
- * the @ref ColorDialogPrivate::m_numericalWidget, namely <em>below</em>
- * the @ref ColorDialogPrivate::m_numericalWidget. This saves screen
- * space and does not confuse the user.
- *
- * @todo Custom layout management that has a specific height-per-width ratio
- * considering the @ref ChromaHueDiagram and and @ref WheelColorPicker
- * and <em>their</em> useful height-per-width ratio.
- *
  * @todo The graphical display in @ref WheelColorPicker jumps when you
  * choose a gray color like HSV 20 0 125 and then increment or decrement the
  * V component in the QSpinBox by 1. This is because @ref WheelColorPicker is
@@ -168,22 +167,6 @@ namespace PerceptualColor
  * can we get a similar continuity for HSV’s hue? (By the way: Similar problem
  * for RGB values changing along the gray axis: #444 → #555 → #666 changes
  * the graphically displayed hue.
- *
- * @todo It might be nice to support keyboard shortcuts for switching tabs
- * like in browsers, which is a concept many users might be familiar to.
- * Crtl+Tab to switch to the next tab in the list. Crtl+Shift+Tab to switch
- * to the previous tab in the list.
- *
- * @todo The dialog shows up with a widget width that is bigger than
- * the recommended width. This is useless: The diagram won’t get
- * bigger anyway, because the height did <em>not</em> raise. And the
- * spinboxes have no advantage in being wider. Why actually does the dialog
- * behave like this?
- *
- * @todo Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
- * functionality as the refresh button in the HCL @ref MultiSpinBox.
- * But attention: If a library user <em>embeds</em> the dialog, he does
- * not want his shortcuts to be intercepted!
  *
  * @todo Update the colors while typing a number in a field? Example:
  * You type in @ref ColorDialogPrivate::m_hlcSpinBox the value
@@ -201,13 +184,6 @@ namespace PerceptualColor
  * an out-of-gamut value should of cource be corrected, following
  * the <tt>QAbstractSpinbox::correctionMode</tt> policy.
  *
- * @todo Touch screen compatibility: In general: What would mean better
- * support for touch-screen and convertible? More things to do? For example,
- * A spin box can also be used on mobile phone (putting the numbers
- * with on-screen keyboard). But the + and - button for increasing
- * or decreasing the values might be too small. And mobile UI uses
- * often wheels for this use case…
- *
  * @todo Bug fix this:
  * - Set the value HSV 200 0 0
  * - Push tabulator key until the focus enters in the “Hex” field. The
@@ -224,23 +200,9 @@ namespace PerceptualColor
  *
  * @todo Use the <em>actual</em> color profile of the monitor.
  *
- * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
- * letters on-the-fly (as-you-type) to upper-case letters.
- *
- * @todo Provide <tt>setWhatsThis()</tt> help for widgets. Or tool tips? Or
- * both? What is more appropriate? Or use both? For @ref WheelColorPicker and
- * @ref ChromaLightnessDiagram, this help text could describe the keyboard
- * controls and be integrated as default value in the class itself. For the
- * other widgets, a help text could be defined here within <em>this</em>
- * class, if appropriate.
- *
  * @todo Make sure that @ref ChromaHueDiagram always shows at least at the
  * central physical pixel with an in-gamut color. Solution: Limit the range
  * of the lightness selector? Or a better algorithm in @ref ChromaHueDiagram?
- *
- * @todo Support for other models like HSL (HSB is yet identical to HSV?),
- * Munsell? With an option to enable or disable them? (NCS not, because
- * it is not free…)
  *
  * @todo Provide (on demand) two patches, like Scribus also does: One for the
  * old color (cannot be modified by the user) and another one for the new
@@ -249,8 +211,58 @@ namespace PerceptualColor
  * And put an arrow between the patches, from “before” to “after”. (Be aware:
  * RTL support necessary!)
  *
- * @todo For the tab widget, use rather icons instead of the text “hue first”
- * and “lightness first”!?
+ * @section uireview Review of the user interface
+ *
+ * @todo For the tab widget, use rather icons instead of the text “hue-baded”
+ * and “lightness-based”!?
+ *
+ * @todo Provide <tt>setWhatsThis()</tt> help for widgets. Or tool tips? Or
+ * both? What is more appropriate? Or use both? For @ref WheelColorPicker and
+ * @ref ChromaLightnessDiagram, this help text could describe the keyboard
+ * controls and be integrated as default value in the class itself. For the
+ * other widgets, a help text could be defined here within <em>this</em>
+ * class, if appropriate.
+ *
+ * @todo Touch screen compatibility: In general: What would mean better
+ * support for touch-screen and convertible? More things to do? For example,
+ * A spin box can also be used on mobile phone (putting the numbers
+ * with on-screen keyboard). But the + and - button for increasing
+ * or decreasing the values might be too small. And mobile UI uses
+ * often wheels for this use case…
+ *
+ * @section additionalcolordialogfeatures Proposals for additional features
+ *
+ * @todo The QLineEdit for the hexadecimal RGB values should change lower-case
+ * letters on-the-fly (as-you-type) to upper-case letters. And: Maybe it
+ * could even be switched to @ref MultiSpinBox (but that would mean implement
+ * support for hexadecimal digits in @ref MultiSpinBox).
+ *
+ * @todo Accept <tt>F5</tt> and <tt>Ctrl+R</tt> just with the same
+ * functionality as the refresh button in the HCL @ref MultiSpinBox.
+ * But attention: If a library user <em>embeds</em> the dialog, he does
+ * not want his shortcuts to be intercepted!
+ *
+ * @todo It might be nice to support keyboard shortcuts for switching tabs
+ * like in browsers, which is a concept many users might be familiar to.
+ * Crtl+Tab to switch to the next tab in the list. Crtl+Shift+Tab to switch
+ * to the previous tab in the list.
+ *
+ * @todo If there is no alpha widget <em>and</em> the actual layout is
+ * expanded (either explicitly by @ref DialogLayoutDimensions::expanded
+ * or implicitly by @ref DialogLayoutDimensions::screenSizeDependent on
+ * bigger screens) <em>than</em> it would make sense to move
+ * the @ref ColorDialogPrivate::m_buttonBox into the same column as
+ * the @ref ColorDialogPrivate::m_numericalWidget, namely <em>below</em>
+ * the @ref ColorDialogPrivate::m_numericalWidget. This saves screen
+ * space and does not confuse the user.
+ *
+ * @todo Custom layout management that has a specific height-per-width ratio
+ * considering the @ref ChromaHueDiagram and and @ref WheelColorPicker
+ * and <em>their</em> useful height-per-width ratio.
+ *
+ * @todo Support for other models like HSL (HSB is yet identical to HSV?),
+ * Munsell? With an option to enable or disable them? (NCS not, because
+ * it is not free…)
  *
  * @todo Would CMYK support make sense? Would it integrate intuitively into
  * the user interface? If we would have CMYK support, we would have two
@@ -274,13 +286,7 @@ namespace PerceptualColor
  *
  * @todo Instead (or additional to) palettes: Discret widgets, that have
  * a fixed (quite limited) number of fields to chose for the user?
- *
- * @todo What about functions that are deprecated in QColorDialog? This seems
- * to be currently only apply to <tt>QRgb QColorDialog::getRgba(QRgb
- * initial = 0xffffffff, bool *ok = nullptr, QWidget *parent = nullptr)</tt>,
- * which was deprecated somewhere at 5.12 following the source code from
- * Woboq, but much earlier following the online documentation.
- * Support them? Or document that we do not support them? */
+ */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
 {
     Q_OBJECT
