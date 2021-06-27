@@ -560,6 +560,9 @@ void MultiSpinBox::MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(c
     qreal temp; // TODO Why qreal and not double?
     for (int i = 0; i < sectionCount; ++i) {
         myConfig = m_sectionConfigurations.at(i);
+        fixedNewSectionValues[i] =
+            // Round value _before_ applying boundaries/wrapping.
+            roundToDigits(fixedNewSectionValues.at(i), myConfig.decimals());
         if (myConfig.isWrapping()) {
             rangeWidth = myConfig.maximum() - myConfig.minimum();
             if (rangeWidth <= 0) {
@@ -589,7 +592,6 @@ void MultiSpinBox::MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(c
                 fixedNewSectionValues.at(i),
                 myConfig.maximum());
         }
-        fixedNewSectionValues[i] = roundToDigits(fixedNewSectionValues[i], myConfig.decimals());
     }
 
     if (m_sectionValues != fixedNewSectionValues) {

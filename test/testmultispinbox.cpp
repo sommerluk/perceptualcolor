@@ -1739,8 +1739,34 @@ private Q_SLOTS:
         QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
     }
 
+    void testMaximumWrappingRounding_data()
+    {
+        QTest::addColumn<double>("value");
+
+        QTest::newRow("-360.1") << -360.1;
+        QTest::newRow("-360") << -360.0;
+        QTest::newRow("-359.9") << -359.9;
+        QTest::newRow("-0.1") << -0.1;
+        QTest::newRow("0") << 0.0;
+        QTest::newRow("0.1") << 0.1;
+        QTest::newRow("359.9") << 359.9;
+        QTest::newRow("360") << 360.0;
+        QTest::newRow("360.1") << 360.1;
+        QTest::newRow("719.9") << 719.9;
+        QTest::newRow("720") << 720.0;
+        QTest::newRow("720.1") << 720.1;
+    }
+
     void testMaximumWrappingRounding()
     {
+        // When using wrapping, the MultiSpinBox is supposed to never
+        // show “360”, but instead “0”. This should also be true when
+        // rounding applies. And when being a magnitude higher or lower.
+
+        // Get data
+        QFETCH(double, value);
+
+        // Initialization
         MultiSpinBoxSectionConfiguration myConfig;
         myConfig.setDecimals(0);
         myConfig.setMinimum(0);
@@ -1750,11 +1776,15 @@ private Q_SLOTS:
         mySpinBox.setSectionConfigurations(
             // Create the QList on the fly…
             QList<MultiSpinBoxSectionConfiguration> {myConfig});
-        // The MultiSpinBox is supposed to never show “360”, but instead “0”.
+
         mySpinBox.setSectionValues(
             // Create the QList on the fly…
-            QList<double> {359.9} // Choose a value that rounds up to 360.
-        );
+            QList<double> {value});
+        QCOMPARE(mySpinBox.text(), QStringLiteral("0"));
+
+        mySpinBox.setSectionValues(
+            // Create the QList on the fly…
+            QList<double> {359.9});
         QCOMPARE(mySpinBox.text(), QStringLiteral("0"));
     }
 
