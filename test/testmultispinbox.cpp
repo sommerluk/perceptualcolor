@@ -1498,7 +1498,253 @@ private Q_SLOTS:
         }
     }
 
-    void testRoundingBehaviour()
+    void testRoundingBehaviourCompliance()
+    {
+        // Test the compliance of the behaviour of this class with
+        // the behaviour of QDoubleSpinBox
+        MultiSpinBoxSectionConfiguration myConfig;
+        myConfig.setDecimals(0);
+        myConfig.setMinimum(5);
+        myConfig.setMaximum(360);
+        MultiSpinBox myMulti;
+        myMulti.setSectionConfigurations(
+            // Create on-the-fly a list with only one section
+            QList<MultiSpinBoxSectionConfiguration>{myConfig}
+        );
+        QDoubleSpinBox myDoubleSpinBox;
+        myDoubleSpinBox.setDecimals(0);
+        myDoubleSpinBox.setMinimum(5);
+        myDoubleSpinBox.setMaximum(360);
+
+        myMulti.setSectionValues(QList<double>{-1});
+        myDoubleSpinBox.setValue(-1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{0});
+        myDoubleSpinBox.setValue(0);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value that rounds down and stays too small
+        myMulti.setSectionValues(QList<double>{4.1});
+        myDoubleSpinBox.setValue(4.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value that is too small, but rounds up to the minimum
+        myMulti.setSectionValues(QList<double>{4.9}); // Rounds up to 5
+        myDoubleSpinBox.setValue(4.9); // Rounds up to 5
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{5});
+        myDoubleSpinBox.setValue(5);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value that rounds down to the minimum
+        myMulti.setSectionValues(QList<double>{5.1});
+        myDoubleSpinBox.setValue(5.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value in the middle that rounds down
+        myMulti.setSectionValues(QList<double>{72.1}); // Rounds up to 5
+        myDoubleSpinBox.setValue(72.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value in the middle that rounds up
+        myMulti.setSectionValues(QList<double>{72.9}); // Rounds up to 5
+        myDoubleSpinBox.setValue(72.9);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value that is in range and rounds down
+        myMulti.setSectionValues(QList<double>{359.1});
+        myDoubleSpinBox.setValue(359.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value that rounds up to the maximum
+        myMulti.setSectionValues(QList<double>{359.9});
+        myDoubleSpinBox.setValue(359.9);
+
+        // Test with maximum
+        myMulti.setSectionValues(QList<double>{360});
+        myDoubleSpinBox.setValue(360);
+
+        // Test with value that rounds down to maximum
+        myMulti.setSectionValues(QList<double>{360.1});
+        myDoubleSpinBox.setValue(360.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{361});
+        myDoubleSpinBox.setValue(361);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+    }
+
+    void testRoundingBehaviourComplianceWithRoundedRanges()
+    {
+        // Test the compliance of the behaviour of this class with
+        // the behaviour of QDoubleSpinBox
+        MultiSpinBoxSectionConfiguration myConfig;
+        myConfig.setDecimals(0);
+        myConfig.setMinimum(4.8);
+        myConfig.setMaximum(360.2);
+        MultiSpinBox myMulti;
+        myMulti.setSectionConfigurations(
+            // Create on-the-fly a list with only one section
+            QList<MultiSpinBoxSectionConfiguration>{myConfig}
+        );
+        QDoubleSpinBox myDoubleSpinBox;
+        myDoubleSpinBox.setDecimals(0);
+        myDoubleSpinBox.setMinimum(4.8);
+        myDoubleSpinBox.setMaximum(360.2);
+
+        myMulti.setSectionValues(QList<double>{-1});
+        myDoubleSpinBox.setValue(-1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{0});
+        myDoubleSpinBox.setValue(0);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        // Test with a value that rounds down and stays too small
+        myMulti.setSectionValues(QList<double>{4.1});
+        myDoubleSpinBox.setValue(4.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{4.7});
+        myDoubleSpinBox.setValue(4.7); // Rounds up to 5
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{4.8});
+        myDoubleSpinBox.setValue(4.8); // Rounds up to 5
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{4.9});
+        myDoubleSpinBox.setValue(4.9); // Rounds up to 5
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{5});
+        myDoubleSpinBox.setValue(5);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{5.1}); // Rounds up to 5
+        myDoubleSpinBox.setValue(5.1); // Rounds up to 5
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{72.1}); // Rounds up to 5
+        myDoubleSpinBox.setValue(72.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{72.9}); // Rounds up to 5
+        myDoubleSpinBox.setValue(72.9);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{359.1});
+        myDoubleSpinBox.setValue(359.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{359.9});
+        myDoubleSpinBox.setValue(359.9);
+
+        myMulti.setSectionValues(QList<double>{360});
+        myDoubleSpinBox.setValue(360);
+
+        myMulti.setSectionValues(QList<double>{360.1});
+        myDoubleSpinBox.setValue(360.1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{360.2});
+        myDoubleSpinBox.setValue(360.2);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{360.3});
+        myDoubleSpinBox.setValue(360.3);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{360.9});
+        myDoubleSpinBox.setValue(360.9);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{361});
+        myDoubleSpinBox.setValue(361);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+    }
+
+    void testRoundingBehaviourCornerCases()
+    {
+        // Test the compliance of the behaviour of this class with
+        // the behaviour of QDoubleSpinBox
+        MultiSpinBoxSectionConfiguration myConfig;
+        myConfig.setDecimals(0);
+        myConfig.setMinimum(4.8);
+        myConfig.setMaximum(359.8);
+        MultiSpinBox myMulti;
+        myMulti.setSectionConfigurations(
+            // Create on-the-fly a list with only one section
+            QList<MultiSpinBoxSectionConfiguration>{myConfig}
+        );
+        QDoubleSpinBox myDoubleSpinBox;
+        myDoubleSpinBox.setDecimals(0);
+        myDoubleSpinBox.setMinimum(4.8);
+        myDoubleSpinBox.setMaximum(359.8);
+
+        myMulti.setSectionValues(QList<double>{359});
+        myDoubleSpinBox.setValue(359);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{359.7});
+        myDoubleSpinBox.setValue(359.7);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{359.8});
+        myDoubleSpinBox.setValue(359.8);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{359.9});
+        myDoubleSpinBox.setValue(359.9);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myMulti.setSectionValues(QList<double>{360});
+        myDoubleSpinBox.setValue(360);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+    }
+
+    void testRoundingAfterChangingDecimals()
+    {
+        // Test the compliance of the behaviour of this class with
+        // the behaviour of QDoubleSpinBox
+        QList<MultiSpinBoxSectionConfiguration> myConfigs {
+            // Initialize the list with one single, default section
+            MultiSpinBoxSectionConfiguration()
+        };
+        myConfigs[0].setDecimals(2);
+        MultiSpinBox myMulti;
+        myMulti.setSectionConfigurations(myConfigs);
+        QDoubleSpinBox myDoubleSpinBox;
+        myDoubleSpinBox.setDecimals(2);
+        const double initialTestValue = 12.34;
+        myMulti.setSectionValues(QList<double>{initialTestValue});
+        myDoubleSpinBox.setValue(initialTestValue);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myConfigs[0].setDecimals(1);
+        myMulti.setSectionConfigurations(myConfigs);
+        myDoubleSpinBox.setDecimals(1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myConfigs[0].setDecimals(0);
+        myMulti.setSectionConfigurations(myConfigs);
+        myDoubleSpinBox.setDecimals(0);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myConfigs[0].setDecimals(3);
+        myMulti.setSectionConfigurations(myConfigs);
+        myDoubleSpinBox.setDecimals(3);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+
+        myConfigs[0].setDecimals(-1);
+        myMulti.setSectionConfigurations(myConfigs);
+        myDoubleSpinBox.setDecimals(-1);
+        QCOMPARE(myMulti.sectionValues().at(0), myDoubleSpinBox.value());
+    }
+
+    void testMaximumWrappingRounding()
     {
         MultiSpinBoxSectionConfiguration myConfig;
         myConfig.setDecimals(0);

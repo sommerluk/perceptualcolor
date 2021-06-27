@@ -589,6 +589,7 @@ void MultiSpinBox::MultiSpinBoxPrivate::setSectionValuesWithoutFurtherUpdating(c
                 fixedNewSectionValues.at(i),
                 myConfig.maximum());
         }
+        fixedNewSectionValues[i] = roundToDigits(fixedNewSectionValues[i], myConfig.decimals());
     }
 
     if (m_sectionValues != fixedNewSectionValues) {
