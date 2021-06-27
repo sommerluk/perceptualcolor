@@ -81,9 +81,14 @@ MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(co
  * @param other the object to move */
 MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(MultiSpinBoxSectionConfiguration &&other) noexcept
 {
-    // The following line replaces d_pointer = std::move(other.d_pointer)
-    // and works fine as long as no deleters are used in the smart pointer:
-    d_pointer.reset(other.d_pointer.release());
+    // This would not work with our custom pointer type:
+    // d_pointer = std::move(other.d_pointer)
+    //
+    // This would work fine as long as no deleters are used in the smart pointer
+    // d_pointer.reset(other.d_pointer.release());
+    //
+    // But finally we use this because it works fine even when deleters are used:
+    d_pointer.swap(other.d_pointer);
 }
 
 /** @brief Move assignment operator
@@ -92,9 +97,14 @@ MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(MultiSpinBoxS
 MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(MultiSpinBoxSectionConfiguration &&other) noexcept
 {
     if (this != &other) { // protect against invalid self-assignment
-        // The following line replaces d_pointer = std::move(other.d_pointer)
-        // and works fine as long as no deleters are used in the smart pointer:
-        d_pointer.reset(other.d_pointer.release());
+        // This would not work with our custom pointer type:
+        // d_pointer = std::move(other.d_pointer)
+        //
+        // This would work fine as long as no deleters are used in the smart pointer
+        // d_pointer.reset(other.d_pointer.release());
+        //
+        // But finally we use this because it works fine even when deleters are used:
+        d_pointer.swap(other.d_pointer);
     }
 
     return *this; // By convention, always return *this.

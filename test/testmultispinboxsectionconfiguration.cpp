@@ -135,9 +135,17 @@ private Q_SLOTS:
 
     void testMoveConstructor()
     {
+        MultiSpinBoxSectionConfiguration testObjectToMove;
+        testObjectToMove.setDecimals(1);
+        testObjectToMove.setWrapping(true);
+        testObjectToMove.setMaximum(3);
+        testObjectToMove.setMinimum(2);
+        testObjectToMove.setPrefix(QStringLiteral("a"));
+        testObjectToMove.setSingleStep(4);
+        testObjectToMove.setSuffix(QStringLiteral("b"));
         MultiSpinBoxSectionConfiguration myConfig(
             // Trigger the move constructor
-            helperGetUnusualConfig());
+            std::move(testObjectToMove));
         QCOMPARE(myConfig.decimals(), 1);
         QCOMPARE(myConfig.isWrapping(), true);
         QCOMPARE(myConfig.maximum(), 3);
