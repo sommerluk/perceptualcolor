@@ -81,14 +81,12 @@ MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(co
  * @param other the object to move */
 MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(MultiSpinBoxSectionConfiguration &&other) noexcept
 {
-    // This would not work with our custom pointer type:
-    // d_pointer = std::move(other.d_pointer)
-    //
-    // This would work fine as long as no deleters are used in the smart pointer
-    // d_pointer.reset(other.d_pointer.release());
-    //
-    // But finally we use this because it works fine even when deleters are used:
-    d_pointer.swap(other.d_pointer);
+    // .reset() deletes the old object and resets the pointer to the
+    // new one. Unlike the move assignment, it does however not update
+    // the  deleters. We  use it nevertheless, because move assignment
+    // is currently not supported  by our pointer type, and at the
+    // same time we do not use deleters.
+    d_pointer.reset(other.d_pointer.release());
 }
 
 /** @brief Move assignment operator
@@ -97,14 +95,12 @@ MultiSpinBoxSectionConfiguration::MultiSpinBoxSectionConfiguration(MultiSpinBoxS
 MultiSpinBoxSectionConfiguration &MultiSpinBoxSectionConfiguration::operator=(MultiSpinBoxSectionConfiguration &&other) noexcept
 {
     if (this != &other) { // protect against invalid self-assignment
-        // This would not work with our custom pointer type:
-        // d_pointer = std::move(other.d_pointer)
-        //
-        // This would work fine as long as no deleters are used in the smart pointer
-        // d_pointer.reset(other.d_pointer.release());
-        //
-        // But finally we use this because it works fine even when deleters are used:
-        d_pointer.swap(other.d_pointer);
+        // .reset() deletes the old object and resets the pointer to the
+        // new one. Unlike the move assignment, it does however not update
+        // the  deleters. We  use it nevertheless, because move assignment
+        // is currently not supported  by our pointer type, and at the
+        // same time we do not use deleters.
+        d_pointer.reset(other.d_pointer.release());
     }
 
     return *this; // By convention, always return *this.

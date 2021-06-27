@@ -158,8 +158,21 @@ private Q_SLOTS:
     void testMoveAssignment()
     {
         MultiSpinBoxSectionConfiguration myConfig;
-        myConfig.setMaximum(9);              // change arbitrarily some value
-        myConfig = helperGetUnusualConfig(); // move assignment
+        myConfig.setMaximum(9); // change arbitrarily some value
+
+        // Create a test object
+        MultiSpinBoxSectionConfiguration testObjectToMove;
+        testObjectToMove.setDecimals(1);
+        testObjectToMove.setWrapping(true);
+        testObjectToMove.setMaximum(3);
+        testObjectToMove.setMinimum(2);
+        testObjectToMove.setPrefix(QStringLiteral("a"));
+        testObjectToMove.setSingleStep(4);
+        testObjectToMove.setSuffix(QStringLiteral("b"));
+
+        // Move assignment:
+        myConfig = std::move(testObjectToMove);
+
         QCOMPARE(myConfig.decimals(), 1);
         QCOMPARE(myConfig.isWrapping(), true);
         QCOMPARE(myConfig.maximum(), 3);
