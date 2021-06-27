@@ -308,7 +308,7 @@ grep \
 #    compatibility much harder, for little benefit.
 grep \
     --recursive \
-    --fixed-strings "inline" \
+    --perl-regexp "(^|[^a-zA-Z0-9\-])inline" \
     $ALL_CODE \
          | sed 's/^/Do not use inline functions: /'
 
