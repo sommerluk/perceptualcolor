@@ -1309,13 +1309,11 @@ private Q_SLOTS:
         m_perceptualDialog->show();
 
         QTabWidget *theTabWidget = m_perceptualDialog->findChild<QTabWidget *>();
-        if (!theTabWidget) {
-            throw 0;
-        }
+        QVERIFY2(theTabWidget != nullptr, //
+                 "Assert that theTabWidget has actually been found.");
         constexpr int myIndex = 1;
-        if (theTabWidget->tabText(myIndex) != QStringLiteral("&Lightness first")) {
-            throw 0;
-        }
+        // Assert that we got the correct tab widget:
+        QCOMPARE(theTabWidget->tabText(myIndex), QStringLiteral("&Lightness-based"));
         theTabWidget->setCurrentIndex(myIndex);
 
         QBENCHMARK {
