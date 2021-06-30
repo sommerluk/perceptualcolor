@@ -55,6 +55,17 @@
  * - @ref PerceptualColor::ChromaHueDiagram (for selecting colors at a
  *   given lightness)
  *
+ * This library…
+ * - …provides a complete documentation, both for the public API and for
+ *   the internals.
+ * - is cross-platform. It does not use platform-specific code nor
+ *   relies on a specific byte order.
+ * - –is internationalized (i18n) and ready for translation. This include
+ *   also support for right-to-left layouts in the widgets.
+ * - –provides @ref hidpisupport.
+ * - –uses QStyle whereever possible.
+ * - –has some basic support for accessibility.
+ *
  * @section namespacepollution Namespace pollution and collisions:
  * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.
  *   (See <em>Files → File members</em> for a list of all macros.)
@@ -74,6 +85,14 @@
  * texts.
  *
  * @internal
+ *
+ * @todo General library properties:
+ * - test cross-platform support and different byte-orders
+ * - Could we interate more with QStyle?
+ * - stylable by style sheets (✗)
+ * - More work on accessibility. [This includes to work well with bigger
+ *   fonts. Should then the gradient be thicker and the marker
+ *   thicker? setAccessibleName().]
  *
  * @todo From KDE’s binary compatibility info page: In order to make a class
  * to extend in the future you should follow these rules:
@@ -221,20 +240,6 @@
  *
  * @todo mark all public non-slot functions with Q_INVOKABLE (except property
  * setters and getters)
- *
- * @todo A good widget library should…
- * - provide a complete documentation (✓)
- * - run on all systems (✓ We do not use system-specific code nor do we
- *   rely on byte order)
- * - internationalization (i18n) done. This include support for right-to-left
- *   layouts, as well as be ready for translation. (✓)
- * - localization (l10n)
- * - support hight-dpi (✓)
- * - stylable by QStyle (? partial)
- * - stylable by style sheets (✗)
- * - accessibility (✗) [This includes to work well with bigger
- *   fonts. Should then the gradient be thicker and the marker
- *   thicker? setAccessibleName(). ]
  *
  * @todo A good widget library should also be touchscreen-ready. Find
  * an alternative to @ref PerceptualColor::MultiSpinBox? How, for up
