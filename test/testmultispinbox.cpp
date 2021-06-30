@@ -46,7 +46,6 @@ static void snippet02()
     PerceptualColor::MultiSpinBox *myHsvSpinBox = new PerceptualColor::MultiSpinBox();
     PerceptualColor::MultiSpinBoxSectionConfiguration myConfiguration;
     QList<PerceptualColor::MultiSpinBoxSectionConfiguration> hsvConfigurations;
-    QList<double> hsvValues;
 
     myConfiguration.setDecimals(1);
 
@@ -56,7 +55,6 @@ static void snippet02()
     myConfiguration.setMaximum(360);
     myConfiguration.setSuffix(QStringLiteral(u"° "));
     hsvConfigurations.append(myConfiguration);
-    hsvValues.append(310);
 
     myConfiguration.setPrefix(QStringLiteral(u" "));
     myConfiguration.setMinimum(0);
@@ -64,14 +62,13 @@ static void snippet02()
     myConfiguration.setWrapping(false);
     myConfiguration.setSuffix(QStringLiteral(u" "));
     hsvConfigurations.append(myConfiguration);
-    hsvValues.append(310);
 
     myConfiguration.setSuffix(QString());
     hsvConfigurations.append(myConfiguration);
-    hsvValues.append(100);
 
     myHsvSpinBox->setSectionConfigurations(hsvConfigurations);
-    myHsvSpinBox->setSectionValues(hsvValues);
+
+    myHsvSpinBox->setSectionValues(QList<double> {310, 200, 100});
     // Initial content is:  310,0°  200,0  100,0
     //! [MultiSpinBox Basic example]
     delete myHsvSpinBox;
