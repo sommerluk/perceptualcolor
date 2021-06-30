@@ -120,7 +120,9 @@ namespace PerceptualColor
  *
  * @todo <tt>Crtl-A</tt> support for this class. (Does this shortcut
  * trigger <tt>selectAll()</tt>?) <tt>Ctrl-U</tt> support for this class?
- * If so, do it via @ref clear().
+ * If so, do it via @ref clear(). And: It the user tries to delete
+ * everything, delete instead only the current value!? (By the way:
+ * How does QDateTimeEdit handle this?)
  *
  * @todo Do really not text-cursor-select more than <em>one</em> value when
  * editing (or do not allow text selection at all)?? Also: Selecting text

@@ -55,10 +55,7 @@ namespace PerceptualColor
  *
  * Also Qt itself uses this configuration-object-based approach with its
  * QNetworkConfiguration class (including @ref pimpl and
- * copy-constructors).
- *
- * @todo Use Make sure that things like “maximum >= minimum” are
- * guaranteed. */
+ * copy-constructors). */
 class PERCEPTUALCOLOR_IMPORTEXPORT MultiSpinBoxSectionConfiguration
 {
 public:

@@ -66,7 +66,7 @@
  * - –uses QStyle whereever possible.
  * - –has some basic support for accessibility.
  *
- * @section namespacepollution Namespace pollution and collisions:
+ * This library avoids amespace pollution and collisions:
  * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.
  *   (See <em>Files → File members</em> for a list of all macros.)
  * - To avoid namespace pollution, all symbols of this library live within
@@ -77,7 +77,6 @@
  * LittleCMS.
  *
  * @sa @ref build
- * @sa @ref hidpisupport
  *
  * @copyright Almost all the code is published under MIT License.
  * Only <tt>cmake/Modules/FindLCMS2.cmake</tt> is licenced under BSD-3-Clause

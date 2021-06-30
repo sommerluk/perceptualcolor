@@ -119,78 +119,8 @@ namespace PerceptualColor
  * @internal
  *
  * In the QColorDialog API, the function <tt>QColorDialog::getRgba()</tt> has
- * been deprecated during the Qt5 live cicly. This class does not provide
+ * been deprecated during the Qt5 life cicly. This class does not provide
  * source compatibility with obsolete functions of teh QColorDialog API.
- *
- * @todo The LCh-hue (and so the graphical widgets) jumps forward and backward
- * when changing RGB-based values (also HSV) when entering and leaving the gray
- * axis, due to lack of hue information. Would it be an option to store the
- * old hue to get a meaningful hue?
- * Should it be only really for the gray axis, or allow a certain tolerance
- * around the gray axis is necessary to make this work well - and if so,
- * how much tolerance? Would it be useful to define a certain hue, for
- * example 0°, as default hue for when no old hue is available but the
- * new value is on the gray axis?
- *
- * @todo BUG: HLC 35° 3% 0. Then, pass with Tab through the other fields.
- * With each focus switch, the values change. They shouldn't!
- *
- * @todo WARNING BUG: We should have a double storage of the color: As
- * LCH value and also as RGB value. This will prevent rounding errors. (The
- * application programmer sets an RGB value. He expects that the getter of
- * the color property returns that very same RGB value without any rounding
- * errors! Therefore, we need double storage!
- *
- * @todo BUG: Start the @ref ColorDialog with the color
- * <tt>QColor(Qt::yellow)</tt>. The @ref ChromaHueDiagram shows its handle
- * at a position with a very different (much, much paler) yellow than
- * indicated. Why is this inconsistent?
- *
- * @todo BUG: Start the dialog. → Go to tab “numeric”. → HLC is 270°. → Click
- * within the “Hex” spinbox. → Click within the “HSV” spinbox. Now, HLC
- * changes from 270° to 269°. → Why?
- *
- * @todo The graphical display in @ref WheelColorPicker jumps when you
- * choose a gray color like HSV 20 0 125 and then increment or decrement the
- * V component in the QSpinBox by 1. This is because @ref WheelColorPicker is
- * based on the LCh model and LCh’s hue component is different from HSV’s hue
- * component, and the jump is a consequence of rounding errors. There is no
- * jump when using the LCh input widget because the old hue is guarded. How
- * can we get a similar continuity for HSV’s hue? (By the way: Similar problem
- * for RGB values changing along the gray axis: #444 → #555 → #666 changes
- * the graphically displayed hue.
- *
- * @todo Update the colors while typing a number in a field? Example:
- * You type in @ref ColorDialogPrivate::m_hlcSpinBox the value
- * <tt>301°  60%  129</tt> which will be out of sRGB gamut. Currently,
- * no changes are applied until either the focus leaves
- * @ref ColorDialogPrivate::m_hlcSpinBox or the enter key is hit. When changes
- * are applied, the value is corrected to an in-gamut value. Should this
- * same behaviour also apply during typing?
- *
- * @todo The HLC widget could provide intermediate values during the
- * user is editing. These could be displayed, and if the intermediate
- * value is out-of-gamut, the @ref ColorPatch could display an empty
- * value, and the diagram widgets could indeed put the handle at the
- * out-of-gamut position. Once the HLC widget finishes the editing,
- * an out-of-gamut value should of cource be corrected, following
- * the <tt>QAbstractSpinbox::correctionMode</tt> policy.
- *
- * @todo Bug fix this:
- * - Set the value HSV 200 0 0
- * - Push tabulator key until the focus enters in the “Hex” field. The
- *   HSV values stays always 200 0 0.
- * - Push the tabulator key once again: The HSV value changes to
- *   200 0 0.
- *
- * There are two issues:
- *
- * First: Focus change should never change values.
- *
- * Second: Why 360°? Even if this would be the correct value, it should
- * never be represented by 360°, but always by 0°!
- *
- * @todo Use the <em>actual</em> color profile of the monitor.
  *
  * @todo Make sure that @ref ChromaHueDiagram always shows at least at the
  * central physical pixel with an in-gamut color. Solution: Limit the range
@@ -204,6 +134,15 @@ namespace PerceptualColor
  * RTL support necessary!)
  *
  * @section uireview Review of the user interface
+ *
+ * @todo The HLC widget accepts values that are out-of-gamut; the dialog
+ * shows the nearest in-gamut color during this moment. Also, the RGB Hex
+ * widget accepts intermediatly invalid values (for example, 4-digit-values);
+ * the dialog displays the last previously displayed valid color during
+ * this moment. Those two situations do not have consiteend behaviour,
+ * but there are no good alternatives. However: Would it make sense to
+ * keep this behaviour, but display in the @ref ColorPatch an empty
+ * value during editing an out-of-gamut HLC value or an invalid RGB Hex values?
  *
  * @todo For the tab widget, use rather icons instead of the text “hue-baded”
  * and “lightness-based”!?
@@ -260,6 +199,18 @@ namespace PerceptualColor
  * arguments for new-style connect statements, making use of compiler
  * checks.
  *
+ * @todo Use the <em>actual</em> color profile of the monitor.
+ *
+ * @todo The LCh-hue (and so the graphical widgets) jumps forward and backward
+ * when changing RGB-based values (also HSV) when entering and leaving the gray
+ * axis, due to lack of hue information. Would it be an option to store the
+ * old hue to get a meaningful hue?
+ * Should it be only really for the gray axis, or allow a certain tolerance
+ * around the gray axis is necessary to make this work well - and if so,
+ * how much tolerance? Would it be useful to define a certain hue, for
+ * example 0°, as default hue for when no old hue is available but the
+ * new value is on the gray axis?
+ *
  * @todo Custom layout management that has a specific height-per-width ratio
  * considering the @ref ChromaHueDiagram and and @ref WheelColorPicker
  * and <em>their</em> useful height-per-width ratio.
@@ -288,7 +239,7 @@ namespace PerceptualColor
  * color dialog, which allows things much beyond 216 colors, and 216 colors
  * isn’t a useful standard anymore, and not a nice palette either.
  *
- * @todo Instead (or additional to) palettes: Discret widgets, that have
+ * @todo Instead of (or additional to) palettes: Discret widgets, that have
  * a fixed (quite limited) number of fields to chose for the user?
  */
 class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
