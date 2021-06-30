@@ -280,7 +280,7 @@ void ColorDialog::ColorDialogPrivate::setCurrentOpaqueColor(const PerceptualColo
 
     // Update RGB hex widget
     if (m_rgbLineEdit != ignoreWidget) {
-        m_rgbLineEdit->setText(tempRgbQColor.name());
+        updateRgbHexButBlockSignals();
     }
 
     // Update lightness selector
@@ -400,12 +400,21 @@ void ColorDialog::ColorDialogPrivate::readRgbHexValues()
 void ColorDialog::ColorDialogPrivate::updateRgbHexButBlockSignals()
 {
     QSignalBlocker mySignalBlocker(m_rgbLineEdit);
-    m_rgbLineEdit->setText(
-        // m_currentOpaqueColor is supposed to be always in-gamut. However,
-        // because of rounding issues, a conversion to an unbounded RGB
-        // color could result in an invalid color. Therefore, we must
-        // use a conversion to a _bounded_ RGB color.
-        m_rgbColorSpace->toQColorRgbBound(m_currentOpaqueColor).name());
+
+    // m_currentOpaqueColor is supposed to be always in-gamut. However,
+    // because of rounding issues, a conversion to an unbounded RGB
+    // color could result in an invalid color. Therefore, we must
+    // use a conversion to a _bounded_ RGB color.
+    const QColor rgbColor = m_rgbColorSpace->toQColorRgbBound(m_currentOpaqueColor);
+    // We cannot use QColor.name() directly because this function seems
+    // to use floor() instead of round(), which does not make sense in
+    // our dialog, and it would be inconsistend with the other widgets
+    // of the dialog. Therefore, we have to round explicitly (to integers):
+    const QColor rgbColorRounded = QColor::fromRgb( //
+        qRound(rgbColor.redF() * 255),
+        qRound(rgbColor.greenF() * 255),
+        qRound(rgbColor.blueF() * 255));
+    m_rgbLineEdit->setText(rgbColorRounded.name());
 }
 
 /** @brief Basic initialization.

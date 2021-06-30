@@ -1358,6 +1358,46 @@ private Q_SLOTS:
                  expectedRgbValues);
     }
 
+    void testRgbHexRounding()
+    {
+        // This is a test for a bug discoverd during development.
+        // QColor can produce a QString thas contains a hexadecimal
+        // (integer) representation of the color, just as used in
+        // HTML. Example: #0000FF is blue. When rounding to
+        // integers, apparently it does not use round(), but floor().
+        // That is not useful and not inconsistend with the rest of our
+        // dialog. We want correct rounding!
+
+        // Create a ColorDialog:
+        m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
+
+        // Set a color that triggers the rounding error:
+        LchDouble testColor;
+        testColor.h = 100;
+        testColor.l = 97;
+        testColor.c = 94;
+        m_perceptualDialog->d_pointer->setCurrentOpaqueColor(testColor, nullptr);
+
+        // Get the actual result
+        QColor actualHex;
+        actualHex.setNamedColor(m_perceptualDialog->d_pointer->m_rgbLineEdit->text());
+
+        // Get the expected result (We assume our own RGB spin box rounds
+        // correctly.)
+        const QList<double> rgbList =
+            // The the values from the MultiSpinBox:
+            m_perceptualDialog->d_pointer->m_rgbSpinBox->sectionValues();
+        QColor expectedHex = QColor::fromRgb(
+            // The MultiSpinBox might have decimal places, so we round
+            // here again.
+            qRound(rgbList.at(0)),
+            qRound(rgbList.at(1)),
+            qRound(rgbList.at(2)));
+
+        // Compare
+        QCOMPARE(actualHex, expectedHex);
+    }
+
     void testSnippet02()
     {
         snippet02();
