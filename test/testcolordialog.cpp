@@ -667,7 +667,7 @@ private Q_SLOTS:
         m_perceptualDialog->setCurrentColor(Qt::yellow);
 
         // Get internal LCH value
-        const LchDouble color = m_perceptualDialog->d_pointer->m_currentOpaqueColor;
+        const LchDouble color = m_perceptualDialog->d_pointer->m_currentOpaqueColor.toLch();
 
         // The very same LCH value has to be found in all widgets using it.
         // (This is not trivial, because even coming from RGB, because of
@@ -995,7 +995,7 @@ private Q_SLOTS:
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
         myDialog->d_pointer->m_lchLightnessSelector->setValue(0.6);
         myDialog->d_pointer->readLightnessValue();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.l, 60);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.toLch().l, 60);
     }
 
     void testReadHlcNumericValues()
@@ -1009,9 +1009,9 @@ private Q_SLOTS:
         myValues[2] = 12;
         myDialog->d_pointer->m_hlcSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.h, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.l, 11);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.c, 12);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.toLch().h, 10);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.toLch().l, 11);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.toLch().c, 12);
 
         // Test with an out-of-gamut value.
         myValues[0] = 10;
@@ -1019,9 +1019,9 @@ private Q_SLOTS:
         myValues[2] = 12;
         myDialog->d_pointer->m_hlcSpinBox->setSectionValues(myValues);
         myDialog->d_pointer->readHlcNumericValues();
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.h, 10);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.l, 11);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.c, 12);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.toLch().h, 10);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.toLch().l, 11);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.toLch().c, 12);
     }
 
     void testReadHsvNumericValues()
@@ -1092,15 +1092,15 @@ private Q_SLOTS:
     void testSetCurrentOpaqueColor()
     {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
-        QSharedPointer<RgbColorSpace> myColorSpace {new RgbColorSpace()};
         LchDouble myOpaqueColor;
         myOpaqueColor.l = 30;
         myOpaqueColor.c = 40;
         myOpaqueColor.h = 50;
-        myDialog->d_pointer->setCurrentOpaqueColor(myOpaqueColor, nullptr);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.l, 30);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.c, 40);
-        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor.h, 50);
+        const MultiColor myMultiColor = MultiColor::fromLch( //
+            myDialog->d_pointer->m_rgbColorSpace,
+            myOpaqueColor);
+        myDialog->d_pointer->setCurrentOpaqueColor(myMultiColor, nullptr);
+        QCOMPARE(myDialog->d_pointer->m_currentOpaqueColor, myMultiColor);
         QList<double> myValues = myDialog->d_pointer->m_rgbSpinBox->sectionValues();
         QCOMPARE(qRound(myValues.at(0)), 113);
         QCOMPARE(qRound(myValues.at(1)), 53);
@@ -1110,8 +1110,9 @@ private Q_SLOTS:
     void testUpdateColorPatch()
     {
         QScopedPointer<ColorDialog> myDialog(new PerceptualColor::ColorDialog);
-        QSharedPointer<RgbColorSpace> myColorSpace {new RgbColorSpace()};
-        myDialog->d_pointer->m_currentOpaqueColor = myColorSpace->toLch(QColor(1, 2, 3));
+        myDialog->d_pointer->m_currentOpaqueColor = MultiColor::fromRgbQColor( //
+            myDialog->d_pointer->m_rgbColorSpace,
+            QColor(1, 2, 3));
         myDialog->d_pointer->updateColorPatch();
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().red(), 1);
         QCOMPARE(myDialog->d_pointer->m_colorPatch->color().green(), 2);
@@ -1254,13 +1255,12 @@ private Q_SLOTS:
             m_perceptualDialog->d_pointer->m_tabWidget->setCurrentIndex(i);
             const QWidget *oldFocusWidget = QApplication::focusWidget();
             const QColor oldColor = m_perceptualDialog->currentColor();
-            const LchDouble oldOpaqueLchColor = m_perceptualDialog->d_pointer->m_currentOpaqueColor;
+            const MultiColor oldOpaqueLchColor = //
+                m_perceptualDialog->d_pointer->m_currentOpaqueColor;
             do {
                 QTest::keyClick(QApplication::focusWidget(), Qt::Key::Key_Tab);
                 QCOMPARE(oldColor, m_perceptualDialog->currentColor());
-                QVERIFY(oldOpaqueLchColor.hasSameCoordinates(
-                    // Using .hasSameCoordinates because operator== is not available
-                    m_perceptualDialog->d_pointer->m_currentOpaqueColor));
+                QVERIFY(oldOpaqueLchColor == m_perceptualDialog->d_pointer->m_currentOpaqueColor);
             } while (oldFocusWidget != QApplication::focusWidget());
         };
     }
@@ -1269,6 +1269,13 @@ private Q_SLOTS:
     {
         // During development was observed a particular bug for which
         // we test here.
+
+        // As we expect rounding errors, we define a tolerance range,
+        // which is used both for the assertions and for the actual test.
+        // This is necessary to guarantee that this test does not produce
+        // false-positives just because the rounding behaviour of the
+        // library has changed.
+        const int toleranceRange = 1;
 
         // Create a ColorDialog
         m_perceptualDialog.reset(new PerceptualColor::ColorDialog);
@@ -1284,9 +1291,12 @@ private Q_SLOTS:
         // The value is also converted to HLC 100°, 98%, 95 (rounded)
         // visible in the HLC spin box.
         QList<double> hlc = m_perceptualDialog->d_pointer->m_hlcSpinBox->sectionValues();
-        QCOMPARE(hlc.at(0), 100); // assertion
-        QCOMPARE(hlc.at(1), 98);  // assertion
-        QCOMPARE(hlc.at(2), 95);  // assertion
+        QVERIFY(hlc.at(0) >= 100 - toleranceRange); // assertion
+        QVERIFY(hlc.at(0) <= 100 + toleranceRange); // assertion
+        QVERIFY(hlc.at(1) >= 98 - toleranceRange);  // assertion
+        QVERIFY(hlc.at(1) <= 98 + toleranceRange);  // assertion
+        QVERIFY(hlc.at(2) >= 95 - toleranceRange);  // assertion
+        QVERIFY(hlc.at(2) <= 95 + toleranceRange);  // assertion
         // Now, the user clicks on the “Apply” button within the HLC spin box.
         // We simulate this by simply calling the slot that is connected
         // to this action:
@@ -1296,8 +1306,8 @@ private Q_SLOTS:
         // The expected result was that the chroma value only changes
         // slightly because of rounding (or ideally not at all).
         hlc = m_perceptualDialog->d_pointer->m_hlcSpinBox->sectionValues();
-        QVERIFY(hlc.at(2) >= 94);
-        QVERIFY(hlc.at(2) <= 96);
+        QVERIFY(hlc.at(2) >= 95 - toleranceRange);
+        QVERIFY(hlc.at(2) <= 95 + toleranceRange);
     }
 
     void testBlackHSV()
@@ -1376,7 +1386,11 @@ private Q_SLOTS:
         testColor.h = 100;
         testColor.l = 97;
         testColor.c = 94;
-        m_perceptualDialog->d_pointer->setCurrentOpaqueColor(testColor, nullptr);
+        m_perceptualDialog->d_pointer->setCurrentOpaqueColor(
+            // Color:
+            MultiColor::fromLch(m_perceptualDialog->d_pointer->m_rgbColorSpace, testColor),
+            // Widget to ignore:
+            nullptr);
 
         // Get the actual result
         QColor actualHex;

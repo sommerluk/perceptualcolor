@@ -36,6 +36,7 @@
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/rgbcolorspacefactory.h"
 #include "constpropagatingrawpointer.h"
+#include "multicolor.h"
 #include "polarpointf.h"
 #include "refreshiconengine.h"
 #include "rgbcolorspace.h"
@@ -159,6 +160,7 @@ int main(int argc, char *argv[])
     // mySpinBox->fixup(myString);
 
     // myWidget.show();
+    qDebug() << PerceptualColor::MultiColor::fromRgbQColor(PerceptualColor::RgbColorSpaceFactory::createSrgb(), QColor(Qt::yellow));
 
     QAbstractButton::connect(                                 //
         myButton,                                             //

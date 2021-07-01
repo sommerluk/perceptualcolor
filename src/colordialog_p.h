@@ -40,6 +40,7 @@
 #include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/multispinbox.h"
 #include "PerceptualColor/wheelcolorpicker.h"
+#include "multicolor.h"
 
 #include <QDialogButtonBox>
 #include <QDoubleSpinBox>
@@ -91,7 +92,7 @@ public:
     /** @brief Holds the current color without alpha information
      *
      * @sa @ref currentColor() */
-    LchDouble m_currentOpaqueColor = LchDouble(-300, -300, -1); // Quite invalid default
+    MultiColor m_currentOpaqueColor;
     /** @brief Pointer to the @ref GradientSlider for LCh lightness. */
     QPointer<GradientSlider> m_lchLightnessSelector;
     /** @brief Pointer to the @ref MultiSpinBox for HLC. */
@@ -156,7 +157,7 @@ public:
     void applyLayoutDimensions();
     void initialize();
     QWidget *initializeNumericPage();
-    void setCurrentColorWithAlpha(const LchaDouble &color);
+    void setCurrentColorWithAlpha(const MultiColor &color, double alpha);
 
 public Q_SLOTS:
     void readChromaHueDiagramValue();
@@ -166,7 +167,7 @@ public Q_SLOTS:
     void readRgbHexValues();
     void readRgbNumericValues();
     void readWheelColorPickerValues();
-    void setCurrentOpaqueColor(const PerceptualColor::LchDouble &color, QWidget *const ignoreWidget);
+    void setCurrentOpaqueColor(const PerceptualColor::MultiColor &color, QWidget *const ignoreWidget);
     void updateColorPatch();
     void updateHlcButBlockSignals();
     void updateRgbHexButBlockSignals();

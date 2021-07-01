@@ -103,7 +103,6 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
         cmsFLAGS_NOCACHE              // flags
     );
-    // Close profile (free memory)
     cmsCloseProfile(labProfileHandle);
     cmsCloseProfile(rgbProfileHandle);
 
