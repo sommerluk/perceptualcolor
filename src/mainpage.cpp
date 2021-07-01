@@ -56,15 +56,15 @@
  *   given lightness)
  *
  * This library…
- * - …provides a complete documentation, both for the public API and for
+ * - … provides a complete documentation, both for the public API and for
  *   the internals.
- * - is cross-platform. It does not use platform-specific code nor
+ * - … is cross-platform. It does not use platform-specific code nor
  *   relies on a specific byte order.
- * - –is internationalized (i18n) and ready for translation. This include
+ * - … is internationalized (i18n) and ready for translation. This include
  *   also support for right-to-left layouts in the widgets.
- * - –provides @ref hidpisupport.
- * - –uses QStyle whereever possible.
- * - –has some basic support for accessibility.
+ * - … provides @ref hidpisupport.
+ * - … uses QStyle whereever possible.
+ * - … has some basic support for accessibility.
  *
  * This library avoids amespace pollution and collisions:
  * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.
@@ -84,6 +84,8 @@
  * texts.
  *
  * @internal
+ *
+ * @todo Actually set up a localization!
  *
  * @todo General library properties:
  * - test cross-platform support and different byte-orders

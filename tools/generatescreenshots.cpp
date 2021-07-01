@@ -134,6 +134,10 @@ int main(int argc, char *argv[])
     ColorDialog m_colorDialog;
     m_colorDialog.setLayoutDimensions(ColorDialog::DialogLayoutDimensions::expanded);
     screenshot(&m_colorDialog);
+    m_colorDialog.setLayoutDimensions(ColorDialog::DialogLayoutDimensions::expanded);
+    screenshot(&m_colorDialog, QStringLiteral("Expanded"));
+    m_colorDialog.setLayoutDimensions(ColorDialog::DialogLayoutDimensions::collapsed);
+    screenshot(&m_colorDialog, QStringLiteral("Collapsed"));
     m_colorDialog.setOption(ColorDialog::ColorDialogOption::ShowAlphaChannel);
     myColor = m_colorDialog.currentColor();
     myColor.setAlphaF(0.5);

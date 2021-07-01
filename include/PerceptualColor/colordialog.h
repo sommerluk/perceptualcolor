@@ -269,6 +269,29 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * QColorDialog, which doesn’t have it either. */
     Q_PROPERTY(QColor currentColor READ currentColor WRITE setCurrentColor NOTIFY currentColorChanged)
 
+    /** @brief Layout dimensions
+     *
+     * Defines if the dialog uses a rather collapsed (small) or a rather
+     * expanded (large) layout. In both cases, all elements are present.
+     * But for the collapsed variant, more elements are put in
+     * tab widgets, while for the expanded variant, more elements are
+     * visible at the same time.
+     *
+     * @image html ColorDialogCollapsed.png "collapsed" height=500
+     * @image html ColorDialogExpanded.png "expanded" height=500
+     *
+     * Default value:
+     * @snippet src/colordialog_p.h layoutDimensionsDefaultValue
+     *
+     * When the layout dimension effectively changes, also the dialog size
+     * is adapted.
+     *
+     * @sa @ref DialogLayoutDimensions
+     * @sa READ @ref layoutDimensions() const
+     * @sa WRITE @ref setLayoutDimensions()
+     * @sa NOTIFY @ref layoutDimensionsChanged */
+    Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
+
     /** @brief Various options that affect the look and feel of the dialog
      *
      * These are the same settings as for QColorDialog. For compatibility
@@ -302,26 +325,6 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * @sa @ref setOption()
      * @sa NOTIFY @ref optionsChanged()*/
     Q_PROPERTY(ColorDialogOptions options READ options WRITE setOptions NOTIFY optionsChanged)
-
-    /** @brief Layout dimensions
-     *
-     * Defines if the dialog uses a rather collapsed (small) or a rather
-     * expanded (large) layout. In both cases, all elements are present.
-     * But for the collapsed variant, more elements are put in
-     * tab widgets, while for the expanded variant, more elements are
-     * visible at the same time.
-     *
-     * Default value:
-     * @snippet src/colordialog_p.h layoutDimensionsDefaultValue
-     *
-     * When the layout dimension effectively changes, also the dialog size
-     * is adapted.
-     *
-     * @sa @ref DialogLayoutDimensions
-     * @sa READ @ref layoutDimensions() const
-     * @sa WRITE @ref setLayoutDimensions()
-     * @sa NOTIFY @ref layoutDimensionsChanged */
-    Q_PROPERTY(DialogLayoutDimensions layoutDimensions READ layoutDimensions WRITE setLayoutDimensions NOTIFY layoutDimensionsChanged)
 
 public:
     /** @brief Local alias for QColorDialog::ColorDialogOption
