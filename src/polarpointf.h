@@ -30,8 +30,6 @@
 #include "PerceptualColor/perceptualcolorglobal.h"
 #include "perceptualcolorinternal.h"
 
-#include "PerceptualColor/perceptualcolorglobal.h"
-
 #include <QDebug>
 #include <QMetaType>
 #include <QPointF>
