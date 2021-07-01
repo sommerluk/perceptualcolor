@@ -277,8 +277,8 @@ class PERCEPTUALCOLOR_IMPORTEXPORT ColorDialog : public QDialog
      * tab widgets, while for the expanded variant, more elements are
      * visible at the same time.
      *
-     * @image html ColorDialogCollapsed.png "collapsed" height=500
-     * @image html ColorDialogExpanded.png "expanded" height=500
+     * @image html ColorDialogCollapsed.png "collapsed" height=300
+     * @image html ColorDialogExpanded.png "expanded" height=300
      *
      * Default value:
      * @snippet src/colordialog_p.h layoutDimensionsDefaultValue
