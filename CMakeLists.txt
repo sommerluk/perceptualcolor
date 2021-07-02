@@ -188,6 +188,7 @@ set(perceptualcolor_SRC
   src/gradientimage.cpp
   src/gradientslider.cpp
   src/helper.cpp
+  src/iohandlerfactory.cpp
   src/lchadouble.cpp
   src/lchdouble.cpp
   src/lchvalues.cpp
@@ -352,6 +353,7 @@ add_unit_test(testextendeddoublevalidator)
 add_unit_test(testgradientimage)
 add_unit_test(testgradientslider)
 add_unit_test(testhelper)
+add_unit_test(testiohandlerfactory)
 add_unit_test(testlchadouble)
 add_unit_test(testlchdouble)
 add_unit_test(testlchvalues)

@@ -63,9 +63,9 @@ public:
     QString m_cmsInfoManufacturer;
     QString m_cmsInfoModel;
     int m_maximumChroma = LchValues::humanMaximumChroma;
-    cmsHTRANSFORM m_transformLabToRgb16Handle;
-    cmsHTRANSFORM m_transformLabToRgbHandle;
-    cmsHTRANSFORM m_transformRgbToLabHandle;
+    cmsHTRANSFORM m_transformLabToRgb16Handle = nullptr;
+    cmsHTRANSFORM m_transformLabToRgbHandle = nullptr;
+    cmsHTRANSFORM m_transformRgbToLabHandle = nullptr;
     /** @brief The lightest in-gamut point on the L* axis.
      * @sa blackpointL() */
     qreal m_whitepointL;
@@ -73,7 +73,9 @@ public:
     // Functions:
     cmsCIELab colorLab(const RgbDouble &rgb) const;
     RgbDouble colorRgbBoundSimple(const cmsCIELab &Lab) const;
+    static void deleteTransform(cmsHTRANSFORM &transformHandle);
     static QString getInformationFromProfile(cmsHPROFILE profileHandle, cmsInfoType infoType);
+    bool initialize(cmsHPROFILE rgbProfileHandle);
     cmsCIELab toLab(const QColor &rgbColor) const;
     QColor toQColorRgbBound(const cmsCIELab &Lab) const;
 

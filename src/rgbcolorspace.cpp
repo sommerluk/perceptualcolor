@@ -34,40 +34,121 @@
 #include "rgbcolorspace_p.h"
 
 #include "helper.h"
-
+#include "iohandlerfactory.h"
 #include "polarpointf.h"
 
 #include <QDebug>
 
+// TODO There should be no dependency on Posix headers, but only on standard C++.
+#include <unistd.h> // Posix header
+
 namespace PerceptualColor
 {
-/** @brief Default constructor
+/** @internal
  *
- * Creates an sRGB color space. */
+ * @brief Constructor
+ *
+ * Creates an ininitialized, invalid (broken) color space. You have to
+ * call @ref RgbColorSpacePrivate::initialize() before using this object. */
 RgbColorSpace::RgbColorSpace(QObject *parent)
     : QObject(parent)
     , d_pointer(new RgbColorSpacePrivate(this))
 {
-    // TODO The creation of profiles and transforms might fail!
-    // TODO How to handle that?
+}
+
+/** @brief Create an sRGB color space object.
+ *
+ * @returns A shared pointer to a newly created color space object. */
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createSrgb()
+{
+    // Create an invalid object:
+    QSharedPointer<PerceptualColor::RgbColorSpace> result {new RgbColorSpace()};
+
+    // Transform it into a valid object:
+    cmsHPROFILE srgb = cmsCreate_sRGBProfile(); // Use build-in profile
+    result->d_pointer->initialize(srgb);
+    cmsCloseProfile(srgb);
+
+    // Fine-tuning (and localization) of profile information for this
+    // build-in profile:
+    result->d_pointer->m_cmsInfoDescription = tr("sRGB color space");
+    // Leaving m_cmsInfoCopyright without change.
+    result->d_pointer->m_cmsInfoManufacturer = tr("LittleCMS");
+    result->d_pointer->m_cmsInfoModel = QString();
+
+    // Return:
+    return result;
+}
+
+/** @brief Create a color space object for a given ICC file.
+ *
+ * This function may fail to create the color space object when it cannot
+ * open the given file, or when the file cannot be interpreted by LittleCMS.
+ *
+ * @param fileName The file name. TODO Must have a form that is compliant with TODO Update also doc on RGbcolospacefactory.
+ * <tt>QFile</tt>.
+ *
+ * @returns A shared pointer to a newly created color space object on success.
+ * A shared pointer to <tt>nullptr</tt> otherwise. */
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpace::createFromFile(const QString &fileName)
+{
+    cmsIOHANDLER *myIOHandler = IOHandlerFactory::createReadOnly(nullptr, fileName);
+    if (myIOHandler == nullptr) {
+        return nullptr;
+    }
+
+    cmsHPROFILE myProfileHandle = cmsOpenProfileFromIOhandlerTHR( //
+        nullptr,                                                  // ContextID
+        myIOHandler                                               // IO handler
+    );
+    if (myProfileHandle == nullptr) {
+        // We do not have to delete myIOHandler manually.
+        // (cmsOpenProfileFromIOhandlerTHR did that when
+        // failing to open the profile handle.)
+        return nullptr;
+    }
+
+    // Create an invalid object:
+    QSharedPointer<PerceptualColor::RgbColorSpace> newObject {new RgbColorSpace()};
+    // Try to transform it into a valid object:
+    const bool success = newObject->d_pointer->initialize(myProfileHandle);
+    // Clean up
+    cmsCloseProfile(myProfileHandle);
+    // We do not have to delete myIOHandler manually.
+    // (myCmsProfileHandle did  that when cmsCloseProfile() was invoked.)
+
+    // Return
+    if (success) {
+        return newObject;
+    }
+    return nullptr;
+}
+
+/** @brief Basic initialization.
+ *
+ * Code that is shared between the various overloaded constructors.
+ *
+ * @param rgbProfileHandle Handle for the RGB profile
+ *
+ * @pre rgbProfileHandle is valid.
+ *
+ * @returns <tt>true</tt> on success. <tt>false</tt> otherwise (for example
+ * when it’s not an RGB profile but an CMYK profile). When <tt>false</tt>
+ * is returned, the object is still in an undefined state; it cannot
+ * be used, but only be destoyed. */
+bool RgbColorSpace::RgbColorSpacePrivate::initialize(cmsHPROFILE rgbProfileHandle)
+{
+    m_cmsInfoDescription = getInformationFromProfile(rgbProfileHandle, cmsInfoDescription);
+    m_cmsInfoCopyright = getInformationFromProfile(rgbProfileHandle, cmsInfoCopyright);
+    m_cmsInfoManufacturer = getInformationFromProfile(rgbProfileHandle, cmsInfoManufacturer);
+    m_cmsInfoModel = getInformationFromProfile(rgbProfileHandle, cmsInfoModel);
 
     // Create an ICC v4 profile object for the Lab color space.
     cmsHPROFILE labProfileHandle = cmsCreateLab4Profile(
         // nullptr means: Default white point (D50)
         // TODO Does this make sense? sRGB white point is D65!
         nullptr);
-    // Create an ICC profile object for the sRGB color space.
-    cmsHPROFILE rgbProfileHandle = cmsCreate_sRGBProfile();
-    d_pointer->m_cmsInfoDescription = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoDescription); // TODO This results in "sRGB built-in". Use instead a more descriptive name that has also to be localized with tr().
-    d_pointer->m_cmsInfoDescription = tr("sRGB color space");
-    d_pointer->m_cmsInfoCopyright = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoCopyright);
-    d_pointer->m_cmsInfoManufacturer = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoManufacturer);
-    d_pointer->m_cmsInfoManufacturer = tr("LittleCMS");
-    d_pointer->m_cmsInfoModel = d_pointer->getInformationFromProfile(rgbProfileHandle, cmsInfoModel);
-    d_pointer->m_cmsInfoModel = QString();
-    // TODO Only change the description to "sRGB" if the build-in sRGB is
-    // used, not when an actual external ICC profile is used.
-    //    m_cmsInfoDescription = tr("sRGB"); // TODO ???
+
     // Create the transforms
     // We use the flag cmsFLAGS_NOCACHE which disables the 1-pixel-cache
     // which is normally used in the transforms. We do this because transforms
@@ -76,7 +157,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     // so anyway it is not likely to have two consecutive pixels with
     // the same color, which is the only situation where the 1-pixel-cache
     // makes processing faster.
-    d_pointer->m_transformLabToRgbHandle = cmsCreateTransform(
+    m_transformLabToRgbHandle = cmsCreateTransform(
         // Create a transform function and get a handle to this function:
         labProfileHandle,             // input profile handle
         TYPE_Lab_DBL,                 // input buffer format
@@ -85,7 +166,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
         cmsFLAGS_NOCACHE              // flags
     );
-    d_pointer->m_transformLabToRgb16Handle = cmsCreateTransform(
+    m_transformLabToRgb16Handle = cmsCreateTransform(
         // Create a transform function and get a handle to this function:
         labProfileHandle,             // input profile handle
         TYPE_Lab_DBL,                 // input buffer format
@@ -94,7 +175,7 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
         cmsFLAGS_NOCACHE              // flags
     );
-    d_pointer->m_transformRgbToLabHandle = cmsCreateTransform(
+    m_transformRgbToLabHandle = cmsCreateTransform(
         // Create a transform function and get a handle to this function:
         rgbProfileHandle,             // input profile handle
         TYPE_RGB_DBL,                 // input buffer format
@@ -103,11 +184,25 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
         INTENT_ABSOLUTE_COLORIMETRIC, // rendering intent
         cmsFLAGS_NOCACHE              // flags
     );
+    // It is mandatory to close the profiles to prevent memory leaks:
     cmsCloseProfile(labProfileHandle);
-    cmsCloseProfile(rgbProfileHandle);
+
+    // After having closed the profiles, we can now return
+    // (if appropriate) without having memory leaks:
+    if ((m_transformLabToRgbHandle == nullptr)      //
+        || (m_transformLabToRgb16Handle == nullptr) //
+        || (m_transformRgbToLabHandle == nullptr)   //
+    ) {
+        RgbColorSpacePrivate::deleteTransform(m_transformLabToRgb16Handle);
+        RgbColorSpacePrivate::deleteTransform(m_transformLabToRgbHandle);
+        RgbColorSpacePrivate::deleteTransform(m_transformRgbToLabHandle);
+        return false;
+    }
 
     // Maximum chroma:
-    d_pointer->m_maximumChroma = LchValues::srgbMaximumChroma;
+    // TODO m_maximumChroma should depend on the actual profile.
+    // m_maximumChroma = LchValues::humanMaximumChroma;
+    // m_maximumChroma = 350;
 
     // Now we know for sure that lowerChroma is in-gamut and upperChroma is
     // out-of-gamut…
@@ -115,32 +210,42 @@ RgbColorSpace::RgbColorSpace(QObject *parent)
     candidate.l = 0;
     candidate.c = 0;
     candidate.h = 0;
-    while (!isInGamut(candidate) && (candidate.l < 100)) {
+    while (!q_pointer->isInGamut(candidate) && (candidate.l < 100)) {
         candidate.l += gamutPrecision;
     }
-    d_pointer->m_blackpointL = candidate.l;
+    m_blackpointL = candidate.l;
     candidate.l = 100;
-    while (!isInGamut(candidate) && (candidate.l > 0)) {
+    while (!q_pointer->isInGamut(candidate) && (candidate.l > 0)) {
         candidate.l -= gamutPrecision;
     }
-    d_pointer->m_whitepointL = candidate.l;
-    if (d_pointer->m_whitepointL <= d_pointer->m_blackpointL) {
+    m_whitepointL = candidate.l;
+    if (m_whitepointL <= m_blackpointL) {
         qCritical() << "Unable to find blackpoint and whitepoint on gray axis.";
         throw 0;
     }
 
     // Dirty hacks:
-    d_pointer->m_nearestNeighborSearchImage = new ChromaLightnessImage(QSharedPointer<PerceptualColor::RgbColorSpace>(this));
-    d_pointer->m_nearestNeighborSearchImage->setImageSize(QSize(qRound(d_pointer->nearestNeighborSearchImageHeight / 100.0 * LchValues::humanMaximumChroma) + 1, d_pointer->nearestNeighborSearchImageHeight));
-    d_pointer->m_nearestNeighborSearchImage->setBackgroundColor(Qt::transparent);
+    QSharedPointer<PerceptualColor::RgbColorSpace> pointerToMainObject;
+    pointerToMainObject.reset(q_pointer);
+    // TODO Self-reference is always a bad idea…
+    m_nearestNeighborSearchImage = new ChromaLightnessImage(pointerToMainObject);
+    const QSize nearestNeighborImageSize = QSize(
+        // width:
+        qRound(nearestNeighborSearchImageHeight / 100.0 * LchValues::humanMaximumChroma) + 1,
+        // height:
+        nearestNeighborSearchImageHeight);
+    m_nearestNeighborSearchImage->setImageSize(nearestNeighborImageSize);
+    m_nearestNeighborSearchImage->setBackgroundColor(Qt::transparent);
+
+    return true;
 }
 
 /** @brief Destructor */
 RgbColorSpace::~RgbColorSpace() noexcept
 {
-    cmsDeleteTransform(d_pointer->m_transformLabToRgb16Handle);
-    cmsDeleteTransform(d_pointer->m_transformLabToRgbHandle);
-    cmsDeleteTransform(d_pointer->m_transformRgbToLabHandle);
+    RgbColorSpacePrivate::deleteTransform(d_pointer->m_transformLabToRgb16Handle);
+    RgbColorSpacePrivate::deleteTransform(d_pointer->m_transformLabToRgbHandle);
+    RgbColorSpacePrivate::deleteTransform(d_pointer->m_transformRgbToLabHandle);
 }
 
 /** @brief Constructor
@@ -150,6 +255,34 @@ RgbColorSpace::~RgbColorSpace() noexcept
 RgbColorSpace::RgbColorSpacePrivate::RgbColorSpacePrivate(RgbColorSpace *backLink)
     : q_pointer(backLink)
 {
+}
+
+/** @brief Conveniance function for deleting LittleCMS transforms
+ *
+ * <tt>cmsDeleteTransform()</tt> is not comfortable. Calling it on a
+ * <tt>nullptr</tt> crashes. If called on a valid handle, it does not
+ * reset the handle to <tt>nullptr</tt>. Calling it again on the now
+ * invalid handle crashes. This conveniance function can be used instead
+ * of <tt>cmsDeleteTransform()</tt>: It provides  some more comfort,
+ * by adding support for <tt>nullptr</tt>.
+ *
+ * @param transformHandle handle to the transform
+ *
+ * @post If the handle is <tt>nullptr</tt>, nothing happens. Otherwise,
+ * <tt>cmsDeleteTransform()</tt> is called and then, the handle is set
+ * to <tt>nullptr</tt>.
+ *
+ * @todo TODO Use pointer instead of reference as argument to make sure
+ * that the caller sees that this function changes the argument.
+ *
+ * @todo TODO Implement a similar function to delete profiles!
+ */
+void RgbColorSpace::RgbColorSpacePrivate::deleteTransform(cmsHTRANSFORM &transformHandle)
+{
+    if (transformHandle != nullptr) {
+        cmsDeleteTransform(transformHandle);
+        transformHandle = nullptr;
+    }
 }
 
 /** @brief Calculates the Lab value
@@ -230,7 +363,10 @@ QColor RgbColorSpace::toQColorRgbUnbound(const cmsCIELab &Lab) const
         &rgb,                                 // output
         1                                     // convert exactly 1 value
     );
-    if (isInRange<cmsFloat64Number>(0, rgb.red, 1) && isInRange<cmsFloat64Number>(0, rgb.green, 1) && isInRange<cmsFloat64Number>(0, rgb.blue, 1)) {
+    if (isInRange<cmsFloat64Number>(0, rgb.red, 1)      //
+        && isInRange<cmsFloat64Number>(0, rgb.green, 1) //
+        && isInRange<cmsFloat64Number>(0, rgb.blue, 1)  //
+    ) {
         // We are within the gamut
         temp = QColor::fromRgbF(rgb.red, rgb.green, rgb.blue);
     }
@@ -456,9 +592,13 @@ PerceptualColor::LchDouble RgbColorSpace::nearestInGamutColorByAdjustingChromaLi
         return temp;
     }
 
-    QPoint myPixelPosition(qRound(temp.c * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0), qRound(d_pointer->nearestNeighborSearchImageHeight - 1 - temp.l * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0));
+    QPoint myPixelPosition( //
+        qRound(temp.c * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0),
+        qRound(d_pointer->nearestNeighborSearchImageHeight - 1 - temp.l * (d_pointer->nearestNeighborSearchImageHeight - 1) / 100.0));
     d_pointer->m_nearestNeighborSearchImage->setHue(temp.h);
-    myPixelPosition = d_pointer->nearestNeighborSearch(myPixelPosition, d_pointer->m_nearestNeighborSearchImage->getImage());
+    myPixelPosition = d_pointer->nearestNeighborSearch( //
+        myPixelPosition,
+        d_pointer->m_nearestNeighborSearchImage->getImage());
     LchDouble result = temp;
     result.c = myPixelPosition.x() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);
     result.l = 100 - myPixelPosition.y() * 100.0 / (d_pointer->nearestNeighborSearchImageHeight - 1);

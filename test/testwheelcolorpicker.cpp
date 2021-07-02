@@ -35,6 +35,7 @@
 
 #include <QtTest>
 
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "rgbcolorspace.h"
 
 namespace PerceptualColor
@@ -50,7 +51,7 @@ public:
     }
 
 private:
-    QSharedPointer<RgbColorSpace> m_rgbColorSpace {new RgbColorSpace};
+    QSharedPointer<RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()

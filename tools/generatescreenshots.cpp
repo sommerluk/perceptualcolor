@@ -33,6 +33,7 @@
 #include "PerceptualColor/colorwheel.h"
 #include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/multispinbox.h"
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "PerceptualColor/wheelcolorpicker.h"
 #include "chromalightnessdiagram.h"
 #include "lchvalues.h"
@@ -119,7 +120,8 @@ int main(int argc, char *argv[])
     QLocale::setDefault(QLocale::English);
 
     // Variables
-    QSharedPointer<RgbColorSpace> m_colorSpace {new RgbColorSpace};
+    QSharedPointer<RgbColorSpace> m_colorSpace = //
+        RgbColorSpaceFactory::createSrgb();
     const QColor defaultInitialColor = m_colorSpace->toQColorRgbBound(
         // Choose the same initial color as many widgets
         LchValues::srgbVersatileInitialColor());

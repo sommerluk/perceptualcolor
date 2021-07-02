@@ -39,6 +39,7 @@
 #include "PerceptualColor/colorpatch.h"
 #include "PerceptualColor/gradientslider.h"
 #include "PerceptualColor/multispinbox.h"
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "PerceptualColor/wheelcolorpicker.h"
 #include "multicolor.h"
 
@@ -155,7 +156,8 @@ public:
     QPointer<WheelColorPicker> m_wheelColorPicker;
 
     void applyLayoutDimensions();
-    void initialize();
+    // TODO Remove default parameter:
+    void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace = RgbColorSpaceFactory::createSrgb());
     QWidget *initializeNumericPage();
     void setCurrentColorWithAlpha(const MultiColor &color, double alpha);
 

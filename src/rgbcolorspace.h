@@ -57,7 +57,8 @@ class RgbColorSpace : public QObject
     Q_PROPERTY(QString profileInfoModel READ profileInfoModel CONSTANT)
 
 public:
-    Q_INVOKABLE RgbColorSpace(QObject *parent = nullptr);
+    Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createFromFile(const QString &fileName);
+    Q_INVOKABLE static QSharedPointer<PerceptualColor::RgbColorSpace> createSrgb();
     virtual ~RgbColorSpace() noexcept override;
     Q_INVOKABLE bool isInGamut(const cmsCIELab &lab) const;
     Q_INVOKABLE bool isInGamut(const PerceptualColor::LchDouble &lch) const;
@@ -77,6 +78,8 @@ public:
 
 private:
     Q_DISABLE_COPY(RgbColorSpace)
+
+    RgbColorSpace(QObject *parent = nullptr);
 
     class RgbColorSpacePrivate;
     /** @internal

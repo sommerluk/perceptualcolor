@@ -42,6 +42,7 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "helper.h"
 #include "lchvalues.h"
 #include "refreshiconengine.h"
@@ -73,6 +74,32 @@ ColorDialog::ColorDialog(QWidget *parent)
 
 /** @brief Constructor
  *
+ *  @param colorSpace The color space within which this widget should operate.
+ *  Can be created with @ref RgbColorSpaceFactory.
+ *  @param parent pointer to the parent widget, if any
+ *  @post The @ref currentColor property is set to a default value. */
+ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent)
+    : QDialog(parent)
+    , d_pointer(new ColorDialogPrivate(this))
+{
+    d_pointer->initialize(colorSpace);
+    // As m_currentOpaqueColor is invalid be default, and therefore
+    // different to our value, setCurrentColorWithAlpha() will actually
+    // update all widgets.
+    LchDouble lch =
+        // Move the color into the currently actually used gamut
+        d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(
+            // Default color:
+            LchValues::srgbVersatileInitialColor());
+    d_pointer->setCurrentColorWithAlpha( //
+        MultiColor::fromLch(d_pointer->m_rgbColorSpace, lch),
+        1);
+}
+
+/** @brief Constructor
+ *
+ *  @param colorSpace The color space within which this widget should operate.
+ *  Can be created with @ref RgbColorSpaceFactory.
  *  @param initial the initially chosen color of the dialog
  *  @param parent pointer to the parent widget, if any
  *  @post The object is constructed and @ref setCurrentColor() is called
@@ -81,11 +108,11 @@ ColorDialog::ColorDialog(QWidget *parent)
  *  this dialog is constructed by default without alpha support, the
  *  alpha channel of <em>initial</em> is ignored and a fully opaque color is
  *  used. */
-ColorDialog::ColorDialog(const QColor &initial, QWidget *parent)
+ColorDialog::ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QColor &initial, QWidget *parent)
     : QDialog(parent)
     , d_pointer(new ColorDialogPrivate(this))
 {
-    d_pointer->initialize();
+    d_pointer->initialize(colorSpace);
     // Calling setCurrentColor() guaranties to update all widgets
     // because it always sets a valid color, even when the color
     // parameter was invalid. As m_currentOpaqueColor is invalid
@@ -421,11 +448,14 @@ void ColorDialog::ColorDialogPrivate::updateRgbHexButBlockSignals()
 
 /** @brief Basic initialization.
  *
+ * @param colorSpace The color space within which this widget should operate.
+ * Can be created with @ref RgbColorSpaceFactory.
+ *
  * Code that is shared between the various overloaded constructors. */
-void ColorDialog::ColorDialogPrivate::initialize()
+void ColorDialog::ColorDialogPrivate::initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace)
 {
     // initialize color space
-    m_rgbColorSpace.reset(new RgbColorSpace());
+    m_rgbColorSpace = colorSpace;
 
     // create the graphical selectors
     m_wheelColorPicker = new WheelColorPicker(m_rgbColorSpace);

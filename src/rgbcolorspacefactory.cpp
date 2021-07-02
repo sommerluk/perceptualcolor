@@ -37,10 +37,27 @@ namespace PerceptualColor
 {
 /** @brief Create an sRGB color space object.
  *
+ * This is a build-in profile that does not require any external ICC file.
+ *
  * @returns A shared pointer to a newly created sRGB color space object. */
 QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createSrgb()
 {
-    return QSharedPointer<PerceptualColor::RgbColorSpace>(new RgbColorSpace());
+    return RgbColorSpace::createSrgb();
+}
+
+/** @brief Create a color space object for a given ICC file.
+ *
+ * This function may fail to create the color space object when it cannot
+ * open the given file, or when the file cannot be interpreted by LittleCMS.
+ *
+ * @param fileName The file name. TODO Must have a form that is compliant with
+ * <tt>QFile</tt>.
+ *
+ * @returns A shared pointer to a newly created color space object on success.
+ * A shared pointer to <tt>nullptr</tt> otherwise. */
+QSharedPointer<PerceptualColor::RgbColorSpace> RgbColorSpaceFactory::createFromFile(const QString &fileName)
+{
+    return RgbColorSpace::createFromFile(fileName);
 }
 
 } // namespace PerceptualColor

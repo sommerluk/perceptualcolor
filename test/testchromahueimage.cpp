@@ -33,6 +33,7 @@
 
 #include <QtTest>
 
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "helper.h"
 #include "lchvalues.h"
 
@@ -48,7 +49,7 @@ public:
     void testSnippet01()
     {
         //! [ChromaHueImage HiDPI usage]
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {new PerceptualColor::RgbColorSpace()};
+        auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
         PerceptualColor::ChromaHueImage test(myColorSpace);
         // The function setImageSize() expects an int
         // value. static_cast<int> will round down, which
@@ -77,7 +78,7 @@ public:
     }
 
 private:
-    QSharedPointer<RgbColorSpace> colorSpace {new RgbColorSpace};
+    QSharedPointer<RgbColorSpace> colorSpace = RgbColorSpaceFactory::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()

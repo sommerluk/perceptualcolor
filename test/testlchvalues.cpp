@@ -77,7 +77,7 @@ private Q_SLOTS:
         // Is the value as documented?
         QCOMPARE(static_cast<qreal>(PerceptualColor::LchValues::neutralLightness), 50);
 
-        PerceptualColor::RgbColorSpace temp;
+        auto temp = RgbColorSpace::createSrgb();
         LchDouble color;
         qreal presicion = 0.1;
 
@@ -91,7 +91,7 @@ private Q_SLOTS:
             lightness = 0;
             while (lightness <= 100) {
                 color.l = lightness;
-                QVERIFY2(!temp.isInGamut(color), "Test if maxSrgbChroma is big enough");
+                QVERIFY2(!temp->isInGamut(color), "Test if maxSrgbChroma is big enough");
                 lightness += presicion;
             }
             hue += precisionDegreeMaxSrgbChroma;
@@ -106,7 +106,7 @@ private Q_SLOTS:
             lightness = 0;
             while (lightness <= 100) {
                 color.l = lightness;
-                if (temp.isInGamut(color)) {
+                if (temp->isInGamut(color)) {
                     inGamutValueFound = true;
                     break;
                 }
@@ -126,7 +126,7 @@ private Q_SLOTS:
         hue = 0;
         while (hue <= 360) {
             color.h = hue;
-            QVERIFY2(temp.isInGamut(color), "Test if versatile is small enough");
+            QVERIFY2(temp->isInGamut(color), "Test if versatile is small enough");
             hue += precisionVersatileSrgbChroma;
         }
 
@@ -137,7 +137,7 @@ private Q_SLOTS:
         hue = 0;
         while (hue <= 360) {
             color.h = hue;
-            if (!temp.isInGamut(color)) {
+            if (!temp->isInGamut(color)) {
                 inGamutValueFound = false;
                 break;
             }

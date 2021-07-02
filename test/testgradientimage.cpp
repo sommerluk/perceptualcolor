@@ -33,6 +33,8 @@
 
 #include <QtTest>
 
+#include "PerceptualColor/rgbcolorspacefactory.h"
+
 class TestGradientSnippetClass : public QWidget
 {
     Q_OBJECT
@@ -45,7 +47,7 @@ public:
     void testSnippet01()
     {
         //! [GradientImage HiDPI usage]
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {new PerceptualColor::RgbColorSpace};
+        auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
         PerceptualColor::GradientImage test(myColorSpace);
         // The function setImageSize() expects an int
         // value. static_cast<int> will round down, which
@@ -86,7 +88,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace {new RgbColorSpace()};
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()

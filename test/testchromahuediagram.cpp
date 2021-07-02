@@ -35,12 +35,13 @@
 
 #include <QtTest>
 
+#include "PerceptualColor/rgbcolorspacefactory.h"
 #include "polarpointf.h"
 
 static void snippet01()
 {
     //! [instanciate]
-    QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {new PerceptualColor::RgbColorSpace()};
+    auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
     PerceptualColor::ChromaHueDiagram *myDiagram = new PerceptualColor::ChromaHueDiagram(myColorSpace);
     PerceptualColor::LchDouble myColor;
     myColor.h = 270;
@@ -65,7 +66,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace {new RgbColorSpace()};
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
 
     bool isEqual(const LchDouble &first, const LchDouble &second)
     {

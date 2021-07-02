@@ -33,6 +33,8 @@
 
 #include <QtTest>
 
+#include "PerceptualColor/rgbcolorspacefactory.h"
+
 class TestColorWheelSnippetClass : public QWidget
 {
     Q_OBJECT
@@ -45,8 +47,8 @@ public:
     void testSnippet01()
     {
         //! [ColorWheelImage HiDPI usage]
-        QSharedPointer<PerceptualColor::RgbColorSpace> myColorSpace {new PerceptualColor::RgbColorSpace};
-        PerceptualColor::ColorWheelImage test(myColorSpace);
+        auto myColorSpace = PerceptualColor::RgbColorSpaceFactory::createSrgb();
+        PerceptualColor::ColorWheelImage test {myColorSpace};
         // The function setImageSize() expects an int
         // value. static_cast<int> will round down, which
         // is the desired behaviour here. (Rounding up
@@ -75,7 +77,7 @@ public:
     }
 
 private:
-    QSharedPointer<RgbColorSpace> colorSpace {new RgbColorSpace};
+    QSharedPointer<RgbColorSpace> colorSpace = RgbColorSpaceFactory::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()

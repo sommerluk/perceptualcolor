@@ -35,6 +35,8 @@
 
 namespace PerceptualColor
 {
+class RgbColorSpace;
+
 /** @brief A perceptually uniform color picker dialog
  *
  * The color dialog’s function is to allow users to choose colors intuitively.
@@ -368,7 +370,8 @@ public:
     };
     Q_ENUM(DialogLayoutDimensions)
     Q_INVOKABLE explicit ColorDialog(QWidget *parent = nullptr);
-    Q_INVOKABLE explicit ColorDialog(const QColor &initial, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
+    Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QColor &initial, QWidget *parent = nullptr);
     virtual ~ColorDialog() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */

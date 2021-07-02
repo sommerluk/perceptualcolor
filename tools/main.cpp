@@ -69,6 +69,21 @@
 // for QColorDialog.
 // TODO Drop this executable in favor of KColorChooser?
 
+struct _cms_io_handler {
+    void *stream;
+    cmsContext ContextID;
+    cmsUInt32Number UsedSpace;
+    cmsUInt32Number ReportedSize;
+
+    char PhysicalFile[cmsMAX_PATH];
+
+    cmsUInt32Number (*Read)(struct _cms_io_handler *iohandler, void *Buffer, cmsUInt32Number size, cmsUInt32Number count);
+    cmsBool (*Seek)(struct _cms_io_handler *iohandler, cmsUInt32Number offset);
+    cmsBool (*Close)(struct _cms_io_handler *iohandler);
+    cmsUInt32Number (*Tell)(struct _cms_io_handler *iohandler);
+    cmsBool (*Write)(struct _cms_io_handler *iohandler, cmsUInt32Number size, const void *Buffer);
+};
+
 // This is just a program for testing purpuses.
 int main(int argc, char *argv[])
 {
@@ -82,7 +97,14 @@ int main(int argc, char *argv[])
     // QLocale::setDefault(QLocale::German);
 
     // Initialize the color dialog
-    PerceptualColor::ColorDialog m_colorDialog;
+    PerceptualColor::ColorDialog m_colorDialog( //
+        PerceptualColor::RgbColorSpaceFactory::createFromFile(
+            //
+            // QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
+            // QStringLiteral("/usr/share/color/icc/krita/Rec2020-elle-V4-g10.icc") //
+            QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
+            )                                                       //
+    );
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
     QColor myColor = QColor(Qt::yellow);
     myColor.setAlphaF(0.5);
@@ -107,19 +129,19 @@ int main(int argc, char *argv[])
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Breeze")));
     // QApplication::setStyle(QStyleFactory::create(QStringLiteral("Windows")));
 
-    QDoubleSpinBox *mySpinBox = new QDoubleSpinBox;
-    mySpinBox->setPrefix(QStringLiteral("Prefix"));
-    mySpinBox->setSuffix(QStringLiteral("Suffix"));
-    mySpinBox->setDecimals(3);
-    qDebug() << mySpinBox->maximum();
-    mySpinBox->setMinimum(7.125);
-    mySpinBox->setMaximum(8.125);
-    mySpinBox->setValue(7.126);
-    qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
-    mySpinBox->setDecimals(2);
-    qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
-    mySpinBox->setDecimals(3);
-    qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
+    // QDoubleSpinBox *mySpinBox = new QDoubleSpinBox;
+    // mySpinBox->setPrefix(QStringLiteral("Prefix"));
+    // mySpinBox->setSuffix(QStringLiteral("Suffix"));
+    // mySpinBox->setDecimals(3);
+    // qDebug() << mySpinBox->maximum();
+    // mySpinBox->setMinimum(7.125);
+    // mySpinBox->setMaximum(8.125);
+    // mySpinBox->setValue(7.126);
+    // qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
+    // mySpinBox->setDecimals(2);
+    // qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
+    // mySpinBox->setDecimals(3);
+    // qDebug() << mySpinBox->minimum() << mySpinBox->value() << mySpinBox->maximum();
 
     // PerceptualColor::MultiSpinBox *mySpinBox = new PerceptualColor::MultiSpinBox;
     // PerceptualColor::MultiSpinBoxSectionConfiguration myConfig;
@@ -133,45 +155,62 @@ int main(int argc, char *argv[])
 
     // QDateTimeEdit *mySpinBox = new QDateTimeEdit;
     // mySpinBox->setDisplayFormat(QStringLiteral("dd.MM.yyyy"));
+    /*
+        QWidget myWidget;
+        QPushButton *myButton = new QPushButton;
+        QHBoxLayout *myLayout = new QHBoxLayout;
+        myLayout->addWidget(mySpinBox);
+        myLayout->addWidget(myButton);
+        myWidget.setLayout(myLayout);
+        mySpinBox->setButtonSymbols(QAbstractSpinBox::ButtonSymbols::NoButtons);
+        // mySpinBox->setAlignment(Qt::AlignRight);
+        // mySpinBox->setFrame(false);
+        // mySpinBox->setReadOnly(true);
+        // mySpinBox->setSpecialValueText(QStringLiteral("test"));
+        // mySpinBox->setWrapping(true);
+        mySpinBox->setAccelerated(true);
+        // qDebug() << mySpinBox->isGroupSeparatorShown();
+        mySpinBox->setGroupSeparatorShown(true);
+        mySpinBox->setKeyboardTracking(true);
+        // mySpinBox->setCorrectionMode(QAbstractSpinBox::CorrectionMode::CorrectToNearestValue);
+        mySpinBox->setKeyboardTracking(false);
+        qDebug() << mySpinBox->correctionMode();
+        // QString myString = QString::fromUtf8("abcd");
+        // int myInt = 2;
+        // mySpinBox->validate(myString, myInt);
+        mySpinBox->interpretText();
+        // mySpinBox->fixup(myString);
 
-    QWidget myWidget;
-    QPushButton *myButton = new QPushButton;
-    QHBoxLayout *myLayout = new QHBoxLayout;
-    myLayout->addWidget(mySpinBox);
-    myLayout->addWidget(myButton);
-    myWidget.setLayout(myLayout);
-    mySpinBox->setButtonSymbols(QAbstractSpinBox::ButtonSymbols::NoButtons);
-    // mySpinBox->setAlignment(Qt::AlignRight);
-    // mySpinBox->setFrame(false);
-    // mySpinBox->setReadOnly(true);
-    // mySpinBox->setSpecialValueText(QStringLiteral("test"));
-    // mySpinBox->setWrapping(true);
-    mySpinBox->setAccelerated(true);
-    // qDebug() << mySpinBox->isGroupSeparatorShown();
-    mySpinBox->setGroupSeparatorShown(true);
-    mySpinBox->setKeyboardTracking(true);
-    // mySpinBox->setCorrectionMode(QAbstractSpinBox::CorrectionMode::CorrectToNearestValue);
-    mySpinBox->setKeyboardTracking(false);
-    qDebug() << mySpinBox->correctionMode();
-    // QString myString = QString::fromUtf8("abcd");
-    // int myInt = 2;
-    // mySpinBox->validate(myString, myInt);
-    mySpinBox->interpretText();
-    // mySpinBox->fixup(myString);
+        // myWidget.show();
 
-    // myWidget.show();
-    qDebug() << PerceptualColor::MultiColor::fromRgbQColor(PerceptualColor::RgbColorSpaceFactory::createSrgb(), QColor(Qt::yellow));
 
-    QAbstractButton::connect(                                 //
-        myButton,                                             //
-        &QAbstractButton::clicked,                            //
-        mySpinBox,                                            //
-        &QAbstractSpinBox::selectAll);                        //
-    QAbstractSpinBox::connect(                                //
-        mySpinBox,                                            //
-        QOverload<double>::of(&QDoubleSpinBox::valueChanged), //
-        mySpinBox,                                            //
-        [mySpinBox]() { qDebug() << mySpinBox->value(); });   //
+        QAbstractButton::connect(                                 //
+            myButton,                                             //
+            &QAbstractButton::clicked,                            //
+            mySpinBox,                                            //
+            &QAbstractSpinBox::selectAll);                        //
+        QAbstractSpinBox::connect(                                //
+            mySpinBox,                                            //
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged), //
+            mySpinBox,                                            //
+            [mySpinBox]() { qDebug() << mySpinBox->value(); });   //
+    */
+
+    auto test = PerceptualColor::RgbColorSpaceFactory::createFromFile( //
+        QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") // valid
+        // QStringLiteral("/usr/share/color/icc/ISOcoated.icc") // not RGB (CMYK) ->crash! xxx
+        // QStringLiteral("/usr/share/color/icc/tr002.ti3") // different format
+        // QStringLiteral("/usr/share/color/icc/doesnotexist") // non-existing file
+        // QStringLiteral("/usr/share/color/icc/") // folder (with trailing /)
+        // QStringLiteral("/usr/share/color/icc") // folder (without trailing /)
+    );
+
+    QSharedPointer<PerceptualColor::RgbColorSpace> result = test;
+    qDebug() << result;
+    qDebug() << result.data();
+    result = nullptr;
+    qDebug() << result;
+    qDebug() << result.data();
 
     // Run
     return app.exec();

@@ -36,6 +36,8 @@
 #include <QSignalSpy>
 #include <QtTest>
 
+#include "PerceptualColor/rgbcolorspacefactory.h"
+
 namespace PerceptualColor
 {
 class TestGradientSlider : public QObject
@@ -49,7 +51,7 @@ public:
     }
 
 private:
-    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace {new RgbColorSpace()};
+    QSharedPointer<PerceptualColor::RgbColorSpace> m_rgbColorSpace = RgbColorSpaceFactory::createSrgb();
 
 private Q_SLOTS:
     void initTestCase()
