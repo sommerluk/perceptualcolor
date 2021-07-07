@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
     ChromaLightnessDiagram m_chromaLightnessDiagram(m_colorSpace);
     screenshot(&m_chromaLightnessDiagram);
 
-    ColorDialog m_colorDialog;
+    ColorDialog m_colorDialog(m_colorSpace);
     m_colorDialog.setLayoutDimensions(ColorDialog::DialogLayoutDimensions::expanded);
     screenshot(&m_colorDialog);
     m_colorDialog.setOption(ColorDialog::ColorDialogOption::ShowAlphaChannel);

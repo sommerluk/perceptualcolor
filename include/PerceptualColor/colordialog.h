@@ -95,6 +95,8 @@ class RgbColorSpace;
  * @note @anchor qdialogsourceompatibility The API of this class is mostly
  * source-compatible to the API of QColorDialog. This is a list of
  * incompatibilities:
+ * - The constructors and also @ref getColor() require a color space
+ *   as argument.
  * - As this dialog does not provide functionality for custom colors and
  *   standard color, the corresponding static functions of QColorDialog are
  *   not available in this class.
@@ -369,14 +371,13 @@ public:
         expanded             /**< Use the large, “expanded” layout of this dialog.  */
     };
     Q_ENUM(DialogLayoutDimensions)
-    Q_INVOKABLE explicit ColorDialog(QWidget *parent = nullptr);
     Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, QWidget *parent = nullptr);
     Q_INVOKABLE explicit ColorDialog(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QColor &initial, QWidget *parent = nullptr);
     virtual ~ColorDialog() noexcept override;
     /** @brief Getter for property @ref currentColor
      *  @returns the property @ref currentColor */
     QColor currentColor() const;
-    static QColor getColor(const QColor &initial = Qt::white, QWidget *parent = nullptr, const QString &title = QString(), ColorDialogOptions options = ColorDialogOptions());
+    static QColor getColor(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QColor &initial = Qt::white, QWidget *parent = nullptr, const QString &title = QString(), ColorDialogOptions options = ColorDialogOptions());
     /** @brief Getter for property @ref layoutDimensions
      *  @returns the property @ref layoutDimensions */
     ColorDialog::DialogLayoutDimensions layoutDimensions() const;

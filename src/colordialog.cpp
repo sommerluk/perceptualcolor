@@ -52,28 +52,6 @@ namespace PerceptualColor
 {
 /** @brief Constructor
  *
- *  @param parent pointer to the parent widget, if any
- *  @post The @ref currentColor property is set to a default value. */
-ColorDialog::ColorDialog(QWidget *parent)
-    : QDialog(parent)
-    , d_pointer(new ColorDialogPrivate(this))
-{
-    d_pointer->initialize();
-    // As m_currentOpaqueColor is invalid be default, and therefore
-    // different to our value, setCurrentColorWithAlpha() will actually
-    // update all widgets.
-    LchDouble lch =
-        // Move the color into the currently actually used gamut
-        d_pointer->m_rgbColorSpace->nearestInGamutColorByAdjustingChroma(
-            // Default color:
-            LchValues::srgbVersatileInitialColor());
-    d_pointer->setCurrentColorWithAlpha( //
-        MultiColor::fromLch(d_pointer->m_rgbColorSpace, lch),
-        1);
-}
-
-/** @brief Constructor
- *
  *  @param colorSpace The color space within which this widget should operate.
  *  Can be created with @ref RgbColorSpaceFactory.
  *  @param parent pointer to the parent widget, if any
@@ -895,17 +873,18 @@ bool ColorDialog::testOption(PerceptualColor::ColorDialog::ColorDialogOption opt
 /** @brief Pops up a modal color dialog, lets the user choose a color, and
  *  returns that color.
  *
- * @param initial initial value for currentColor()
- * @param parent  parent widget of the dialog (or 0 for no parent)
- * @param title   window title (or an empty string for the default window
- *                title)
- * @param options the options() for customizing the look and feel of the
- *                dialog
- * @returns       selectedColor(): The color the user has selected; or an
- *                invalid color if the user has canceled the dialog. */
-QColor ColorDialog::getColor(const QColor &initial, QWidget *parent, const QString &title, QColorDialog::ColorDialogOptions options)
+ * @param colorSpace The color space within which this widget should operate.
+ * @param initial    initial value for currentColor()
+ * @param parent     parent widget of the dialog (or 0 for no parent)
+ * @param title      window title (or an empty string for the default window
+ *                   title)
+ * @param options    the options() for customizing the look and feel of the
+ *                   dialog
+ * @returns          selectedColor(): The color the user has selected; or an
+ *                   invalid color if the user has canceled the dialog. */
+QColor ColorDialog::getColor(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace, const QColor &initial, QWidget *parent, const QString &title, QColorDialog::ColorDialogOptions options)
 {
-    ColorDialog temp(parent);
+    ColorDialog temp(colorSpace, parent);
     if (!title.isEmpty()) {
         temp.setWindowTitle(title);
     }

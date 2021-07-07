@@ -156,8 +156,7 @@ public:
     QPointer<WheelColorPicker> m_wheelColorPicker;
 
     void applyLayoutDimensions();
-    // TODO Remove default parameter:
-    void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace = RgbColorSpaceFactory::createSrgb());
+    void initialize(const QSharedPointer<PerceptualColor::RgbColorSpace> &colorSpace);
     QWidget *initializeNumericPage();
     void setCurrentColorWithAlpha(const MultiColor &color, double alpha);
 
