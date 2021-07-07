@@ -56,8 +56,8 @@
  *   given lightness)
  *
  * This library…
- * - … provides a complete documentation, both for the public API and for
- *   the internals.
+ * - … provides a complete documentation for the public API (and also for
+ *   the internal API and for source code itself).
  * - … is cross-platform. It does not use platform-specific code nor
  *   relies on a specific byte order.
  * - … is internationalized (i18n) and ready for translation. This include
@@ -65,6 +65,7 @@
  * - … provides @ref hidpisupport.
  * - … uses QStyle whereever possible.
  * - … has some basic support for accessibility.
+ * - … is developed with unit tests
  *
  * This library avoids amespace pollution and collisions:
  * - Macros are prefixed with <tt>PERCEPTUALCOLOR_</tt> to avoid collisions.
