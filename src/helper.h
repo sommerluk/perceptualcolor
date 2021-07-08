@@ -235,13 +235,8 @@ constexpr int pageStepHue = 10 * singleStepHue;
  * its single step. */
 constexpr int pageStepLightness = 10 * singleStepLightness;
 
-/**@internal
- *
- * @brief Round floating point numbers to a certain number of digits
- *
- * @param value the value that will be rounded
- * @param precision the number of decimal places to which rounding takes place
- * @returns the rounded value */
+QString richTextMarker();
+
 double roundToDigits(double value, int precision);
 
 qreal standardWheelStepCount(QWheelEvent *event);

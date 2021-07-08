@@ -34,8 +34,26 @@
 #include <QtTest>
 
 #include <QPainter>
+#include <QTextDocument>
 
 #include <rgbcolorspace.h>
+
+static bool snippet01()
+{
+    const QString myRichText = QStringLiteral(u"abc");
+    const QString myPlainText = QStringLiteral(u"abc");
+    QScopedPointer<QWidget> myWidget1(new QWidget());
+    QScopedPointer<QWidget> myWidget2(new QWidget());
+    //! [richTextMarkerExample]
+    myWidget1->setWhatsThis( // Make sure rich text is treated as such:
+        PerceptualColor::richTextMarker() + myRichText);
+
+    myWidget2->setWhatsThis( // Make sure plain text is treated as such:
+        PerceptualColor::richTextMarker() + myPlainText.toHtmlEscaped());
+    //! [richTextMarkerExample]
+    return Qt::mightBeRichText(myWidget1->whatsThis()) //
+        && Qt::mightBeRichText(myWidget2->whatsThis());
+}
 
 namespace PerceptualColor
 {
@@ -202,6 +220,22 @@ private Q_SLOTS:
         QCOMPARE(roundToDigits(12.3456, -1), 10.);
         QCOMPARE(roundToDigits(12.3456, -2), 0.);
         QCOMPARE(roundToDigits(92.3456, -2), 100.);
+    }
+
+    void testRichTextMarker()
+    {
+        const QString myMarker = richTextMarker();
+        QVERIFY(myMarker.count() > 0);
+        QVERIFY(Qt::mightBeRichText(myMarker));
+
+        const QString myText = QStringLiteral(u"abc");
+        QVERIFY(!Qt::mightBeRichText(myText)); // Assertion
+        QVERIFY(Qt::mightBeRichText(myMarker + myText));
+    }
+
+    void testRichTextMarkerSnippet()
+    {
+        QVERIFY(snippet01());
     }
 };
 

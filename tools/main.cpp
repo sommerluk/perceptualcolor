@@ -61,6 +61,7 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QStyleFactory>
+#include <QTextDocument>
 #include <QVBoxLayout>
 #include <QtMath>
 
@@ -100,10 +101,10 @@ int main(int argc, char *argv[])
     PerceptualColor::ColorDialog m_colorDialog( //
         PerceptualColor::RgbColorSpaceFactory::createFromFile(
             //
-            // QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
+            QStringLiteral("/usr/share/color/icc/colord/WideGamutRGB.icc") //
             // QStringLiteral("/usr/share/color/icc/krita/Rec2020-elle-V4-g10.icc") //
-            QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
-            )                                                       //
+            // QStringLiteral("/usr/share/color/icc/ECI-RGB.V1.0.icc") //
+            ) //
     );
     // m_colorDialog.setOption(QColorDialog::ColorDialogOption::ShowAlphaChannel, true);
     QColor myColor = QColor(Qt::yellow);
@@ -205,12 +206,10 @@ int main(int argc, char *argv[])
         // QStringLiteral("/usr/share/color/icc") // folder (without trailing /)
     );
 
-    QSharedPointer<PerceptualColor::RgbColorSpace> result = test;
-    qDebug() << result;
-    qDebug() << result.data();
-    result = nullptr;
-    qDebug() << result;
-    qDebug() << result.data();
+    QString myValue = QStringLiteral(u"<a/>abc");
+    qDebug() << myValue << Qt::mightBeRichText(myValue);
+    myValue = myValue.toHtmlEscaped();
+    qDebug() << myValue << Qt::mightBeRichText(myValue);
 
     // Run
     return app.exec();

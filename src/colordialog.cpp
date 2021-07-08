@@ -688,7 +688,8 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     mySection.setSuffix(QString());
     rgbSections.append(mySection);
     m_rgbSpinBox->setSectionConfigurations(rgbSections);
-    m_rgbSpinBox->setWhatsThis(tr("<p>Red, green, blue: 0–255</p>"));
+    m_rgbSpinBox->setWhatsThis( //
+        richTextMarker() + tr("<p>Red, green, blue: 0–255</p>"));
 
     // Create widget for the hex style color representation
     m_rgbLineEdit = new QLineEdit();
@@ -696,13 +697,14 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     QRegularExpression tempRegularExpression(QStringLiteral(u"#?[0-9A-Fa-f]{0,6}"));
     QRegularExpressionValidator *validator = new QRegularExpressionValidator(tempRegularExpression, q_pointer);
     m_rgbLineEdit->setValidator(validator);
-    m_rgbLineEdit->setWhatsThis(
+    m_rgbLineEdit->setWhatsThis( //
+        richTextMarker() +
         tr("<p>Hexadecimal color code, as used in HTML</p>"
            "<p>#RRGGBB</p>"
            "<ul>RR: two-digit code for red</ul>"
            "<ul>GG: two-digit code for green</ul>"
            "<ul>BB: two-digit code for blue</ul>"
-           "Range for each color: 00–FF"));
+           "<p>Range for each color: 00–FF</p>"));
 
     // Create HSV spin box
     m_hsvSpinBox = new MultiSpinBox();
@@ -721,10 +723,10 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     mySection.setSuffix(QString());
     hsvSections.append(mySection);
     m_hsvSpinBox->setSectionConfigurations(hsvSections);
-    m_hsvSpinBox->setWhatsThis(
-        tr("<p>Hue: 0°–360°</p>"
-           "<p>Saturation: 0–255</p>"
-           "<p>Brightness/Value: 0–255</p>"));
+    m_hsvSpinBox->setWhatsThis(richTextMarker() +
+                               tr("<p>Hue: 0°–360°</p>"
+                                  "<p>Saturation: 0–255</p>"
+                                  "<p>Brightness/Value: 0–255</p>"));
 
     // Create RGB layout
     QFormLayout *tempRgbFormLayout = new QFormLayout();
@@ -748,26 +750,30 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     // The “copyright” field is not really interesting for the user; we do
     // not use it here.
     rgbGroupBox->setTitle(m_rgbColorSpace->profileInfoDescription());
-    if (!m_rgbColorSpace->profileInfoDescription().isEmpty() || !m_rgbColorSpace->profileInfoManufacturer().isEmpty() || !m_rgbColorSpace->profileInfoModel().isEmpty()) {
-        // The profile infos might theoretically contain HTML tagging,
-        // and the whatsThis property might interpretate them as such
-        // (it switches on a heuristic between rich text with HTML tags,
-        // and normal text). However, this is not likely, it would anyway
-        // not be clear which is the correct rendering, and a slightly
-        // wrong rendering will not harm…
+    if (!m_rgbColorSpace->profileInfoDescription().isEmpty()     //
+        || !m_rgbColorSpace->profileInfoManufacturer().isEmpty() //
+        || !m_rgbColorSpace->profileInfoModel().isEmpty()        //
+    ) {
         QStringList profileInfo;
-        profileInfo.append(tr("<b>Currently used RGB color space</b>"));
-        if (!m_rgbColorSpace->profileInfoDescription().isEmpty()) {
-            profileInfo.append(tr("Description: <i>%1</i>").arg(m_rgbColorSpace->profileInfoDescription()));
+        profileInfo.append( //
+            richTextMarker() + tr("<b>Currently used RGB color space</b>"));
+        const QString description = //
+            m_rgbColorSpace->profileInfoDescription().toHtmlEscaped();
+        if (!description.isEmpty()) {
+            profileInfo.append(tr("Description: <i>%1</i>").arg(description));
         }
-        if (!m_rgbColorSpace->profileInfoManufacturer().isEmpty()) {
-            profileInfo.append(tr("Manufacturer: <i>%1</i>").arg(m_rgbColorSpace->profileInfoManufacturer()));
+        const QString manufacturer = //
+            m_rgbColorSpace->profileInfoManufacturer().toHtmlEscaped();
+        if (!manufacturer.isEmpty()) {
+            profileInfo.append(tr("Manufacturer: <i>%1</i>").arg(manufacturer));
         }
-        if (!m_rgbColorSpace->profileInfoModel().isEmpty()) {
-            profileInfo.append(tr("Model: <i>%1</i>").arg(m_rgbColorSpace->profileInfoModel()));
+        const QString model = //
+            m_rgbColorSpace->profileInfoModel().toHtmlEscaped();
+        if (!model.isEmpty()) {
+            profileInfo.append(tr("Model: <i>%1</i>").arg(model));
         }
         // Set help text.
-        rgbGroupBox->setWhatsThis(profileInfo.join(QStringLiteral("<br>")));
+        rgbGroupBox->setWhatsThis(profileInfo.join(QStringLiteral("<br/>")));
     }
 
     // Create widget for the HLC color representation
@@ -790,10 +796,11 @@ QWidget *ColorDialog::ColorDialogPrivate::initializeNumericPage()
     mySection.setWrapping(false);
     hlcSections.append(mySection);
     m_hlcSpinBox->setSectionConfigurations(hlcSections);
-    m_hlcSpinBox->setWhatsThis(
-        tr("<p>Hue: 0°–360°</p>"
-           "<p>Lightness: 0%–100%</p>"
-           "<p>Chroma: 0–255</p>"));
+    m_hlcSpinBox->setWhatsThis(richTextMarker() +
+                               tr("<p>Hue: 0°–360°</p>"
+                                  "<p>Lightness: 0%–100%</p>"
+                                  "<p>Chroma: 0–%1</p>")
+                                   .arg(LchValues::humanMaximumChroma));
 
     // Create a global widget
     QWidget *tempWidget = new QWidget;

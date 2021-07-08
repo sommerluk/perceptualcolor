@@ -141,6 +141,13 @@ QImage transparencyBackground(qreal devicePixelRatioF)
     return temp;
 }
 
+/** @internal
+ *
+ * @brief Round floating point numbers to a certain number of digits
+ *
+ * @param value the value that will be rounded
+ * @param precision the number of decimal places to which rounding takes place
+ * @returns the rounded value */
 double roundToDigits(double value, int precision)
 {
     const double multiplier = std::pow(
@@ -148,6 +155,31 @@ double roundToDigits(double value, int precision)
         static_cast<double>(10),
         precision);
     return std::round(value * multiplier) / multiplier;
+}
+
+/** @internal
+ *
+ * @brief Invisible marker for rich text
+ *
+ * Some parts of Qt accept both, plain text and rich text, within the same
+ * property. Example: <tt>QWhatsThis</tt> uses <tt>Qt::mightBeRichText()</tt>
+ * to decide if a text is treated as rich text or as plain text. But
+ * <tt>Qt::mightBeRichText()</tt> is only a raw guess. This situation
+ * is not comfortable: You never really know in advance if text will be
+ * treated as rich text or as plain text.
+ *
+ * This function provides a solution. It provides a rich text marker. If
+ * your text starts with this marker, it will always be treated
+ * as rich text. The marker itself will not be visible in the rendered
+ * rich text.
+ *
+ * Usage example:
+ * @snippet test/testhelper.cpp richTextMarkerExample
+ *
+ * @returns Invisible marker for rich text */
+QString richTextMarker()
+{
+    return QStringLiteral(u"<a/>");
 }
 
 } // namespace PerceptualColor
