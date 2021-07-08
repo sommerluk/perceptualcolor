@@ -222,7 +222,7 @@ private Q_SLOTS:
         QCOMPARE(roundToDigits(92.3456, -2), 100.);
     }
 
-    void testRichTextMarker()
+    void testRichTextMarkerIsRecognized()
     {
         const QString myMarker = richTextMarker();
         QVERIFY(myMarker.count() > 0);
@@ -236,6 +236,17 @@ private Q_SLOTS:
     void testRichTextMarkerSnippet()
     {
         QVERIFY(snippet01());
+    }
+
+    void testRichTextMarkerIsInvisible()
+    {
+        QTextDocument myDocument;
+        const QString myRichText = QStringLiteral(u"This <em>is</em> a test.");
+        myDocument.setHtml(myRichText);
+        QCOMPARE(myDocument.toRawText(), QStringLiteral(u"This is a test.")); // Assertion
+        // Now, test if the rich text marker is actually invisible:
+        myDocument.setHtml(richTextMarker() + myRichText);
+        QCOMPARE(myDocument.toRawText(), QStringLiteral(u"This is a test."));
     }
 };
 
