@@ -1,6 +1,0 @@
-<map id="PerceptualColor::ColorDialog::testOption" name="PerceptualColor::ColorDialog::testOption">
-<area shape="rect" id="node1" title="Getter for options." alt="" coords="520,39,729,80"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#a64b6c698ebfaf2461c513ebbb7ef2637" title="Setter for currentColor property." alt="" coords="263,39,472,80"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,5,215,47"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a08677555088721a366cc839a90b5eea2" title="Pops up a modal color dialog, lets the user choose a color, and returns that color." alt="" coords="5,71,215,112"/>
-</map>

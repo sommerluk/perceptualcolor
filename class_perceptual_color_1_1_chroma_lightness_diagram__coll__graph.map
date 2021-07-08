@@ -1,9 +1,0 @@
-<map id="PerceptualColor::ChromaLightnessDiagram" name="PerceptualColor::ChromaLightnessDiagram">
-<area shape="rect" id="node1" title="A widget that displays a chroma&#45;lightness diagram." alt="" coords="633,71,880,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="277,5,464,47"/>
-<area shape="rect" id="node3" title=" " alt="" coords="54,13,133,39"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_full_color_description.html" title="A fully qualified color." alt="" coords="275,71,466,112"/>
-<area shape="rect" id="node5" href="$struct_perceptual_color_1_1_helper_1_1cms_r_g_b.html" title="An RGB color." alt="" coords="5,71,181,112"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="275,136,467,177"/>
-<area shape="rect" id="node7" title=" " alt="" coords="56,143,131,170"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="PerceptualColor::SimpleColorWheel::sizeHint" name="PerceptualColor::SimpleColorWheel::sizeHint">
-<area shape="rect" id="node1" title="Provide the size hint." alt="" coords="520,39,732,80"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#aa0acac5d112ac65532a3a3ec9a45f094" title="Arranges the layout conforming to layoutDimensions." alt="" coords="263,39,472,80"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a4d8c3a0e0ac520c789565d68c135431b" title="Setter for property layoutDimensions." alt="" coords="5,5,215,47"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a2569086f612b1714dc922564808fe5e9" title="Setter for property visible." alt="" coords="5,71,215,112"/>
-</map>

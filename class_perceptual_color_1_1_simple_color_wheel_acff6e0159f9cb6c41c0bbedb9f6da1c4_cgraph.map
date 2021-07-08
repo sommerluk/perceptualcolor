@@ -1,6 +1,0 @@
-<map id="PerceptualColor::SimpleColorWheel::generateWheelImage" name="PerceptualColor::SimpleColorWheel::generateWheelImage">
-<area shape="rect" id="node1" title="Generates an image of a color wheel." alt="" coords="5,71,217,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="265,5,464,47"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="269,71,461,112"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="265,136,464,177"/>
-</map>

@@ -1,8 +1,0 @@
-<map id="PerceptualColor::ChromaHueDiagram::updateDiagramCache" name="PerceptualColor::ChromaHueDiagram::updateDiagramCache">
-<area shape="rect" id="node1" title="Refresh the diagram and associated data." alt="" coords="5,71,232,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#adc53e31427f7c15d0aedc521aea5edd7" title="in image of a&#45;b plane of the color space at a given lightness" alt="" coords="280,37,521,79"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_full_color_description.html#acdbff4639f8a118f0d13a831a4b57ffe" title=" " alt="" coords="305,103,496,144"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html#a813721e6284e83c8493f1557eeeb4469" title="Calculates the Lab value." alt="" coords="569,5,761,47"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html#a597d093bcc9c79444792359569e537b4" title="Calculates the RGB value." alt="" coords="569,71,761,112"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_rgb_color_space.html#aeb749cb42b24d3989be041a7d4096258" title=" " alt="" coords="809,71,1021,112"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="PerceptualColor::WheelColorPicker::currentColorChanged" name="PerceptualColor::WheelColorPicker::currentColorChanged">
-<area shape="rect" id="node1" title="Signal for currentColor() property." alt="" coords="520,39,728,80"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="263,5,472,47"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_wheel_color_picker.html#a44595e05acd7bf6ad716242f987507da" title="Constructor." alt="" coords="263,71,471,112"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,5,215,47"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="PerceptualColor::SimpleColorWheel::updateWheelImage" name="PerceptualColor::SimpleColorWheel::updateWheelImage">
-<area shape="rect" id="node1" title="Refresh the wheel ribbon pixmap." alt="" coords="5,71,217,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#acff6e0159f9cb6c41c0bbedb9f6da1c4" title="Generates an image of a color wheel." alt="" coords="265,71,477,112"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_polar_point_f.html#a882cd166affc603fc62241dcb3be4fd5" title="Normalized angle." alt="" coords="525,5,724,47"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html#ab494c2d0f561c49b8325688a8ddc0095" title="Calculates the RGB value." alt="" coords="529,71,721,112"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_polar_point_f.html#ad9e45debe2dc38bbba834d791336f1fd" title="Normalized radial." alt="" coords="525,136,724,177"/>
-</map>

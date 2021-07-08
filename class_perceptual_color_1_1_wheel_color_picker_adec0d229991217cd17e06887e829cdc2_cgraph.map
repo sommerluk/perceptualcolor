@@ -1,7 +1,0 @@
-<map id="PerceptualColor::WheelColorPicker::resizeEvent" name="PerceptualColor::WheelColorPicker::resizeEvent">
-<area shape="rect" id="node1" title="React on a resive event." alt="" coords="5,71,213,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_wheel_color_picker.html#aba042e926a0c507c43d0f16afb63cb8e" title="Update the size of the child widget." alt="" coords="263,37,471,79"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_simple_color_wheel.html#a255c2771e4d7aa494ea827b981d76874" title="React on a resive event." alt="" coords="261,103,473,144"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a6fe09144d693f81d5c7d8306666bc2aa" title="The diameter of the widget content." alt="" coords="535,5,747,47"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_wheel_color_picker.html#a82999bc171a84656147c0b4f332dd38a" title="Scale a rectangle to a given diagonal line length." alt="" coords="521,71,761,112"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="PerceptualColor::SimpleColorWheel::fromWidgetCoordinatesToWheelCoordinates" name="PerceptualColor::SimpleColorWheel::fromWidgetCoordinatesToWheelCoordinates">
-<area shape="rect" id="node1" title="Converts window coordinates to wheel coordinates." alt="" coords="265,97,547,153"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html#abe3135d19fc45216402f78bce2cf85f3" title="React on a mouse move event." alt="" coords="5,5,217,47"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a8e6801f8291ff6214d93d56d0ec59e22" title="React on a mouse press event." alt="" coords="5,71,217,112"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_simple_color_wheel.html#af9f91c60348e415b8726732231230fd0" title="React on a mouse release event." alt="" coords="5,136,217,177"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6" title="React on a mouse wheel event." alt="" coords="5,201,217,243"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="PerceptualColor::WheelColorPicker" name="PerceptualColor::WheelColorPicker">
-<area shape="rect" id="node1" title="Complete wheel&#45;based color picker widget." alt="" coords="7,348,215,389"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_simple_color_wheel.html" title="Widget to choose the hue in a wheel." alt="" coords="5,259,217,300"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_circular_diagram.html" title="Base class for circular diagrams." alt="" coords="20,169,203,211"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="18,80,205,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="72,5,151,32"/>
-</map>

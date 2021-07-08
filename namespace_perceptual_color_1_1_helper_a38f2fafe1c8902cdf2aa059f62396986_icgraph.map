@@ -1,6 +1,0 @@
-<map id="PerceptualColor::Helper::standardWheelSteps" name="PerceptualColor::Helper::standardWheelSteps">
-<area shape="rect" id="node1" title="Number of vertical standard wheel steps done by a wheel event." alt="" coords="265,71,441,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_gradient_selector.html#a2f1ad73ad864cffe3061133c3a048b0d" title=" " alt="" coords="17,5,206,47"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_simple_color_wheel.html#a39f69259647eebe1e95ce3a1aa73bcd6" title="React on a mouse wheel event." alt="" coords="5,71,217,112"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_hue_diagram.html#a2b14fea4dd40197c7d37c88fb8be63e7" title=" " alt="" coords="6,136,217,177"/>
-</map>

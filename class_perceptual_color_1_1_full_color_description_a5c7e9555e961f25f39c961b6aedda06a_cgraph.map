@@ -1,6 +1,0 @@
-<map id="PerceptualColor::FullColorDescription::moveChromaIntoGamut" name="PerceptualColor::FullColorDescription::moveChromaIntoGamut">
-<area shape="rect" id="node1" title=" " alt="" coords="5,71,267,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_rgb_color_space.html#a805768f351ccde875254755901d943fa" title="The darkest in&#45;gamut point on the L* axis." alt="" coords="315,5,507,47"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_rgb_color_space.html#a24382dbdad4c514bde0842b5a8313be0" title="check if a Lab value is within a specific RGB gamut" alt="" coords="315,71,507,112"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html#a1e3cb8f4108729442a61b43df4664397" title="The lightest in&#45;gamut point on the L* axis." alt="" coords="315,136,507,177"/>
-</map>

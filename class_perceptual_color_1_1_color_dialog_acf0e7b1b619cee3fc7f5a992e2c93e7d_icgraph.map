@@ -1,8 +1,0 @@
-<map id="PerceptualColor::ColorDialog::setCurrentOpaqueQColor" name="PerceptualColor::ColorDialog::setCurrentOpaqueQColor">
-<area shape="rect" id="node1" title="Convenience version of setCurrentOpaqueColor(), accepting QColor." alt="" coords="777,71,987,112"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog.html#ad834c4b1975dd4b226a054497bd1ef47" title="Reads the HSV numbers in the dialog and updates the dialog accordingly." alt="" coords="520,5,729,47"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_color_dialog.html#a4554999f424ac055986478fe8c899ae1" title="Reads the hexadecimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="520,71,729,112"/>
-<area shape="rect" id="node6" href="$class_perceptual_color_1_1_color_dialog.html#a9bb8f87d25714fc283fdda98424030fe" title="Reads the decimal RGB numbers in the dialog and updates the dialog accordingly." alt="" coords="520,136,729,177"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_color_dialog.html#ad31fb985e1323cdf1208c91f16fe2a51" title="Basic initialization." alt="" coords="263,71,472,112"/>
-<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_dialog.html#a3c1ad1040ede00087aa11fab1514a6e7" title="Constructor." alt="" coords="5,71,215,112"/>
-</map>

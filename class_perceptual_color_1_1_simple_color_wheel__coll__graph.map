@@ -1,8 +1,0 @@
-<map id="PerceptualColor::SimpleColorWheel" name="PerceptualColor::SimpleColorWheel">
-<area shape="rect" id="node1" title="Widget to choose the hue in a wheel." alt="" coords="98,276,310,317"/>
-<area shape="rect" id="node2" href="$class_perceptual_color_1_1_circular_diagram.html" title="Base class for circular diagrams." alt="" coords="7,172,190,213"/>
-<area shape="rect" id="node3" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="5,81,192,123"/>
-<area shape="rect" id="node4" title=" " alt="" coords="59,5,138,32"/>
-<area shape="rect" id="node5" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Interface to LittleCMS for working with an RGB color space." alt="" coords="215,172,407,213"/>
-<area shape="rect" id="node6" title=" " alt="" coords="273,89,348,115"/>
-</map>
