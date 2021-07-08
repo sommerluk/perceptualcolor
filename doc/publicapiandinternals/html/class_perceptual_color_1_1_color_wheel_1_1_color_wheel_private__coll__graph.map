@@ -1,0 +1,9 @@
+<map id="PerceptualColor::ColorWheel::ColorWheelPrivate" name="PerceptualColor::ColorWheel::ColorWheelPrivate">
+<area shape="rect" id="node1" title="Private implementation within the Pointer to implementation idiom." alt="" coords="1528,41,1736,83"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_wheel_image.html" title="An image of a color wheel." alt="" coords="1147,5,1355,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_const_propagating_raw_pointer.html" title=" " alt="" coords="1127,71,1375,127"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_color_wheel.html" title="A color wheel widget." alt="" coords="800,86,1008,113"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="469,23,655,64"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="5,15,324,71"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="437,89,687,145"/>
+</map>

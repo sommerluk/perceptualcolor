@@ -1,0 +1,25 @@
+var class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private =
+[
+    [ "MultiSpinBoxPrivate", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a0bec2f35f30258df3dcc86d6a40f54b2", null ],
+    [ "~MultiSpinBoxPrivate", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a4cedccad00a392a601e157580033e2dc", null ],
+    [ "formattedValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a0b7b79d11969cd750539975e45405b4d", null ],
+    [ "isCursorPositionAtCurrentSectionValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a01c91df0c84df29680b4758572b73483", null ],
+    [ "reactOnCursorPositionChange", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#aaee138e5a3e2d76af4cd54b3ff8f5090", null ],
+    [ "setCurrentIndexAndUpdateTextAndSelectValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a4155696c14a4c8e48e6b559c6ef6cdeb", null ],
+    [ "setCurrentIndexToZeroAndUpdateTextAndSelectValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a50464c341540fefb9153b488933b1b48", null ],
+    [ "setCurrentIndexWithoutUpdatingText", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a0dd5aab5b81a60943863aad100739c5f", null ],
+    [ "setSectionValuesWithoutFurtherUpdating", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a31e541ebb31392693b655ad630e500cd", null ],
+    [ "updateCurrentValueFromText", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a9d167e67d8ab3ed66a1f5599c1e163f5", null ],
+    [ "updatePrefixValueSuffixText", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a2624d1e6a54d87eeaf3737d94cc5a73c", null ],
+    [ "TestMultiSpinBox", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#ae3aa73aef981cd2a219daac3c530fd43", null ],
+    [ "defaultSectionValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#aeaf8023a7efd90a191ce83ea8aa9eb31", null ],
+    [ "m_actionButtonCount", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#ada692610e6ad15373dc9adda7453d336", null ],
+    [ "m_currentIndex", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#aa55715c1f808fa5a702f1b5181281bf4", null ],
+    [ "m_sectionConfigurations", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a0210abe74b38b5e655baca66a97489a3", null ],
+    [ "m_sectionValues", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#ae0fa48d0be59956664500c33c6e4ecec", null ],
+    [ "m_textAfterCurrentValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a49bc956fff5b5defd08586dfd71265cd", null ],
+    [ "m_textBeforeCurrentValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#ae982e30230e49fb075b81a88b810f996", null ],
+    [ "m_textOfCurrentValue", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a057ca310261ccc463e87573726086843", null ],
+    [ "m_validator", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a049fcc758874cfb9e3ded30f932d0109", null ],
+    [ "q_pointer", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#aded484ab95a27e6afa0fa8c0ad59c237", null ]
+];

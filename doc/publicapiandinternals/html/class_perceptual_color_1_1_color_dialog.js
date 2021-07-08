@@ -1,0 +1,37 @@
+var class_perceptual_color_1_1_color_dialog =
+[
+    [ "ColorDialogPrivate", "class_perceptual_color_1_1_color_dialog_1_1_color_dialog_private.html", "class_perceptual_color_1_1_color_dialog_1_1_color_dialog_private" ],
+    [ "ColorDialogOption", "class_perceptual_color_1_1_color_dialog.html#ae934b5ec6959503d32285ea1a869a98b", null ],
+    [ "ColorDialogOptions", "class_perceptual_color_1_1_color_dialog.html#afa77ad87d668360f3077e8fbe9cc238b", null ],
+    [ "DialogLayoutDimensions", "class_perceptual_color_1_1_color_dialog.html#aacdc2037c54daa56d8e0d0132ca5361e", [
+      [ "screenSizeDependent", "class_perceptual_color_1_1_color_dialog.html#aacdc2037c54daa56d8e0d0132ca5361eaa9c08d97fbc8ac7a9ab2f64d96dfd636", null ],
+      [ "collapsed", "class_perceptual_color_1_1_color_dialog.html#aacdc2037c54daa56d8e0d0132ca5361ea3338c02fe80ef02fc4bfb78f90bf173c", null ],
+      [ "expanded", "class_perceptual_color_1_1_color_dialog.html#aacdc2037c54daa56d8e0d0132ca5361ea1a6130a21d7d578d81a168ebcf0d9921", null ]
+    ] ],
+    [ "ColorDialog", "class_perceptual_color_1_1_color_dialog.html#aa61678417641150ee99d59bfbb651463", null ],
+    [ "ColorDialog", "class_perceptual_color_1_1_color_dialog.html#a38cbce34b33f29222d39f80107aa06d8", null ],
+    [ "~ColorDialog", "class_perceptual_color_1_1_color_dialog.html#a7a78de37e5be631d47b2d2876eef2950", null ],
+    [ "colorSelected", "class_perceptual_color_1_1_color_dialog.html#a0018d7cbf4840b31c2b2e785ac9862a4", null ],
+    [ "currentColor", "class_perceptual_color_1_1_color_dialog.html#a911339cb2ea6dc1d72c49f3b5e5a5338", null ],
+    [ "currentColorChanged", "class_perceptual_color_1_1_color_dialog.html#affecc403ee4931b39249720079f7f36b", null ],
+    [ "done", "class_perceptual_color_1_1_color_dialog.html#a701b56b846a415fe2b16a1ae302c2049", null ],
+    [ "getColor", "class_perceptual_color_1_1_color_dialog.html#a34363625aec28fcf4f4ffe14087b46cc", null ],
+    [ "layoutDimensions", "class_perceptual_color_1_1_color_dialog.html#af8c81206a8b99a1b777d5ca6a067c3cc", null ],
+    [ "layoutDimensionsChanged", "class_perceptual_color_1_1_color_dialog.html#ae50fdb3a90cf8be0bd62f88bed25d752", null ],
+    [ "open", "class_perceptual_color_1_1_color_dialog.html#a28ba2d1ec20acc6a732d8fbe60f9fbd4", null ],
+    [ "options", "class_perceptual_color_1_1_color_dialog.html#aa2e7bf3d97afb1e094f29a632f942c82", null ],
+    [ "optionsChanged", "class_perceptual_color_1_1_color_dialog.html#a9ee71c5ce88169fa376e3e46951ff14d", null ],
+    [ "selectedColor", "class_perceptual_color_1_1_color_dialog.html#aeb1b22aa195ea3b35cfa84509809fcff", null ],
+    [ "setCurrentColor", "class_perceptual_color_1_1_color_dialog.html#a64b6c698ebfaf2461c513ebbb7ef2637", null ],
+    [ "setLayoutDimensions", "class_perceptual_color_1_1_color_dialog.html#aa9cd343ba3bf6748552d10fba3c23810", null ],
+    [ "setOption", "class_perceptual_color_1_1_color_dialog.html#a5025e61d7185a334ca22dac7508c9f4c", null ],
+    [ "setOptions", "class_perceptual_color_1_1_color_dialog.html#aa82b2369fe5376262e494ef0b509656c", null ],
+    [ "setVisible", "class_perceptual_color_1_1_color_dialog.html#a2569086f612b1714dc922564808fe5e9", null ],
+    [ "testOption", "class_perceptual_color_1_1_color_dialog.html#a4e64ac32774298bf3ef3b73578db3298", null ],
+    [ "ColorDialogPrivate", "class_perceptual_color_1_1_color_dialog.html#a19a4a0085e150d01306f6237b2a64dd5", null ],
+    [ "TestColorDialog", "class_perceptual_color_1_1_color_dialog.html#a3a251b277045c347f0aa6df161ba7191", null ],
+    [ "d_pointer", "class_perceptual_color_1_1_color_dialog.html#ab1b3ff2c0c408c26d6e43aa81abab9d2", null ],
+    [ "currentColor", "class_perceptual_color_1_1_color_dialog.html#a63f94f17ead4f6cacfc7054c300cc26c", null ],
+    [ "layoutDimensions", "class_perceptual_color_1_1_color_dialog.html#a8723168c86b8c43eac97848dd16a127e", null ],
+    [ "options", "class_perceptual_color_1_1_color_dialog.html#a421c3ffddeb891731fd00e843e2926e6", null ]
+];

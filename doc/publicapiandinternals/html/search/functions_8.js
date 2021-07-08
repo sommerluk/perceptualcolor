@@ -1,0 +1,14 @@
+var searchData=
+[
+  ['initialize_732',['initialize',['../class_perceptual_color_1_1_color_dialog_1_1_color_dialog_private.html#afd77e476e95dfb48352b159ae16c9cc3',1,'PerceptualColor::ColorDialog::ColorDialogPrivate::initialize()'],['../class_perceptual_color_1_1_gradient_slider_1_1_gradient_slider_private.html#a3ac96907f0ae8fa2bdde19650083bef7',1,'PerceptualColor::GradientSlider::GradientSliderPrivate::initialize()'],['../class_perceptual_color_1_1_rgb_color_space_1_1_rgb_color_space_private.html#a453a2e132e93571167661f27cfa2668e',1,'PerceptualColor::RgbColorSpace::RgbColorSpacePrivate::initialize()']]],
+  ['initializenumericpage_733',['initializeNumericPage',['../class_perceptual_color_1_1_color_dialog_1_1_color_dialog_private.html#a57a30740d073979900f38dcbfbd40bc0',1,'PerceptualColor::ColorDialog::ColorDialogPrivate']]],
+  ['innerdiameter_734',['innerDiameter',['../class_perceptual_color_1_1_color_wheel_1_1_color_wheel_private.html#ad40ac708ba3685f8769ee81e21bbf59e',1,'PerceptualColor::ColorWheel::ColorWheelPrivate']]],
+  ['iohandlerfactory_735',['IOHandlerFactory',['../class_perceptual_color_1_1_i_o_handler_factory.html#ac4fab9a92c438bc959a07afd747f772f',1,'PerceptualColor::IOHandlerFactory']]],
+  ['iscursorpositionatcurrentsectionvalue_736',['isCursorPositionAtCurrentSectionValue',['../class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#a01c91df0c84df29680b4758572b73483',1,'PerceptualColor::MultiSpinBox::MultiSpinBoxPrivate']]],
+  ['isingamut_737',['isInGamut',['../class_perceptual_color_1_1_rgb_color_space.html#a5ed298c93997efb52e1ccdbad9621563',1,'PerceptualColor::RgbColorSpace::isInGamut(const cmsCIELab &amp;lab) const'],['../class_perceptual_color_1_1_rgb_color_space.html#a68b1986bb640bcd7c4b900ac33ddd52f',1,'PerceptualColor::RgbColorSpace::isInGamut(const PerceptualColor::LchDouble &amp;lch) const']]],
+  ['isinrange_738',['isInRange',['../namespace_perceptual_color.html#a0c9cb34a26acb26a6e01caa0c7165b52',1,'PerceptualColor']]],
+  ['issamepoint_739',['isSamePoint',['../class_perceptual_color_1_1_polar_point_f.html#a82a65c84528e04b419c3c4b18cfe9838',1,'PerceptualColor::PolarPointF']]],
+  ['iswidgetpixelpositioningamut_740',['isWidgetPixelPositionInGamut',['../class_perceptual_color_1_1_chroma_lightness_diagram_1_1_chroma_lightness_diagram_private.html#a10e575e8f37fda3da08bc3e51c176d7f',1,'PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate']]],
+  ['iswidgetpixelpositionwithinmousesensiblecircle_741',['isWidgetPixelPositionWithinMouseSensibleCircle',['../class_perceptual_color_1_1_chroma_hue_diagram_1_1_chroma_hue_diagram_private.html#aa60cde37e9fbc90fa7344c2252e91496',1,'PerceptualColor::ChromaHueDiagram::ChromaHueDiagramPrivate']]],
+  ['iswrapping_742',['isWrapping',['../class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a27713c5c330c93bbb5e9fb5a65736090',1,'PerceptualColor::MultiSpinBoxSectionConfiguration']]]
+];

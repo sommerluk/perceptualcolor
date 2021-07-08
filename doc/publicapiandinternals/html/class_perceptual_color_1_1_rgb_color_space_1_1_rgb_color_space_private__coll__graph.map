@@ -1,0 +1,7 @@
+<map id="PerceptualColor::RgbColorSpace::RgbColorSpacePrivate" name="PerceptualColor::RgbColorSpace::RgbColorSpacePrivate">
+<area shape="rect" id="node1" title="Private implementation within the Pointer to implementation idiom." alt="" coords="1237,41,1451,83"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_chroma_lightness_image.html" title="An image of a chroma&#45;lightness plane." alt="" coords="725,5,971,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_const_propagating_raw_pointer.html" title=" " alt="" coords="724,71,972,127"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Provides access to LittleCMS color management library." alt="" coords="413,79,605,120"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="5,71,300,127"/>
+</map>

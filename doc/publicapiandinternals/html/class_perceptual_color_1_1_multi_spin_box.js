@@ -1,0 +1,26 @@
+var class_perceptual_color_1_1_multi_spin_box =
+[
+    [ "MultiSpinBoxPrivate", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html", "class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private" ],
+    [ "MultiSpinBox", "class_perceptual_color_1_1_multi_spin_box.html#a0e7291dc65d2599bc9994170a083d86c", null ],
+    [ "~MultiSpinBox", "class_perceptual_color_1_1_multi_spin_box.html#ad18b3281305ea9e1ae258d9d518cb8a2", null ],
+    [ "addActionButton", "class_perceptual_color_1_1_multi_spin_box.html#a25f7438ff76fcf7071713706d800d6a3", null ],
+    [ "changeEvent", "class_perceptual_color_1_1_multi_spin_box.html#af98a8d62bc2aeea258b621f7c8b35be4", null ],
+    [ "clear", "class_perceptual_color_1_1_multi_spin_box.html#abf4ec5c1f4519cbb44badbd84ac9dc3b", null ],
+    [ "event", "class_perceptual_color_1_1_multi_spin_box.html#a12d0b95695232cb15c24bacc4cc8bf5e", null ],
+    [ "focusInEvent", "class_perceptual_color_1_1_multi_spin_box.html#a3ba2499c5e8d64b8579f3724e7f67309", null ],
+    [ "focusNextPrevChild", "class_perceptual_color_1_1_multi_spin_box.html#a397c1529718b691c7dceb9385d18dcc8", null ],
+    [ "focusOutEvent", "class_perceptual_color_1_1_multi_spin_box.html#ad6734b6dcfdc890fc422e2e9ec85ea56", null ],
+    [ "minimumSizeHint", "class_perceptual_color_1_1_multi_spin_box.html#a1cd726e3a9bb6b28f2d6411ec2e33735", null ],
+    [ "sectionConfigurations", "class_perceptual_color_1_1_multi_spin_box.html#afd32e991825d23e0bc7cfedce03adce5", null ],
+    [ "sectionValues", "class_perceptual_color_1_1_multi_spin_box.html#a28d1addc81faaac8ff8ef7f5e2e61c48", null ],
+    [ "sectionValuesChanged", "class_perceptual_color_1_1_multi_spin_box.html#ae56186279a3d59b7c718a81e38274885", null ],
+    [ "setSectionConfigurations", "class_perceptual_color_1_1_multi_spin_box.html#a76ea6dfe7e2eeb80f36e7062fe2d9ab9", null ],
+    [ "setSectionValues", "class_perceptual_color_1_1_multi_spin_box.html#a6f8b1c07706cefe655c838bbbb8c44bf", null ],
+    [ "sizeHint", "class_perceptual_color_1_1_multi_spin_box.html#ab5fd73e9a517b7a83431248dbb5de912", null ],
+    [ "stepBy", "class_perceptual_color_1_1_multi_spin_box.html#adb122bdf253aacf12ed99f6a5a12454c", null ],
+    [ "stepEnabled", "class_perceptual_color_1_1_multi_spin_box.html#a41754b6a6e3262a2bb91b673696a97b0", null ],
+    [ "MultiSpinBoxPrivate", "class_perceptual_color_1_1_multi_spin_box.html#aa3633b0c582fa11ea202826ec6439786", null ],
+    [ "TestMultiSpinBox", "class_perceptual_color_1_1_multi_spin_box.html#ae3aa73aef981cd2a219daac3c530fd43", null ],
+    [ "d_pointer", "class_perceptual_color_1_1_multi_spin_box.html#ad28def9612bf615fcc22058aa961057e", null ],
+    [ "sectionValues", "class_perceptual_color_1_1_multi_spin_box.html#a50ea55ee19cf2c4fa1d187f0886c5db3", null ]
+];

@@ -1,0 +1,11 @@
+var searchData=
+[
+  ['getcolor_717',['getColor',['../class_perceptual_color_1_1_color_dialog.html#a34363625aec28fcf4f4ffe14087b46cc',1,'PerceptualColor::ColorDialog']]],
+  ['getimage_718',['getImage',['../class_perceptual_color_1_1_chroma_hue_image.html#ae903f30376c0592e8ed9c56e1466a96c',1,'PerceptualColor::ChromaHueImage::getImage()'],['../class_perceptual_color_1_1_chroma_lightness_image.html#ae7bdc8cd92284d99763e994b5b72d34b',1,'PerceptualColor::ChromaLightnessImage::getImage()'],['../class_perceptual_color_1_1_color_wheel_image.html#a407d4e56ad56f82771b7de647b3de27b',1,'PerceptualColor::ColorWheelImage::getImage()'],['../class_perceptual_color_1_1_gradient_image.html#a524efd521fdac03fc746cca91311189e',1,'PerceptualColor::GradientImage::getImage()']]],
+  ['getinformationfromprofile_719',['getInformationFromProfile',['../class_perceptual_color_1_1_rgb_color_space_1_1_rgb_color_space_private.html#ae3e495761f65603724d26b0843b8ec6e',1,'PerceptualColor::RgbColorSpace::RgbColorSpacePrivate']]],
+  ['gradientimage_720',['GradientImage',['../class_perceptual_color_1_1_gradient_image.html#a55da1132b0ef38bca02b8cb3a1556948',1,'PerceptualColor::GradientImage']]],
+  ['gradientminimumlength_721',['gradientMinimumLength',['../class_perceptual_color_1_1_abstract_diagram.html#a4db635bd0c1f3a6f443f4af1f088e6bf',1,'PerceptualColor::AbstractDiagram']]],
+  ['gradientslider_722',['GradientSlider',['../class_perceptual_color_1_1_gradient_slider.html#a404d4a2e76aede3d16d4fabc293ceb9c',1,'PerceptualColor::GradientSlider::GradientSlider(const QSharedPointer&lt; PerceptualColor::RgbColorSpace &gt; &amp;colorSpace, QWidget *parent=nullptr)'],['../class_perceptual_color_1_1_gradient_slider.html#aa42742c0e084fd038d7b4f06a5877832',1,'PerceptualColor::GradientSlider::GradientSlider(const QSharedPointer&lt; PerceptualColor::RgbColorSpace &gt; &amp;colorSpace, Qt::Orientation orientation, QWidget *parent=nullptr)']]],
+  ['gradientsliderprivate_723',['GradientSliderPrivate',['../class_perceptual_color_1_1_gradient_slider_1_1_gradient_slider_private.html#aec6f2937ed4f11fc1f48d990676de24c',1,'PerceptualColor::GradientSlider::GradientSliderPrivate']]],
+  ['gradientthickness_724',['gradientThickness',['../class_perceptual_color_1_1_abstract_diagram.html#a604853f092122b15637d58bb7a5772ac',1,'PerceptualColor::AbstractDiagram']]]
+];

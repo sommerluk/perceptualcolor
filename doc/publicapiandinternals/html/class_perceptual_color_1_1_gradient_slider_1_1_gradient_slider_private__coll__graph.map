@@ -1,0 +1,10 @@
+<map id="PerceptualColor::GradientSlider::GradientSliderPrivate" name="PerceptualColor::GradientSlider::GradientSliderPrivate">
+<area shape="rect" id="node1" title="Private implementation within the Pointer to implementation idiom." alt="" coords="1739,70,1945,111"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_gradient_image.html" title="An image of a gradient." alt="" coords="1312,70,1501,111"/>
+<area shape="rect" id="node3" href="$struct_perceptual_color_1_1_lcha_double.html" title="A LCH color with alpha channel." alt="" coords="836,40,1045,67"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_const_propagating_raw_pointer.html" title=" " alt="" coords="1283,136,1531,192"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_gradient_slider.html" title="A slider who’s groove displays an LCh color gradient." alt="" coords="846,143,1035,185"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="487,87,673,129"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="5,80,324,136"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="437,153,723,209"/>
+</map>

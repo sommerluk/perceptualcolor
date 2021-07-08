@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,111,80,138"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_color_dialog_1_1_color_dialog_private.html" title="Private implementation within the Pointer to implementation idiom." alt="" coords="138,5,347,47"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html" title="Private implementation within the Pointer to implementation idiom." alt="" coords="145,71,340,112"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_rgb_color_space.html" title="Provides access to LittleCMS color management library." alt="" coords="147,136,339,177"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_wheel_color_picker_1_1_wheel_color_picker_private.html" title="Private implementation within the Pointer to implementation idiom." alt="" coords="128,201,357,243"/>
+</map>

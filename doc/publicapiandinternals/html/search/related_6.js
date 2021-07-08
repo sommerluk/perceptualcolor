@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['testabstractdiagram_1076',['TestAbstractDiagram',['../class_perceptual_color_1_1_abstract_diagram.html#a84cbcccb0a0dd468823eb6e821d4168a',1,'PerceptualColor::AbstractDiagram']]],
+  ['testchromahuediagram_1077',['TestChromaHueDiagram',['../class_perceptual_color_1_1_chroma_hue_diagram.html#a9801e22189306f61d937706b90c359fd',1,'PerceptualColor::ChromaHueDiagram']]],
+  ['testchromahueimage_1078',['TestChromaHueImage',['../class_perceptual_color_1_1_chroma_hue_image.html#aa74fb132e56632b5f2e4df6163ce3b8d',1,'PerceptualColor::ChromaHueImage']]],
+  ['testchromalightnessdiagram_1079',['TestChromaLightnessDiagram',['../class_perceptual_color_1_1_chroma_lightness_diagram.html#ad4119d8bdfdc02bdf76d038d6174b2e7',1,'PerceptualColor::ChromaLightnessDiagram']]],
+  ['testchromalightnessimage_1080',['TestChromaLightnessImage',['../class_perceptual_color_1_1_chroma_lightness_image.html#ab66e65222f52fbd87aac4e62d10d3149',1,'PerceptualColor::ChromaLightnessImage']]],
+  ['testcolordialog_1081',['TestColorDialog',['../class_perceptual_color_1_1_color_dialog.html#a3a251b277045c347f0aa6df161ba7191',1,'PerceptualColor::ColorDialog']]],
+  ['testcolorpatch_1082',['TestColorPatch',['../class_perceptual_color_1_1_color_patch.html#a77e3f72e62d0f9656fb6b8cb149cf960',1,'PerceptualColor::ColorPatch']]],
+  ['testcolorwheel_1083',['TestColorWheel',['../class_perceptual_color_1_1_color_wheel.html#ab7837344ab629f74262006f643be737f',1,'PerceptualColor::ColorWheel']]],
+  ['testcolorwheelimage_1084',['TestColorWheelImage',['../class_perceptual_color_1_1_color_wheel_image.html#a2dc886488e480c97a413ef135de0be87',1,'PerceptualColor::ColorWheelImage']]],
+  ['testextendeddoublevalidator_1085',['TestExtendedDoubleValidator',['../class_perceptual_color_1_1_extended_double_validator.html#a84c792b8cd022a632311a0c85796ce1d',1,'PerceptualColor::ExtendedDoubleValidator']]],
+  ['testgradientimage_1086',['TestGradientImage',['../class_perceptual_color_1_1_gradient_image.html#a680ef13e92bb1c10eb97f88a6a2a0a34',1,'PerceptualColor::GradientImage']]],
+  ['testgradientslider_1087',['TestGradientSlider',['../class_perceptual_color_1_1_gradient_slider.html#a65294f4ea095a9eb882f382d9518054c',1,'PerceptualColor::GradientSlider']]],
+  ['testmultispinbox_1088',['TestMultiSpinBox',['../class_perceptual_color_1_1_multi_spin_box_1_1_multi_spin_box_private.html#ae3aa73aef981cd2a219daac3c530fd43',1,'PerceptualColor::MultiSpinBox::MultiSpinBoxPrivate::TestMultiSpinBox()'],['../class_perceptual_color_1_1_multi_spin_box.html#ae3aa73aef981cd2a219daac3c530fd43',1,'PerceptualColor::MultiSpinBox::TestMultiSpinBox()']]],
+  ['testmultispinboxsectionconfiguration_1089',['TestMultiSpinBoxSectionConfiguration',['../class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a39722f3f9d41c58cd2fcc8f80c0adab4',1,'PerceptualColor::MultiSpinBoxSectionConfiguration']]],
+  ['testrefreshiconengine_1090',['TestRefreshIconEngine',['../class_perceptual_color_1_1_refresh_icon_engine.html#a16f04ce902729177e5a9a8e28b528372',1,'PerceptualColor::RefreshIconEngine']]],
+  ['testrgbcolorspace_1091',['TestRgbColorSpace',['../class_perceptual_color_1_1_rgb_color_space.html#ab328d481c7430b8711454e215e303629',1,'PerceptualColor::RgbColorSpace']]],
+  ['testrgbcolorspacefactory_1092',['TestRgbColorSpaceFactory',['../class_perceptual_color_1_1_rgb_color_space_factory.html#a2d6ad54e4822e1551cabb3f815374d0a',1,'PerceptualColor::RgbColorSpaceFactory']]],
+  ['testwheelcolorpicker_1093',['TestWheelColorPicker',['../class_perceptual_color_1_1_wheel_color_picker.html#a9eaf03bccad7b6b41ffae4057cc41c8b',1,'PerceptualColor::WheelColorPicker']]]
+];

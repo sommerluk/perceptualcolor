@@ -1,0 +1,4 @@
+<map id="PerceptualColor::GradientImage" name="PerceptualColor::GradientImage">
+<area shape="rect" id="node1" title="An image of a gradient." alt="" coords="15,124,205,165"/>
+<area shape="rect" id="node2" href="$struct_perceptual_color_1_1_lcha_double.html" title="A LCH color with alpha channel." alt="" coords="5,5,215,32"/>
+</map>

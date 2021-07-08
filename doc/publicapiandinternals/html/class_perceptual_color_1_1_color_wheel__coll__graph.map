@@ -1,0 +1,6 @@
+<map id="PerceptualColor::ColorWheel" name="PerceptualColor::ColorWheel">
+<area shape="rect" id="node1" title="A color wheel widget." alt="" coords="800,76,1008,103"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="469,13,655,54"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="5,5,324,61"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="437,79,687,135"/>
+</map>

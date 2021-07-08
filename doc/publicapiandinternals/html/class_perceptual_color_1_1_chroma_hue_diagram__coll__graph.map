@@ -1,0 +1,6 @@
+<map id="PerceptualColor::ChromaHueDiagram" name="PerceptualColor::ChromaHueDiagram">
+<area shape="rect" id="node1" title="A widget for selecting chroma and hue in LCh color space." alt="" coords="916,69,1127,110"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="527,13,713,54"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="5,5,324,61"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="437,79,803,135"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="PerceptualColor::MultiColor" name="PerceptualColor::MultiColor">
+<area shape="rect" id="node1" title="A color stored in multiple color models simultaneously." alt="" coords="6,95,206,121"/>
+<area shape="rect" id="node2" href="$struct_perceptual_color_1_1_lch_double.html" title="A LCH color." alt="" coords="5,5,207,32"/>
+</map>

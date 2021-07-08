@@ -1,0 +1,4 @@
+<map id="PerceptualColor::ChromaLightnessDiagram" name="PerceptualColor::ChromaLightnessDiagram">
+<area shape="rect" id="node1" title="A widget that displays a chroma&#45;lightness diagram." alt="" coords="5,95,252,136"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="35,5,222,47"/>
+</map>

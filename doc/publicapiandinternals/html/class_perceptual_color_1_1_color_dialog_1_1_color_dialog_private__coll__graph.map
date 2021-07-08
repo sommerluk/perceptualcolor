@@ -1,0 +1,8 @@
+<map id="PerceptualColor::ColorDialog::ColorDialogPrivate" name="PerceptualColor::ColorDialog::ColorDialogPrivate">
+<area shape="rect" id="node1" title="Private implementation within the Pointer to implementation idiom." alt="" coords="1148,33,1357,74"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_multi_color.html" title="A color stored in multiple color models simultaneously." alt="" coords="721,7,921,33"/>
+<area shape="rect" id="node3" href="$struct_perceptual_color_1_1_lch_double.html" title="A LCH color." alt="" coords="373,7,575,33"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_const_propagating_raw_pointer.html" title=" " alt="" coords="697,57,945,113"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_color_dialog.html" title="A perceptually uniform color picker dialog." alt="" coords="369,72,579,99"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="5,57,256,113"/>
+</map>

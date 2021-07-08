@@ -1,0 +1,10 @@
+<map id="PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate" name="PerceptualColor::ChromaLightnessDiagram::ChromaLightnessDiagramPrivate">
+<area shape="rect" id="node1" title="Private implementation within the Pointer to implementation idiom." alt="" coords="1709,57,2011,98"/>
+<area shape="rect" id="node2" href="$struct_perceptual_color_1_1_lch_double.html" title="A LCH color." alt="" coords="1259,5,1461,32"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_lightness_image.html" title="An image of a chroma&#45;lightness plane." alt="" coords="1237,57,1483,98"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_const_propagating_raw_pointer.html" title=" " alt="" coords="1236,123,1484,179"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html" title="A widget that displays a chroma&#45;lightness diagram." alt="" coords="871,130,1117,171"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="504,67,691,109"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="5,60,324,116"/>
+<area shape="rect" id="node8" href="$class_perceptual_color_1_1_const_propagating_unique_pointer.html" title=" " alt="" coords="437,133,757,203"/>
+</map>

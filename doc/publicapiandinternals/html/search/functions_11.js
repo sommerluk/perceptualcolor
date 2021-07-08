@@ -1,0 +1,15 @@
+var searchData=
+[
+  ['tell_875',['tell',['../class_perceptual_color_1_1_i_o_handler_factory.html#ae09db213168178fa2e230dbe289ac231',1,'PerceptualColor::IOHandlerFactory']]],
+  ['testoption_876',['testOption',['../class_perceptual_color_1_1_color_dialog.html#a4e64ac32774298bf3ef3b73578db3298',1,'PerceptualColor::ColorDialog']]],
+  ['tocartesian_877',['toCartesian',['../class_perceptual_color_1_1_polar_point_f.html#aed5188496a9aa06270e590f1f5d3202a',1,'PerceptualColor::PolarPointF']]],
+  ['tocmscielch_878',['toCmsCieLch',['../namespace_perceptual_color.html#acd767c5a06cff12535b836e1305fcb3e',1,'PerceptualColor']]],
+  ['tohlc_879',['toHlc',['../class_perceptual_color_1_1_multi_color.html#ab7fb417f44de562ed3521d9ae1d46c57',1,'PerceptualColor::MultiColor']]],
+  ['tolab_880',['toLab',['../class_perceptual_color_1_1_rgb_color_space_1_1_rgb_color_space_private.html#af05383bbe1d3f24f6aeb7df5d16ecb51',1,'PerceptualColor::RgbColorSpace::RgbColorSpacePrivate']]],
+  ['tolch_881',['toLch',['../class_perceptual_color_1_1_multi_color.html#acb78ce9afbda34e393f94d03acbafb2a',1,'PerceptualColor::MultiColor::toLch()'],['../class_perceptual_color_1_1_rgb_color_space.html#adc59ca331c746879a8cbf081d55b84bd',1,'PerceptualColor::RgbColorSpace::toLch(const cmsCIELab &amp;lab) const'],['../class_perceptual_color_1_1_rgb_color_space.html#adaafd2dfd150e49e6d0ef9ca7371b06a',1,'PerceptualColor::RgbColorSpace::toLch(const QColor &amp;rgbColor) const']]],
+  ['tolchdouble_882',['toLchDouble',['../namespace_perceptual_color.html#a148e21cfcb7be6ecc07a88f33bb7c4c7',1,'PerceptualColor']]],
+  ['toqcolorrgbbound_883',['toQColorRgbBound',['../class_perceptual_color_1_1_rgb_color_space.html#a47548665218f41e3343f888c4463269e',1,'PerceptualColor::RgbColorSpace::toQColorRgbBound(const PerceptualColor::LchDouble &amp;lch) const'],['../class_perceptual_color_1_1_rgb_color_space.html#aa320e0488f5ad7cc85115d9e2b7254c5',1,'PerceptualColor::RgbColorSpace::toQColorRgbBound(const PerceptualColor::LchaDouble &amp;lcha) const'],['../class_perceptual_color_1_1_rgb_color_space_1_1_rgb_color_space_private.html#abd81d4684d68b56d6233b7221bb5a398',1,'PerceptualColor::RgbColorSpace::RgbColorSpacePrivate::toQColorRgbBound()']]],
+  ['toqcolorrgbunbound_884',['toQColorRgbUnbound',['../class_perceptual_color_1_1_rgb_color_space.html#a02804460406266b032f8fd878aee3ef1',1,'PerceptualColor::RgbColorSpace::toQColorRgbUnbound(const cmsCIELab &amp;Lab) const'],['../class_perceptual_color_1_1_rgb_color_space.html#ae282a550165b39c606272feb5c159576',1,'PerceptualColor::RgbColorSpace::toQColorRgbUnbound(const PerceptualColor::LchDouble &amp;lch) const']]],
+  ['torgbqcolor_885',['toRgbQColor',['../class_perceptual_color_1_1_multi_color.html#a34e6d60ff83ad96bd9354e89574a6c81',1,'PerceptualColor::MultiColor']]],
+  ['transparencybackground_886',['transparencyBackground',['../class_perceptual_color_1_1_abstract_diagram.html#ac3354caad3802cdb48281ff55bdcf6de',1,'PerceptualColor::AbstractDiagram::transparencyBackground()'],['../namespace_perceptual_color.html#a5511785d9a42b0b012cc43d31231bccd',1,'PerceptualColor::transparencyBackground()']]]
+];

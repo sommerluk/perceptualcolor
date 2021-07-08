@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,137,84,163"/>
+<area shape="rect" id="node2" href="$class_perceptual_color_1_1_abstract_diagram.html" title="Base class for LCh diagrams." alt="" coords="132,129,319,171"/>
+<area shape="rect" id="node3" href="$class_perceptual_color_1_1_chroma_hue_diagram.html" title="A widget for selecting chroma and hue in LCh color space." alt="" coords="385,5,595,47"/>
+<area shape="rect" id="node4" href="$class_perceptual_color_1_1_chroma_lightness_diagram.html" title="A widget that displays a chroma&#45;lightness diagram." alt="" coords="367,71,613,112"/>
+<area shape="rect" id="node5" href="$class_perceptual_color_1_1_color_wheel.html" title="A color wheel widget." alt="" coords="386,137,594,163"/>
+<area shape="rect" id="node6" href="$class_perceptual_color_1_1_gradient_slider.html" title="A slider who’s groove displays an LCh color gradient." alt="" coords="395,188,585,229"/>
+<area shape="rect" id="node7" href="$class_perceptual_color_1_1_wheel_color_picker.html" title="Complete wheel&#45;based color picker widget." alt="" coords="386,253,594,295"/>
+</map>

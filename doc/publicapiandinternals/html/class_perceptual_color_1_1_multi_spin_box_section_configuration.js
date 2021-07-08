@@ -1,0 +1,28 @@
+var class_perceptual_color_1_1_multi_spin_box_section_configuration =
+[
+    [ "MultiSpinBoxSectionConfigurationPrivate", "class_perceptual_color_1_1_multi_spin_box_section_configuration_1_1_multi_spin_box_section_configuration_private.html", "class_perceptual_color_1_1_multi_spin_box_section_configuration_1_1_multi_spin_box_section_configuration_private" ],
+    [ "MultiSpinBoxSectionConfiguration", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a790b3f1d184c163ed00626d1961a2927", null ],
+    [ "MultiSpinBoxSectionConfiguration", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a8f753d75469acc0037eefdb79daec9cc", null ],
+    [ "~MultiSpinBoxSectionConfiguration", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#add211a8691a330e5a4ea540ade35d55e", null ],
+    [ "MultiSpinBoxSectionConfiguration", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a19f07005d943eab6e9f96795e4021b3d", null ],
+    [ "decimals", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a75af9e53047769608552abb056ccae26", null ],
+    [ "isWrapping", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a27713c5c330c93bbb5e9fb5a65736090", null ],
+    [ "maximum", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#abf592f306c1e56a9f515d4046cf995d3", null ],
+    [ "minimum", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a9da16b117284a33d686f9a4fa2f886b8", null ],
+    [ "operator=", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a482284f1f9ad79e68ee56959a34a2d90", null ],
+    [ "operator=", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#af4e78475e89db031f2f8dae58735de82", null ],
+    [ "prefix", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#ac15d7bc4555fe825ff7a951589885142", null ],
+    [ "setDecimals", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a63051ae9720cf811e87e85a9695074ef", null ],
+    [ "setMaximum", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a262488c901f4cb419e3378d592aac693", null ],
+    [ "setMinimum", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#acc2eb7352ee603fef7bc11e9a2c6f22e", null ],
+    [ "setPrefix", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a805963b6b7c56ba308aa28321acb8271", null ],
+    [ "setSingleStep", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a77d5e83cab822ada8bf4e8033162ebe7", null ],
+    [ "setSuffix", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a62634c99a0cdc5b76ba31402ccd4424e", null ],
+    [ "setWrapping", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a0f826030ad0c2bfd9c7c84e4874ff443", null ],
+    [ "singleStep", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a728c51e7dea4d467a1a2247d975e53d5", null ],
+    [ "suffix", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a3015b02a60793055bec39e6ee4a5c84c", null ],
+    [ "MultiSpinBox", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a832b7bac4ff319dbd72f09b6ba53ed73", null ],
+    [ "MultiSpinBoxSectionConfigurationPrivate", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a30ea00fe59ec7b5257cf6ceee49b9bcf", null ],
+    [ "TestMultiSpinBoxSectionConfiguration", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a39722f3f9d41c58cd2fcc8f80c0adab4", null ],
+    [ "d_pointer", "class_perceptual_color_1_1_multi_spin_box_section_configuration.html#a54477b6907b79379d697c8e773ba0005", null ]
+];
